@@ -90,7 +90,7 @@
   animation-play-state: paused;
 }
 
-/* ─── CHORÉGRAPHIE ET STYLE VERT PREMIUM DU PANNEAU DE MENU ────────── */
+/* ─── CHORÉGRAPHIE ET RESPONSIVE DE PANNEAU DE MENU (DESKTOP VS MOBILE) ─── */
 :root {
   --duree-panneau: 12s;
   --emeraude-premium: #0B2A1A;
@@ -141,43 +141,68 @@
   will-change: transform;
 }
 
-.menu-panel-vs1.is-open {
-  visibility: visible;
-  pointer-events: auto;
-  animation: panneauMobile var(--duree-panneau) cubic-bezier(.22,.61,.36,1) forwards;
+/* ---- 1. OUVERTURE MOBILE (< 768px) : CHORÉGRAPHIE EXACTE (pause 3/4 -> recul -> tout) ---- */
+@media (max-width: 767px) {
+  .menu-panel-vs1.is-open {
+    visibility: visible;
+    pointer-events: auto;
+    animation: panneauMobile var(--duree-panneau) cubic-bezier(.22,.61,.36,1) forwards;
+  }
+
+  .menu-panel-vs1.is-open::before {
+    animation: shimmerVert 2.4s ease-out forwards calc(var(--duree-panneau) * .92);
+  }
+
+  .menu-panel-vs1.is-open .menu-panel__logo {
+    animation: revealUp .8s ease both calc(var(--duree-panneau) * .62);
+  }
+  .menu-panel-vs1.is-open .menu-panel__titre {
+    animation: revealUp .7s ease both calc(var(--duree-panneau) * .70);
+  }
+  .menu-panel-vs1.is-open .menu-liste li:nth-child(1) {
+    animation: revealUp .7s ease both calc(var(--duree-panneau) * .78);
+  }
+  .menu-panel-vs1.is-open .menu-liste li:nth-child(2) {
+    animation: revealUp .7s ease both calc(var(--duree-panneau) * .86);
+  }
 }
 
-.menu-panel-vs1.is-open::before {
-  animation: shimmerVert 2.4s ease-out forwards calc(var(--duree-panneau) * .92);
+/* ---- 2. OUVERTURE DESKTOP / LAPTOP (≥ 768px) : TIROIR ÉLÉGANT GLISSANT DE LA DROITE (vs/1) ---- */
+@media (min-width: 768px) {
+  .menu-panel-vs1 {
+    width: 50%;
+    max-width: 520px;
+    background: linear-gradient(160deg, rgba(15,56,35,.98), rgba(19,21,19,.99));
+    border-left: 1px solid rgba(197, 160, 89, 0.3);
+  }
+
+  .menu-panel-vs1.is-open {
+    visibility: visible;
+    pointer-events: auto;
+    animation: slideInRightDesktop 0.45s ease-out forwards;
+  }
+
+  .menu-panel-vs1 .menu-panel__logo,
+  .menu-panel-vs1 .menu-panel__titre,
+  .menu-panel-vs1 .menu-liste li {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
 }
 
-.menu-panel-vs1.is-open .menu-panel__logo {
-  animation: revealUp .8s ease both calc(var(--duree-panneau) * .62);
-}
-.menu-panel-vs1.is-open .menu-panel__titre {
-  animation: revealUp .7s ease both calc(var(--duree-panneau) * .70);
-}
-.menu-panel-vs1.is-open .menu-liste li:nth-child(1) {
-  animation: revealUp .7s ease both calc(var(--duree-panneau) * .78);
-}
-.menu-panel-vs1.is-open .menu-liste li:nth-child(2) {
-  animation: revealUp .7s ease both calc(var(--duree-panneau) * .86);
-}
-
-.menu-panel-vs1 .menu-panel__logo,
-.menu-panel-vs1 .menu-panel__titre,
-.menu-panel-vs1 .menu-liste li {
-  opacity: 0;
-  transform: translateY(20px);
+@keyframes slideInRightDesktop {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
 }
 
 @keyframes panneauMobile {
   0%   { transform: translateX(100%); opacity: 0; }
-  18%  { transform: translateX(25%);  opacity: .35; }  /* s'arrête aux 3/4 avec fond vert émeraude */
-  35%  { transform: translateX(25%);  opacity: .65; }  /* pause : lueur vert émeraude intense */
-  52%  { transform: translateX(70%);  opacity: .45; }  /* repart vers la droite */
-  70%  { transform: translateX(0%);   opacity: .85; }  /* revient couvrir tout l'écran */
-  100% { transform: translateX(0);    opacity: 1;   }  /* pleinement opaque */
+  18%  { transform: translateX(25%);  opacity: .35; }
+  35%  { transform: translateX(25%);  opacity: .65; }
+  52%  { transform: translateX(70%);  opacity: .45; }
+  70%  { transform: translateX(0%);   opacity: .85; }
+  100% { transform: translateX(0);    opacity: 1;   }
 }
 
 @keyframes shimmerVert {
@@ -189,11 +214,11 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Fermeture : repart proprement à droite */
+/* Fermeture : repart proprement à droite sur toutes les tailles */
 .menu-panel-vs1.is-closing {
   visibility: visible;
   pointer-events: none;
-  animation: panneauFermeture .65s ease forwards;
+  animation: panneauFermeture .45s ease forwards;
 }
 
 @keyframes panneauFermeture {
