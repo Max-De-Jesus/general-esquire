@@ -53,7 +53,7 @@ export default function ConseilJuridiquePage() {
       <header className="w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
           <Image
-            src="/images/BANNERCJ.png"
+            src="/apps/frontend/public/images/"
             alt="Bannière Conseil Juridique — Défendre vos droits, protéger vos intérêts"
             fill
             priority
