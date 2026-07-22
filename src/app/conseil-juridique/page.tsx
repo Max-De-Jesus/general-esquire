@@ -53,11 +53,11 @@ export default function ConseilJuridiquePage() {
       <header className="w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
           <Image
-            src="/images/Embrassades001.png"
-            alt="Trois femmes s'embrassant chaleureusement lors d'une rencontre"
+            src="/images/BANNERCJ.png"
+            alt="Bannière Conseil Juridique — Défendre vos droits, protéger vos intérêts"
             fill
             priority
-            className="object-cover object-[center_32%] filter brightness-95 contrast-105 animate-kenburns"
+            className="object-cover object-[center_40%] filter brightness-95 contrast-105 animate-kenburns"
           />
         </div>
       </header>
