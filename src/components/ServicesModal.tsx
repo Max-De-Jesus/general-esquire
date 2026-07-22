@@ -80,9 +80,9 @@ export default function ServicesModal({ isOpen, onClose }: ServicesModalProps) {
           </div>
         </div>
 
-        {/* Titre (menu-panel__titre avec revealUp) */}
-        <p className="menu-panel__titre font-cinzel text-xs uppercase tracking-[0.2em] text-[#C5A059] drop-shadow-[0_0_18px_rgba(197,160,89,0.45)] text-center font-semibold mb-8">
-          {lang === "fr" ? "NOS SERVICES" : "OUR SERVICES"}
+        {/* Titre (menu-panel__titre : MENU) */}
+        <p className="menu-panel__titre font-cinzel text-xs uppercase tracking-[0.25em] text-[#C5A059] drop-shadow-[0_0_18px_rgba(197,160,89,0.45)] text-center font-semibold mb-8">
+          MENU
         </p>
 
         {/* Liste des rubriques (menu-liste vs/1 avec revealUp sur chaque li) */}
