@@ -82,6 +82,37 @@
   animation: fadeIn 0.3s ease-out forwards;
 }
 
+/* ─── ANIMATION TEXTE DÉFILANT VERTICAL (VS/1 STYLE) ───────────────────── */
+@keyframes remonterTexte {
+  0% { transform: translateY(70%); }
+  100% { transform: translateY(-100%); }
+}
+
+.texte-defilant-container {
+  position: relative;
+  width: 100%;
+  height: 52vh;
+  min-height: 340px;
+  overflow: hidden;
+  margin: 1.8rem 0;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(3px) brightness(1.15);
+  -webkit-backdrop-filter: blur(3px) brightness(1.15);
+  border-top: 1px solid rgba(197, 160, 89, 0.4);
+  border-bottom: 1px solid rgba(197, 160, 89, 0.4);
+  border-radius: 12px;
+}
+
+.texte-defilant-piste {
+  padding: 2rem 1.5rem;
+  will-change: transform;
+  animation: remonterTexte 40s linear infinite;
+}
+
+.texte-defilant-container:hover .texte-defilant-piste {
+  animation-play-state: paused;
+}
+
 :root {
   --background: #1a1c1a;
   --foreground: #EDE4CF;
@@ -98,94 +129,28 @@ html.light body {
 }
 
 /* Dark Backgrounds -> Light Warm Surfaces */
-html.light .bg-\[\#1a1c1a\],
-html.light .bg-\[\#1a1c1a\]\/90,
-html.light .bg-\[\#1A1C1A\]\/80 {
+html.light .bg-\[\#1A1C1A\],
+html.light .bg-\[\#131513\],
+html.light .bg-\[\#0d0e0d\],
+html.light .bg-\[\#0a0b0a\],
+html.light .bg-\[\#0e100e\] {
   background-color: #F7F5EE !important;
 }
 
-html.light .bg-\[\#131513\],
-html.light .bg-\[\#131513\]\/90,
-html.light .bg-\[\#131513\]\/80,
-html.light .bg-\[\#131513\]\/70 {
-  background-color: #FFFFFF !important;
-  box-shadow: 0 4px 20px rgba(197, 160, 89, 0.12) !important;
+html.light .bg-\[\#0e100e\]\/90,
+html.light .bg-\[\#131513\]\/90 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
 }
 
-html.light .bg-\[\#0d0e0d\] {
-  background-color: #EFEAD9 !important;
-  color: #6B5218 !important;
+html.light .text-\[\#EDE4CF\],
+html.light .text-\[\#EDE4CF\]\/90,
+html.light .text-\[\#cabfa6\] {
+  color: #2b302c !important;
 }
 
-html.light .bg-\[\#0F3823\]\/50,
-html.light .bg-\[\#0F3823\]\/60,
-html.light .bg-\[\#0F3823\]\/70,
-html.light .bg-\[\#0F3823\]\/80 {
-  background-color: #E2ECE5 !important;
-  border-color: rgba(184, 141, 52, 0.4) !important;
-}
-
-/* Page Body Text Overrides for Light Mode */
-html.light p.text-\[\#EDE4CF\],
-html.light div.text-\[\#EDE4CF\],
-html.light span.text-\[\#EDE4CF\] {
-  color: #212622;
-}
-
-html.light .text-\[\#cabfa6\],
-html.light .text-\[\#cabfa6\]\/70 {
-  color: #4A463B !important;
-}
-
-html.light .text-\[\#E9D18F\] {
-  color: #8C6A1D !important;
-}
-
-html.light .text-\[\#C5A059\] {
-  color: #9B7726 !important;
-}
-
-/* Borders in Light Mode */
-html.light .border-\[\#C5A059\]\/20,
-html.light .border-\[\#C5A059\]\/25,
 html.light .border-\[\#C5A059\]\/30,
+html.light .border-\[\#C5A059\]\/35,
 html.light .border-\[\#C5A059\]\/40,
 html.light .border-\[\#C5A059\]\/50 {
-  border-color: rgba(184, 141, 52, 0.35) !important;
-}
-
-/* ── CRITICAL: PRESERVE WHITE/LIGHT TEXT ON ALL DARK CAROUSELS & OVERLAYS ── */
-html.light .absolute .text-white,
-html.light .absolute h2.text-white,
-html.light .absolute h3.text-white,
-html.light .absolute p.text-white,
-html.light .absolute .text-\[\#EDE4CF\],
-html.light .absolute .text-\[\#EDE4CF\]\/90,
-html.light .bg-gradient-to-t .text-white,
-html.light .bg-gradient-to-t p,
-html.light .bg-gradient-to-t h2,
-html.light .bg-gradient-to-t h3,
-html.light [class*="carousel"] .text-white,
-html.light [class*="Carousel"] .text-white,
-html.light [class*="carousel"] h2,
-html.light [class*="Carousel"] h2,
-html.light [class*="carousel"] p.text-\[\#EDE4CF\],
-html.light [class*="carousel"] p.text-\[\#EDE4CF\]\/90,
-html.light [class*="Carousel"] p.text-\[\#EDE4CF\],
-html.light [class*="Carousel"] p.text-\[\#EDE4CF\]\/90,
-html.light .relative.rounded-3xl.overflow-hidden.border-2 h2,
-html.light .relative.rounded-3xl.overflow-hidden.border-2 blockquote {
-  color: #FFFFFF !important;
-}
-
-html.light .absolute .text-\[\#C5A059\],
-html.light [class*="carousel"] .text-\[\#C5A059\],
-html.light [class*="Carousel"] .text-\[\#C5A059\] {
-  color: #E9D18F !important;
-}
-
-html.light .absolute .bg-\[\#131513\]\/70,
-html.light [class*="carousel"] .bg-\[\#131513\]\/70,
-html.light [class*="Carousel"] .bg-\[\#131513\]\/70 {
-  background-color: rgba(19, 21, 19, 0.75) !important;
+  border-color: rgba(168, 127, 48, 0.4) !important;
 }
