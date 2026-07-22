@@ -1,26 +1,191 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer utilities {
+  .font-cinzel {
+    font-family: 'Cinzel', 'Times New Roman', Georgia, serif;
+  }
+  .font-cormorant {
+    font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  }
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-ticker {
+  display: flex;
+  width: max-content;
+  animation: ticker 35s linear infinite;
+}
+
+.animate-ticker:hover {
+  animation-play-state: paused;
+}
+
+@keyframes kenBurns {
+  0%   { transform: scale(1.15) translateY(2%); filter: brightness(0.4); }
+  50%  { filter: brightness(0.6); }
+  100% { transform: scale(1) translateY(0); filter: brightness(0.7); }
+}
+
+.animate-kenburns {
+  animation: kenBurns 12s ease-out forwards;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 12px rgba(197, 160, 89, 0.5));
+  }
+  50% {
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 28px rgba(233, 209, 143, 0.95));
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2.5s ease-in-out infinite;
+}
+
+@keyframes slideInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+:root {
+  --background: #1a1c1a;
+  --foreground: #EDE4CF;
+}
+
+/* ─── LIGHT MODE OVERRIDES ─────────────────────────────────────────────────── */
+html.light {
+  color-scheme: light;
+}
+
+html.light body {
+  background-color: #F7F5EE !important;
+  color: #1c211d !important;
+}
+
+/* Dark Backgrounds -> Light Warm Surfaces */
+html.light .bg-\[\#1a1c1a\],
+html.light .bg-\[\#1a1c1a\]\/90,
+html.light .bg-\[\#1A1C1A\]\/80 {
+  background-color: #F7F5EE !important;
+}
+
+html.light .bg-\[\#131513\],
+html.light .bg-\[\#131513\]\/90,
+html.light .bg-\[\#131513\]\/80,
+html.light .bg-\[\#131513\]\/70 {
+  background-color: #FFFFFF !important;
+  box-shadow: 0 4px 20px rgba(197, 160, 89, 0.12) !important;
+}
+
+html.light .bg-\[\#0d0e0d\] {
+  background-color: #EFEAD9 !important;
+  color: #6B5218 !important;
+}
+
+html.light .bg-\[\#0F3823\]\/50,
+html.light .bg-\[\#0F3823\]\/60,
+html.light .bg-\[\#0F3823\]\/70,
+html.light .bg-\[\#0F3823\]\/80 {
+  background-color: #E2ECE5 !important;
+  border-color: rgba(184, 141, 52, 0.4) !important;
+}
+
+/* Page Body Text Overrides for Light Mode */
+html.light p.text-\[\#EDE4CF\],
+html.light div.text-\[\#EDE4CF\],
+html.light span.text-\[\#EDE4CF\] {
+  color: #212622;
+}
+
+html.light .text-\[\#cabfa6\],
+html.light .text-\[\#cabfa6\]\/70 {
+  color: #4A463B !important;
+}
+
+html.light .text-\[\#E9D18F\] {
+  color: #8C6A1D !important;
+}
+
+html.light .text-\[\#C5A059\] {
+  color: #9B7726 !important;
+}
+
+/* Borders in Light Mode */
+html.light .border-\[\#C5A059\]\/20,
+html.light .border-\[\#C5A059\]\/25,
+html.light .border-\[\#C5A059\]\/30,
+html.light .border-\[\#C5A059\]\/40,
+html.light .border-\[\#C5A059\]\/50 {
+  border-color: rgba(184, 141, 52, 0.35) !important;
+}
+
+/* ── CRITICAL: PRESERVE WHITE/LIGHT TEXT ON ALL DARK CAROUSELS & OVERLAYS ── */
+html.light .absolute .text-white,
+html.light .absolute h2.text-white,
+html.light .absolute h3.text-white,
+html.light .absolute p.text-white,
+html.light .absolute .text-\[\#EDE4CF\],
+html.light .absolute .text-\[\#EDE4CF\]\/90,
+html.light .bg-gradient-to-t .text-white,
+html.light .bg-gradient-to-t p,
+html.light .bg-gradient-to-t h2,
+html.light .bg-gradient-to-t h3,
+html.light [class*="carousel"] .text-white,
+html.light [class*="Carousel"] .text-white,
+html.light [class*="carousel"] h2,
+html.light [class*="Carousel"] h2,
+html.light [class*="carousel"] p.text-\[\#EDE4CF\],
+html.light [class*="carousel"] p.text-\[\#EDE4CF\]\/90,
+html.light [class*="Carousel"] p.text-\[\#EDE4CF\],
+html.light [class*="Carousel"] p.text-\[\#EDE4CF\]\/90,
+html.light .relative.rounded-3xl.overflow-hidden.border-2 h2,
+html.light .relative.rounded-3xl.overflow-hidden.border-2 blockquote {
+  color: #FFFFFF !important;
+}
+
+html.light .absolute .text-\[\#C5A059\],
+html.light [class*="carousel"] .text-\[\#C5A059\],
+html.light [class*="Carousel"] .text-\[\#C5A059\] {
+  color: #E9D18F !important;
+}
+
+html.light .absolute .bg-\[\#131513\]\/70,
+html.light [class*="carousel"] .bg-\[\#131513\]\/70,
+html.light [class*="Carousel"] .bg-\[\#131513\]\/70 {
+  background-color: rgba(19, 21, 19, 0.75) !important;
 }

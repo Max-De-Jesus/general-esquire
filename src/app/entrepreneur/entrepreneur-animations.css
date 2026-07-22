@@ -1,0 +1,46 @@
+@keyframes sparklePop {
+  0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+  50%       { opacity: 1; transform: scale(1) rotate(180deg); }
+}
+
+/* Gold shimmer sweep across the sentence */
+@keyframes shimmerSweep {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+/* Subtle border pulse on the wow box */
+@keyframes borderGlow {
+  0%, 100% { box-shadow: 0 0 12px rgba(197,160,89,0.2), inset 0 0 12px rgba(197,160,89,0.05); }
+  50%       { box-shadow: 0 0 32px rgba(197,160,89,0.5), inset 0 0 24px rgba(197,160,89,0.12); }
+}
+
+.wow-sentence {
+  /* Shimmering gold gradient text */
+  background: linear-gradient(
+    90deg,
+    #C5A059 0%,
+    #E9D18F 20%,
+    #fff8e7 40%,
+    #E9D18F 60%,
+    #C5A059 80%,
+    #E9D18F 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerSweep 4s linear infinite;
+}
+
+.wow-box {
+  animation: borderGlow 3s ease-in-out infinite;
+}
+
+.sparkle {
+  position: absolute;
+  pointer-events: none;
+  font-size: 1rem;
+  animation: sparklePop 1.6s ease-in-out infinite;
+  color: #E9D18F;
+}
