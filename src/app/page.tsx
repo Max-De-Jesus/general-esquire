@@ -87,13 +87,13 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ─── 3. MAIN ACCUEIL (MESSAGE DE BIENVENUE SUR FOND FILIGRANE) ─── */}
+      {/* ─── 3. MAIN ACCUEIL (MESSAGE DE BIENVENUE AVEC "LE TUEUR DE DRAGON" EN FOND) ─── */}
       <main className="relative isolation-auto py-10 sm:py-16 px-4 sm:px-8 flex-grow">
-        {/* Background image overlay (Fond guerrier / filigrane clair et bien visible) */}
-        <div className="absolute inset-0 -z-10 pointer-events-none overflow-hidden opacity-55">
+        {/* Background image overlay : Le tueur de dragon */}
+        <div className="absolute inset-0 -z-10 pointer-events-none overflow-hidden opacity-65">
           <Image
-            src="/images/background.jpeg"
-            alt="Fond Filigrane Guerrier"
+            src="/images/Le tueur de dragon.jpg"
+            alt="Le tueur de dragon — Fond General Esquire"
             fill
             className="object-cover object-[50%_35%] filter saturate-105 brightness-110"
           />
@@ -117,7 +117,7 @@ export default function Home() {
             {tx.lead}
           </p>
 
-          {/* ─── FENÊTRE DE DÉFILEMENT VERTICAL EN BOUCLE (VS/1 STYLE) ─── */}
+          {/* ─── FENÊTRE DE DÉFILEMENT VERTICAL TRÈS LENT ─── */}
           <div className="texte-defilant-container shadow-2xl">
             <div className="texte-defilant-piste space-y-6 font-cormorant text-lg sm:text-xl text-[#EDE4CF] leading-[1.95]">
               <div className="space-y-4 my-2">
