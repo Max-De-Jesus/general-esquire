@@ -58,30 +58,6 @@
   animation: pulseGlow 2.5s ease-in-out infinite;
 }
 
-@keyframes slideInRight {
-  0% {
-    opacity: 0;
-    transform: translateX(100%);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.animate-slide-in-right {
-  animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-out forwards;
-}
-
 /* ─── ANIMATION TEXTE DÉFILANT EN BOUCLE PARFAITE (SANS TROU NI ESPACE VIDE) ──── */
 @keyframes remonterTexteBoucled {
   0% { transform: translateY(0%); }
@@ -112,6 +88,120 @@
 
 .texte-defilant-container:hover .texte-defilant-piste {
   animation-play-state: paused;
+}
+
+/* ─── CHORÉGRAPHIE EXACTE DU PANNEAU DE MENU (VS/1 CSS STYLE.CSS) ───────── */
+:root {
+  --duree-panneau: 12s;
+}
+
+.menu-panel-vs1 {
+  position: fixed;
+  top: 0; right: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(2rem, 8vw, 4rem);
+  background:
+    radial-gradient(ellipse 85% 55% at 50% 42%, rgba(197,160,89,.16) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 30% at 80% 85%, rgba(15,56,35,.22) 0%, transparent 60%),
+    linear-gradient(170deg, #05060a 0%, #0a0b09 45%, #060808 100%);
+  box-shadow: -12px 0 60px rgba(0,0,0,.85), 0 0 0 1px rgba(197,160,89,.18);
+  transform: translateX(100%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.menu-panel-vs1::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 65%; height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent,
+    rgba(197,160,89,.12) 30%,
+    rgba(233,209,143,.42) 50%,
+    rgba(197,160,89,.12) 70%,
+    transparent
+  );
+  transform: translateX(-220%);
+  pointer-events: none;
+  will-change: transform;
+}
+
+.menu-panel-vs1.is-open {
+  visibility: visible;
+  pointer-events: auto;
+  animation: panneauMobile var(--duree-panneau) cubic-bezier(.22,.61,.36,1) forwards;
+}
+
+.menu-panel-vs1.is-open::before {
+  animation: shimmerOr 2.2s ease-out forwards calc(var(--duree-panneau) * .92);
+}
+
+.menu-panel-vs1.is-open .menu-panel__logo {
+  animation: revealUp .8s ease both calc(var(--duree-panneau) * .62);
+}
+.menu-panel-vs1.is-open .menu-panel__titre {
+  animation: revealUp .7s ease both calc(var(--duree-panneau) * .70);
+}
+.menu-panel-vs1.is-open .menu-liste li:nth-child(1) {
+  animation: revealUp .7s ease both calc(var(--duree-panneau) * .78);
+}
+.menu-panel-vs1.is-open .menu-liste li:nth-child(2) {
+  animation: revealUp .7s ease both calc(var(--duree-panneau) * .86);
+}
+
+.menu-panel-vs1 .menu-panel__logo,
+.menu-panel-vs1 .menu-panel__titre,
+.menu-panel-vs1 .menu-liste li {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes panneauMobile {
+  0%   { transform: translateX(100%); opacity: 0; }
+  18%  { transform: translateX(25%);  opacity: .28; }  /* s'arrête à ¾ */
+  35%  { transform: translateX(25%);  opacity: .52; }  /* pause : couleurs s'intensifient */
+  52%  { transform: translateX(70%);  opacity: .40; }  /* repart vers la droite */
+  70%  { transform: translateX(0%);   opacity: .76; }  /* revient couvrir tout l'écran */
+  100% { transform: translateX(0);    opacity: 1;   }  /* pleinement opaque */
+}
+
+@keyframes shimmerOr {
+  to { transform: translateX(290%); }
+}
+
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Fermeture : repart proprement à droite */
+.menu-panel-vs1.is-closing {
+  visibility: visible;
+  pointer-events: none;
+  animation: panneauFermeture .65s ease forwards;
+}
+
+@keyframes panneauFermeture {
+  from { transform: translateX(0);    opacity: 1; }
+  to   { transform: translateX(100%); opacity: 0; }
+}
+
+.menu-panel-vs1.is-closing .menu-panel__logo,
+.menu-panel-vs1.is-closing .menu-panel__titre,
+.menu-panel-vs1.is-closing .menu-liste li {
+  opacity: 1;
+  transform: translateY(0);
+  animation: none;
 }
 
 :root {
