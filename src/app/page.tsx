@@ -45,6 +45,27 @@ export default function Home() {
         : "Click the crest to explore all sections →",
   };
 
+  const textBlock = (
+    <div className="space-y-6">
+      <div className="space-y-4 my-2">
+        <p className="border-l-2 border-[#C5A059] pl-6 italic text-[#EDE4CF]">
+          {tx.bullet1}
+        </p>
+        <p className="border-l-2 border-[#C5A059] pl-6 italic text-[#EDE4CF]">
+          {tx.bullet2}
+        </p>
+      </div>
+
+      <p className="text-[#EDE4CF]">
+        {tx.chrysalides_text}
+      </p>
+
+      <p className="text-[#EDE4CF]">
+        {tx.esquire_text}
+      </p>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-[#1A1C1A] text-[#EDE4CF] flex flex-col justify-between overflow-x-hidden">
       {/* ─── 1. EN-TÊTE : BANNIÈRE SEULE (WITH KEN BURNS ANIMATION) ───────── */}
@@ -117,41 +138,12 @@ export default function Home() {
             {tx.lead}
           </p>
 
-          {/* ─── FENÊTRE DE DÉFILEMENT VERTICAL TRÈS LENT ─── */}
+          {/* ─── FENÊTRE DE DÉFILEMENT VERTICAL ULTRA-LENT & 100% CONTINU (SANS SANS AUCUN TROU) ─── */}
           <div className="texte-defilant-container shadow-2xl">
-            <div className="texte-defilant-piste space-y-6 font-cormorant text-lg sm:text-xl text-[#EDE4CF] leading-[1.95]">
-              <div className="space-y-4 my-2">
-                <p className="border-l-2 border-[#C5A059] pl-6 italic text-[#EDE4CF]">
-                  {tx.bullet1}
-                </p>
-                <p className="border-l-2 border-[#C5A059] pl-6 italic text-[#EDE4CF]">
-                  {tx.bullet2}
-                </p>
-              </div>
-
-              <p className="text-[#EDE4CF]">
-                {tx.chrysalides_text}
-              </p>
-
-              <p className="text-[#EDE4CF]">
-                {tx.esquire_text}
-              </p>
-
-              {/* Répétition pour défilement fluide sans interruption */}
-              <div className="pt-8 border-t border-[#C5A059]/30 space-y-4">
-                <p className="border-l-2 border-[#C5A059] pl-6 italic text-[#EDE4CF]">
-                  {tx.bullet1}
-                </p>
-                <p className="border-l-2 border-[#C5A059] pl-6 italic text-[#EDE4CF]">
-                  {tx.bullet2}
-                </p>
-                <p className="text-[#EDE4CF]">
-                  {tx.chrysalides_text}
-                </p>
-                <p className="text-[#EDE4CF]">
-                  {tx.esquire_text}
-                </p>
-              </div>
+            <div className="texte-defilant-piste font-cormorant text-lg sm:text-xl text-[#EDE4CF] leading-[1.95] flex flex-col gap-6">
+              {textBlock}
+              {textBlock}
+              {textBlock}
             </div>
           </div>
 
