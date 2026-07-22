@@ -90,9 +90,12 @@
   animation-play-state: paused;
 }
 
-/* ─── CHORÉGRAPHIE EXACTE DU PANNEAU DE MENU (VS/1 CSS STYLE.CSS) ───────── */
+/* ─── CHORÉGRAPHIE ET STYLE VERT PREMIUM DU PANNEAU DE MENU ────────── */
 :root {
   --duree-panneau: 12s;
+  --emeraude-premium: #0B2A1A;
+  --emeraude-vif: #145A32;
+  --vert-neon: #2ECC71;
 }
 
 .menu-panel-vs1 {
@@ -106,11 +109,12 @@
   justify-content: center;
   align-items: center;
   padding: clamp(2rem, 8vw, 4rem);
+  /* Fond Vert Émeraude Premium avec reflets dorés */
   background:
-    radial-gradient(ellipse 85% 55% at 50% 42%, rgba(197,160,89,.16) 0%, transparent 65%),
-    radial-gradient(ellipse 60% 30% at 80% 85%, rgba(15,56,35,.22) 0%, transparent 60%),
-    linear-gradient(170deg, #05060a 0%, #0a0b09 45%, #060808 100%);
-  box-shadow: -12px 0 60px rgba(0,0,0,.85), 0 0 0 1px rgba(197,160,89,.18);
+    radial-gradient(ellipse 90% 60% at 50% 35%, rgba(20,90,50,0.45) 0%, transparent 70%),
+    radial-gradient(ellipse 70% 40% at 85% 85%, rgba(197,160,89,0.22) 0%, transparent 65%),
+    linear-gradient(170deg, #04140C 0%, #0B2A1A 45%, #030D08 100%);
+  box-shadow: -15px 0 70px rgba(3,13,8,0.95), 0 0 35px rgba(20,90,50,0.35), inset 1px 0 0 rgba(46,204,113,0.3);
   transform: translateX(100%);
   opacity: 0;
   visibility: hidden;
@@ -118,6 +122,7 @@
   overflow: hidden;
 }
 
+/* Balayage Lumineux Vert & Or (Shimmer Vert Premium) */
 .menu-panel-vs1::before {
   content: "";
   position: absolute;
@@ -126,9 +131,9 @@
   background: linear-gradient(
     105deg,
     transparent,
-    rgba(197,160,89,.12) 30%,
-    rgba(233,209,143,.42) 50%,
-    rgba(197,160,89,.12) 70%,
+    rgba(20,90,50,0.35) 25%,
+    rgba(46,204,113,0.55) 50%,
+    rgba(233,209,143,0.45) 75%,
     transparent
   );
   transform: translateX(-220%);
@@ -143,7 +148,7 @@
 }
 
 .menu-panel-vs1.is-open::before {
-  animation: shimmerOr 2.2s ease-out forwards calc(var(--duree-panneau) * .92);
+  animation: shimmerVert 2.4s ease-out forwards calc(var(--duree-panneau) * .92);
 }
 
 .menu-panel-vs1.is-open .menu-panel__logo {
@@ -168,14 +173,14 @@
 
 @keyframes panneauMobile {
   0%   { transform: translateX(100%); opacity: 0; }
-  18%  { transform: translateX(25%);  opacity: .28; }  /* s'arrête à ¾ */
-  35%  { transform: translateX(25%);  opacity: .52; }  /* pause : couleurs s'intensifient */
-  52%  { transform: translateX(70%);  opacity: .40; }  /* repart vers la droite */
-  70%  { transform: translateX(0%);   opacity: .76; }  /* revient couvrir tout l'écran */
+  18%  { transform: translateX(25%);  opacity: .35; }  /* s'arrête aux 3/4 avec fond vert émeraude */
+  35%  { transform: translateX(25%);  opacity: .65; }  /* pause : lueur vert émeraude intense */
+  52%  { transform: translateX(70%);  opacity: .45; }  /* repart vers la droite */
+  70%  { transform: translateX(0%);   opacity: .85; }  /* revient couvrir tout l'écran */
   100% { transform: translateX(0);    opacity: 1;   }  /* pleinement opaque */
 }
 
-@keyframes shimmerOr {
+@keyframes shimmerVert {
   to { transform: translateX(290%); }
 }
 
