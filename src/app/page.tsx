@@ -109,16 +109,17 @@ export default function Home() {
       </div>
 
       {/* ─── 3. MAIN ACCUEIL (MESSAGE DE BIENVENUE AVEC "LE TUEUR DE DRAGON" EN FOND) ─── */}
-      <main className="relative isolation-auto py-10 sm:py-16 px-4 sm:px-8 flex-grow">
+      <main className="relative z-0 py-10 sm:py-16 px-4 sm:px-8 flex-grow">
         {/* Background image overlay : Le tueur de dragon */}
-        <div className="absolute inset-0 -z-10 pointer-events-none overflow-hidden opacity-65">
+        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-75">
           <Image
             src="/images/dragon-bg.jpg"
             alt="Le tueur de dragon — Fond General Esquire"
             fill
+            priority
             className="object-cover object-[50%_35%] filter saturate-105 brightness-110"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#1A1C1A]/50 via-transparent to-[#131513]/90"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#1A1C1A]/40 via-transparent to-[#131513]/80"></div>
         </div>
 
         <div className="max-w-[760px] mx-auto text-left">
@@ -184,56 +185,6 @@ export default function Home() {
 
       {/* ─── 5. SLIDE-OVER SERVICES MENU ─────────────────────────────────── */}
       <ServicesModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
-
-      {/* ─── 6. FOOTER ──────────────────────────────────────────────────── */}
-      <footer className="border-t border-[#C5A059]/25 bg-[#131513] py-10 px-6 mt-12">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left font-cormorant text-base text-[#cabfa6]">
-          {/* Identity */}
-          <div className="space-y-3">
-            <h3 className="font-cinzel text-lg text-[#E9D18F] uppercase tracking-wider font-bold">
-              General Esquire
-            </h3>
-            <p className="text-sm leading-relaxed opacity-90">
-              {lang === "fr"
-                ? "Société par Actions Simplifiée à l'enseigne « Chrysalides ». Rigueur juridique et accompagnement d'exception."
-                : "Simplified Joint-Stock Company under the trade name “Chrysalides”. Legal rigor and exceptional guidance."}
-            </p>
-          </div>
-
-          {/* Direct Navigation */}
-          <div className="space-y-3">
-            <h4 className="font-cinzel text-md text-[#E9D18F] uppercase tracking-wider font-semibold">
-              {lang === "fr" ? "Navigation" : "Navigation"}
-            </h4>
-            <div className="flex flex-col space-y-1.5 text-sm">
-              <Link href="/conseil-juridique" className="hover:text-[#E9D18F] transition-colors">
-                {lang === "fr" ? "Conseil Juridique" : "Legal Consulting"}
-              </Link>
-              <Link href="/cocooning-touristique" className="hover:text-[#E9D18F] transition-colors">
-                {lang === "fr" ? "Cocooning Touristique" : "Touristic Cocooning"}
-              </Link>
-              <button
-                onClick={() => setModalOpen(true)}
-                className="hover:text-[#E9D18F] text-left transition-colors font-cinzel text-xs text-[#C5A059] uppercase tracking-wider mt-2"
-              >
-                {lang === "fr" ? "★ Tous nos services" : "★ All services"}
-              </button>
-            </div>
-          </div>
-
-          {/* Legal mentions */}
-          <div className="space-y-3">
-            <h4 className="font-cinzel text-md text-[#E9D18F] uppercase tracking-wider font-semibold">
-              {lang === "fr" ? "Engagements" : "Commitments"}
-            </h4>
-            <p className="text-xs leading-relaxed opacity-85">
-              {lang === "fr"
-                ? "© General Esquire — Tous droits réservés. Vos données sont protégées par le secret professionnel et le RGPD."
-                : "© General Esquire — All rights reserved. Data protected by professional secrecy and GDPR."}
-            </p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

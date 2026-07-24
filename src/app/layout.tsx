@@ -4,6 +4,8 @@ import Navbar from "@/components/Navbar";
 import { FloatingThemeToggle } from "@/components/ThemeToggle";
 import { LanguageProvider } from "@/context/LanguageContext";
 
+import Footer from "@/components/Footer";
+
 export const metadata: Metadata = {
   title: "General Esquire — Chrysalides | Conseil Juridique & Cocooning Touristique",
   description: "General Esquire — Chrysalides : conseil juridique et cocooning touristique. Une structure professionnelle qui allie rigueur du juriste et bienveillance de l'avocat humaniste.",
@@ -53,32 +55,7 @@ export default function RootLayout({
             <main className="min-h-[80vh]">{children}</main>
           </div>
 
-          {/* Footer */}
-          <footer className="border-t border-[#C5A059]/20 bg-[#131513] py-10 relative overflow-hidden">
-            <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
-              <div>
-                <h3 className="font-cinzel text-lg tracking-wider text-[#C5A059] font-bold mb-1">GENERAL ESQUIRE</h3>
-                <p className="text-[#cabfa6] text-xs">Exerçant à l'enseigne Chrysalides</p>
-                <p className="text-[#cabfa6]/70 text-[11px] mt-0.5">Société par actions simplifiées — RCS Paris</p>
-              </div>
-              <div className="text-center">
-                <h4 className="font-cinzel text-xs tracking-widest text-[#E9D18F] uppercase mb-2">NOS SERVICES</h4>
-                <p className="text-xs text-[#EDE4CF]">Conseil Juridique &bull; Cocooning Touristique</p>
-              </div>
-              <div className="text-center md:text-right">
-                <h4 className="font-cinzel text-xs tracking-widest text-[#E9D18F] uppercase mb-2">CONTACT</h4>
-                <p className="text-xs">
-                  <a href="mailto:contact@generalesquire.com" className="text-[#C5A059] hover:text-[#E9D18F] transition-colors">
-                    contact@generalesquire.com
-                  </a>
-                </p>
-                <p className="text-xs text-[#cabfa6] mt-0.5">www.generalesquire.com</p>
-              </div>
-            </div>
-            <div className="max-w-7xl mx-auto px-6 mt-8 pt-4 border-t border-[#C5A059]/10 text-center text-[11px] text-[#cabfa6]/60 font-cinzel">
-              &copy; {new Date().getFullYear()} General Esquire. Tous droits réservés.
-            </div>
-          </footer>
+          <Footer />
 
           <FloatingThemeToggle />
         </LanguageProvider>
