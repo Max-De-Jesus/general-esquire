@@ -79,6 +79,34 @@ export default function CocooningTouristiquePage() {
           </div>
         </div>
 
+        {/* ── SUB-NAVIGATION PILLS BAR (ONGLETS DES 4 SOUS-PAGES) ── */}
+        <div className="mb-12 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+          <Link
+            href="/hebergement"
+            className="px-5 py-2.5 rounded-full font-cinzel text-xs font-bold tracking-wider uppercase bg-[#131513] border-2 border-[#C5A059] text-[#E9D18F] hover:bg-[#C5A059] hover:text-black transition-all shadow-[0_0_15px_rgba(197,160,89,0.3)] hover:scale-105"
+          >
+            🏡 {lang === "fr" ? "L'Hébergement" : "Accommodation"}
+          </Link>
+          <Link
+            href="/repas"
+            className="px-5 py-2.5 rounded-full font-cinzel text-xs font-bold tracking-wider uppercase bg-[#131513] border-2 border-[#C5A059] text-[#E9D18F] hover:bg-[#C5A059] hover:text-black transition-all shadow-[0_0_15px_rgba(197,160,89,0.3)] hover:scale-105"
+          >
+            🍽️ {lang === "fr" ? "Les Repas" : "Meals"}
+          </Link>
+          <Link
+            href="/excursions"
+            className="px-5 py-2.5 rounded-full font-cinzel text-xs font-bold tracking-wider uppercase bg-[#131513] border-2 border-[#C5A059] text-[#E9D18F] hover:bg-[#C5A059] hover:text-black transition-all shadow-[0_0_15px_rgba(197,160,89,0.3)] hover:scale-105"
+          >
+            🗺️ {lang === "fr" ? "Les Excursions" : "Excursions"}
+          </Link>
+          <Link
+            href="/detente"
+            className="px-5 py-2.5 rounded-full font-cinzel text-xs font-bold tracking-wider uppercase bg-[#131513] border-2 border-[#C5A059] text-[#E9D18F] hover:bg-[#C5A059] hover:text-black transition-all shadow-[0_0_15px_rgba(197,160,89,0.3)] hover:scale-105"
+          >
+            🧘 {lang === "fr" ? "La Détente" : "Relaxation"}
+          </Link>
+        </div>
+
         {/* Subtitle Quote */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <p className="font-cormorant text-2xl text-[#E9D18F] italic font-light leading-relaxed">
@@ -170,24 +198,67 @@ export default function CocooningTouristiquePage() {
             </p>
           </div>
 
-          {/* 4 Pillars Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center my-8">
-            <div className="p-6 rounded-2xl bg-[#1a1c1a] border border-[#C5A059]/30">
-              <span className="text-3xl mb-2 block">🏡</span>
-              <h3 className="font-cinzel text-sm font-bold text-[#E9D18F] tracking-wider">{lang === "fr" ? "L'HÉBERGEMENT" : "ACCOMMODATION"}</h3>
-            </div>
-            <div className="p-6 rounded-2xl bg-[#1a1c1a] border border-[#C5A059]/30">
-              <span className="text-3xl mb-2 block">🍽️</span>
-              <h3 className="font-cinzel text-sm font-bold text-[#E9D18F] tracking-wider">{lang === "fr" ? "LES REPAS" : "MEALS"}</h3>
-            </div>
-            <div className="p-6 rounded-2xl bg-[#1a1c1a] border border-[#C5A059]/30">
-              <span className="text-3xl mb-2 block">🗺️</span>
-              <h3 className="font-cinzel text-sm font-bold text-[#E9D18F] tracking-wider">{lang === "fr" ? "LES EXCURSIONS" : "EXCURSIONS"}</h3>
-            </div>
-            <div className="p-6 rounded-2xl bg-[#1a1c1a] border border-[#C5A059]/30">
-              <span className="text-3xl mb-2 block">🧘</span>
-              <h3 className="font-cinzel text-sm font-bold text-[#E9D18F] tracking-wider">{lang === "fr" ? "LA DÉTENTE" : "RELAXATION"}</h3>
-            </div>
+          {/* 4 Pillars Grid (Cases cliquables vers les 4 sous-pages) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-center my-8">
+            <Link
+              href="/hebergement"
+              className="p-6 rounded-2xl bg-[#1a1c1a] border-2 border-[#C5A059]/40 hover:border-[#E9D18F] hover:bg-[#0F3823]/80 transition-all duration-300 shadow-xl group flex flex-col items-center justify-between min-h-[160px]"
+            >
+              <div>
+                <span className="text-4xl mb-3 block group-hover:scale-110 transition-transform">🏡</span>
+                <h3 className="font-cinzel text-sm font-bold text-[#E9D18F] tracking-wider group-hover:text-white">
+                  {lang === "fr" ? "L'HÉBERGEMENT" : "ACCOMMODATION"}
+                </h3>
+              </div>
+              <span className="mt-4 font-cinzel text-[11px] text-[#C5A059] group-hover:text-[#E9D18F] tracking-widest uppercase inline-flex items-center gap-1">
+                {lang === "fr" ? "Découvrir →" : "Discover →"}
+              </span>
+            </Link>
+
+            <Link
+              href="/repas"
+              className="p-6 rounded-2xl bg-[#1a1c1a] border-2 border-[#C5A059]/40 hover:border-[#E9D18F] hover:bg-[#0F3823]/80 transition-all duration-300 shadow-xl group flex flex-col items-center justify-between min-h-[160px]"
+            >
+              <div>
+                <span className="text-4xl mb-3 block group-hover:scale-110 transition-transform">🍽️</span>
+                <h3 className="font-cinzel text-sm font-bold text-[#E9D18F] tracking-wider group-hover:text-white">
+                  {lang === "fr" ? "LES REPAS" : "MEALS"}
+                </h3>
+              </div>
+              <span className="mt-4 font-cinzel text-[11px] text-[#C5A059] group-hover:text-[#E9D18F] tracking-widest uppercase inline-flex items-center gap-1">
+                {lang === "fr" ? "Découvrir →" : "Discover →"}
+              </span>
+            </Link>
+
+            <Link
+              href="/excursions"
+              className="p-6 rounded-2xl bg-[#1a1c1a] border-2 border-[#C5A059]/40 hover:border-[#E9D18F] hover:bg-[#0F3823]/80 transition-all duration-300 shadow-xl group flex flex-col items-center justify-between min-h-[160px]"
+            >
+              <div>
+                <span className="text-4xl mb-3 block group-hover:scale-110 transition-transform">🗺️</span>
+                <h3 className="font-cinzel text-sm font-bold text-[#E9D18F] tracking-wider group-hover:text-white">
+                  {lang === "fr" ? "LES EXCURSIONS" : "EXCURSIONS"}
+                </h3>
+              </div>
+              <span className="mt-4 font-cinzel text-[11px] text-[#C5A059] group-hover:text-[#E9D18F] tracking-widest uppercase inline-flex items-center gap-1">
+                {lang === "fr" ? "Découvrir →" : "Discover →"}
+              </span>
+            </Link>
+
+            <Link
+              href="/detente"
+              className="p-6 rounded-2xl bg-[#1a1c1a] border-2 border-[#C5A059]/40 hover:border-[#E9D18F] hover:bg-[#0F3823]/80 transition-all duration-300 shadow-xl group flex flex-col items-center justify-between min-h-[160px]"
+            >
+              <div>
+                <span className="text-4xl mb-3 block group-hover:scale-110 transition-transform">🧘</span>
+                <h3 className="font-cinzel text-sm font-bold text-[#E9D18F] tracking-wider group-hover:text-white">
+                  {lang === "fr" ? "LA DÉTENTE" : "RELAXATION"}
+                </h3>
+              </div>
+              <span className="mt-4 font-cinzel text-[11px] text-[#C5A059] group-hover:text-[#E9D18F] tracking-widest uppercase inline-flex items-center gap-1">
+                {lang === "fr" ? "Découvrir →" : "Discover →"}
+              </span>
+            </Link>
           </div>
 
           <div className="p-6 rounded-2xl bg-[#1a1c1a] border border-[#C5A059]/20 font-cormorant text-base text-[#EDE4CF] text-center max-w-2xl mx-auto">
