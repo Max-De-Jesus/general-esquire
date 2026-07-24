@@ -122,9 +122,9 @@ export default function ServicesModal({ isOpen, onClose }: ServicesModalProps) {
               className="block w-full py-2.5 sm:py-3.5 px-4 sm:px-6 font-cinzel text-xs sm:text-sm md:text-base uppercase tracking-[0.1em] sm:tracking-[0.12em] text-[#E9D18F] bg-[#C5A059]/[0.05] border-[1.5px] border-[#C5A059]/50 rounded-[12px] sm:rounded-[14px] shadow-[0_0_0_2px_rgba(197,160,89,0.07),inset_0_1px_0_rgba(233,209,143,0.12),0_4px_18px_rgba(0,0,0,0.45)] drop-shadow-[0_0_14px_rgba(197,160,89,0.5)] hover:bg-[#0F3823] hover:border-[#0F3823] hover:text-[#E9D18F] hover:shadow-[0_0_0_3px_rgba(15,56,35,0.35),0_0_22px_rgba(15,56,35,0.5),0_6px_24px_rgba(0,0,0,0.5)] hover:-translate-y-0.5 transition-all duration-350 leading-snug"
             >
               {lang === "fr" ? (
-                <>Actualités &<br />événements</>
+                <>Actualités</>
               ) : (
-                <>News &<br />events</>
+                <>News</>
               )}
             </Link>
           </li>

@@ -139,13 +139,9 @@ export default function Home() {
             {tx.lead}
           </p>
 
-          {/* ─── FENÊTRE DE DÉFILEMENT VERTICAL ULTRA-LENT & 100% CONTINU (SANS SANS AUCUN TROU) ─── */}
-          <div className="texte-defilant-container shadow-2xl">
-            <div className="texte-defilant-piste font-cormorant text-lg sm:text-xl text-[#EDE4CF] leading-[1.95] flex flex-col gap-6">
-              {textBlock}
-              {textBlock}
-              {textBlock}
-            </div>
+          {/* Static Presentation Text Block */}
+          <div className="font-cormorant text-lg sm:text-xl text-[#EDE4CF] leading-[1.95] flex flex-col gap-6 text-left bg-[#131513]/80 p-6 sm:p-8 rounded-2xl border border-[#C5A059]/30 shadow-2xl">
+            {textBlock}
           </div>
 
           {/* Signature */}

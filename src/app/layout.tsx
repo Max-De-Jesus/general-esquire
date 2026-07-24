@@ -7,38 +7,12 @@ import { LanguageProvider } from "@/context/LanguageContext";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.generalesquire.com"),
   title: "General Esquire — Chrysalides | Conseil Juridique & Cocooning Touristique",
-  description:
-    "General Esquire — Chrysalides : conseil juridique et cocooning touristique. Une structure professionnelle qui allie rigueur du juriste et bienveillance de l'avocat humaniste.",
+  description: "General Esquire — Chrysalides : conseil juridique et cocooning touristique. Une structure professionnelle qui allie rigueur du juriste et bienveillance de l'avocat humaniste.",
   icons: {
-    icon: "/images/logoge1.png",
-    shortcut: "/images/logoge1.png",
-    apple: "/images/logoge1.png",
-  },
-  openGraph: {
-    title: "General Esquire — Chrysalides | Conseil Juridique & Cocooning Touristique",
-    description:
-      "General Esquire — Chrysalides : conseil juridique et cocooning touristique. Une structure professionnelle qui allie rigueur du juriste et bienveillance de l'avocat humaniste.",
-    url: "https://www.generalesquire.com",
-    siteName: "General Esquire",
-    images: [
-      {
-        url: "https://www.generalesquire.com/images/logoge1.png",
-        width: 1200,
-        height: 630,
-        alt: "General Esquire — Chrysalides",
-      },
-    ],
-    locale: "fr_FR",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "General Esquire — Chrysalides",
-    description:
-      "General Esquire — Chrysalides : conseil juridique et cocooning touristique.",
-    images: ["https://www.generalesquire.com/images/logoge1.png"],
+    icon: "/images/Favicon2.jpg",
+    shortcut: "/images/Favicon2.jpg",
+    apple: "/images/Favicon2.jpg",
   },
 };
 
@@ -59,6 +33,9 @@ export default function RootLayout({
   return (
     <html lang="fr" className="scroll-smooth">
       <head>
+        <link rel="icon" href="/images/Favicon2.jpg" type="image/jpeg" />
+        <link rel="shortcut icon" href="/images/Favicon2.jpg" type="image/jpeg" />
+        <link rel="apple-touch-icon" href="/images/Favicon2.jpg" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link

@@ -72,7 +72,7 @@ export default function PublicActualitesPage() {
         {/* Titre et Intro */}
         <div className="text-center max-w-4xl mx-auto mb-16">
           <h1 className="font-cinzel text-3xl md:text-5xl text-[#E9D18F] mb-6 uppercase tracking-widest drop-shadow-md">
-            {lang === "fr" ? "Actualités & Événements" : "News & Events"}
+            {lang === "fr" ? "Actualités" : "News"}
           </h1>
           <p className="font-cormorant text-lg md:text-xl text-[#cabfa6] leading-relaxed">
             {lang === "fr"

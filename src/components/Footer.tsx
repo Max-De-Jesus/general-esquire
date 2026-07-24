@@ -45,16 +45,6 @@ export default function Footer() {
                 {lang === "fr" ? "Cocooning touristique" : "Touristic Cocooning"}
               </Link>
             </p>
-            <p>
-              <Link href="/actualites" className="hover:text-[#E9D18F] transition-colors">
-                {lang === "fr" ? "Actualités & événements" : "News & Events"}
-              </Link>
-            </p>
-            <p>
-              <Link href="/paiement" className="hover:text-[#E9D18F] transition-colors">
-                {lang === "fr" ? "Règlement en ligne" : "Online Payment"}
-              </Link>
-            </p>
           </div>
         </div>
 
