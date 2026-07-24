@@ -246,13 +246,48 @@ export default function RepasPage() {
   const { t, lang } = useLanguage();
 
   return (
-    <div className="min-h-screen bg-[#1a1c1a] text-[#EDE4CF] relative overflow-x-hidden">
-      {/* Background filigrane */}
-      <div className="absolute inset-0 -z-10 opacity-[0.07] pointer-events-none">
-        <Image src="/images/background.jpeg" alt="" fill sizes="100vw" className="object-cover" />
+    <div className="min-h-screen bg-[#1a1c1a] text-[#EDE4CF] pb-12 md:pb-20 relative overflow-x-hidden">
+      {/* ─── 1. EN-TÊTE : BANNIÈRE SEULE (PLEINE LARGEUR) ──────────────── */}
+      <header className="w-full bg-[#131513] overflow-hidden">
+        <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
+          <Image
+            src="/images/Food.jpg"
+            alt="Bannière Repas & Gastronomie — General Esquire"
+            fill
+            priority
+            className="object-cover object-[center_40%] filter brightness-95 contrast-105"
+          />
+        </div>
+      </header>
+
+      {/* ─── 2. BANDE DÉROULANTE (TICKER ALL-WIDTH) ───────────────── */}
+      <div className="w-full bg-[#0d0e0d] border-y border-[#C5A059]/30 py-3 overflow-hidden shadow-inner z-20 mb-8">
+        <div className="flex whitespace-nowrap animate-ticker">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-6 font-cinzel text-xs sm:text-sm text-[#C5A059] tracking-[0.26em] uppercase px-6"
+            >
+              <span className="drop-shadow-[0_0_12px_rgba(197,160,89,0.35)]">
+                General Esquire
+              </span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+              <span>Excellence</span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+              <span>Compétence</span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+              <span>Chrysalides</span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+              <span>Bienveillance</span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+              <span>Résilience</span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 py-12 md:py-20">
+      <div className="max-w-5xl mx-auto px-6">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 font-cinzel text-xs text-[#C5A059] mb-8 uppercase tracking-widest flex-wrap">
           <Link href="/" className="hover:text-[#E9D18F] transition-colors">{t("nav_home")}</Link>
@@ -415,7 +450,7 @@ export default function RepasPage() {
         {/* ── CTA ── */}
         <div className="text-center p-10 rounded-3xl bg-gradient-to-r from-[#0F3823]/70 via-[#131513] to-[#0F3823]/70 border border-[#C5A059]/40 shadow-2xl">
           <h3 className="font-cinzel text-xl text-[#E9D18F] font-bold mb-2">
-            Prêt à régaler vos papilles au Bénin ?
+            Prêt à régaler vos papilles  ?
           </h3>
           <p className="font-cormorant text-lg text-[#cabfa6] mb-6">
             Pension complète incluse dans votre séjour cocooning touristique.

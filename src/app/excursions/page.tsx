@@ -220,12 +220,48 @@ export default function ExcursionsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#1a1c1a] text-[#EDE4CF] relative">
-      <div className="absolute inset-0 -z-10 opacity-[0.07] pointer-events-none">
-        <Image src="/images/background.jpeg" alt="" fill className="object-cover" />
+    <div className="min-h-screen bg-[#1a1c1a] text-[#EDE4CF] pb-12 md:pb-20 relative">
+      {/* ─── 1. EN-TÊTE : BANNIÈRE SEULE (PLEINE LARGEUR) ──────────────── */}
+      <header className="w-full bg-[#131513] overflow-hidden">
+        <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
+          <Image
+            src="/images/Excursion30.jpg"
+            alt="Bannière Excursions — General Esquire"
+            fill
+            priority
+            className="object-cover object-[center_40%] filter brightness-95 contrast-105"
+          />
+        </div>
+      </header>
+
+      {/* ─── 2. BANDE DÉROULANTE (TICKER ALL-WIDTH) ───────────────── */}
+      <div className="w-full bg-[#0d0e0d] border-y border-[#C5A059]/30 py-3 overflow-hidden shadow-inner z-20 mb-8">
+        <div className="flex whitespace-nowrap animate-ticker">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-6 font-cinzel text-xs sm:text-sm text-[#C5A059] tracking-[0.26em] uppercase px-6"
+            >
+              <span className="drop-shadow-[0_0_12px_rgba(197,160,89,0.35)]">
+                General Esquire
+              </span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+              <span>Excellence</span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+              <span>Compétence</span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+              <span>Chrysalides</span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+              <span>Bienveillance</span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+              <span>Résilience</span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 py-12 md:py-20">
+      <div className="max-w-5xl mx-auto px-6 pb-12 md:pb-20">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 font-cinzel text-xs text-[#C5A059] mb-8 uppercase tracking-widest">
           <Link href="/" className="hover:text-[#E9D18F] transition-colors">{tx.breadcrumb_home}</Link>

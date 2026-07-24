@@ -24,7 +24,47 @@ export default function CocooningTouristiquePage() {
   const wordCount = presentation.trim() ? presentation.trim().split(/\s+/).length : 0;
 
   return (
-    <div className="min-h-screen bg-[#1a1c1a] text-[#EDE4CF] py-12 md:py-20 relative">
+    <div className="min-h-screen bg-[#1a1c1a] text-[#EDE4CF] pb-12 md:pb-20 relative">
+      {/* ─── 1. EN-TÊTE : BANNIÈRE SEULE (PLEINE LARGEUR) ──────────────── */}
+      <header className="w-full bg-[#131513] overflow-hidden">
+        <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
+          <Image
+            src="/images/Embrassades001.png"
+            alt="Bannière Cocooning Touristique — General Esquire"
+            fill
+            priority
+            className="object-cover object-[center_40%] filter brightness-95 contrast-105"
+          />
+        </div>
+      </header>
+
+      {/* ─── 2. BANDE DÉROULANTE (TICKER ALL-WIDTH) ───────────────── */}
+      <div className="w-full bg-[#0d0e0d] border-y border-[#C5A059]/30 py-3 overflow-hidden shadow-inner z-20 mb-8">
+        <div className="flex whitespace-nowrap animate-ticker">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-6 font-cinzel text-xs sm:text-sm text-[#C5A059] tracking-[0.26em] uppercase px-6"
+            >
+              <span className="drop-shadow-[0_0_12px_rgba(197,160,89,0.35)]">
+                General Esquire
+              </span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+              <span>Excellence</span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+              <span>Compétence</span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+              <span>Chrysalides</span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+              <span>Bienveillance</span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+              <span>Résilience</span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className="max-w-5xl mx-auto px-6">
         
         {/* Filigrane Background */}
@@ -189,7 +229,7 @@ export default function CocooningTouristiquePage() {
               {lang === "fr" ? "Formule Complète 2 Semaines" : "Full 2-Week Package"}
             </span>
             <h2 className="font-cinzel text-3xl sm:text-4xl text-[#E9D18F] font-bold">
-              1 350 € <span className="text-sm font-normal text-[#cabfa6] font-cormorant">{lang === "fr" ? "/ pensionnaire (hors billet d'avion)" : "/ guest (excl. airfare)"}</span>
+              1 350 € <span className="text-sm font-normal text-[#cabfa6] font-cormorant">{lang === "fr" ? "/ pensionnaire " : "/ guest (excl. airfare)"}</span>
             </h2>
             <p className="font-cormorant text-base text-[#cabfa6] mt-2">
               {lang === "fr"
