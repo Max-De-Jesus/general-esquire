@@ -17,13 +17,16 @@ jobs:
       - name: 🟢 Configuration de Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: 📦 Installation des dépendances
         run: |
           npm ci || npm install
 
       - name: 🏗️ Construction du site web (Export Statique)
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: "https://szyirafviiswvaooubzs.supabase.co"
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6eWlyYWZ2aWlzd3Zhb291YnpzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ3NTIzMTksImV4cCI6MjEwMDMyODMxOX0.eohPjJyvz-OqLFe1-2W3xhV4Ia6lkJHg3ScvrUemaVw"
         run: |
           npm run build
 
