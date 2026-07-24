@@ -108,7 +108,7 @@ export default function Footer() {
       </div>
 
       {/* Baseline Copyright */}
-      <div className="border-t border-[#C5A059]/15 text-center py-4 px-6">
+      <div className="border-t border-[#C5A059]/15 text-center py-4 px-6 pb-20 sm:pb-6">
         <p className="font-cinzel text-[0.6rem] tracking-[0.18em] uppercase text-[#C5A059]/70 leading-relaxed">
           &copy; 2026 General Esquire — {lang === "fr" ? "Tous droits réservés" : "All rights reserved"}
         </p>
