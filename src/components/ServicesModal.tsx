@@ -68,8 +68,8 @@ export default function ServicesModal({ isOpen, onClose }: ServicesModalProps) {
         </button>
 
         {/* Logo Cheval Ailé (menu-panel__logo avec revealUp) */}
-        <div className="menu-panel__logo flex flex-col items-center mb-6 sm:mb-8">
-          <div className="relative w-56 h-56 sm:w-64 sm:h-64 mb-3">
+        <div className="menu-panel__logo flex flex-col items-center mb-2 sm:mb-4">
+          <div className="relative w-36 h-36 sm:w-52 sm:h-52 mb-1 sm:mb-2">
             <Image
               src="/images/cheval-aile.png"
               alt="Cheval ailé General Esquire"
@@ -81,17 +81,17 @@ export default function ServicesModal({ isOpen, onClose }: ServicesModalProps) {
         </div>
 
         {/* Titre (menu-panel__titre : MENU) */}
-        <p className="menu-panel__titre font-cinzel text-lg sm:text-2xl uppercase tracking-[0.35em] text-[#E9D18F] drop-shadow-[0_0_15px_rgba(233,209,143,0.55)] text-center font-bold mb-8">
+        <p className="menu-panel__titre font-cinzel text-base sm:text-xl uppercase tracking-[0.35em] text-[#E9D18F] drop-shadow-[0_0_15px_rgba(233,209,143,0.55)] text-center font-bold mb-4 sm:mb-6">
           MENU
         </p>
 
         {/* Liste des rubriques (menu-liste vs/1 avec revealUp sur chaque li) */}
-        <ul className="menu-liste w-full max-w-xs space-y-4 list-none m-0 p-0 text-center">
+        <ul className="menu-liste w-full max-w-[280px] sm:max-w-xs space-y-2.5 sm:space-y-3.5 list-none m-0 p-0 text-center">
           <li>
             <Link
               href="/conseil-juridique"
               onClick={handleClose}
-              className="block w-full py-4 px-6 font-cinzel text-base sm:text-lg uppercase tracking-[0.12em] text-[#E9D18F] bg-[#C5A059]/[0.05] border-[1.5px] border-[#C5A059]/50 rounded-[14px] shadow-[0_0_0_3px_rgba(197,160,89,0.07),inset_0_1px_0_rgba(233,209,143,0.12),0_4px_18px_rgba(0,0,0,0.45)] drop-shadow-[0_0_14px_rgba(197,160,89,0.5)] hover:bg-[#0F3823] hover:border-[#0F3823] hover:text-[#E9D18F] hover:shadow-[0_0_0_3px_rgba(15,56,35,0.35),0_0_22px_rgba(15,56,35,0.5),0_6px_24px_rgba(0,0,0,0.5)] hover:-translate-y-0.5 transition-all duration-350 leading-snug"
+              className="block w-full py-2.5 sm:py-3.5 px-4 sm:px-6 font-cinzel text-xs sm:text-sm md:text-base uppercase tracking-[0.1em] sm:tracking-[0.12em] text-[#E9D18F] bg-[#C5A059]/[0.05] border-[1.5px] border-[#C5A059]/50 rounded-[12px] sm:rounded-[14px] shadow-[0_0_0_2px_rgba(197,160,89,0.07),inset_0_1px_0_rgba(233,209,143,0.12),0_4px_18px_rgba(0,0,0,0.45)] drop-shadow-[0_0_14px_rgba(197,160,89,0.5)] hover:bg-[#0F3823] hover:border-[#0F3823] hover:text-[#E9D18F] hover:shadow-[0_0_0_3px_rgba(15,56,35,0.35),0_0_22px_rgba(15,56,35,0.5),0_6px_24px_rgba(0,0,0,0.5)] hover:-translate-y-0.5 transition-all duration-350 leading-snug"
             >
               {lang === "fr" ? (
                 <>Conseil<br />juridique</>
@@ -105,7 +105,7 @@ export default function ServicesModal({ isOpen, onClose }: ServicesModalProps) {
             <Link
               href="/cocooning-touristique"
               onClick={handleClose}
-              className="block w-full py-4 px-6 font-cinzel text-base sm:text-lg uppercase tracking-[0.12em] text-[#E9D18F] bg-[#C5A059]/[0.05] border-[1.5px] border-[#C5A059]/50 rounded-[14px] shadow-[0_0_0_3px_rgba(197,160,89,0.07),inset_0_1px_0_rgba(233,209,143,0.12),0_4px_18px_rgba(0,0,0,0.45)] drop-shadow-[0_0_14px_rgba(197,160,89,0.5)] hover:bg-[#0F3823] hover:border-[#0F3823] hover:text-[#E9D18F] hover:shadow-[0_0_0_3px_rgba(15,56,35,0.35),0_0_22px_rgba(15,56,35,0.5),0_6px_24px_rgba(0,0,0,0.5)] hover:-translate-y-0.5 transition-all duration-350 leading-snug"
+              className="block w-full py-2.5 sm:py-3.5 px-4 sm:px-6 font-cinzel text-xs sm:text-sm md:text-base uppercase tracking-[0.1em] sm:tracking-[0.12em] text-[#E9D18F] bg-[#C5A059]/[0.05] border-[1.5px] border-[#C5A059]/50 rounded-[12px] sm:rounded-[14px] shadow-[0_0_0_2px_rgba(197,160,89,0.07),inset_0_1px_0_rgba(233,209,143,0.12),0_4px_18px_rgba(0,0,0,0.45)] drop-shadow-[0_0_14px_rgba(197,160,89,0.5)] hover:bg-[#0F3823] hover:border-[#0F3823] hover:text-[#E9D18F] hover:shadow-[0_0_0_3px_rgba(15,56,35,0.35),0_0_22px_rgba(15,56,35,0.5),0_6px_24px_rgba(0,0,0,0.5)] hover:-translate-y-0.5 transition-all duration-350 leading-snug"
             >
               {lang === "fr" ? (
                 <>Cocooning<br />touristique</>
@@ -119,7 +119,7 @@ export default function ServicesModal({ isOpen, onClose }: ServicesModalProps) {
             <Link
               href="/actualites"
               onClick={handleClose}
-              className="block w-full py-4 px-6 font-cinzel text-base sm:text-lg uppercase tracking-[0.12em] text-[#E9D18F] bg-[#C5A059]/[0.05] border-[1.5px] border-[#C5A059]/50 rounded-[14px] shadow-[0_0_0_3px_rgba(197,160,89,0.07),inset_0_1px_0_rgba(233,209,143,0.12),0_4px_18px_rgba(0,0,0,0.45)] drop-shadow-[0_0_14px_rgba(197,160,89,0.5)] hover:bg-[#0F3823] hover:border-[#0F3823] hover:text-[#E9D18F] hover:shadow-[0_0_0_3px_rgba(15,56,35,0.35),0_0_22px_rgba(15,56,35,0.5),0_6px_24px_rgba(0,0,0,0.5)] hover:-translate-y-0.5 transition-all duration-350 leading-snug"
+              className="block w-full py-2.5 sm:py-3.5 px-4 sm:px-6 font-cinzel text-xs sm:text-sm md:text-base uppercase tracking-[0.1em] sm:tracking-[0.12em] text-[#E9D18F] bg-[#C5A059]/[0.05] border-[1.5px] border-[#C5A059]/50 rounded-[12px] sm:rounded-[14px] shadow-[0_0_0_2px_rgba(197,160,89,0.07),inset_0_1px_0_rgba(233,209,143,0.12),0_4px_18px_rgba(0,0,0,0.45)] drop-shadow-[0_0_14px_rgba(197,160,89,0.5)] hover:bg-[#0F3823] hover:border-[#0F3823] hover:text-[#E9D18F] hover:shadow-[0_0_0_3px_rgba(15,56,35,0.35),0_0_22px_rgba(15,56,35,0.5),0_6px_24px_rgba(0,0,0,0.5)] hover:-translate-y-0.5 transition-all duration-350 leading-snug"
             >
               {lang === "fr" ? (
                 <>Actualités &<br />événements</>
@@ -133,7 +133,7 @@ export default function ServicesModal({ isOpen, onClose }: ServicesModalProps) {
             <Link
               href="/paiement"
               onClick={handleClose}
-              className="block w-full py-4 px-6 font-cinzel text-base sm:text-lg uppercase tracking-[0.12em] text-[#E9D18F] bg-[#C5A059]/[0.05] border-[1.5px] border-[#C5A059]/50 rounded-[14px] shadow-[0_0_0_3px_rgba(197,160,89,0.07),inset_0_1px_0_rgba(233,209,143,0.12),0_4px_18px_rgba(0,0,0,0.45)] drop-shadow-[0_0_14px_rgba(197,160,89,0.5)] hover:bg-[#0F3823] hover:border-[#0F3823] hover:text-[#E9D18F] hover:shadow-[0_0_0_3px_rgba(15,56,35,0.35),0_0_22px_rgba(15,56,35,0.5),0_6px_24px_rgba(0,0,0,0.5)] hover:-translate-y-0.5 transition-all duration-350 leading-snug"
+              className="block w-full py-2.5 sm:py-3.5 px-4 sm:px-6 font-cinzel text-xs sm:text-sm md:text-base uppercase tracking-[0.1em] sm:tracking-[0.12em] text-[#E9D18F] bg-[#C5A059]/[0.05] border-[1.5px] border-[#C5A059]/50 rounded-[12px] sm:rounded-[14px] shadow-[0_0_0_2px_rgba(197,160,89,0.07),inset_0_1px_0_rgba(233,209,143,0.12),0_4px_18px_rgba(0,0,0,0.45)] drop-shadow-[0_0_14px_rgba(197,160,89,0.5)] hover:bg-[#0F3823] hover:border-[#0F3823] hover:text-[#E9D18F] hover:shadow-[0_0_0_3px_rgba(15,56,35,0.35),0_0_22px_rgba(15,56,35,0.5),0_6px_24px_rgba(0,0,0,0.5)] hover:-translate-y-0.5 transition-all duration-350 leading-snug"
             >
               {lang === "fr" ? (
                 <>Paiement<br />en ligne</>

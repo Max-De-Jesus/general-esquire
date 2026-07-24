@@ -92,7 +92,7 @@
 
 /* ─── CHORÉGRAPHIE ET RESPONSIVE DE PANNEAU DE MENU (DESKTOP VS MOBILE) ─── */
 :root {
-  --duree-panneau: 12s;
+  --duree-panneau: 0.45s;
   --emeraude-premium: #0B2A1A;
   --emeraude-vif: #145A32;
   --vert-neon: #2ECC71;
@@ -108,8 +108,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: clamp(2rem, 8vw, 4rem);
-  /* Fond Vert Émeraude Premium avec reflets dorés */
+  padding: clamp(1.5rem, 5vw, 3rem);
   background:
     radial-gradient(ellipse 90% 60% at 50% 35%, rgba(20,90,50,0.45) 0%, transparent 70%),
     radial-gradient(ellipse 70% 40% at 85% 85%, rgba(197,160,89,0.22) 0%, transparent 65%),
@@ -119,7 +118,7 @@
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  overflow: hidden;
+  overflow-y: auto;
 }
 
 /* Balayage Lumineux Vert & Or (Shimmer Vert Premium) */
@@ -141,33 +140,44 @@
   will-change: transform;
 }
 
-/* ---- 1. OUVERTURE MOBILE (< 768px) : CHORÉGRAPHIE EXACTE (pause 3/4 -> recul -> tout) ---- */
+/* ---- 1. OUVERTURE MOBILE (< 768px) ---- */
 @media (max-width: 767px) {
+  .menu-panel-vs1 {
+    width: 100%;
+    max-width: 100%;
+  }
+
   .menu-panel-vs1.is-open {
     visibility: visible;
     pointer-events: auto;
-    animation: panneauMobile var(--duree-panneau) cubic-bezier(.22,.61,.36,1) forwards;
+    animation: slideInRightMobile 0.4s ease-out forwards;
   }
 
   .menu-panel-vs1.is-open::before {
-    animation: shimmerVert 2.4s ease-out forwards calc(var(--duree-panneau) * .92);
+    animation: shimmerVert 1.5s ease-out forwards 0.2s;
   }
 
   .menu-panel-vs1.is-open .menu-panel__logo {
-    animation: revealUp .8s ease both calc(var(--duree-panneau) * .62);
+    animation: revealUp 0.4s ease both 0.1s;
   }
   .menu-panel-vs1.is-open .menu-panel__titre {
-    animation: revealUp .7s ease both calc(var(--duree-panneau) * .70);
+    animation: revealUp 0.4s ease both 0.15s;
   }
   .menu-panel-vs1.is-open .menu-liste li:nth-child(1) {
-    animation: revealUp .7s ease both calc(var(--duree-panneau) * .78);
+    animation: revealUp 0.4s ease both 0.2s;
   }
   .menu-panel-vs1.is-open .menu-liste li:nth-child(2) {
-    animation: revealUp .7s ease both calc(var(--duree-panneau) * .86);
+    animation: revealUp 0.4s ease both 0.25s;
+  }
+  .menu-panel-vs1.is-open .menu-liste li:nth-child(3) {
+    animation: revealUp 0.4s ease both 0.3s;
+  }
+  .menu-panel-vs1.is-open .menu-liste li:nth-child(4) {
+    animation: revealUp 0.4s ease both 0.35s;
   }
 }
 
-/* ---- 2. OUVERTURE DESKTOP / LAPTOP (≥ 768px) : TIROIR ÉLÉGANT GLISSANT DE LA DROITE (vs/1) ---- */
+/* ---- 2. OUVERTURE DESKTOP / LAPTOP (≥ 768px) ---- */
 @media (min-width: 768px) {
   .menu-panel-vs1 {
     width: 50%;
@@ -189,6 +199,11 @@
     transform: none !important;
     animation: none !important;
   }
+}
+
+@keyframes slideInRightMobile {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
 }
 
 @keyframes slideInRightDesktop {
