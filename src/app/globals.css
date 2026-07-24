@@ -92,7 +92,7 @@
 
 /* ─── CHORÉGRAPHIE ET RESPONSIVE DE PANNEAU DE MENU (DESKTOP VS MOBILE) ─── */
 :root {
-  --duree-panneau: 0.45s;
+  --duree-panneau: 12s;
   --emeraude-premium: #0B2A1A;
   --emeraude-vif: #145A32;
   --vert-neon: #2ECC71;
@@ -140,7 +140,15 @@
   will-change: transform;
 }
 
-/* ---- 1. OUVERTURE MOBILE (< 768px) ---- */
+/* Éléments intérieurs — révélation par stagger */
+.menu-panel-vs1 .menu-panel__logo,
+.menu-panel-vs1 .menu-panel__titre,
+.menu-panel-vs1 .menu-liste li {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* ---- 1. OUVERTURE MOBILE (< 768px) : CHORÉGRAPHIE EXACTE VS/1 (12s avec pause & recul) ---- */
 @media (max-width: 767px) {
   .menu-panel-vs1 {
     width: 100%;
@@ -150,30 +158,30 @@
   .menu-panel-vs1.is-open {
     visibility: visible;
     pointer-events: auto;
-    animation: slideInRightMobile 0.4s ease-out forwards;
+    animation: panneauMobile var(--duree-panneau) cubic-bezier(.22,.61,.36,1) forwards;
   }
 
   .menu-panel-vs1.is-open::before {
-    animation: shimmerVert 1.5s ease-out forwards 0.2s;
+    animation: shimmerVert 2.4s ease-out forwards calc(var(--duree-panneau) * .92);
   }
 
   .menu-panel-vs1.is-open .menu-panel__logo {
-    animation: revealUp 0.4s ease both 0.1s;
+    animation: revealUp .8s ease both calc(var(--duree-panneau) * .62);
   }
   .menu-panel-vs1.is-open .menu-panel__titre {
-    animation: revealUp 0.4s ease both 0.15s;
+    animation: revealUp .7s ease both calc(var(--duree-panneau) * .70);
   }
   .menu-panel-vs1.is-open .menu-liste li:nth-child(1) {
-    animation: revealUp 0.4s ease both 0.2s;
+    animation: revealUp .7s ease both calc(var(--duree-panneau) * .78);
   }
   .menu-panel-vs1.is-open .menu-liste li:nth-child(2) {
-    animation: revealUp 0.4s ease both 0.25s;
+    animation: revealUp .7s ease both calc(var(--duree-panneau) * .84);
   }
   .menu-panel-vs1.is-open .menu-liste li:nth-child(3) {
-    animation: revealUp 0.4s ease both 0.3s;
+    animation: revealUp .7s ease both calc(var(--duree-panneau) * .90);
   }
   .menu-panel-vs1.is-open .menu-liste li:nth-child(4) {
-    animation: revealUp 0.4s ease both 0.35s;
+    animation: revealUp .7s ease both calc(var(--duree-panneau) * .96);
   }
 }
 
@@ -201,11 +209,6 @@
   }
 }
 
-@keyframes slideInRightMobile {
-  from { transform: translateX(100%); opacity: 0; }
-  to   { transform: translateX(0);    opacity: 1; }
-}
-
 @keyframes slideInRightDesktop {
   from { transform: translateX(100%); opacity: 0; }
   to   { transform: translateX(0);    opacity: 1; }
@@ -213,10 +216,10 @@
 
 @keyframes panneauMobile {
   0%   { transform: translateX(100%); opacity: 0; }
-  18%  { transform: translateX(25%);  opacity: .35; }
-  35%  { transform: translateX(25%);  opacity: .65; }
-  52%  { transform: translateX(70%);  opacity: .45; }
-  70%  { transform: translateX(0%);   opacity: .85; }
+  18%  { transform: translateX(25%);  opacity: .28; }
+  35%  { transform: translateX(25%);  opacity: .52; }
+  52%  { transform: translateX(70%);  opacity: .40; }
+  70%  { transform: translateX(0%);   opacity: .76; }
   100% { transform: translateX(0);    opacity: 1;   }
 }
 
