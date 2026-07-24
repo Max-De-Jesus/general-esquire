@@ -113,7 +113,7 @@ export default function Home() {
         {/* Background image overlay : Le tueur de dragon */}
         <div className="absolute inset-0 -z-10 pointer-events-none overflow-hidden opacity-65">
           <Image
-            src="/images/Le tueur de dragon.jpg"
+            src="/images/dragon-bg.jpg"
             alt="Le tueur de dragon — Fond General Esquire"
             fill
             className="object-cover object-[50%_35%] filter saturate-105 brightness-110"
