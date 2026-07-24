@@ -27,10 +27,7 @@
   display: flex;
   width: max-content;
   animation: ticker 35s linear infinite;
-}
-
-.animate-ticker:hover {
-  animation-play-state: paused;
+  pointer-events: auto;
 }
 
 @keyframes kenBurns {
@@ -82,12 +79,8 @@
 .texte-defilant-piste {
   padding: 1.5rem 1.8rem;
   will-change: transform;
-  /* Défilement hyper lent (160 secondes) et 100% continu sans aucun vide */
+  /* Défilement continu sans aucun vide */
   animation: remonterTexteBoucled 160s linear infinite;
-}
-
-.texte-defilant-container:hover .texte-defilant-piste {
-  animation-play-state: paused;
 }
 
 /* ─── CHORÉGRAPHIE ET RESPONSIVE DE PANNEAU DE MENU (DESKTOP VS MOBILE) ─── */

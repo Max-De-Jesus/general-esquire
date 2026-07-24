@@ -251,15 +251,6 @@ export default function ProfessionnelPage() {
                   Il s'agit de la situation dans laquelle nous acceptons de prendre des écritures ou conseils sous un délai inférieur à 48 heures. En situation d'urgence, la facturation est majorée.
                 </p>
               </div>
-
-              <div className="pt-4 text-right">
-                <button
-                  onClick={() => setActiveModal(null)}
-                  className="px-6 py-2.5 rounded-xl bg-[#0F3823] border border-[#C5A059] text-[#E9D18F] font-cinzel text-xs uppercase tracking-widest hover:bg-[#C5A059] hover:text-black transition-colors cursor-pointer"
-                >
-                  Fermer
-                </button>
-              </div>
             </div>
           </div>
         )}
@@ -328,15 +319,6 @@ export default function ProfessionnelPage() {
                     1 500 € TTC <span className="text-xs text-[#cabfa6] font-normal">forfait de rédaction en urgence</span>
                   </div>
                 </div>
-              </div>
-
-              <div className="pt-4 text-right">
-                <button
-                  onClick={() => setActiveModal(null)}
-                  className="px-6 py-2.5 rounded-xl bg-[#0F3823] border border-[#C5A059] text-[#E9D18F] font-cinzel text-xs uppercase tracking-widest hover:bg-[#C5A059] hover:text-black transition-colors cursor-pointer"
-                >
-                  Fermer
-                </button>
               </div>
             </div>
           </div>

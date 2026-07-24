@@ -213,7 +213,7 @@ export default function EntrepreneurPage() {
   return (
     <div className="min-h-screen bg-[#1a1c1a] text-[#EDE4CF] relative overflow-x-hidden">
       {/* ─── 1. EN-TÊTE : BANNIÈRE SEULE (vs/1 style exact) ──────────────── */}
-      <header className="w-full bg-[#131513] overflow-hidden mb-8">
+      <header className="w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
           <Image
             src="/images/bannerchef.png"
@@ -224,6 +224,33 @@ export default function EntrepreneurPage() {
           />
         </div>
       </header>
+
+      {/* ─── 2. BANDE DÉROULANTE (TICKER ALL-WIDTH vs/1) ───────────────── */}
+      <div className="w-full bg-[#0d0e0d] border-y border-[#C5A059]/30 py-3 overflow-hidden shadow-inner z-20 mb-8">
+        <div className="flex whitespace-nowrap animate-ticker">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-6 font-cinzel text-xs sm:text-sm text-[#C5A059] tracking-[0.26em] uppercase px-6"
+            >
+              <span className="drop-shadow-[0_0_12px_rgba(197,160,89,0.35)]">
+                General Esquire
+              </span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+              <span>Excellence</span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+              <span>Compétence</span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+              <span>Chrysalides</span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+              <span>Bienveillance</span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+              <span>Résilience</span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* Background filigrane */}
       <div className="absolute inset-0 -z-10 opacity-[0.08] pointer-events-none overflow-hidden">

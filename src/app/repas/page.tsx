@@ -70,6 +70,60 @@ const FOOD_GALLERY = [
   { src: "/images/salmon.jpg", title: "Pavé de Saumon", tag: "Poissons" },
 ];
 
+// ─── Carrousel Rotatif des Repas ─────────────────────────────────────────────
+function RotatingFoodCarousel() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % FOOD_GALLERY.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const currentItem = FOOD_GALLERY[currentIndex];
+
+  return (
+    <div className="relative w-full max-w-4xl mx-auto rounded-3xl overflow-hidden border-2 border-[#C5A059]/50 shadow-2xl bg-[#131513]">
+      <div className="relative h-80 sm:h-[480px] w-full overflow-hidden">
+        <Image
+          src={currentItem.src}
+          alt={currentItem.title}
+          fill
+          priority
+          className="object-cover transition-opacity duration-700"
+          sizes="(max-width: 768px) 100vw, 900px"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+        <div className="absolute bottom-6 left-6 right-6 text-left">
+          <span className="font-cinzel text-xs text-[#C5A059] tracking-widest uppercase bg-[#131513]/80 px-3 py-1 rounded-full border border-[#C5A059]/30">
+            {currentItem.tag}
+          </span>
+          <h3 className="font-cinzel text-xl sm:text-3xl text-white font-bold mt-2">
+            {currentItem.title}
+          </h3>
+        </div>
+      </div>
+
+      {/* Thumbnails indicator bar */}
+      <div className="p-4 bg-[#0d0e0d] border-t border-[#C5A059]/20 flex items-center justify-center gap-2 overflow-x-auto">
+        {FOOD_GALLERY.map((item, idx) => (
+          <button
+            key={idx}
+            onClick={() => setCurrentIndex(idx)}
+            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              idx === currentIndex
+                ? "bg-[#C5A059] scale-125 shadow-[0_0_10px_rgba(197,160,89,0.8)]"
+                : "bg-[#C5A059]/30 hover:bg-[#C5A059]/60"
+            }`}
+            aria-label={`Photo ${idx + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ─── Professional Carousel ────────────────────────────────────────────────────
 function HeroCarousel() {
   const [current, setCurrent] = useState(0);
@@ -341,25 +395,21 @@ export default function RepasPage() {
 
         </div>
 
-        {/* ── SMOOTH SCROLL DOWN ANIMATION GALLERY ── */}
+        {/* ── CARROUSEL ROTATIF DES REPAS ── */}
         <section className="mb-16">
-          <div className="text-center mb-12">
+          <div className="text-center mb-10">
             <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase block mb-2">
-              Galerie Gourmande — Smooth Scroll
+              Galerie Gourmande
             </span>
             <h2 className="font-cinzel text-3xl sm:text-4xl text-[#E9D18F]">
               Découvrez la Richesse de Nos Plats
             </h2>
             <p className="font-cormorant text-lg text-[#cabfa6] mt-2">
-              Faites défiler la page vers le bas pour révéler chaque spécialité en animation fluide
+              Découvrez l'ensemble de nos spécialités culinaires et repas préparés avec soin
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {FOOD_GALLERY.map((item, idx) => (
-              <SmoothScrollCard key={idx} item={item} index={idx} />
-            ))}
-          </div>
+          <RotatingFoodCarousel />
         </section>
 
         {/* ── CTA ── */}

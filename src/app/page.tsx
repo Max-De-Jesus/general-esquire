@@ -110,16 +110,16 @@ export default function Home() {
 
       {/* ─── 3. MAIN ACCUEIL (MESSAGE DE BIENVENUE AVEC "LE TUEUR DE DRAGON" EN FOND) ─── */}
       <main className="relative z-0 py-10 sm:py-16 px-4 sm:px-8 flex-grow">
-        {/* Background image overlay : Le tueur de dragon */}
-        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-75">
+        {/* Background image overlay : Le dragon.jpg */}
+        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-85">
           <Image
-            src="/images/dragon-bg.jpg"
-            alt="Le tueur de dragon — Fond General Esquire"
+            src="/images/Le dragon.jpg"
+            alt="Le dragon — Fond General Esquire"
             fill
             priority
-            className="object-cover object-[50%_35%] filter saturate-105 brightness-110"
+            className="object-cover object-[50%_35%] filter saturate-110 brightness-115 contrast-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#1A1C1A]/40 via-transparent to-[#131513]/80"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#1A1C1A]/30 via-transparent to-[#131513]/70"></div>
         </div>
 
         <div className="max-w-[760px] mx-auto text-left">
@@ -174,10 +174,6 @@ export default function Home() {
                   className="w-44 h-44 sm:w-60 sm:h-60 object-contain animate-pulse-glow"
                 />
               </div>
-
-              <span className="block mt-4 font-cinzel text-xs tracking-[0.2em] uppercase text-[#C5A059] group-hover:text-[#E9D18F] transition-colors">
-                {tx.click_blason}
-              </span>
             </button>
           </div>
         </div>

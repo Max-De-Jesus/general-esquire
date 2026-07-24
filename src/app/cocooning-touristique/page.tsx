@@ -249,11 +249,11 @@ export default function CocooningTouristiquePage() {
             </div>
 
             {/* GENRE */}
-            <div className="p-5 rounded-xl bg-[#1a1c1a] border border-[#C5A059]/20">
-              <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-3">
+            <div className="p-5 rounded-xl bg-[#1a1c1a] border border-[#C5A059]/20 text-center">
+              <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-3 text-center">
                 {lang === "fr" ? "GENRE" : "GENDER"}
               </label>
-              <div className="flex flex-wrap gap-6 font-cinzel text-sm">
+              <div className="flex flex-wrap items-center justify-center gap-6 font-cinzel text-sm">
                 {[
                   { value: "masculin", label: lang === "fr" ? "Masculin" : "Male" },
                   { value: "féminin", label: lang === "fr" ? "Féminin" : "Female" },
