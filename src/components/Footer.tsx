@@ -67,14 +67,16 @@ export default function Footer() {
             Contact
           </p>
           <div className="space-y-1.5 font-cormorant text-sm">
-            <p>
+            <p className="flex items-center justify-center md:justify-end gap-1.5">
               <a
-                href="http://www.generalesquire.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-[#E9D18F] transition-colors"
+                href="tel:+33159581725"
+                className="inline-flex items-center text-[#C5A059] hover:text-[#E9D18F] transition-colors"
+                aria-label="Téléphone Fixe"
               >
-                www.generalesquire.com
+                <svg className="w-4 h-4 fill-current mr-1.5" viewBox="0 0 24 24">
+                  <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21c1.12.45 2.33.69 3.58.69a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.24 2.46.69 3.58a1 1 0 01-.21 1.11l-2.2 2.2z" />
+                </svg>
+                <span className="hover:text-[#E9D18F] transition-colors">+33 159 581 725</span>
               </a>
             </p>
             <p>
@@ -98,7 +100,7 @@ export default function Footer() {
                 </svg>
               </a>
               <a href="tel:+33758264254" className="hover:text-[#E9D18F] transition-colors">
-                +33 758 264 254
+                +33 758 264 254 (WhatsApp)
               </a>
             </p>
           </div>
