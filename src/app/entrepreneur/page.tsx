@@ -212,12 +212,25 @@ export default function EntrepreneurPage() {
 
   return (
     <div className="min-h-screen bg-[#1a1c1a] text-[#EDE4CF] relative overflow-x-hidden">
+      {/* ─── 1. EN-TÊTE : BANNIÈRE SEULE (vs/1 style exact) ──────────────── */}
+      <header className="w-full bg-[#131513] overflow-hidden mb-8">
+        <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
+          <Image
+            src="/images/bannerchef.png"
+            alt="Bannière Chef d'Entreprise — General Esquire"
+            fill
+            priority
+            className="object-cover object-[center_40%] filter brightness-95 contrast-105"
+          />
+        </div>
+      </header>
+
       {/* Background filigrane */}
       <div className="absolute inset-0 -z-10 opacity-[0.08] pointer-events-none overflow-hidden">
         <Image src="/images/background.jpeg" alt="" fill className="object-cover" />
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 py-12 md:py-20">
+      <div className="max-w-5xl mx-auto px-6 pb-12 md:pb-20">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 font-cinzel text-xs text-[#C5A059] mb-8 uppercase tracking-widest">
           <Link href="/" className="hover:text-[#E9D18F] transition-colors">

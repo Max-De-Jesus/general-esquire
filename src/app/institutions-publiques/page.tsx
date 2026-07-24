@@ -154,12 +154,25 @@ export default function InstitutionsPubliquesPage() {
 
   return (
     <div className="min-h-screen bg-[#1a1c1a] text-[#EDE4CF] relative">
+      {/* ─── 1. EN-TÊTE : BANNIÈRE SEULE (vs/1 style exact) ──────────────── */}
+      <header className="w-full bg-[#131513] overflow-hidden mb-8">
+        <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
+          <Image
+            src="/images/bannerinstitu.png"
+            alt="Bannière Institutions Publiques — General Esquire"
+            fill
+            priority
+            className="object-cover object-[center_40%] filter brightness-95 contrast-105"
+          />
+        </div>
+      </header>
+
       {/* Background filigrane */}
       <div className="absolute inset-0 -z-10 opacity-[0.07] pointer-events-none">
         <Image src="/images/background.jpeg" alt="" fill sizes="100vw" className="object-cover" />
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 py-12 md:py-20">
+      <div className="max-w-5xl mx-auto px-6 pb-12 md:pb-20">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 font-cinzel text-xs text-[#C5A059] mb-8 uppercase tracking-widest flex-wrap">
           <Link href="/" className="hover:text-[#E9D18F] transition-colors">{tx.breadcrumb_home}</Link>

@@ -101,7 +101,20 @@ export default function ParticuliersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#1a1c1a] text-[#EDE4CF] py-12 md:py-20 relative">
+    <div className="min-h-screen bg-[#1a1c1a] text-[#EDE4CF] pb-12 md:pb-20 relative">
+      {/* ─── 1. EN-TÊTE : BANNIÈRE SEULE (vs/1 style exact) ──────────────── */}
+      <header className="w-full bg-[#131513] overflow-hidden mb-8">
+        <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
+          <Image
+            src="/images/bannerparticulier.png"
+            alt="Bannière Particuliers — General Esquire"
+            fill
+            priority
+            className="object-cover object-[center_40%] filter brightness-95 contrast-105"
+          />
+        </div>
+      </header>
+
       <div className="max-w-6xl mx-auto px-6">
         
         {/* Background */}

@@ -16,8 +16,8 @@ export default function ProfessionnelPage() {
       <header className="w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
           <Image
-            src="/images/Embrassades001.png"
-            alt="Trois femmes s'embrassant chaleureusement lors d'une rencontre"
+            src="/images/bannerchef.png"
+            alt="Bannière Professionnels du Droit — General Esquire"
             fill
             priority
             className="object-cover object-[center_32%] filter brightness-95 contrast-105 animate-kenburns"

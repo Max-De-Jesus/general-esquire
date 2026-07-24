@@ -57,7 +57,7 @@ export default function PublicActualitesPage() {
       <header className="w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
           <Image
-            src="/images/Femmezen.jpg"
+            src="/images/Tchooh18.png"
             alt="Bannière Actualités — General Esquire"
             fill
             priority
