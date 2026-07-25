@@ -7,15 +7,15 @@ import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 
-function AuthForm() {
+function ClientAuthForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectPath = searchParams.get("redirect") || "/";
 
-  const { user, clientProfile, signIn, signUp, signOut, isAdmin } = useAuth();
+  const { user, clientProfile, signIn, signUp, signOut } = useAuth();
   const { lang } = useLanguage();
 
-  const [mode, setMode] = useState<"login" | "register" | "admin">("login");
+  const [mode, setMode] = useState<"login" | "register">("login");
 
   // Form State
   const [email, setEmail] = useState("");
@@ -56,18 +56,14 @@ function AuthForm() {
             router.push(redirectPath);
           }, 1500);
         }
-      } else if (mode === "login" || mode === "admin") {
+      } else {
         const { error } = await signIn(email, password);
         if (error) {
           setErrorMessage(lang === "fr" ? "Identifiants incorrects. Veuillez réessayer." : "Invalid credentials. Please try again.");
         } else {
           setSuccessMessage(lang === "fr" ? "Connexion réussie !" : "Logged in successfully!");
           setTimeout(() => {
-            if (mode === "admin") {
-              router.push("/vs/admin");
-            } else {
-              router.push(redirectPath);
-            }
+            router.push(redirectPath);
           }, 1000);
         }
       }
@@ -111,9 +107,7 @@ function AuthForm() {
 
           <h1 className="font-cinzel text-2xl font-bold text-[#E9D18F]">
             {user
-              ? (lang === "fr" ? "Votre Compte" : "Your Account")
-              : mode === "admin"
-              ? (lang === "fr" ? "Portail Administration" : "Admin Portal")
+              ? (lang === "fr" ? "Votre Compte Client" : "Your Account")
               : mode === "register"
               ? (lang === "fr" ? "Créer un Compte Client" : "Create Client Account")
               : (lang === "fr" ? "Espace Connexion Client" : "Client Portal Login")}
@@ -140,27 +134,13 @@ function AuthForm() {
                   <span className="text-[#C5A059] font-medium">{clientProfile.full_name}</span> ({clientProfile.profile_type})
                 </div>
               )}
-              {isAdmin && (
-                <div className="inline-block mt-1 px-2.5 py-0.5 rounded-full bg-[#C5A059]/20 text-[#E9D18F] border border-[#C5A059]/50 text-[10px] font-bold uppercase tracking-widest">
-                  {lang === "fr" ? "Administrateur" : "Administrator"}
-                </div>
-              )}
             </div>
 
             <div className="flex flex-col gap-3">
-              {isAdmin && (
-                <Link
-                  href="/vs/admin"
-                  className="w-full py-3 rounded-full bg-gradient-to-r from-[#C5A059] to-[#E9D18F] text-black font-cinzel font-bold text-sm uppercase tracking-wider shadow-lg hover:brightness-110 transition-all text-center"
-                >
-                  {lang === "fr" ? "Accéder à l'Administration" : "Go to Admin Dashboard"}
-                </Link>
-              )}
-
               {redirectPath !== "/" && (
                 <Link
                   href={redirectPath}
-                  className="w-full py-3 rounded-full bg-[#0F3823] border border-[#C5A059]/50 text-[#E9D18F] font-cinzel font-bold text-sm uppercase tracking-wider hover:bg-[#154d30] transition-all text-center"
+                  className="w-full py-3 rounded-full bg-gradient-to-r from-[#C5A059] to-[#E9D18F] text-black font-cinzel font-bold text-sm uppercase tracking-wider shadow-lg hover:brightness-110 transition-all text-center"
                 >
                   {lang === "fr" ? "Continuer vers votre action" : "Continue to action"}
                 </Link>
@@ -175,10 +155,10 @@ function AuthForm() {
             </div>
           </div>
         ) : (
-          /* AUTH FORMS (LOGIN / REGISTER / ADMIN) */
+          /* AUTH FORMS (CLIENT LOGIN / REGISTER ONLY) */
           <>
             {/* Mode Switcher Tabs */}
-            <div className="grid grid-cols-3 gap-1 bg-[#131513] p-1 rounded-2xl border border-[#C5A059]/20 mb-6 text-xs font-cinzel font-bold">
+            <div className="grid grid-cols-2 gap-1 bg-[#131513] p-1 rounded-2xl border border-[#C5A059]/20 mb-6 text-xs font-cinzel font-bold">
               <button
                 type="button"
                 onClick={() => {
@@ -206,20 +186,6 @@ function AuthForm() {
                 }`}
               >
                 {lang === "fr" ? "Inscription" : "Register"}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setMode("admin");
-                  setErrorMessage("");
-                }}
-                className={`py-2 rounded-xl transition-all ${
-                  mode === "admin"
-                    ? "bg-gradient-to-r from-[#C5A059] to-[#E9D18F] text-black shadow-md"
-                    : "text-[#cabfa6] hover:text-[#E9D18F]"
-                }`}
-              >
-                Admin
               </button>
             </div>
 
@@ -279,9 +245,7 @@ function AuthForm() {
               {/* Email Input */}
               <div>
                 <label className="block text-xs font-cinzel font-semibold text-[#C5A059] uppercase tracking-wider mb-1">
-                  {mode === "admin"
-                    ? (lang === "fr" ? "Identifiant Administrateur (E-mail) *" : "Admin Email *")
-                    : (lang === "fr" ? "Adresse E-mail *" : "Email Address *")}
+                  {lang === "fr" ? "Adresse E-mail *" : "Email Address *"}
                 </label>
                 <input
                   type="email"
@@ -328,8 +292,6 @@ function AuthForm() {
                   ? (lang === "fr" ? "Traitement..." : "Processing...")
                   : mode === "register"
                   ? (lang === "fr" ? "Créer Mon Compte" : "Create Account")
-                  : mode === "admin"
-                  ? (lang === "fr" ? "Connexion Administrateur" : "Admin Sign In")
                   : (lang === "fr" ? "Se Connecter" : "Sign In")}
               </button>
             </form>
@@ -347,7 +309,7 @@ export default function ConnexionPage() {
         Chargement...
       </div>
     }>
-      <AuthForm />
+      <ClientAuthForm />
     </Suspense>
   );
 }
