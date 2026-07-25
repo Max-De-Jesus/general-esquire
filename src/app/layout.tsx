@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { FloatingThemeToggle } from "@/components/ThemeToggle";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { AuthProvider } from "@/context/AuthContext";
 
 import Footer from "@/components/Footer";
 
@@ -47,17 +48,19 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-[#1a1c1a] text-[#EDE4CF] font-cormorant min-h-screen antialiased selection:bg-[#C5A059]/30 selection:text-[#E9D18F] flex flex-col justify-between">
-        <LanguageProvider>
-          <div>
-            <Navbar />
+        <AuthProvider>
+          <LanguageProvider>
+            <div>
+              <Navbar />
 
-            <main className="min-h-[80vh]">{children}</main>
-          </div>
+              <main className="min-h-[80vh]">{children}</main>
+            </div>
 
-          <Footer />
+            <Footer />
 
-          <FloatingThemeToggle />
-        </LanguageProvider>
+            <FloatingThemeToggle />
+          </LanguageProvider>
+        </AuthProvider>
       </body>
     </html>
   );

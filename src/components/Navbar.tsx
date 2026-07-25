@@ -7,12 +7,14 @@ import { useState, useEffect } from "react";
 import ServicesModal from "./ServicesModal";
 import { LanguageToggle } from "./ThemeToggle";
 import { useLanguage } from "@/context/LanguageContext";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const { user, clientProfile, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -60,9 +62,42 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* Controls: Language Toggle & Services Menu Trigger */}
+          {/* Controls: Language Toggle, Auth & Services Menu Trigger */}
           <div className="flex items-center gap-2.5 md:gap-4">
             <LanguageToggle />
+
+            {/* Auth Button / User Profile */}
+            {user ? (
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/connexion"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1A1C1A] border border-[#C5A059]/40 text-[#E9D18F] text-xs font-cinzel font-bold hover:border-[#E9D18F] transition-all"
+                  title={user.email || ""}
+                >
+                  <span className="w-6 h-6 rounded-full bg-[#C5A059] text-black flex items-center justify-center text-xs font-bold uppercase">
+                    {(clientProfile?.full_name || user.email || "U")[0]}
+                  </span>
+                  <span className="hidden sm:inline truncate max-w-[100px]">
+                    {clientProfile?.full_name?.split(" ")[0] || user.email?.split("@")[0]}
+                  </span>
+                </Link>
+                <button
+                  onClick={() => signOut()}
+                  className="px-2.5 py-1.5 rounded-full bg-rose-950/40 border border-rose-500/40 text-rose-300 text-xs font-cinzel font-bold hover:bg-rose-900/60 transition-all cursor-pointer"
+                  title={lang === "fr" ? "Se Déconnecter" : "Sign Out"}
+                >
+                  🚪
+                </button>
+              </div>
+            ) : (
+              <Link
+                href="/connexion"
+                className="px-4 py-2 rounded-full font-cinzel text-xs md:text-sm font-bold tracking-wider text-black bg-gradient-to-r from-[#C5A059] to-[#E9D18F] hover:brightness-110 transition-all shadow-[0_0_12px_rgba(197,160,89,0.3)] cursor-pointer"
+              >
+                {lang === "fr" ? "Connexion" : "Sign In"}
+              </Link>
+            )}
+
             <button
               onClick={() => setModalOpen(true)}
               className="flex items-center gap-2 px-5 py-2.5 rounded-full font-cinzel text-sm md:text-base font-bold tracking-widest text-[#E9D18F] border border-[#C5A059]/40 bg-[#131513]/70 hover:bg-[#0F3823] hover:border-[#E9D18F] transition-all backdrop-blur-md cursor-pointer"

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
+import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
 
 interface ServicePreset {
@@ -49,6 +50,7 @@ const SERVICE_PRESETS: Record<string, ServicePreset[]> = {
 
 export default function PaymentPage() {
   const { lang } = useLanguage();
+  const { user, clientProfile } = useAuth();
 
   // Form state
   const [fullName, setFullName] = useState("");
@@ -59,6 +61,19 @@ export default function PaymentPage() {
   const [customPrice, setCustomPrice] = useState<string>("");
   const [translationPages, setTranslationPages] = useState<number>(1);
   const [isUrgent, setIsUrgent] = useState(false);
+
+  // Auth requirement modal state
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  // Auto-fill user details if logged in
+  useEffect(() => {
+    if (user) {
+      if (user.email && !email) setEmail(user.email);
+      if (clientProfile?.full_name && !fullName) setFullName(clientProfile.full_name);
+      if (clientProfile?.phone && !phone) setPhone(clientProfile.phone);
+      if (clientProfile?.profile_type) setProfileType(clientProfile.profile_type);
+    }
+  }, [user, clientProfile]);
 
   // Computed totals
   const [calculatedAmount, setCalculatedAmount] = useState(100);
@@ -132,6 +147,11 @@ export default function PaymentPage() {
 
   // Main Submit handler (Supabase integration)
   const submitTransaction = async (method: string, extraStatus = "Payé") => {
+    if (!user) {
+      setShowAuthModal(true);
+      return;
+    }
+
     setIsProcessing(true);
     setPaymentError(null);
 
@@ -796,6 +816,51 @@ export default function PaymentPage() {
                   : (lang === "fr" ? "Connexion & Valider le Règlement" : "Log In & Authorize Payment")}
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Authentication Required Modal */}
+      {showAuthModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+          <div className="relative w-full max-w-md bg-[#1a1c1a] border border-[#C5A059]/60 rounded-3xl p-8 shadow-[0_20px_50px_rgba(0,0,0,0.9)] text-center space-y-6">
+            <button
+              onClick={() => setShowAuthModal(false)}
+              className="absolute top-4 right-4 text-[#cabfa6] hover:text-[#E9D18F] text-lg cursor-pointer"
+            >
+              ✕
+            </button>
+
+            <div className="w-16 h-16 mx-auto rounded-full bg-[#C5A059]/10 border border-[#C5A059]/40 flex items-center justify-center text-2xl text-[#E9D18F]">
+              🔒
+            </div>
+
+            <div>
+              <h3 className="font-cinzel text-xl font-bold text-[#E9D18F]">
+                {lang === "fr" ? "Connexion Requise" : "Authentication Required"}
+              </h3>
+              <p className="mt-2 text-sm text-[#cabfa6]">
+                {lang === "fr"
+                  ? "Afin de sécuriser vos transactions et l'attribution de vos services juridiques, vous devez être connecté à votre compte client avant de procéder au règlement."
+                  : "To secure your transactions and legal services, you must be logged into your account before making a payment."}
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3 pt-2">
+              <Link
+                href="/connexion?redirect=/paiement"
+                className="w-full py-3 rounded-full bg-gradient-to-r from-[#C5A059] to-[#E9D18F] text-black font-cinzel font-bold text-sm uppercase tracking-wider shadow-lg hover:brightness-110 transition-all text-center"
+              >
+                {lang === "fr" ? "Se Connecter / S'inscrire" : "Sign In / Register"}
+              </Link>
+              <button
+                type="button"
+                onClick={() => setShowAuthModal(false)}
+                className="w-full py-2 text-xs font-cinzel text-[#cabfa6] hover:text-[#EDE4CF]"
+              >
+                {lang === "fr" ? "Annuler" : "Cancel"}
+              </button>
+            </div>
           </div>
         </div>
       )}
