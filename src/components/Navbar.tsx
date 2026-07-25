@@ -38,10 +38,10 @@ export default function Navbar() {
             : "bg-[#131513]/70 backdrop-blur-sm border-[#C5A059]/20 py-4"
         }`}
       >
-        <div className="w-full px-6 md:px-12 flex items-center justify-between">
+        <div className="w-full max-w-full overflow-hidden px-3 sm:px-6 md:px-12 flex items-center justify-between gap-2">
           {/* Logo & Name */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative w-11 h-11 p-1 bg-[#131513] rounded-full border border-[#C5A059]/60 shadow-[0_0_12px_rgba(197,160,89,0.4)] transition-transform duration-300 group-hover:scale-105 flex-shrink-0 flex items-center justify-center">
+          <Link href="/" className="flex items-center gap-2 sm:gap-3 group min-w-0 flex-shrink">
+            <div className="relative w-9 h-9 sm:w-11 sm:h-11 p-1 bg-[#131513] rounded-full border border-[#C5A059]/60 shadow-[0_0_12px_rgba(197,160,89,0.4)] transition-transform duration-300 group-hover:scale-105 flex-shrink-0 flex items-center justify-center">
               <div className="relative w-full h-full">
                 <Image
                   src="/images/logo.png"
@@ -52,38 +52,38 @@ export default function Navbar() {
                 />
               </div>
             </div>
-            <div className="flex flex-col">
-              <span className="font-cinzel text-lg md:text-xl font-bold tracking-wider text-[#C5A059] group-hover:text-[#E9D18F] transition-colors">
+            <div className="flex flex-col min-w-0 truncate">
+              <span className="font-cinzel text-xs sm:text-lg md:text-xl font-bold tracking-wide sm:tracking-wider text-[#C5A059] group-hover:text-[#E9D18F] transition-colors truncate">
                 GENERAL ESQUIRE
               </span>
-              <span className="font-cinzel text-[10px] tracking-[0.2em] text-[#cabfa6] uppercase -mt-1">
+              <span className="font-cinzel text-[8px] sm:text-[10px] tracking-[0.15em] sm:tracking-[0.2em] text-[#cabfa6] uppercase -mt-0.5 sm:-mt-1 truncate">
                 Chrysalides
               </span>
             </div>
           </Link>
 
           {/* Controls: Language Toggle, Auth & Services Menu Trigger */}
-          <div className="flex items-center gap-2.5 md:gap-4">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 md:gap-4 flex-shrink-0">
             <LanguageToggle />
 
             {/* Auth Button / User Profile */}
             {user ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 <Link
                   href="/connexion"
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1A1C1A] border border-[#C5A059]/40 text-[#E9D18F] text-xs font-cinzel font-bold hover:border-[#E9D18F] transition-all"
+                  className="flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full bg-[#1A1C1A] border border-[#C5A059]/40 text-[#E9D18F] text-[10px] sm:text-xs font-cinzel font-bold hover:border-[#E9D18F] transition-all"
                   title={user.email || ""}
                 >
-                  <span className="w-6 h-6 rounded-full bg-[#C5A059] text-black flex items-center justify-center text-xs font-bold uppercase">
+                  <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#C5A059] text-black flex items-center justify-center text-[10px] sm:text-xs font-bold uppercase">
                     {(clientProfile?.full_name || user.email || "U")[0]}
                   </span>
-                  <span className="hidden sm:inline truncate max-w-[100px]">
+                  <span className="hidden md:inline truncate max-w-[80px] sm:max-w-[100px]">
                     {clientProfile?.full_name?.split(" ")[0] || user.email?.split("@")[0]}
                   </span>
                 </Link>
                 <button
                   onClick={() => signOut()}
-                  className="px-2.5 py-1.5 rounded-full bg-rose-950/40 border border-rose-500/40 text-rose-300 text-xs font-cinzel font-bold hover:bg-rose-900/60 transition-all cursor-pointer"
+                  className="px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-full bg-rose-950/40 border border-rose-500/40 text-rose-300 text-[10px] sm:text-xs font-cinzel font-bold hover:bg-rose-900/60 transition-all cursor-pointer"
                   title={lang === "fr" ? "Se Déconnecter" : "Sign Out"}
                 >
                   🚪
@@ -92,7 +92,7 @@ export default function Navbar() {
             ) : (
               <Link
                 href="/connexion"
-                className="px-4 py-2 rounded-full font-cinzel text-xs md:text-sm font-bold tracking-wider text-black bg-gradient-to-r from-[#C5A059] to-[#E9D18F] hover:brightness-110 transition-all shadow-[0_0_12px_rgba(197,160,89,0.3)] cursor-pointer"
+                className="px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-full font-cinzel text-[10px] sm:text-xs md:text-sm font-bold tracking-wider text-black bg-gradient-to-r from-[#C5A059] to-[#E9D18F] hover:brightness-110 transition-all shadow-[0_0_12px_rgba(197,160,89,0.3)] cursor-pointer whitespace-nowrap"
               >
                 {lang === "fr" ? "Connexion" : "Sign In"}
               </Link>
@@ -100,10 +100,10 @@ export default function Navbar() {
 
             <button
               onClick={() => setModalOpen(true)}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full font-cinzel text-sm md:text-base font-bold tracking-widest text-[#E9D18F] border border-[#C5A059]/40 bg-[#131513]/70 hover:bg-[#0F3823] hover:border-[#E9D18F] transition-all backdrop-blur-md cursor-pointer"
+              className="flex items-center gap-1 sm:gap-2 px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-full font-cinzel text-xs sm:text-sm md:text-base font-bold tracking-wider sm:tracking-widest text-[#E9D18F] border border-[#C5A059]/40 bg-[#131513]/70 hover:bg-[#0F3823] hover:border-[#E9D18F] transition-all backdrop-blur-md cursor-pointer whitespace-nowrap"
             >
               <span>{t("nav_services")}</span>
-              <svg className="w-5 h-5 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
               </svg>
             </button>

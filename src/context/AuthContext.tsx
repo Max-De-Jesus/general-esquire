@@ -103,6 +103,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           },
           { onConflict: "email" }
         );
+
+        // Auto sign-in immediately to authenticate user without email verification wait
+        if (!data.session) {
+          await supabase.auth.signInWithPassword({ email, password });
+        }
       }
 
       return { error: null };
