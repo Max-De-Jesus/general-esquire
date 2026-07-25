@@ -234,6 +234,33 @@ export default function ExcursionsPage() {
         </div>
       </header>
 
+      {/* ─── 2. BANDE DÉROULANTE (TICKER ALL-WIDTH SOUS LA BANNIÈRE) ───────────────── */}
+      <div className="w-full bg-[#0d0e0d] border-y border-[#C5A059]/30 py-3 overflow-hidden shadow-inner z-20 mb-8">
+        <div className="flex whitespace-nowrap animate-ticker">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-6 font-cinzel text-xs sm:text-sm text-[#C5A059] tracking-[0.26em] uppercase px-6"
+            >
+              <span className="drop-shadow-[0_0_12px_rgba(197,160,89,0.35)]">
+                General Esquire
+              </span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+              <span>Excellence</span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+              <span>Compétence</span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+              <span>Chrysalides</span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+              <span>Bienveillance</span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+              <span>Résilience</span>
+              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className="max-w-5xl mx-auto px-6 pb-12 md:pb-20">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 font-cinzel text-xs text-[#C5A059] mb-8 uppercase tracking-widest">

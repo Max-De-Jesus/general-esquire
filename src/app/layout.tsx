@@ -10,7 +10,10 @@ export const metadata: Metadata = {
   title: "General Esquire — Chrysalides | Conseil Juridique & Cocooning Touristique",
   description: "General Esquire — Chrysalides : conseil juridique et cocooning touristique. Une structure professionnelle qui allie rigueur du juriste et bienveillance de l'avocat humaniste.",
   icons: {
-    icon: "/images/Faviconofficielle.jpg",
+    icon: [
+      { url: "/images/Faviconofficielle.jpg", type: "image/jpeg" },
+      { url: "/favicon.ico" }
+    ],
     shortcut: "/images/Faviconofficielle.jpg",
     apple: "/images/Faviconofficielle.jpg",
   },
