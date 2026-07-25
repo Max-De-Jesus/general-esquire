@@ -7,13 +7,6 @@ import { useState, useEffect } from "react";
 import ServicesModal from "./ServicesModal";
 import { LanguageToggle } from "./ThemeToggle";
 import { useLanguage } from "@/context/LanguageContext";
-import { TranslationKey } from "@/data/translations";
-
-const NAV_ITEMS: { key: TranslationKey; href: string }[] = [
-  { key: "nav_home", href: "/" },
-  { key: "nav_conseil", href: "/conseil-juridique" },
-  { key: "nav_cocooning", href: "/cocooning-touristique" },
-];
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -29,7 +22,7 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Hide Navbar completely on the Home Page as requested
+  // Hide Navbar completely on the Home Page
   if (pathname === "/") {
     return null;
   }
@@ -66,26 +59,6 @@ export default function Navbar() {
               </span>
             </div>
           </Link>
-
-          {/* Navigation Links for sub-pages */}
-          <div className="hidden lg:flex items-center gap-1 bg-[#1A1C1A]/80 backdrop-blur-md p-1.5 rounded-full border border-[#C5A059]/30 shadow-lg">
-            {NAV_ITEMS.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`relative px-4 py-2 rounded-full font-cinzel text-sm md:text-base tracking-wider font-bold transition-all duration-300 ${
-                    isActive
-                      ? "text-black bg-gradient-to-r from-[#C5A059] to-[#E9D18F] shadow-[0_0_15px_rgba(197,160,89,0.5)]"
-                      : "text-[#EDE4CF]/90 hover:text-[#E9D18F] hover:bg-[#0F3823]/50"
-                  }`}
-                >
-                  {t(item.key)}
-                </Link>
-              );
-            })}
-          </div>
 
           {/* Controls: Language Toggle & Services Menu Trigger */}
           <div className="flex items-center gap-2.5 md:gap-4">
