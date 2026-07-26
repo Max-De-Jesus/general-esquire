@@ -12,11 +12,11 @@ export const metadata: Metadata = {
   description: "General Esquire — Chrysalides : conseil juridique et cocooning touristique. Une structure professionnelle qui allie rigueur du juriste et bienveillance de l'avocat humaniste.",
   icons: {
     icon: [
-      { url: "/images/favicon-circle.png", type: "image/png" },
-      { url: "/favicon.ico" }
+      { url: "/images/Faviconofficielle1-circle.png?v=2", type: "image/png" },
+      { url: "/favicon.ico?v=2" }
     ],
-    shortcut: "/images/favicon-circle.png",
-    apple: "/images/favicon-circle.png",
+    shortcut: "/images/Faviconofficielle1-circle.png?v=2",
+    apple: "/images/Faviconofficielle1-circle.png?v=2",
   },
 };
 
@@ -37,9 +37,9 @@ export default function RootLayout({
   return (
     <html lang="fr" className="scroll-smooth">
       <head>
-        <link rel="icon" href="/images/favicon-circle.png" type="image/png" />
-        <link rel="shortcut icon" href="/images/favicon-circle.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/images/favicon-circle.png" />
+        <link rel="icon" href="/images/Faviconofficielle1-circle.png?v=2" type="image/png" />
+        <link rel="shortcut icon" href="/images/Faviconofficielle1-circle.png?v=2" type="image/png" />
+        <link rel="apple-touch-icon" href="/images/Faviconofficielle1-circle.png?v=2" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
