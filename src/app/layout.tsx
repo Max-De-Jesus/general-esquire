@@ -12,11 +12,11 @@ export const metadata: Metadata = {
   description: "General Esquire — Chrysalides : conseil juridique et cocooning touristique. Une structure professionnelle qui allie rigueur du juriste et bienveillance de l'avocat humaniste.",
   icons: {
     icon: [
-      { url: "/images/Faviconofficielle.jpg", type: "image/jpeg" },
+      { url: "/images/Faviconofficielle1.jpg", type: "image/jpeg" },
       { url: "/favicon.ico" }
     ],
-    shortcut: "/images/Faviconofficielle.jpg",
-    apple: "/images/Faviconofficielle.jpg",
+    shortcut: "/images/Faviconofficielle1.jpg",
+    apple: "/images/Faviconofficielle1.jpg",
   },
 };
 
@@ -37,9 +37,9 @@ export default function RootLayout({
   return (
     <html lang="fr" className="scroll-smooth">
       <head>
-        <link rel="icon" href="/images/Faviconofficielle.jpg" type="image/jpeg" />
-        <link rel="shortcut icon" href="/images/Faviconofficielle.jpg" type="image/jpeg" />
-        <link rel="apple-touch-icon" href="/images/Faviconofficielle.jpg" />
+        <link rel="icon" href="/images/Faviconofficielle1.jpg" type="image/jpeg" />
+        <link rel="shortcut icon" href="/images/Faviconofficielle1.jpg" type="image/jpeg" />
+        <link rel="apple-touch-icon" href="/images/Faviconofficielle1.jpg" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
