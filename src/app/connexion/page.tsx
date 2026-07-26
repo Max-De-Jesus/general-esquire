@@ -88,14 +88,13 @@ function ClientAuthForm() {
         {/* Header Logo */}
         <div className="flex flex-col items-center mb-8 text-center">
           <Link href="/" className="flex flex-col items-center group mb-4">
-            <div className="relative w-16 h-16 p-0.5 bg-[#131513] rounded-full border border-[#C5A059]/70 shadow-[0_0_20px_rgba(197,160,89,0.5)] mb-2 group-hover:scale-105 transition-transform duration-300 overflow-hidden flex items-center justify-center">
-              <video
-                src="/images/globedeo.mp4"
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover rounded-full filter brightness-110 contrast-110"
+            <div className="relative w-16 h-16 p-2 bg-[#131513] rounded-full border border-[#C5A059]/70 shadow-[0_0_20px_rgba(197,160,89,0.4)] mb-2 group-hover:scale-105 transition-transform duration-300">
+              <Image
+                src="/images/logo.png"
+                alt="General Esquire Logo"
+                fill
+                sizes="64px"
+                className="object-contain p-1 filter brightness-110 drop-shadow-[0_0_8px_rgba(197,160,89,0.8)]"
               />
             </div>
             <span className="font-cinzel text-xl font-bold tracking-widest text-[#C5A059] group-hover:text-[#E9D18F] transition-colors">

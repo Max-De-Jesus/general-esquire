@@ -165,14 +165,13 @@ export default function Home() {
               className="group flex flex-col items-center cursor-pointer focus:outline-none"
               aria-label="Ouvrir le menu des services"
             >
-              <div className="relative w-44 h-44 sm:w-60 sm:h-60 rounded-full border-2 border-[#C5A059]/80 shadow-[0_0_30px_rgba(197,160,89,0.6)] transition-transform duration-500 group-hover:scale-105 overflow-hidden flex items-center justify-center bg-[#131513]">
-                <video
-                  src="/images/globedeo.mp4"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover rounded-full filter brightness-110 contrast-110"
+              <div className="relative p-3 transition-transform duration-500 group-hover:scale-110">
+                <Image
+                  src="/images/logo.png"
+                  alt="Blason General Esquire — Chrysalides"
+                  width={240}
+                  height={240}
+                  className="w-44 h-44 sm:w-60 sm:h-60 object-contain animate-pulse-glow"
                 />
               </div>
             </button>

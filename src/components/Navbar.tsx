@@ -39,16 +39,18 @@ export default function Navbar() {
         }`}
       >
         <div className="w-full max-w-full overflow-hidden px-3 sm:px-6 md:px-12 flex items-center justify-between gap-2">
+          {/* Logo & Name */}
           <Link href="/" className="flex items-center gap-2 sm:gap-3 group min-w-0 flex-shrink">
-            <div className="relative w-9 h-9 sm:w-11 sm:h-11 p-0.5 bg-[#131513] rounded-full border border-[#C5A059]/70 shadow-[0_0_14px_rgba(197,160,89,0.5)] transition-transform duration-300 group-hover:scale-105 flex-shrink-0 flex items-center justify-center overflow-hidden">
-              <video
-                src="/images/globedeo.mp4"
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover rounded-full filter brightness-110 contrast-110"
-              />
+            <div className="relative w-9 h-9 sm:w-11 sm:h-11 p-1 bg-[#131513] rounded-full border border-[#C5A059]/60 shadow-[0_0_12px_rgba(197,160,89,0.4)] transition-transform duration-300 group-hover:scale-105 flex-shrink-0 flex items-center justify-center">
+              <div className="relative w-full h-full">
+                <Image
+                  src="/images/logo.png"
+                  alt="General Esquire Logo"
+                  fill
+                  sizes="44px"
+                  className="object-contain filter brightness-110 contrast-125 drop-shadow-[0_0_4px_rgba(197,160,89,0.8)]"
+                />
+              </div>
             </div>
             <div className="flex flex-col min-w-0 truncate">
               <span className="font-cinzel text-xs sm:text-lg md:text-xl font-bold tracking-wide sm:tracking-wider text-[#C5A059] group-hover:text-[#E9D18F] transition-colors truncate">

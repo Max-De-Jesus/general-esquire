@@ -12,23 +12,20 @@ function RotatingGlobe() {
     <div className="flex flex-col items-center gap-6 mb-6">
       {/* Globe wrapper */}
       <div
-        className="relative rounded-full overflow-hidden shadow-[0_0_60px_rgba(197,160,89,0.35),inset_0_0_40px_rgba(0,0,0,0.5)]"
+        className="relative rounded-full overflow-hidden shadow-[0_0_60px_rgba(197,160,89,0.4),inset_0_0_40px_rgba(0,0,0,0.5)] bg-[#131513]"
         style={{
           width: 260,
           height: 260,
-          border: "3px solid rgba(197,160,89,0.5)",
+          border: "3px solid rgba(197,160,89,0.6)",
         }}
       >
-        {/* The scrolling world map image — simulates globe rotation */}
-        <div
-          className="absolute top-0 left-0 h-full"
-          style={{
-            width: "200%",
-            backgroundImage: "url('/images/Drapeaux-du-monde.jpg')",
-            backgroundSize: "50% 100%",
-            backgroundRepeat: "repeat-x",
-            animation: "globeSpin 14s linear infinite",
-          }}
+        <video
+          src="/images/globedeo.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover rounded-full filter brightness-105 contrast-110"
         />
         {/* Sphere shading overlay */}
         <div
@@ -40,7 +37,7 @@ function RotatingGlobe() {
         />
         {/* Edge vignette */}
         <div
-          className="absolute inset-0 rounded-full"
+          className="absolute inset-0 rounded-full pointer-events-none"
           style={{
             boxShadow: "inset 0 0 50px rgba(0,0,0,0.65)",
           }}
