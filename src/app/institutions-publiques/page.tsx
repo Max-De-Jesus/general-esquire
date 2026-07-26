@@ -25,7 +25,7 @@ function RotatingGlobe() {
           loop
           muted
           playsInline
-          className="w-full h-full object-cover rounded-full filter brightness-105 contrast-110"
+          className="w-full h-full object-cover scale-[1.32] rounded-full filter brightness-105 contrast-110"
         />
         {/* Sphere shading overlay */}
         <div
