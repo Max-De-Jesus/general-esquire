@@ -136,7 +136,7 @@ export default function HebergementPage() {
             alt="Bannière Hébergement — General Esquire"
             fill
             priority
-            className="object-cover object-[center_40%] filter brightness-95 contrast-105"
+            className="object-cover object-[center_40%] filter brightness-95 contrast-105 animate-kenburns"
           />
         </div>
       </header>

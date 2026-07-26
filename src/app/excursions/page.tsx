@@ -133,7 +133,7 @@ function HeroCarousel({ slides }: { slides: typeof SLIDES_FR }) {
         className="relative w-full h-[340px] sm:h-[460px] transition-opacity duration-500"
         style={{ opacity: fading ? 0 : 1 }}
       >
-        <Image src={slide.src} alt={slide.title} fill priority className="object-cover object-center" sizes="100vw" />
+        <Image src={slide.src} alt={slide.title} fill priority className="object-cover object-center animate-kenburns" sizes="100vw" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent" />
       </div>

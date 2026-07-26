@@ -37,13 +37,19 @@ html, body {
 }
 
 @keyframes kenBurns {
-  0%   { transform: scale(1.15) translateY(2%); filter: brightness(0.4); }
-  50%  { filter: brightness(0.6); }
-  100% { transform: scale(1) translateY(0); filter: brightness(0.7); }
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+  50% {
+    transform: scale(1.12) translate(-1%, -0.8%);
+  }
+  100% {
+    transform: scale(1) translate(0, 0);
+  }
 }
 
 .animate-kenburns {
-  animation: kenBurns 12s ease-out forwards;
+  animation: kenBurns 20s ease-in-out infinite alternate;
 }
 
 @keyframes pulseGlow {

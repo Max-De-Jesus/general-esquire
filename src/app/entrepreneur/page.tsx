@@ -133,7 +133,7 @@ function HeroCarousel() {
           alt={slide.title}
           fill
           priority
-          className="object-cover object-center transition-transform duration-700 scale-105 group-hover:scale-100"
+          className="object-cover object-center transition-transform duration-700 animate-kenburns"
           sizes="(max-width: 768px) 100vw, 900px"
         />
         {/* Gradient overlay */}

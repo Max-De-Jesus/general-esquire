@@ -107,7 +107,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                 fill
                 priority
                 sizes="100vw"
-                className="object-cover object-center filter brightness-90 contrast-110"
+                className="object-cover object-center filter brightness-90 contrast-110 animate-kenburns"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#1a1c1a] via-[#1a1c1a]/50 to-transparent"></div>
             </div>
