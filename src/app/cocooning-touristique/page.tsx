@@ -358,7 +358,7 @@ export default function CocooningTouristiquePage() {
             </div>
             <div className="relative h-64 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg group">
               <Image
-                src="/images/Détente.jpg"
+                src="/images/Detente_Dtente.jpg.jpg"
                 alt="Espaces de détente"
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
