@@ -83,21 +83,23 @@ export default function ParticuliersPage() {
     rate1_price: "100 €",
     rate1_sub: lang === "fr" ? "Tarif fixe" : "Fixed Fee",
     rate1_desc: lang === "fr"
-      ? "Des frais de consultation au tarif fixe de 100 € sont à prévoir, quelles que soient les modalités pratiques de déroulement de la consultation."
-      : "A fixed consultation fee of €100 applies, regardless of whether it is conducted in person or remotely.",
+      ? "Pour les particuliers, des frais de consultation au tarif fixe de 100 € sont à prévoir, quelle que soit les modalités pratiques de déroulement de ladite consultation."
+      : "For individuals, a fixed consultation fee of €100 is required, regardless of the practical arrangements for conducting the consultation.",
     rate2_title: lang === "fr" ? "Traductions Spécifiques" : "Specialized Translations",
     rate2_price: "10 €",
     rate2_sub: lang === "fr" ? "/ page ou / minute" : "/ page or / minute",
     rate2_desc: lang === "fr"
-      ? "Les traductions en chinois et russe sont facturées 10 € la page pour un document écrit, et 10 € la minute pour un fichier audiovisuel."
-      : "Chinese and Russian translations are billed at €10 per page for documents and €10 per minute for audiovisual files.",
+      ? "Les traductions en chinois et russe sont facturées au prix de 10 € la page pour un document écrit, et 10 € la minute, pour un fichier audiovisuel."
+      : "Chinese and Russian translations are billed at €10 per page for written documents, and €10 per minute for audiovisual files.",
     note1: lang === "fr"
-      ? "• Prestations sur mesure : Toutes les autres prestations sont facturées de gré à gré en fonction des enjeux et de vos revenus."
-      : "• Tailored Services: All other legal work is quoted transparently based on complexity and financial capability.",
+      ? "Toutes les autres prestations sont facturées de gré à gré, en fonction des enjeux du dossier et des revenus du client. Ce coût est ajustable en cours de mission suivant la difficulté exceptionnelle présentée a posteriori par le dossier."
+      : "All other services are billed on a case-by-case basis, according to the stakes of the case and the client's income. This cost may be adjusted during the course of the mission depending on any exceptional difficulty presented a posteriori by the case.",
     note2: lang === "fr"
-      ? "• Facilités : Des facilités de paiement peuvent être accordées. Aucun abonnement n’est imposé aux particuliers."
-      : "• Flexible Payment: Payment installments are available. No subscription commitment required for individuals.",
-    btn_appt: lang === "fr" ? "Prendre Rendez-vous →" : "Book an Appointment →",
+      ? "Des facilités de paiement peuvent être accordées. Aucun abonnement n’est prévu pour les particuliers."
+      : "Payment facilities may be granted. No subscription plans are provided for individuals.",
+    btn_mail: lang === "fr" ? "Contacter par Mail" : "Contact by Email",
+    btn_whatsapp: lang === "fr" ? "Contacter par WhatsApp / Visio" : "Contact via WhatsApp / Video",
+    btn_phone: lang === "fr" ? "Contacter par Téléphone" : "Contact by Phone",
   };
 
   return (
@@ -266,58 +268,94 @@ export default function ParticuliersPage() {
           </div>
         </section>
 
-        {/* ===== NOS OFFRES DE SERVICE ===== */}
+        {/* ===== NOS OFFRES DE SERVICE — ZIGZAG ===== */}
         <section className="mb-20">
-          <div className="text-center mb-12">
-            <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase block mb-2">
+          <div className="text-center mb-14">
+            <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase block mb-3">
               {tx.offers_tag}
             </span>
             <h2 className="font-cinzel text-3xl md:text-4xl text-[#E9D18F]">
               {tx.offers_title}
             </h2>
+            <div className="flex items-center justify-center gap-3 mt-4">
+              <div className="h-[1px] w-20 bg-gradient-to-r from-transparent to-[#C5A059]" />
+              <span className="text-[#C5A059] text-xs">◆</span>
+              <div className="h-[1px] w-20 bg-gradient-to-l from-transparent to-[#C5A059]" />
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-7 rounded-2xl bg-[#131513] border border-[#C5A059]/30 hover:border-[#C5A059] transition-all shadow-lg flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-full bg-[#0F3823] text-[#E9D18F] font-cinzel font-bold flex items-center justify-center mb-4 border border-[#C5A059]/30">
-                  01
-                </div>
-                <h3 className="font-cinzel text-lg text-[#E9D18F] font-semibold mb-3">
-                  {tx.step1_title}
-                </h3>
-                <p className="font-cormorant text-base text-[#cabfa6] leading-relaxed">
-                  {tx.step1_desc}
-                </p>
-              </div>
+          {/* Zigzag Step 1 : Image gauche — Texte droite */}
+          <div className="flex flex-col md:flex-row items-center gap-8 mb-16">
+            <div className="w-full md:w-1/2 relative h-72 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-2xl flex-shrink-0 group">
+              <Image
+                src="/images/Image Particuliers5.jpg"
+                alt="Rendez-vous initial — General Esquire"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#131513]/40" />
             </div>
-
-            <div className="p-7 rounded-2xl bg-[#131513] border border-[#C5A059]/30 hover:border-[#C5A059] transition-all shadow-lg flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-full bg-[#0F3823] text-[#E9D18F] font-cinzel font-bold flex items-center justify-center mb-4 border border-[#C5A059]/30">
-                  02
-                </div>
-                <h3 className="font-cinzel text-lg text-[#E9D18F] font-semibold mb-3">
-                  {tx.step2_title}
-                </h3>
-                <p className="font-cormorant text-base text-[#cabfa6] leading-relaxed">
-                  {tx.step2_desc}
-                </p>
+            <div className="w-full md:w-1/2 space-y-4">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#C5A059] to-[#E9D18F] text-black font-cinzel font-extrabold text-xl flex items-center justify-center shadow-[0_0_25px_rgba(197,160,89,0.4)] mb-4">
+                01
               </div>
+              <h3 className="font-cinzel text-2xl text-[#E9D18F] font-bold">
+                {tx.step1_title}
+              </h3>
+              <div className="h-[2px] w-16 bg-gradient-to-r from-[#C5A059] to-transparent" />
+              <p className="font-cormorant text-lg text-[#EDE4CF]/85 leading-relaxed">
+                {tx.step1_desc}
+              </p>
             </div>
+          </div>
 
-            <div className="p-7 rounded-2xl bg-[#131513] border border-[#C5A059]/30 hover:border-[#C5A059] transition-all shadow-lg flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-full bg-[#0F3823] text-[#E9D18F] font-cinzel font-bold flex items-center justify-center mb-4 border border-[#C5A059]/30">
-                  03
-                </div>
-                <h3 className="font-cinzel text-lg text-[#E9D18F] font-semibold mb-3">
-                  {tx.step3_title}
-                </h3>
-                <p className="font-cormorant text-base text-[#cabfa6] leading-relaxed">
-                  {tx.step3_desc}
-                </p>
+          {/* Zigzag Step 2 : Texte gauche — Image droite */}
+          <div className="flex flex-col md:flex-row-reverse items-center gap-8 mb-16">
+            <div className="w-full md:w-1/2 relative h-72 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-2xl flex-shrink-0 group">
+              <Image
+                src="/images/Avocate enceinte3.jpg"
+                alt="Dévouement et expertise — General Esquire"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-l from-transparent to-[#131513]/40" />
+            </div>
+            <div className="w-full md:w-1/2 space-y-4 md:text-right">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#C5A059] to-[#E9D18F] text-black font-cinzel font-extrabold text-xl flex items-center justify-center shadow-[0_0_25px_rgba(197,160,89,0.4)] mb-4 md:ml-auto">
+                02
               </div>
+              <h3 className="font-cinzel text-2xl text-[#E9D18F] font-bold">
+                {tx.step2_title}
+              </h3>
+              <div className="h-[2px] w-16 bg-gradient-to-l from-[#C5A059] to-transparent md:ml-auto" />
+              <p className="font-cormorant text-lg text-[#EDE4CF]/85 leading-relaxed">
+                {tx.step2_desc}
+              </p>
+            </div>
+          </div>
+
+          {/* Zigzag Step 3 : Image gauche — Texte droite */}
+          <div className="flex flex-col md:flex-row items-center gap-8">
+            <div className="w-full md:w-1/2 relative h-72 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-2xl flex-shrink-0 group">
+              <Image
+                src="/images/Image Particuliers9.jpg"
+                alt="Services gratuits inclus — General Esquire"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#131513]/40" />
+            </div>
+            <div className="w-full md:w-1/2 space-y-4">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#C5A059] to-[#E9D18F] text-black font-cinzel font-extrabold text-xl flex items-center justify-center shadow-[0_0_25px_rgba(197,160,89,0.4)] mb-4">
+                03
+              </div>
+              <h3 className="font-cinzel text-2xl text-[#E9D18F] font-bold">
+                {tx.step3_title}
+              </h3>
+              <div className="h-[2px] w-16 bg-gradient-to-r from-[#C5A059] to-transparent" />
+              <p className="font-cormorant text-lg text-[#EDE4CF]/85 leading-relaxed">
+                {tx.step3_desc}
+              </p>
             </div>
           </div>
         </section>
@@ -334,44 +372,89 @@ export default function ParticuliersPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="p-6 rounded-2xl bg-[#1a1c1a] border border-[#C5A059]/20">
-              <h3 className="font-cinzel text-lg text-[#C5A059] font-bold mb-2">
+            <div className="p-6 sm:p-8 rounded-2xl bg-[#1a1c1a] border border-[#C5A059]/30 hover:border-[#C5A059] transition-all shadow-xl">
+              <h3 className="font-cinzel text-lg text-[#E9D18F] font-bold mb-2">
                 {tx.rate1_title}
               </h3>
-              <p className="font-cinzel text-3xl text-white font-extrabold mb-3">
+              <p className="font-cinzel text-3xl text-white font-extrabold mb-4">
                 {tx.rate1_price} <span className="text-xs font-normal text-[#cabfa6] font-cormorant">{tx.rate1_sub}</span>
               </p>
-              <p className="font-cormorant text-base text-[#cabfa6]">
+              <p className="font-cormorant text-lg text-[#EDE4CF]/90 leading-relaxed">
                 {tx.rate1_desc}
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-[#1a1c1a] border border-[#C5A059]/20">
-              <h3 className="font-cinzel text-lg text-[#C5A059] font-bold mb-2">
+            <div className="p-6 sm:p-8 rounded-2xl bg-[#1a1c1a] border border-[#C5A059]/30 hover:border-[#C5A059] transition-all shadow-xl">
+              <h3 className="font-cinzel text-lg text-[#E9D18F] font-bold mb-2">
                 {tx.rate2_title}
               </h3>
-              <p className="font-cinzel text-2xl text-white font-bold mb-3">
+              <p className="font-cinzel text-2xl text-white font-bold mb-4">
                 {tx.rate2_price} <span className="text-xs font-normal text-[#cabfa6] font-cormorant">{tx.rate2_sub}</span>
               </p>
-              <p className="font-cormorant text-base text-[#cabfa6]">
+              <p className="font-cormorant text-lg text-[#EDE4CF]/90 leading-relaxed">
                 {tx.rate2_desc}
               </p>
             </div>
           </div>
 
-          <div className="mt-8 p-6 rounded-2xl bg-[#0F3823]/30 border border-[#C5A059]/20 font-cormorant text-lg text-[#EDE4CF] space-y-2">
-            <p>{tx.note1}</p>
-            <p>{tx.note2}</p>
+          <div className="mt-8 p-6 sm:p-8 rounded-2xl bg-[#0F3823]/40 border border-[#C5A059]/30 font-cormorant text-lg text-[#EDE4CF] space-y-4 shadow-lg">
+            <p className="flex items-start gap-3">
+              <span className="text-[#C5A059] text-base mt-1 flex-shrink-0">◆</span>
+              <span>{tx.note1}</span>
+            </p>
+            <p className="flex items-start gap-3">
+              <span className="text-[#C5A059] text-base mt-1 flex-shrink-0">◆</span>
+              <span>{tx.note2}</span>
+            </p>
           </div>
 
-          {/* CTA Button */}
-          <div className="mt-10 text-center">
-            <a
-              href="mailto:contact@generalesquire.com"
-              className="inline-block px-10 py-4 rounded-full font-cinzel text-xs tracking-widest font-semibold uppercase text-black bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] hover:brightness-110 transition-all duration-300 shadow-[0_0_25px_rgba(197,160,89,0.4)] hover:scale-105"
-            >
-              {tx.btn_appt}
-            </a>
+          {/* ===== PRISE DE RENDEZ-VOUS : 03 BOUTONS ===== */}
+          <div className="mt-12 pt-10 border-t border-[#C5A059]/30 text-center">
+            <h3 className="font-cinzel text-xl sm:text-2xl text-[#E9D18F] font-bold mb-3 uppercase tracking-wider">
+              {lang === "fr" ? "Prise de Rendez-vous" : "Book an Appointment"}
+            </h3>
+            <p className="font-cormorant text-lg text-[#cabfa6] mb-8">
+              {lang === "fr"
+                ? "Contactez-nous directement via le canal de votre choix :"
+                : "Contact us directly via your preferred channel:"}
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-4xl mx-auto">
+              {/* 1. Bouton contacter par mail */}
+              <a
+                href="mailto:contact@generalesquire.com"
+                className="flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-gradient-to-r from-[#0F3823] via-[#131513] to-[#0F3823] border-2 border-[#C5A059]/60 hover:border-[#E9D18F] text-[#EDE4CF] hover:text-white font-cinzel text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-[0_0_20px_rgba(197,160,89,0.2)] hover:scale-105 group"
+              >
+                <svg className="w-5 h-5 text-[#C5A059] group-hover:text-[#3B82F6] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <span>{tx.btn_mail}</span>
+              </a>
+
+              {/* 2. Bouton contacter par WhatsApp ou Visio */}
+              <a
+                href="https://wa.me/33758264254"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-gradient-to-r from-[#0F3823] via-[#131513] to-[#0F3823] border-2 border-[#25D366]/70 hover:border-[#25D366] text-[#EDE4CF] hover:text-white font-cinzel text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-[0_0_20px_rgba(37,211,102,0.2)] hover:scale-105 group"
+              >
+                <svg className="w-5 h-5 text-[#25D366] group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                </svg>
+                <span>{tx.btn_whatsapp}</span>
+              </a>
+
+              {/* 3. Bouton contacter par téléphone */}
+              <a
+                href="tel:+33159581725"
+                className="flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-gradient-to-r from-[#0F3823] via-[#131513] to-[#0F3823] border-2 border-[#C5A059]/60 hover:border-[#E9D18F] text-[#EDE4CF] hover:text-white font-cinzel text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-[0_0_20px_rgba(197,160,89,0.2)] hover:scale-105 group"
+              >
+                <svg className="w-5 h-5 text-[#C5A059] group-hover:text-[#25D366] transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21c1.12.45 2.33.69 3.58.69a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.24 2.46.69 3.58a1 1 0 01-.21 1.11l-2.2 2.2z" />
+                </svg>
+                <span>{tx.btn_phone}</span>
+              </a>
+            </div>
           </div>
         </section>
 

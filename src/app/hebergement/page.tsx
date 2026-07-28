@@ -6,54 +6,54 @@ import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 import { HomeIcon, HandshakeIcon, StarIcon } from "@/components/Icons";
 
-// ─── Hero carousel slides ─────────────────────────────────────────────────────
+// ─── Hero carousel slides (Images 100% uniques) ─────────────────────────────
 const SLIDES = [
   {
     src: "/images/Bienvenue.jpg",
     tag: "Chrysalides — Bénin",
     title: "Bienvenue dans un monde de bienveillance",
-    desc: "Un accueil chaleureux vous attend dès votre arrivée à l'aéroport Bernardin Gantin.",
+    desc: "Un accueil chaleureux vous attend dès votre arrivée à l'aéroport Bernardin Gantin de Cotonou.",
   },
   {
-    src: "/images/sejour15.jpg",
-    tag: "Résidence Familiale",
+    src: "/images/Dormir.jpg",
+    tag: "Résidence & Sérénité",
     title: "Pas un hôtel — une vraie maison",
     desc: "Un subtil mélange entre le confort hôtelier occidental et la chaleur humaine de votre hôte.",
   },
   {
-    src: "/images/sejour14.jpg",
-    tag: "Confort & Sérénité",
+    src: "/images/Welcome.jpg",
+    tag: "Confort & Propreté",
     title: "Votre lieu de vie pendant 15 jours",
-    desc: "Chaque pensionnaire se voit affecter un guide aux petits soins avec lui.",
-  },
-  {
-    src: "/images/Dormir.jpg",
-    tag: "Repos Mérité",
-    title: "Reposez-vous pleinement",
-    desc: "General Esquire a pris toutes les dispositions matérielles pour garantir un séjour de qualité.",
+    desc: "Chaque pensionnaire se voit affecter un ou une guide dédiée, aux petits soins avec lui.",
   },
   {
     src: "/images/Repos.jpg",
-    tag: "Bienveillance & Humanité",
+    tag: "Repos Mérité",
+    title: "Reposez-vous pleinement",
+    desc: "General Esquire a pris toutes les dispositions matérielles pour garantir un séjour de haute qualité.",
+  },
+  {
+    src: "/images/Femmezen.jpg",
+    tag: "Bienveillance & Ressourcement",
     title: "Fuyez la solitude anonyme des hôtels",
-    desc: "Ici, vous êtes reçu comme un proche, avec authenticité et chaleur africaine.",
+    desc: "Ici, vous êtes reçu comme un membre de la famille, avec authenticité et chaleur africaine.",
   },
 ];
 
-// ─── Gallery images (hébergement + bien-être) ─────────────────────────────────
+// ─── Gallery images (12 photos uniques sans doublons) ────────────────────────
 const GALLERY = [
   { src: "/images/Bienvenue.jpg", label: "Accueil" },
   { src: "/images/Welcome.jpg", label: "Bienvenue" },
-  { src: "/images/sejour15.jpg", label: "Séjour" },
-  { src: "/images/sejour14.jpg", label: "Hébergement" },
+  { src: "/images/sejour15.jpg", label: "Résidence" },
+  { src: "/images/sejour14.jpg", label: "Cadre de Vie" },
   { src: "/images/Dormir.jpg", label: "Chambre" },
-  { src: "/images/Repos.jpg", label: "Repos" },
-  { src: "/images/Femmezen.jpg", label: "Sérénité" },
+  { src: "/images/Repos.jpg", label: "Sérénité" },
+  { src: "/images/Femmezen.jpg", label: "Détente" },
   { src: "/images/Femmezen2.jpg", label: "Zen" },
-  { src: "/images/Massage.jpg", label: "Détente" },
-  { src: "/images/Soins.jpg", label: "Soins" },
+  { src: "/images/Massage.jpg", label: "Soins" },
+  { src: "/images/Soins.jpg", label: "Bien-être" },
   { src: "/images/massage2.jpg", label: "Relaxation" },
-  { src: "/images/Soins2.jpg", label: "Bien-être" },
+  { src: "/images/Soins2.jpg", label: "Ressourcement" },
 ];
 
 // ─── Professional Carousel ────────────────────────────────────────────────────
@@ -77,7 +77,7 @@ function HeroCarousel() {
   const slide = SLIDES[current];
 
   return (
-    <div className="relative w-full rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-2xl">
+    <div className="relative w-full rounded-3xl overflow-hidden border-2 border-[#C5A059]/40 shadow-2xl">
       <div
         className="relative w-full h-[340px] sm:h-[480px] transition-opacity duration-500"
         style={{ opacity: fading ? 0 : 1 }}
@@ -107,14 +107,14 @@ function HeroCarousel() {
       </div>
 
       {/* Arrows */}
-      <button onClick={prev} className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-[#131513]/70 border border-[#C5A059]/40 text-[#E9D18F] hover:bg-[#C5A059]/20 transition-all flex items-center justify-center text-xl shadow-lg">‹</button>
-      <button onClick={next} className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-[#131513]/70 border border-[#C5A059]/40 text-[#E9D18F] hover:bg-[#C5A059]/20 transition-all flex items-center justify-center text-xl shadow-lg">›</button>
+      <button onClick={prev} className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-[#131513]/70 border border-[#C5A059]/40 text-[#E9D18F] hover:bg-[#C5A059]/20 transition-all flex items-center justify-center text-xl shadow-lg cursor-pointer">‹</button>
+      <button onClick={next} className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-[#131513]/70 border border-[#C5A059]/40 text-[#E9D18F] hover:bg-[#C5A059]/20 transition-all flex items-center justify-center text-xl shadow-lg cursor-pointer">›</button>
 
       {/* Dots */}
       <div className="absolute bottom-4 right-6 flex items-center gap-2">
         {SLIDES.map((_, i) => (
           <button key={i} onClick={() => goTo(i)}
-            className={`transition-all duration-300 rounded-full ${i === current ? "w-7 h-2 bg-[#C5A059]" : "w-2 h-2 bg-white/30 hover:bg-[#C5A059]/60"}`}
+            className={`transition-all duration-300 rounded-full cursor-pointer ${i === current ? "w-7 h-2 bg-[#C5A059]" : "w-2 h-2 bg-white/30 hover:bg-[#C5A059]/60"}`}
           />
         ))}
       </div>
@@ -132,10 +132,15 @@ export default function HebergementPage() {
       <header className="w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
           <Image
-            src="/images/sejour15.jpg"
+            src="/images/séléction_hebergement.jpg"
             alt="Bannière Hébergement — General Esquire"
             fill
             priority
+            onError={(e) => {
+              // Fallback si l'image spécifique n'est pas présente
+              const target = e.target as HTMLImageElement;
+              target.src = "/images/sejour.jpg";
+            }}
             className="object-cover object-[center_40%] filter brightness-95 contrast-105 animate-kenburns"
           />
         </div>
@@ -201,121 +206,172 @@ export default function HebergementPage() {
           <HeroCarousel />
         </section>
 
-        {/* ── CONTENT BLOCKS ── */}
-        <div className="space-y-10 font-cormorant text-xl text-[#EDE4CF]/90 leading-relaxed mb-16">
+        {/* ── SECTIONS ZIGZAG (TEXTE & IMAGE CÔTÉ À CÔTÉ ALTERNÉS) ── */}
+        <div className="space-y-16 mb-20 font-cormorant text-xl text-[#EDE4CF]/90 leading-relaxed">
 
-          {/* Block 1 — Comment ça marche */}
-          <div className="bg-[#131513]/90 border border-[#C5A059]/25 rounded-3xl p-8 sm:p-12 shadow-xl">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="text-2xl">✈️</span>
-              <h2 className="font-cinzel text-xl text-[#E9D18F] font-bold">{t("hebergement_how_title")}</h2>
+          {/* ZIGZAG 1 : Organiser son départ depuis Paris (Texte Gauche — Image Droite) */}
+          <div className="flex flex-col md:flex-row items-center gap-8 bg-[#131513]/90 border border-[#C5A059]/30 rounded-3xl p-6 sm:p-10 shadow-2xl overflow-hidden group hover:border-[#C5A059] transition-all">
+            <div className="w-full md:w-1/2 space-y-4">
+              <div className="flex items-center gap-3 mb-2">
+                <span className="text-3xl">✈️</span>
+                <h2 className="font-cinzel text-xl sm:text-2xl text-[#E9D18F] font-bold">
+                  {t("hebergement_how_title")}
+                </h2>
+              </div>
+              <div className="h-[2px] w-16 bg-gradient-to-r from-[#C5A059] to-transparent mb-4" />
+              <p className="first-letter:text-4xl first-letter:font-cinzel first-letter:text-[#C5A059] first-letter:font-bold">
+                {lang === "fr" ? (
+                  "Sous l'enseigne Chrysalides, notre société déploie au Bénin, une fois par an, ses activités de cocooning touristique. Cela commence à Paris, dans l'un des deux aéroports de la capitale — Roissy-Charles de Gaulle ou Orly — où chaque voyageur est accueilli au départ de la France par un membre de notre équipe qui prend le même vol pour la même destination. C'est déjà un premier guide."
+                ) : (
+                  "Under the Chrysalides umbrella, our company organizes annual tourist cocooning retreats in Benin. It begins in Paris, at Roissy-Charles de Gaulle or Orly airport, where each traveler is greeted at departure by a team member taking the same flight. Your guide accompanies you from day one."
+                )}
+              </p>
+              <p className="text-base text-[#cabfa6]">
+                {lang === "fr" ? (
+                  "Les inscriptions se déroulent entre février et fin septembre pour le grand séjour collectif de janvier."
+                ) : (
+                  "Registrations are open from February to September for the group departure in January."
+                )}
+              </p>
             </div>
-            <p className="first-letter:text-4xl first-letter:font-cinzel first-letter:text-[#C5A059] first-letter:font-bold">
-              {lang === "fr" ? (
-                "Sous l'enseigne Chrysalides, notre société déploie au Bénin, une fois par an, ses activités de cocooning touristique. Cela commence à Paris, dans l'un des deux aéroports de la capitale — Roissy-Charles de Gaulle et Orly — où chaque voyageur est accueilli au départ de la France par un membre de notre équipe qui prend le même vol pour la même destination. C'est déjà un premier guide."
-              ) : (
-                "Under the Chrysalides umbrella, our company organizes annual tourist cocooning retreats in Benin. It begins in Paris, at Roissy-Charles de Gaulle or Orly airport, where each traveler is greeted at departure by a team member taking the same flight. Your guide accompanies you from day one."
-              )}
-            </p>
-            <p className="mt-4">
-              {lang === "fr" ? (
-                "Entre les mois de février et septembre de l'année précédente, vous avez déjà eu tout le loisir de vous inscrire pour ce séjour touristique d'exception qui est collectif (il faut qu'il y ait au moins dix personnes au départ de Paris), et de payer votre participation ; autrement, vous pourriez ne partir que l'année suivante. Pour des raisons organisationnelles en effet, les inscriptions sont fermées à la fin du mois de septembre, pour un voyage en janvier de l'année d'après."
-              ) : (
-                "Between February and September of the preceding year, you can register for this exclusive group retreat (minimum 10 participants departing from Paris). Registrations close at the end of September for trips taking place in January of the following year."
-              )}
-            </p>
+
+            <div className="w-full md:w-1/2 relative h-72 sm:h-80 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-xl flex-shrink-0">
+              <Image
+                src="/images/Embrassade.jpg"
+                alt="Départ et accueil — General Esquire"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            </div>
           </div>
 
-          {/* Block 2 — Arrivée au Bénin */}
-          <div className="bg-[#131513]/90 border border-[#C5A059]/25 rounded-3xl p-8 sm:p-12 shadow-xl">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="text-2xl">🇧🇯</span>
-              <h2 className="font-cinzel text-xl text-[#E9D18F] font-bold">{t("hebergement_arrival_title")}</h2>
+          {/* ZIGZAG 2 : L'arrivée au Bénin & Le Guide Dédié (Image Gauche — Texte Droit) */}
+          <div className="flex flex-col md:flex-row-reverse items-center gap-8 bg-[#131513]/90 border border-[#C5A059]/30 rounded-3xl p-6 sm:p-10 shadow-2xl overflow-hidden group hover:border-[#C5A059] transition-all">
+            <div className="w-full md:w-1/2 space-y-4">
+              <div className="flex items-center gap-3 mb-2">
+                <span className="text-3xl">🇧🇯</span>
+                <h2 className="font-cinzel text-xl sm:text-2xl text-[#E9D18F] font-bold">
+                  {t("hebergement_arrival_title")}
+                </h2>
+              </div>
+              <div className="h-[2px] w-16 bg-gradient-to-r from-[#C5A059] to-transparent mb-4" />
+              <p>
+                {lang === "fr" ? (
+                  "Une fois au Bénin, nos équipes vous accueillent collectivement dès l'aéroport Bernardin Gantin de Cadjèhoun à Cotonou. Nos véhicules vous conduisent directement sur votre lieu de séjour d'exception."
+                ) : (
+                  "Upon arrival in Benin, our teams greet you at Bernardin Gantin de Cadjèhoun International Airport in Cotonou. Private transport takes you directly to your accommodation."
+                )}
+              </p>
+              <p className="text-lg text-[#EDE4CF]">
+                {lang === "fr" ? (
+                  "Chaque pensionnaire — ainsi serez-vous chaleureusement nommé — se voit affecter un ou une guide personnelle qui reste aux petits soins avec lui pendant tout le séjour."
+                ) : (
+                  "Each guest is assigned a dedicated personal guide who ensures your complete well-being throughout the entire trip."
+                )}
+              </p>
             </div>
-            <p>
-              {lang === "fr" ? (
-                "Une fois au Bénin, nos équipes vous accueillent collectivement à l'aéroport Bernardin Gantin de Cadjèhoun, et nos véhicules vous conduisent sur votre lieu de séjour. Chaque pensionnaire — ainsi serez-vous désigné — se voit affecter un ou une guide qui est aux petits soins avec lui."
-              ) : (
-                "Upon arrival in Benin, our teams greet you at Bernardin Gantin de Cadjèhoun International Airport. Private transport takes you directly to your accommodation, where a personal dedicated guide ensures your total comfort."
-              )}
-            </p>
+
+            <div className="w-full md:w-1/2 relative h-72 sm:h-80 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-xl flex-shrink-0">
+              <Image
+                src="/images/Welcome.jpg"
+                alt="Accueil chaleureux au Bénin — General Esquire"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            </div>
           </div>
 
-          {/* Block 3 — The KEY statement (highlighted) */}
+          {/* ZIGZAG 3 : Le Cœur du Concept (Pas un hôtel - Une résidence familiale) */}
           <div className="relative rounded-3xl overflow-hidden border-2 border-[#C5A059]/60 shadow-2xl">
-            {/* Background image with strong overlay */}
-            <div className="absolute inset-0">
-              <Image src="/images/sejour15.jpg" alt="" fill className="object-cover object-center" />
-              <div className="absolute inset-0 bg-[#0F3823]/88" />
-            </div>
+            <div className="flex flex-col md:flex-row items-center">
+              {/* Texte */}
+              <div className="w-full md:w-3/5 p-8 sm:p-12 space-y-6 bg-[#0F3823]/90 relative z-10">
+                <div className="flex items-center gap-3">
+                  <div className="h-[1px] w-12 bg-[#C5A059]" />
+                  <span className="text-[#C5A059] text-xs font-cinzel tracking-widest uppercase">L'Esprit Chrysalides</span>
+                </div>
 
-            <div className="relative z-10 p-8 sm:p-14 text-center space-y-6">
-              {/* Gold separator */}
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <div className="h-[1px] w-16 bg-[#C5A059]" />
-                <span className="text-[#C5A059] text-lg">◆</span>
-                <div className="h-[1px] w-16 bg-[#C5A059]" />
+                <p className="font-cormorant text-xl sm:text-2xl text-[#EDE4CF] leading-relaxed italic">
+                  {lang === "fr" ? (
+                    <>
+                      « Le lieu de résidence n'est pas forcément un hôtel, car il ne sert à rien de prétendre rechercher un cocooning touristique en Afrique si c'est pour demeurer dans la <span className="text-[#E9D18F] font-semibold">solitude anonyme, monotone et aseptisée d'un hôtel</span>. »
+                    </>
+                  ) : (
+                    <>
+                      “Your residence is not an anonymous hotel room. Tourist cocooning is designed to break away from <span className="text-[#E9D18F] font-semibold">monotonous and impersonal hotel isolation</span>.”
+                    </>
+                  )}
+                </p>
+
+                <div className="h-[1px] w-24 bg-[#C5A059]/40" />
+
+                <p className="font-cinzel text-sm sm:text-base text-[#E9D18F] leading-loose tracking-wide font-bold">
+                  {lang === "fr" ? (
+                    <>
+                      Il s'agit d'une résidence familiale de standing avec prestation hôtelière — c'est-à-dire un <span className="text-white">subtil mélange entre le confort hôtelier occidental</span> et la <span className="text-white">chaleur humaine de votre guide</span>.
+                    </>
+                  ) : (
+                    <>
+                      It is a private family residence offering hotel-grade service—a <span className="text-white">subtle blend of western hotel comfort</span> and <span className="text-white">genuine human warmth</span>.
+                    </>
+                  )}
+                </p>
               </div>
 
-              <p className="font-cinzel text-sm sm:text-base text-[#E9D18F] leading-loose tracking-wide font-bold">
-                {lang === "fr"
-                  ? "Notre société a pris toutes les dispositions matérielles et financières pour vous garantir, chez votre guide, un accueil et un séjour de qualité."
-                  : "We have taken all material and financial measures to guarantee exceptional hospitality at your guide's home."}
-              </p>
-
-              <div className="h-[1px] w-24 bg-[#C5A059]/40 mx-auto" />
-
-              <p className="font-cormorant text-xl sm:text-2xl text-[#EDE4CF] leading-relaxed italic">
-                {lang === "fr" ? (
-                  <>
-                    Le lieu de résidence n'est pas forcément un hôtel, car il ne sert à rien de prétendre rechercher un cocooning touristique en Afrique si c'est pour demeurer dans la <span className="text-[#C5A059]">l'anonyme, monotone, ennuyeuse, aseptisée et déshumanisée solitude d'un hôtel.</span>
-                  </>
-                ) : (
-                  <>
-                    Your residence is not an anonymous hotel room. Tourist cocooning in Africa is designed to break away from <span className="text-[#C5A059]">monotonous, sanitized, and impersonal hotel isolation.</span>
-                  </>
-                )}
-              </p>
-
-              <div className="h-[1px] w-24 bg-[#C5A059]/40 mx-auto" />
-
-              <p className="font-cinzel text-sm sm:text-base text-[#E9D18F] leading-loose tracking-wide font-bold">
-                {lang === "fr" ? (
-                  <>
-                    Il s'agit plutôt d'une résidence familiale avec prestation hôtelière — c'est-à-dire un <span className="text-white">subtil mélange entre le confort de l'hôtel à l'occidental</span>, et la <span className="text-white">chaleur humaine de votre guide</span> qui vous accueillera chez lui ou chez elle.
-                  </>
-                ) : (
-                  <>
-                    It is a private family residence offering hotel-grade service—a <span className="text-white">subtle blend of western hotel comfort</span> and <span className="text-white">genuine human warmth</span> from your local host.
-                  </>
-                )}
-              </p>
-
-              <div className="flex items-center justify-center gap-3 mt-4">
-                <div className="h-[1px] w-16 bg-[#C5A059]" />
-                <span className="text-[#C5A059] text-lg">◆</span>
-                <div className="h-[1px] w-16 bg-[#C5A059]" />
+              {/* Image côte à côte */}
+              <div className="w-full md:w-2/5 relative h-80 sm:h-96 md:h-full min-h-[320px] overflow-hidden">
+                <Image
+                  src="/images/sejour14.jpg"
+                  alt="Résidence de standing"
+                  fill
+                  className="object-cover hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#0F3823]/90 via-transparent to-transparent hidden md:block" />
               </div>
             </div>
           </div>
 
-          {/* Block 4 — What to expect */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {[
-              { icon: <HomeIcon className="w-8 h-8 text-[#C5A059] mx-auto mb-3" />, title: lang === "fr" ? "Résidence Familiale" : "Family Residence", desc: lang === "fr" ? "Vous êtes logé chez votre guide, dans une vraie maison béninoise avec tout le confort nécessaire." : "Stay with your local guide in an authentic Beninese home equipped with modern amenities." },
-              { icon: <HandshakeIcon className="w-8 h-8 text-[#C5A059] mx-auto mb-3" />, title: lang === "fr" ? "Chaleur Humaine" : "Human Warmth", desc: lang === "fr" ? "Un accueil authentique, loin de l'anonymat des hôtels. Vous êtes reçu comme un membre de la famille." : "A warm welcome far from impersonal hotels. You are received like family." },
-              { icon: <StarIcon className="w-8 h-8 text-[#C5A059] mx-auto mb-3" />, title: lang === "fr" ? "Prestation Hôtelière" : "Hotel Quality", desc: lang === "fr" ? "Confort, propreté, repas soignés — tous les standards hôteliers dans un cadre humain et chaleureux." : "Comfort, cleanliness, fine meals—hotel standards in a warm human setting." },
-            ].map((item, i) => (
-              <div key={i} className="p-7 rounded-2xl bg-[#131513] border border-[#C5A059]/30 hover:border-[#C5A059] transition-all duration-300 shadow-lg text-center">
-                {item.icon}
-                <h3 className="font-cinzel text-sm text-[#E9D18F] font-bold tracking-wide mb-3">{item.title}</h3>
-                <p className="font-cormorant text-base text-[#cabfa6] leading-snug">{item.desc}</p>
-              </div>
-            ))}
-          </div>
         </div>
 
-        {/* ── PHOTO STRIP — Infinite auto-scroll ── */}
+        {/* ── 3 PILLIERS DU SÉJOUR (CARTE 3 COLONNES) ── */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-16">
+          {[
+            {
+              icon: <HomeIcon className="w-8 h-8 text-[#C5A059] mx-auto mb-3" />,
+              title: lang === "fr" ? "Résidence Familiale" : "Family Residence",
+              desc: lang === "fr"
+                ? "Vous êtes logé chez votre guide, dans une vraie maison béninoise avec tout le confort nécessaire."
+                : "Stay with your local guide in an authentic Beninese home equipped with modern amenities.",
+            },
+            {
+              icon: <HandshakeIcon className="w-8 h-8 text-[#C5A059] mx-auto mb-3" />,
+              title: lang === "fr" ? "Chaleur Humaine" : "Human Warmth",
+              desc: lang === "fr"
+                ? "Un accueil authentique, loin de l'anonymat des hôtels. Vous êtes reçu comme un membre de la famille."
+                : "A warm welcome far from impersonal hotels. You are received like family.",
+            },
+            {
+              icon: <StarIcon className="w-8 h-8 text-[#C5A059] mx-auto mb-3" />,
+              title: lang === "fr" ? "Prestation Hôtelière" : "Hotel Quality",
+              desc: lang === "fr"
+                ? "Confort, propreté, repas soignés — tous les standards hôteliers dans un cadre humain et chaleureux."
+                : "Comfort, cleanliness, fine meals—hotel standards in a warm human setting.",
+            },
+          ].map((item, i) => (
+            <div
+              key={i}
+              className="p-8 rounded-2xl bg-[#131513] border border-[#C5A059]/30 hover:border-[#C5A059] transition-all duration-300 shadow-xl text-center group hover:-translate-y-1"
+            >
+              <div className="group-hover:scale-110 transition-transform">{item.icon}</div>
+              <h3 className="font-cinzel text-base text-[#E9D18F] font-bold tracking-wide mb-3">{item.title}</h3>
+              <p className="font-cormorant text-base text-[#cabfa6] leading-relaxed">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* ── PHOTO STRIP — Infinite auto-scroll (Photos uniques) ── */}
         <section className="mb-16 -mx-6 sm:-mx-0">
           <div className="text-center mb-10 px-6">
             <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase block mb-2">
@@ -360,48 +416,11 @@ export default function HebergementPage() {
             </div>
           </div>
 
-          {/* Row 2 — scroll right (reversed) */}
-          <div
-            className="overflow-hidden w-full"
-            style={{ maskImage: "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)" }}
-          >
-            <div
-              className="flex gap-4 w-max"
-              style={{
-                animation: "scrollRight 32s linear infinite",
-              }}
-            >
-              {[...GALLERY].reverse().concat([...GALLERY].reverse()).map((item, i) => (
-                <div
-                  key={i}
-                  className="relative flex-shrink-0 w-56 h-40 sm:w-72 sm:h-52 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg group cursor-pointer"
-                >
-                  <Image
-                    src={item.src}
-                    alt={item.label}
-                    fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-700"
-                    sizes="288px"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
-                    <span className="font-cinzel text-[10px] text-[#E9D18F] tracking-widest uppercase bg-[#131513]/70 px-2 py-0.5 rounded-full">
-                      ◆ {item.label}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* Inject keyframes */}
           <style>{`
             @keyframes scrollLeft {
               0%   { transform: translateX(0); }
               100% { transform: translateX(-50%); }
-            }
-            @keyframes scrollRight {
-              0%   { transform: translateX(-50%); }
-              100% { transform: translateX(0); }
             }
           `}</style>
         </section>

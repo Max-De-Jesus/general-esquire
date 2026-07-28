@@ -110,14 +110,15 @@ export default function Home() {
 
       {/* ─── 3. MAIN ACCUEIL (MESSAGE DE BIENVENUE AVEC "LE TUEUR DE DRAGON" EN FOND) ─── */}
       <main className="relative z-0 py-10 sm:py-16 px-4 sm:px-8 flex-grow">
-        {/* Background image overlay : Le dragon.jpg */}
-        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-85">
+        {/* Background image overlay : Le dragon.jpg — FIXE (ne bouge pas avec le défilement) */}
+        <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden opacity-85" style={{willChange: 'transform'}}>
           <Image
             src="/images/Le dragon.jpg"
             alt="Le dragon — Fond General Esquire"
             fill
             priority
             className="object-cover object-[50%_35%] filter saturate-110 brightness-115 contrast-105"
+            style={{objectFit: 'cover'}}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-[#1A1C1A]/30 via-transparent to-[#131513]/70"></div>
         </div>

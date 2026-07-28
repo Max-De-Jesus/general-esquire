@@ -7,21 +7,49 @@ import { useLanguage } from "@/context/LanguageContext";
 
 export default function CocooningTouristiquePage() {
   const { lang } = useLanguage();
-  const [showForm, setShowForm] = useState(true);
-  const [genre, setGenre] = useState("masculin");
-  const [medical, setMedical] = useState("non");
-  const [presentation, setPresentation] = useState("");
-  const [dietary, setDietary] = useState<string[]>([]);
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
-  const handleDietChange = (item: string) => {
-    if (dietary.includes(item)) {
-      setDietary(dietary.filter((d) => d !== item));
+  const [formData, setFormData] = useState({
+    nom: "",
+    prenoms: "",
+    genre: "masculin",
+    dateNaissance: "",
+    lieuNaissance: "",
+    nationalite: "",
+    adresse: "",
+    telephone: "",
+    telephoneConfiance: "",
+    courriel: "",
+    profession: "",
+    preferencesAlimentaires: [] as string[],
+    presentationLibre: "",
+    surveillanceMedicale: "non",
+  });
+
+  const [files, setFiles] = useState<{ [key: string]: File | null }>({
+    photo: null,
+    passeport: null,
+    avisMedical: null,
+    autreDocument: null,
+  });
+
+  const handleDietToggle = (item: string) => {
+    if (formData.preferencesAlimentaires.includes(item)) {
+      setFormData({
+        ...formData,
+        preferencesAlimentaires: formData.preferencesAlimentaires.filter((d) => d !== item),
+      });
     } else {
-      setDietary([...dietary, item]);
+      setFormData({
+        ...formData,
+        preferencesAlimentaires: [...formData.preferencesAlimentaires, item],
+      });
     }
   };
 
-  const wordCount = presentation.trim() ? presentation.trim().split(/\s+/).length : 0;
+  const wordCount = formData.presentationLibre.trim()
+    ? formData.presentationLibre.trim().split(/\s+/).length
+    : 0;
 
   return (
     <div className="min-h-screen bg-[#1a1c1a] text-[#EDE4CF] pb-12 md:pb-20 relative">
@@ -29,7 +57,7 @@ export default function CocooningTouristiquePage() {
       <header className="w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
           <Image
-            src="/images/Egungun.jpg"
+            src="/images/bannercoo.png"
             alt="Bannière Cocooning Touristique — General Esquire"
             fill
             priority
@@ -100,7 +128,7 @@ export default function CocooningTouristiquePage() {
         <div className="relative rounded-3xl overflow-hidden border border-[#C5A059]/40 mb-12 shadow-2xl">
           <div className="relative h-72 sm:h-96 w-full">
             <Image
-              src="/images/Embrassades001.png"
+              src="/images/Excursion12.jpg"
               alt="Cocooning Touristique — General Esquire"
               fill
               priority
@@ -182,6 +210,129 @@ export default function CocooningTouristiquePage() {
               : "In order to provide maximum value at a minimum price—our core credo—we are also planning to introduce the magnificent island of Madagascar as a secondary destination in the near future."}
           </p>
         </div>
+
+        {/* ─── SECTION 4 CARTES CIRCULAIRES (AVANT GALERIE & BIEN-ÊTRE) ─── */}
+        <section className="mb-20">
+          <div className="text-center mb-10">
+            <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase block mb-2">
+              {lang === "fr" ? "Nos Services & Formules" : "Our Services & Offers"}
+            </span>
+            <h2 className="font-cinzel text-2xl md:text-3xl text-[#E9D18F]">
+              {lang === "fr" ? "Les 4 Piliers de Votre Séjour" : "The 4 Pillars of Your Stay"}
+            </h2>
+            <div className="flex items-center justify-center gap-3 mt-3">
+              <div className="h-[1px] w-16 bg-gradient-to-r from-transparent to-[#C5A059]" />
+              <span className="text-[#C5A059] text-xs">◆</span>
+              <div className="h-[1px] w-16 bg-gradient-to-l from-transparent to-[#C5A059]" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center">
+            {/* Carte 1 : L'Hébergement */}
+            <Link
+              href="/hebergement"
+              className="group relative w-[230px] h-[230px] sm:w-[250px] sm:h-[250px] rounded-full bg-[#FFFDF9] border-2 border-[#C5A059] shadow-xl hover:shadow-[0_20px_40px_rgba(197,160,89,0.35)] hover:-translate-y-2 transition-all duration-300 ease-out flex flex-col items-center justify-center p-6 text-center overflow-hidden cursor-pointer"
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-[#FFFDF9] via-[#FAF6ED] to-[#F4EBD9] opacity-100 rounded-full" />
+              <div className="absolute inset-0 rounded-full border border-[#C5A059]/20 group-hover:border-[#C5A059] transition-colors" />
+
+              <div className="relative z-10 flex flex-col items-center justify-center h-full">
+                <div className="w-14 h-14 rounded-full bg-[#131513] border border-[#C5A059] flex items-center justify-center text-2xl mb-2.5 shadow-md group-hover:scale-110 group-hover:bg-[#0F3823] transition-all duration-300">
+                  🏡
+                </div>
+                <h3 className="font-cinzel text-sm sm:text-base font-extrabold text-[#0F3823] group-hover:text-[#C5A059] tracking-wider uppercase mb-1 transition-colors">
+                  {lang === "fr" ? "L'HÉBERGEMENT" : "ACCOMMODATION"}
+                </h3>
+                <p className="font-cormorant text-xs sm:text-sm text-[#4A4A4A] leading-snug max-w-[190px] font-medium">
+                  {lang === "fr"
+                    ? "Villas et résidences de standing tout confort pour votre séjour."
+                    : "Luxury residences & comfortable villas for your stay."}
+                </p>
+                <span className="mt-2 font-cinzel text-[10px] text-[#C5A059] tracking-widest uppercase font-bold group-hover:underline">
+                  {lang === "fr" ? "Découvrir →" : "Discover →"}
+                </span>
+              </div>
+            </Link>
+
+            {/* Carte 2 : Les Repas */}
+            <Link
+              href="/repas"
+              className="group relative w-[230px] h-[230px] sm:w-[250px] sm:h-[250px] rounded-full bg-[#FFFDF9] border-2 border-[#C5A059] shadow-xl hover:shadow-[0_20px_40px_rgba(197,160,89,0.35)] hover:-translate-y-2 transition-all duration-300 ease-out flex flex-col items-center justify-center p-6 text-center overflow-hidden cursor-pointer"
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-[#FFFDF9] via-[#FAF6ED] to-[#F4EBD9] opacity-100 rounded-full" />
+              <div className="absolute inset-0 rounded-full border border-[#C5A059]/20 group-hover:border-[#C5A059] transition-colors" />
+
+              <div className="relative z-10 flex flex-col items-center justify-center h-full">
+                <div className="w-14 h-14 rounded-full bg-[#131513] border border-[#C5A059] flex items-center justify-center text-2xl mb-2.5 shadow-md group-hover:scale-110 group-hover:bg-[#0F3823] transition-all duration-300">
+                  🍽️
+                </div>
+                <h3 className="font-cinzel text-sm sm:text-base font-extrabold text-[#0F3823] group-hover:text-[#C5A059] tracking-wider uppercase mb-1 transition-colors">
+                  {lang === "fr" ? "LES REPAS" : "MEALS"}
+                </h3>
+                <p className="font-cormorant text-xs sm:text-sm text-[#4A4A4A] leading-snug max-w-[190px] font-medium">
+                  {lang === "fr"
+                    ? "Gastronomie raffinée, pension complète et saveurs locales."
+                    : "Refined cuisine, full board & local flavors."}
+                </p>
+                <span className="mt-2 font-cinzel text-[10px] text-[#C5A059] tracking-widest uppercase font-bold group-hover:underline">
+                  {lang === "fr" ? "Découvrir →" : "Discover →"}
+                </span>
+              </div>
+            </Link>
+
+            {/* Carte 3 : Les Excursions */}
+            <Link
+              href="/excursions"
+              className="group relative w-[230px] h-[230px] sm:w-[250px] sm:h-[250px] rounded-full bg-[#FFFDF9] border-2 border-[#C5A059] shadow-xl hover:shadow-[0_20px_40px_rgba(197,160,89,0.35)] hover:-translate-y-2 transition-all duration-300 ease-out flex flex-col items-center justify-center p-6 text-center overflow-hidden cursor-pointer"
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-[#FFFDF9] via-[#FAF6ED] to-[#F4EBD9] opacity-100 rounded-full" />
+              <div className="absolute inset-0 rounded-full border border-[#C5A059]/20 group-hover:border-[#C5A059] transition-colors" />
+
+              <div className="relative z-10 flex flex-col items-center justify-center h-full">
+                <div className="w-14 h-14 rounded-full bg-[#131513] border border-[#C5A059] flex items-center justify-center text-2xl mb-2.5 shadow-md group-hover:scale-110 group-hover:bg-[#0F3823] transition-all duration-300">
+                  🗺️
+                </div>
+                <h3 className="font-cinzel text-sm sm:text-base font-extrabold text-[#0F3823] group-hover:text-[#C5A059] tracking-wider uppercase mb-1 transition-colors">
+                  {lang === "fr" ? "LES EXCURSIONS" : "EXCURSIONS"}
+                </h3>
+                <p className="font-cormorant text-xs sm:text-sm text-[#4A4A4A] leading-snug max-w-[190px] font-medium">
+                  {lang === "fr"
+                    ? "Découvertes culturelles, visites guidées et paysages d'exception."
+                    : "Cultural discoveries, guided tours & stunning sites."}
+                </p>
+                <span className="mt-2 font-cinzel text-[10px] text-[#C5A059] tracking-widest uppercase font-bold group-hover:underline">
+                  {lang === "fr" ? "Découvrir →" : "Discover →"}
+                </span>
+              </div>
+            </Link>
+
+            {/* Carte 4 : La Détente */}
+            <Link
+              href="/detente"
+              className="group relative w-[230px] h-[230px] sm:w-[250px] sm:h-[250px] rounded-full bg-[#FFFDF9] border-2 border-[#C5A059] shadow-xl hover:shadow-[0_20px_40px_rgba(197,160,89,0.35)] hover:-translate-y-2 transition-all duration-300 ease-out flex flex-col items-center justify-center p-6 text-center overflow-hidden cursor-pointer"
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-[#FFFDF9] via-[#FAF6ED] to-[#F4EBD9] opacity-100 rounded-full" />
+              <div className="absolute inset-0 rounded-full border border-[#C5A059]/20 group-hover:border-[#C5A059] transition-colors" />
+
+              <div className="relative z-10 flex flex-col items-center justify-center h-full">
+                <div className="w-14 h-14 rounded-full bg-[#131513] border border-[#C5A059] flex items-center justify-center text-2xl mb-2.5 shadow-md group-hover:scale-110 group-hover:bg-[#0F3823] transition-all duration-300">
+                  🧘
+                </div>
+                <h3 className="font-cinzel text-sm sm:text-base font-extrabold text-[#0F3823] group-hover:text-[#C5A059] tracking-wider uppercase mb-1 transition-colors">
+                  {lang === "fr" ? "LA DÉTENTE" : "RELAXATION"}
+                </h3>
+                <p className="font-cormorant text-xs sm:text-sm text-[#4A4A4A] leading-snug max-w-[190px] font-medium">
+                  {lang === "fr"
+                    ? "Soins, massages, bien-être et ressourcement en toute quiétude."
+                    : "Massages, wellness care & total relaxation in serenity."}
+                </p>
+                <span className="mt-2 font-cinzel text-[10px] text-[#C5A059] tracking-widest uppercase font-bold group-hover:underline">
+                  {lang === "fr" ? "Découvrir →" : "Discover →"}
+                </span>
+              </div>
+            </Link>
+          </div>
+        </section>
 
         {/* PHOTO GALLERY FOR COCOONING */}
         <section className="mb-16">
@@ -331,112 +482,372 @@ export default function CocooningTouristiquePage() {
             </p>
           </div>
 
-          <form className="space-y-6 max-w-3xl mx-auto font-cormorant text-lg">
-            
-            {/* NOM & PRÉNOMS */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div>
-                <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-2">
-                  {lang === "fr" ? "VOTRE NOM *" : "LAST NAME *"}
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder={lang === "fr" ? "ex. Dupont" : "e.g. Smith"}
-                  className="w-full px-5 py-3.5 rounded-xl bg-[#EDE4CF]/10 border border-[#C5A059]/30 text-white placeholder-[#EDE4CF]/40 focus:outline-none focus:border-[#E9D18F]"
-                />
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              setFormSubmitted(true);
+            }}
+            className="space-y-6 max-w-4xl mx-auto font-cormorant text-lg"
+          >
+            {formSubmitted ? (
+              <div className="p-8 rounded-2xl bg-[#0F3823]/60 border border-[#C5A059] text-center space-y-4">
+                <div className="w-16 h-16 rounded-full bg-[#C5A059] text-black flex items-center justify-center text-3xl mx-auto font-cinzel font-bold">
+                  ✓
+                </div>
+                <h3 className="font-cinzel text-xl text-[#E9D18F] font-bold uppercase tracking-wider">
+                  {lang === "fr" ? "Formulaire Transmis avec Succès !" : "Form Submitted Successfully!"}
+                </h3>
+                <p className="font-cormorant text-lg text-[#EDE4CF]">
+                  {lang === "fr"
+                    ? "General Esquire vous remercie pour votre inscription. Nos équipes étudieront votre dossier et prendront contact avec vous très rapidement."
+                    : "General Esquire thanks you for your application. Our teams will review your file and contact you very shortly."}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setFormSubmitted(false)}
+                  className="font-cinzel text-xs text-[#C5A059] underline hover:text-[#E9D18F] uppercase tracking-wider"
+                >
+                  {lang === "fr" ? "Transmettre une autre demande" : "Submit another request"}
+                </button>
               </div>
-              <div>
-                <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-2">
-                  {lang === "fr" ? "VOS PRÉNOMS *" : "FIRST NAMES *"}
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder={lang === "fr" ? "ex. Marie-Claire" : "e.g. Jane"}
-                  className="w-full px-5 py-3.5 rounded-xl bg-[#EDE4CF]/10 border border-[#C5A059]/30 text-white placeholder-[#EDE4CF]/40 focus:outline-none focus:border-[#E9D18F]"
-                />
-              </div>
-            </div>
-
-            {/* GENRE */}
-            <div className="p-5 rounded-xl bg-[#1a1c1a] border border-[#C5A059]/20 text-center">
-              <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-3 text-center">
-                {lang === "fr" ? "GENRE" : "GENDER"}
-              </label>
-              <div className="flex flex-wrap items-center justify-center gap-6 font-cinzel text-sm">
-                {[
-                  { value: "masculin", label: lang === "fr" ? "Masculin" : "Male" },
-                  { value: "féminin", label: lang === "fr" ? "Féminin" : "Female" },
-                  { value: "non genré", label: lang === "fr" ? "Non genré" : "Non-binary" },
-                ].map((item) => (
-                  <label key={item.value} className="flex items-center gap-2 cursor-pointer capitalize">
+            ) : (
+              <>
+                {/* 1. NOM & PRÉNOMS */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-2">
+                      {lang === "fr" ? "Votre nom *" : "Your Last Name *"}
+                    </label>
                     <input
-                      type="radio"
-                      name="genre"
-                      value={item.value}
-                      checked={genre === item.value}
-                      onChange={() => setGenre(item.value)}
-                      className="accent-[#C5A059]"
+                      type="text"
+                      required
+                      value={formData.nom}
+                      onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
+                      placeholder={lang === "fr" ? "ex. Dupont" : "e.g. Smith"}
+                      className="w-full px-5 py-3.5 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] placeholder-gray-600 focus:outline-none focus:border-[#E9D18F] transition-colors"
                     />
-                    <span>{item.label}</span>
+                  </div>
+                  <div>
+                    <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-2">
+                      {lang === "fr" ? "Vos prénoms *" : "Your First Names *"}
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.prenoms}
+                      onChange={(e) => setFormData({ ...formData, prenoms: e.target.value })}
+                      placeholder={lang === "fr" ? "ex. Jean-Pierre" : "e.g. Jane"}
+                      className="w-full px-5 py-3.5 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] placeholder-gray-600 focus:outline-none focus:border-[#E9D18F] transition-colors"
+                    />
+                  </div>
+                </div>
+
+                {/* 2. GENRE */}
+                <div className="p-5 rounded-2xl bg-[#1a1c1a] border border-[#C5A059]/30">
+                  <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-3">
+                    {lang === "fr" ? "Genre" : "Gender"}
                   </label>
-                ))}
-              </div>
-            </div>
+                  <div className="flex flex-wrap items-center gap-8 font-cinzel text-sm">
+                    {[
+                      { id: "masculin", label: "Masculin" },
+                      { id: "feminin", label: "Féminin" },
+                      { id: "non-genre", label: "Non genré" },
+                    ].map((item) => (
+                      <label key={item.id} className="flex items-center gap-2.5 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="genre"
+                          value={item.id}
+                          checked={formData.genre === item.id}
+                          onChange={() => setFormData({ ...formData, genre: item.id })}
+                          className="accent-[#C5A059] w-4 h-4"
+                        />
+                        <span className="text-[#EDE4CF]">{item.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
 
-            {/* DATE DE NAISSANCE & LIEU & NATIONALITÉ */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              <div>
-                <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-2">
-                  {lang === "fr" ? "DATE DE NAISSANCE *" : "DATE OF BIRTH *"}
-                </label>
-                <input
-                  type="date"
-                  required
-                  className="w-full px-4 py-3.5 rounded-xl bg-[#EDE4CF]/10 border border-[#C5A059]/30 text-white focus:outline-none focus:border-[#E9D18F]"
-                />
-              </div>
-              <div>
-                <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-2">
-                  {lang === "fr" ? "LIEU DE NAISSANCE" : "PLACE OF BIRTH"}
-                </label>
-                <input
-                  type="text"
-                  placeholder={lang === "fr" ? "Ville, Pays" : "City, Country"}
-                  className="w-full px-4 py-3.5 rounded-xl bg-[#EDE4CF]/10 border border-[#C5A059]/30 text-white placeholder-[#EDE4CF]/40 focus:outline-none focus:border-[#E9D18F]"
-                />
-              </div>
-              <div>
-                <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-2">
-                  {lang === "fr" ? "NATIONALITÉ *" : "NATIONALITY *"}
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder={lang === "fr" ? "ex. Française" : "e.g. French"}
-                  className="w-full px-4 py-3.5 rounded-xl bg-[#EDE4CF]/10 border border-[#C5A059]/30 text-white placeholder-[#EDE4CF]/40 focus:outline-none focus:border-[#E9D18F]"
-                />
-              </div>
-            </div>
+                {/* 3. DATE DE NAISSANCE, LIEU DE NAISSANCE, NATIONALITÉ */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                  <div>
+                    <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-2">
+                      {lang === "fr" ? "Date de naissance *" : "Date of Birth *"}
+                    </label>
+                    <input
+                      type="date"
+                      required
+                      value={formData.dateNaissance}
+                      onChange={(e) => setFormData({ ...formData, dateNaissance: e.target.value })}
+                      className="w-full px-4 py-3.5 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] focus:outline-none focus:border-[#E9D18F] transition-colors [color-scheme:dark]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-2">
+                      {lang === "fr" ? "Lieu de naissance" : "Place of Birth"}
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.lieuNaissance}
+                      onChange={(e) => setFormData({ ...formData, lieuNaissance: e.target.value })}
+                      placeholder={lang === "fr" ? "Ville, Pays" : "City, Country"}
+                      className="w-full px-4 py-3.5 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] placeholder-gray-600 focus:outline-none focus:border-[#E9D18F] transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-2">
+                      {lang === "fr" ? "Nationalité *" : "Nationality *"}
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.nationalite}
+                      onChange={(e) => setFormData({ ...formData, nationalite: e.target.value })}
+                      placeholder={lang === "fr" ? "ex. Française" : "e.g. French"}
+                      className="w-full px-4 py-3.5 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] placeholder-gray-600 focus:outline-none focus:border-[#E9D18F] transition-colors"
+                    />
+                  </div>
+                </div>
 
-            {/* BOUTON VALIDER */}
-            <div className="text-center pt-6">
-              <button
-                type="submit"
-                onClick={(e) => {
-                  e.preventDefault();
-                  alert(
-                    lang === "fr"
-                      ? "Votre demande de Cocooning Touristique au Bénin a bien été enregistrée. Nos équipes prendront contact avec vous rapidement !"
-                      : "Your Tourist Cocooning request in Benin has been recorded. Our team will contact you shortly!"
-                  );
-                }}
-                className="w-full sm:w-auto px-12 py-4 rounded-full font-cinzel text-xs tracking-widest uppercase font-semibold text-black bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] hover:brightness-110 transition-all shadow-xl hover:scale-105 cursor-pointer"
-              >
-                {lang === "fr" ? "Transmettre le formulaire • VALIDER" : "Submit Form • VALIDATE"}
-              </button>
-            </div>
+                {/* 4. ADRESSE */}
+                <div>
+                  <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-2">
+                    {lang === "fr" ? "Adresse *" : "Address *"}
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.adresse}
+                    onChange={(e) => setFormData({ ...formData, adresse: e.target.value })}
+                    placeholder={lang === "fr" ? "Numéro, rue, code postal, ville, pays" : "Street, city, postal code, country"}
+                    className="w-full px-5 py-3.5 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] placeholder-gray-600 focus:outline-none focus:border-[#E9D18F] transition-colors"
+                  />
+                </div>
+
+                {/* 5. TÉLÉPHONE & TÉLÉPHONE PERSONNE DE CONFIANCE */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-2">
+                      {lang === "fr" ? "Téléphone *" : "Phone Number *"}
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      value={formData.telephone}
+                      onChange={(e) => setFormData({ ...formData, telephone: e.target.value })}
+                      placeholder="+33 6 00 00 00 00"
+                      className="w-full px-5 py-3.5 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] placeholder-gray-600 focus:outline-none focus:border-[#E9D18F] transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-2">
+                      {lang === "fr" ? "Téléphone d’une personne de confiance *" : "Emergency Contact Phone *"}
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      value={formData.telephoneConfiance}
+                      onChange={(e) => setFormData({ ...formData, telephoneConfiance: e.target.value })}
+                      placeholder="+33 6 00 00 00 00"
+                      className="w-full px-5 py-3.5 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] placeholder-gray-600 focus:outline-none focus:border-[#E9D18F] transition-colors"
+                    />
+                  </div>
+                </div>
+
+                {/* 6. COURRIEL & PROFESSION */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-2">
+                      {lang === "fr" ? "Courriel *" : "Email Address *"}
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={formData.courriel}
+                      onChange={(e) => setFormData({ ...formData, courriel: e.target.value })}
+                      placeholder="vous@exemple.com"
+                      className="w-full px-5 py-3.5 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] placeholder-gray-600 focus:outline-none focus:border-[#E9D18F] transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-2">
+                      {lang === "fr" ? "Profession" : "Occupation"}
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.profession}
+                      onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
+                      placeholder={lang === "fr" ? "ex. Avocat, Médecin, Enseignant..." : "e.g. Lawyer, Doctor..."}
+                      className="w-full px-5 py-3.5 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] placeholder-gray-600 focus:outline-none focus:border-[#E9D18F] transition-colors"
+                    />
+                  </div>
+                </div>
+
+                {/* 7. PRÉFÉRENCES ALIMENTAIRES */}
+                <div className="p-5 rounded-2xl bg-[#1a1c1a] border border-[#C5A059]/30">
+                  <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-3">
+                    {lang === "fr" ? "Préférences alimentaires" : "Dietary Preferences"}
+                  </label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 font-cinzel text-sm">
+                    {[
+                      "Sans porc",
+                      "Sans sucre",
+                      "Sans sel",
+                      "Sans gluten",
+                      "Sans lactose",
+                      "Végétarien",
+                    ].map((item) => (
+                      <label key={item} className="flex items-center gap-2.5 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={formData.preferencesAlimentaires.includes(item)}
+                          onChange={() => handleDietToggle(item)}
+                          className="accent-[#C5A059] w-4 h-4 rounded"
+                        />
+                        <span className="text-[#EDE4CF] text-xs sm:text-sm">{item}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 8. PRÉSENTATION LIBRE */}
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="font-cinzel text-xs tracking-widest text-[#C5A059] uppercase">
+                      {lang === "fr" ? "Présentation libre *" : "Free Presentation *"}
+                    </label>
+                    <span className="font-cinzel text-[11px] text-[#C5A059]/80">
+                      {wordCount} / 2 000 {lang === "fr" ? "mots" : "words"}
+                    </span>
+                  </div>
+                  <textarea
+                    rows={6}
+                    required
+                    value={formData.presentationLibre}
+                    onChange={(e) => setFormData({ ...formData, presentationLibre: e.target.value })}
+                    placeholder={lang === "fr"
+                      ? "Présentez-vous librement, vos attentes pour ce séjour, vos centres d'intérêt..."
+                      : "Introduce yourself freely, your expectations for this stay..."}
+                    className="w-full px-5 py-3.5 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] placeholder-gray-600 focus:outline-none focus:border-[#E9D18F] transition-colors"
+                  />
+                </div>
+
+                {/* 9. SURVEILLANCE MÉDICALE */}
+                <div className="p-5 rounded-2xl bg-[#1a1c1a] border border-[#C5A059]/30 space-y-3">
+                  <div>
+                    <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-3">
+                      {lang === "fr" ? "Surveillance médicale *" : "Medical Monitoring *"}
+                    </label>
+                    <div className="flex items-center gap-8 font-cinzel text-sm">
+                      <label className="flex items-center gap-2.5 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="surveillanceMedicale"
+                          value="oui"
+                          checked={formData.surveillanceMedicale === "oui"}
+                          onChange={() => setFormData({ ...formData, surveillanceMedicale: "oui" })}
+                          className="accent-[#C5A059] w-4 h-4"
+                        />
+                        <span className="text-[#EDE4CF]">Oui</span>
+                      </label>
+                      <label className="flex items-center gap-2.5 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="surveillanceMedicale"
+                          value="non"
+                          checked={formData.surveillanceMedicale === "non"}
+                          onChange={() => setFormData({ ...formData, surveillanceMedicale: "non" })}
+                          className="accent-[#C5A059] w-4 h-4"
+                        />
+                        <span className="text-[#EDE4CF]">Non</span>
+                      </label>
+                    </div>
+                  </div>
+                  {formData.surveillanceMedicale === "oui" && (
+                    <p className="text-xs text-[#E9D18F] font-cinzel italic">
+                      {lang === "fr"
+                        ? "⚠ Si oui, joignez un avis médical dans la section ci-dessous."
+                        : "⚠ If yes, please attach a medical notice below."}
+                    </p>
+                  )}
+                </div>
+
+                {/* 10. JOIGNEZ DES FICHIERS */}
+                <div className="p-6 rounded-2xl bg-[#1a1c1a] border border-[#C5A059]/30 space-y-4">
+                  <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase">
+                    {lang === "fr" ? "Joignez des fichiers" : "Attach Files"}
+                  </label>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* 1° Photo */}
+                    <div className="p-4 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/30">
+                      <span className="block font-cinzel text-xs text-[#E9D18F] font-bold mb-2">
+                        1° Une photo de vous
+                      </span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => setFiles({ ...files, photo: e.target.files?.[0] || null })}
+                        className="block w-full text-xs text-[#cabfa6] file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-cinzel file:bg-[#C5A059] file:text-black hover:file:bg-[#E9D18F] cursor-pointer"
+                      />
+                      {files.photo && <p className="text-xs text-[#25D366] mt-1.5 truncate">✓ {files.photo.name}</p>}
+                    </div>
+
+                    {/* 2° Passeport */}
+                    <div className="p-4 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/30">
+                      <span className="block font-cinzel text-xs text-[#E9D18F] font-bold mb-2">
+                        2° Votre passeport valide
+                      </span>
+                      <input
+                        type="file"
+                        accept=".pdf,image/*"
+                        onChange={(e) => setFiles({ ...files, passeport: e.target.files?.[0] || null })}
+                        className="block w-full text-xs text-[#cabfa6] file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-cinzel file:bg-[#C5A059] file:text-black hover:file:bg-[#E9D18F] cursor-pointer"
+                      />
+                      {files.passeport && <p className="text-xs text-[#25D366] mt-1.5 truncate">✓ {files.passeport.name}</p>}
+                    </div>
+
+                    {/* 3° Avis médical */}
+                    <div className="p-4 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/30">
+                      <span className="block font-cinzel text-xs text-[#E9D18F] font-bold mb-2">
+                        3° Avis médical s’il y a lieu
+                      </span>
+                      <input
+                        type="file"
+                        accept=".pdf,image/*"
+                        onChange={(e) => setFiles({ ...files, avisMedical: e.target.files?.[0] || null })}
+                        className="block w-full text-xs text-[#cabfa6] file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-cinzel file:bg-[#C5A059] file:text-black hover:file:bg-[#E9D18F] cursor-pointer"
+                      />
+                      {files.avisMedical && <p className="text-xs text-[#25D366] mt-1.5 truncate">✓ {files.avisMedical.name}</p>}
+                    </div>
+
+                    {/* 4° Tout autre document important */}
+                    <div className="p-4 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/30">
+                      <span className="block font-cinzel text-xs text-[#E9D18F] font-bold mb-2">
+                        4° Tout autre document important
+                      </span>
+                      <input
+                        type="file"
+                        accept="*/*"
+                        onChange={(e) => setFiles({ ...files, autreDocument: e.target.files?.[0] || null })}
+                        className="block w-full text-xs text-[#cabfa6] file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-cinzel file:bg-[#C5A059] file:text-black hover:file:bg-[#E9D18F] cursor-pointer"
+                      />
+                      {files.autreDocument && <p className="text-xs text-[#25D366] mt-1.5 truncate">✓ {files.autreDocument.name}</p>}
+                    </div>
+                  </div>
+                </div>
+
+                {/* BOUTON TRANSMETTRE LE FORMULAIRE • VALIDER */}
+                <div className="text-center pt-6">
+                  <button
+                    type="submit"
+                    className="w-full sm:w-auto px-12 py-4 rounded-full font-cinzel text-xs tracking-widest uppercase font-bold text-black bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] hover:brightness-110 transition-all shadow-[0_0_30px_rgba(197,160,89,0.4)] hover:scale-105 cursor-pointer"
+                  >
+                    Transmettre le formulaire • VALIDER
+                  </button>
+                </div>
+              </>
+            )}
           </form>
         </section>
 

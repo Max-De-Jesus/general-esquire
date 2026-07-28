@@ -216,7 +216,7 @@ export default function EntrepreneurPage() {
       <header className="w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
           <Image
-            src="/images/bannerchef.png"
+            src="/images/bannerentrprise.png"
             alt="Bannière Chef d'Entreprise — General Esquire"
             fill
             priority

@@ -92,11 +92,15 @@ export default function ProfessionnelPage() {
           <p className="font-cormorant text-lg sm:text-xl text-[#EDE4CF]/90 italic leading-relaxed">
             {lang === "fr" ? (
               <>
-                Parmi ces professionnels, il y en a qui, plus que tous les autres, sont en première ligne de ce besoin de réactivité et d'actualité : <strong className="not-italic font-semibold text-[#E9D18F]">ce sont les avocats.</strong>
+                Parmi ces professionnels, il y en a qui, plus que tous les autres, sont en première ligne :
+                <br />
+                <strong className="not-italic font-semibold text-[#E9D18F] text-2xl sm:text-3xl mt-2 block">ce sont les avocats.</strong>
               </>
             ) : (
               <>
-                Among these professionals, one group stands at the absolute forefront of this demand for speed and expertise: <strong className="not-italic font-semibold text-[#E9D18F]">lawyers & advocates.</strong>
+                Among these professionals, one group stands at the absolute forefront:
+                <br />
+                <strong className="not-italic font-semibold text-[#E9D18F] text-2xl sm:text-3xl mt-2 block">lawyers &amp; advocates.</strong>
               </>
             )}
           </p>
@@ -121,7 +125,7 @@ export default function ProfessionnelPage() {
             <p>
               {lang === "fr" ? (
                 <>
-                  Justement, pour peu qu'ils soient de la vieille école et peu ou prou familiarisés aux nouvelles technologies de l'information, ne maîtrisent pas tel langage en particulier, aient une activité plaidante chronophage, des ennuis ponctuels de santé, un heureux évènement en route, des charges si élevées que le recrutement d'un collaborateur est inenvisageable dans l'immédiat, ou pour tout autre motif d'empêchement prévisible ou non, le risque est grand, soit qu'ils ne tiennent pas leurs délais et s'exposent à une forclusion, soit qu'ils n'adoptent pas la meilleure stratégie dans la défense des intérêts qui leur tiennent à cœur, ce qui les exposerait à une action en responsabilité.
+                  Justement, pour peu qu'ils soient de la vieille école et peu ou prou familiarisés aux nouvelles technologies de l'information, ne maîtrisent pas tel langage en particulier, aient une activité, politque, social, plaidante chronophage, des ennuis ponctuels de santé, un heureux évènement en route, des charges si élevées que le recrutement d'un collaborateur est inenvisageable dans l'immédiat, ou pour tout autre motif d'empêchement prévisible ou non, le risque est grand, soit qu'ils ne tiennent pas leurs délais et s'exposent à une forclusion, soit qu'ils n'adoptent pas la meilleure stratégie dans la défense des intérêts qui leur tiennent à cœur, ce qui les exposerait à une action en responsabilité.
                 </>
               ) : (
                 <>
@@ -201,22 +205,24 @@ export default function ProfessionnelPage() {
           </button>
         </div>
 
-        {/* ─── MODAL 1 : NOTRE MÉTHODE DE TRAVAIL ──────────────────────── */}
+        {/* ─── MODAL 1 : NOTRE MÉTHODE DE TRAVAIL ────────────────── */}
         {activeModal === "methode" && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-md animate-fade-in">
-            <div className="relative w-full max-w-3xl max-h-[85vh] overflow-y-auto bg-[#131513] border-2 border-[#C5A059] rounded-3xl p-6 sm:p-10 shadow-2xl space-y-6 text-left">
-              <button
-                onClick={() => setActiveModal(null)}
-                className="absolute top-6 right-6 w-10 h-10 rounded-full bg-[#0a0b0a] border border-[#C5A059] text-[#C5A059] hover:text-white flex items-center justify-center font-cinzel text-xl transition-colors cursor-pointer"
-              >
-                &times;
-              </button>
+          <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-md" style={{animation: 'fadeIn 0.3s ease'}}>
+            <div className="relative w-full max-w-4xl max-h-[92vh] overflow-y-auto bg-[#0d0f0d] border-2 border-[#C5A059]/70 rounded-3xl shadow-[0_0_80px_rgba(197,160,89,0.25)] mt-4">
+              {/* Header sticky */}
+              <div className="sticky top-0 z-10 bg-[#0d0f0d]/98 border-b border-[#C5A059]/30 px-6 sm:px-10 py-5 flex items-center justify-between backdrop-blur-sm">
+                <h2 className="font-cinzel text-xl sm:text-2xl text-[#E9D18F] font-bold uppercase tracking-wider">
+                  Notre méthode de travail
+                </h2>
+                <button
+                  onClick={() => setActiveModal(null)}
+                  className="w-10 h-10 rounded-full bg-[#0a0b0a] border border-[#C5A059]/50 text-[#C5A059] hover:text-white hover:bg-[#C5A059]/20 flex items-center justify-center font-cinzel text-xl transition-all duration-200 cursor-pointer flex-shrink-0"
+                >
+                  &times;
+                </button>
+              </div>
 
-              <h2 className="font-cinzel text-2xl sm:text-3xl text-[#E9D18F] font-bold uppercase tracking-wider border-b border-[#C5A059]/30 pb-4">
-                Notre méthode de travail
-              </h2>
-
-              <div className="space-y-4 font-cormorant text-base sm:text-lg text-[#EDE4CF]/90 leading-relaxed font-light">
+              <div className="px-6 sm:px-10 py-8 space-y-5 font-cormorant text-base sm:text-lg text-[#EDE4CF]/90 leading-relaxed">
                 <p>
                   Notre méthode de travail est très simple : vous nous adressez votre demande par écrit, accompagnée de toutes les pièces nécessaires à son appréhension optimale.
                 </p>
@@ -224,101 +230,223 @@ export default function ProfessionnelPage() {
                   Nous examinons la demande et les pièces, et nous vous fixons la somme totale que vous devrez payer, dans l'hypothèse où vous n'auriez pas déjà souscrit auprès de notre cabinet un abonnement qui, pour les professionnels du droit, est annuel.
                 </p>
                 <p>
-                  Qu'il s'agisse de requête, assignation, conclusions ou mémoires, en demande, défense ou intervention, en première ou seconde instance, devant les juridictions civiles, sociales, commerciales, pénales, administratives, notre société prend le temps de lire avec soin toutes les pièces transmises.
+                  Vous avez donc soit un abonnement annuel dont la facturation au bout de douze mois devient trimestrielle, soit une demande de prestation ponctuelle qui vous est facturée au coup par coup. Mais dans un cas comme dans l'autre, la méthode de travail reste la même.
+                </p>
+                <p>
+                  Qu'il s'agisse de requête, assignation, conclusions ou mémoires, en demande, défense ou intervention, en première ou seconde instance, devant les juridictions civiles, sociales, commerciales, pénales, administratives, ainsi que tous types d'organisme juridictionnel, notre société prend le temps de lire avec soin toutes les pièces que vous nous adressez, et s'il échet, la lettre de mission que vous nous aurez soumise.
+                </p>
+                <p>
+                  Cette lecture est essentielle, car c'est elle qui nous permet de saisir avec acuité ce que vous souhaitez voir faire, et éventuellement ce qui est pour vous le mieux à l'étape de la procédure où vous vous trouvez ; les règles de droit applicables ainsi que la jurisprudence la plus idoine à garantir le succès de votre cause ; et la facturation dont vous serez requis du paiement, dans l'hypothèse où vous nous auriez sollicité sur la base d'une prestation ponctuelle.
+                </p>
+                <p>
+                  Nous prenons des écritures que nous vous adressons aux formats Word et PDF. Elles sont argumentées en fait et en droit, présentées de façon limpide et digeste, sur la base d'un raisonnement rigoureux appuyé par des jurisprudences pertinentes.
+                </p>
+                <p>
+                  Nous classons et numérotons dans un ordre logique et cohérent toutes les pièces dont nous vous proposons la production, et nous les mettons au format PDF pour vous, le cas échéant, afin de vous en faciliter la communication.
+                </p>
+                <p>
+                  Nous pouvons convenir d'une conférence téléphonique ou visiophonique si vous le souhaitez, afin d'harmoniser notre perception mutuelle du dossier, sachant que c'est votre position finale qui l'emporte, car les écritures sont prises en votre nom.
+                </p>
+                <p>
+                  Une fois notre rédaction terminée — éventuellement après prise en compte de toutes vos observations au bout de deux relectures s'il y a lieu —, celle-ci devient votre seule et exclusive propriété, et il vous est loisible d'en disposer à votre guise. Nous n'assumons aucune responsabilité à cet égard, sauf en situation d'urgence.
+                </p>
+                <p>
+                  À votre demande, nous pouvons prendre des écritures en réplique ou en duplique, à partir de nos précédentes productions.
                 </p>
 
-                <h3 className="font-cinzel text-lg text-[#E9D18F] uppercase tracking-wider pt-2">
-                  Nos domaines d'intervention
-                </h3>
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-[#cabfa6] list-disc list-inside">
-                  <li>Droit civil & obligations</li>
-                  <li>Droit commercial & recouvrement</li>
-                  <li>Droit de la consommation & surendettement</li>
-                  <li>Droit bancaire & assurances</li>
-                  <li>Droit de la famille & successions</li>
-                  <li>Droit du travail & licenciements</li>
-                  <li>Droit pénal & pénal des affaires</li>
-                  <li>Droit des étrangers (titres, OQTF, CNDA)</li>
-                  <li>Droit administratif & fonction publique</li>
-                  <li>Droit de la profession d'avocat</li>
-                  <li>Droits et libertés fondamentaux (CEDH)</li>
+                {/* Séparateur doré */}
+                <div className="flex items-center gap-3 py-2">
+                  <div className="flex-1 h-[1px] bg-gradient-to-r from-transparent to-[#C5A059]/60" />
+                  <span className="text-[#C5A059] text-xs">◆</span>
+                  <div className="flex-1 h-[1px] bg-gradient-to-l from-transparent to-[#C5A059]/60" />
+                </div>
+
+                <h3 className="font-cinzel text-lg text-[#E9D18F] uppercase tracking-wider font-bold">Nos domaines d'intervention</h3>
+                <p className="text-[#EDE4CF]/80 text-base italic">
+                  Généraliste et éclectique, notre champ de pratique juridique porte notamment, mais non exhaustivement, sur les matières suivantes :
+                </p>
+
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm sm:text-base text-[#EDE4CF]/85 list-none pl-0">
+                  {[
+                    "Droit civil — contrats, obligations, responsabilité contractuelle et quasi-délictuelle",
+                    "Droit commercial — montage de contrats, recouvrement de créances, voies d'exécution",
+                    "Droit de la consommation — surendettement, crédit personnel et immobilier",
+                    "Droit bancaire — fraude aux instruments de paiement",
+                    "Droit des assurances — assurance-vie, assurances professionnelles",
+                    "Droit successoral — litiges du testament",
+                    "Droit de la famille — divorce, pension alimentaire",
+                    "Droit de la construction — garantie décennale, garantie de parfait achèvement, vices cachés",
+                    "Droit des baux — litiges locatifs, troubles de voisinage, copropriété",
+                    "Droit du travail — procédure de licenciement disciplinaire et économique, reclassement professionnel",
+                    "Droit de la sécurité sociale — litiges avec la CAF, France Travail",
+                    "Droit pénal — procédure pénale, chambre de l'instruction, droit pénitentiaire, crimes et délits contre les personnes et contre les biens, infractions routières",
+                    "Droit pénal des affaires — abus de biens sociaux, délit d'initié",
+                    "Droit des étrangers — titres de séjour, procédures de référé administratif, visas d'entrée, OQTF, IRTF, regroupement familial, OFPRA et CNDA",
+                    "Droit de la nationalité — naturalisation française",
+                    "Droit administratif — litiges de la fonction publique",
+                    "Droit de la profession d'avocat — inscription, omission, procédure disciplinaire, défense à une action en responsabilité civile professionnelle",
+                    "Droits et libertés fondamentaux — requête et procédure devant la Cour européenne des droits de l'Homme",
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="text-[#C5A059] mt-1 flex-shrink-0 text-xs">◆</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
                 </ul>
 
-                <h3 className="font-cinzel text-lg text-[#E9D18F] uppercase tracking-wider pt-2">
-                  Intervention en urgence (Sous 48h)
-                </h3>
+                {/* Séparateur */}
+                <div className="flex items-center gap-3 py-2">
+                  <div className="flex-1 h-[1px] bg-gradient-to-r from-transparent to-[#C5A059]/60" />
+                  <span className="text-[#C5A059] text-xs">◆</span>
+                  <div className="flex-1 h-[1px] bg-gradient-to-l from-transparent to-[#C5A059]/60" />
+                </div>
+
+                <h3 className="font-cinzel text-lg text-[#E9D18F] uppercase tracking-wider font-bold">La situation d'intervention en urgence</h3>
                 <p>
-                  Il s'agit de la situation dans laquelle nous acceptons de prendre des écritures ou conseils sous un délai inférieur à 48 heures. En situation d'urgence, la facturation est majorée.
+                  Il s'agit de la situation dans laquelle nous acceptons de vous prodiguer un conseil écrit, ou de prendre des écritures destinées à être produites en procédure à votre demande, dans un délai inférieur à 48 heures, entre le moment où vous sollicitez notre intervention et le moment où ces écritures ou ce conseil doivent déjà être en votre possession.
                 </p>
+                <p>
+                  Nous comprenons que dans une telle hypothèse, vous pourriez ne pas disposer de suffisamment de recul pour contrévérifier notre production ; et notre sens de la responsabilité en est d'autant exacérbé que nous avons absolument le loisir de refuser la mission que vous auriez souhaité nous confier.
+                </p>
+                <div className="p-5 rounded-xl bg-red-950/30 border border-red-500/40 text-[#FF7755] font-semibold">
+                  En situation d'urgence, la facturation est majorée.
+                </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* ─── MODAL 2 : NOS TARIFS ────────────────────────────────────── */}
+        {/* ─── MODAL 2 : NOS TARIFS ────────────────────── */}
         {activeModal === "tarifs" && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-md animate-fade-in">
-            <div className="relative w-full max-w-3xl max-h-[85vh] overflow-y-auto bg-[#131513] border-2 border-[#C5A059] rounded-3xl p-6 sm:p-10 shadow-2xl space-y-6 text-left">
-              <button
-                onClick={() => setActiveModal(null)}
-                className="absolute top-6 right-6 w-10 h-10 rounded-full bg-[#0a0b0a] border border-[#C5A059] text-[#C5A059] hover:text-white flex items-center justify-center font-cinzel text-xl transition-colors cursor-pointer"
-              >
-                &times;
-              </button>
+          <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-md" style={{animation: 'fadeIn 0.3s ease'}}>
+            <div className="relative w-full max-w-4xl max-h-[92vh] overflow-y-auto bg-[#0d0f0d] border-2 border-[#C5A059]/70 rounded-3xl shadow-[0_0_80px_rgba(197,160,89,0.25)] mt-4">
+              {/* Header sticky */}
+              <div className="sticky top-0 z-10 bg-[#0d0f0d]/98 border-b border-[#C5A059]/30 px-6 sm:px-10 py-5 flex items-center justify-between backdrop-blur-sm">
+                <h2 className="font-cinzel text-xl sm:text-2xl text-[#E9D18F] font-bold uppercase tracking-wider">
+                  Méthode de tarification
+                </h2>
+                <button
+                  onClick={() => setActiveModal(null)}
+                  className="w-10 h-10 rounded-full bg-[#0a0b0a] border border-[#C5A059]/50 text-[#C5A059] hover:text-white hover:bg-[#C5A059]/20 flex items-center justify-center font-cinzel text-xl transition-all duration-200 cursor-pointer flex-shrink-0"
+                >
+                  &times;
+                </button>
+              </div>
 
-              <h2 className="font-cinzel text-2xl sm:text-3xl text-[#E9D18F] font-bold uppercase tracking-wider border-b border-[#C5A059]/30 pb-4">
-                Méthode de tarification
-              </h2>
+              <div className="px-6 sm:px-10 py-8 space-y-6">
 
-              <div className="space-y-6 font-cormorant text-base sm:text-lg text-[#EDE4CF]/90 leading-relaxed font-light">
-                {/* Tarif 1 */}
-                <div className="p-5 rounded-2xl bg-[#0e100e] border border-[#C5A059]/30">
-                  <h3 className="font-cinzel text-base text-[#E9D18F] uppercase tracking-wider mb-2 font-bold">
-                    1. Abonnement annuel — Facturation annuelle
-                  </h3>
-                  <div className="font-cinzel text-2xl text-[#E9D18F] font-bold my-1">
-                    15 000 € TTC <span className="text-xs text-[#cabfa6] font-normal">/ an (paiement d'avance)</span>
+                {/* Tarif 1 : Abonnement annuel annuel */}
+                <div className="p-6 rounded-2xl bg-gradient-to-br from-[#0F3823]/80 to-[#131513] border-2 border-[#C5A059]/60 shadow-xl">
+                  <div className="flex items-start justify-between flex-wrap gap-3 mb-3">
+                    <h3 className="font-cinzel text-sm sm:text-base text-[#E9D18F] uppercase tracking-wider font-bold">
+                      1. Abonnement annuel — facturation annuelle
+                    </h3>
+                    <div className="font-cinzel text-3xl text-[#E9D18F] font-extrabold whitespace-nowrap">
+                      15 000 € TTC <span className="text-xs text-[#cabfa6] font-normal font-cormorant">par an</span>
+                    </div>
                   </div>
-                  <p className="text-sm text-[#cabfa6]">
-                    Assistance illimitée pour tous actes, consultations et rédactions par téléphone, visio et écrit.
+                  <div className="space-y-3 font-cormorant text-base text-[#EDE4CF]/85 leading-relaxed">
+                    <p>Vous pouvez choisir de souscrire un abonnement. Celui-ci, annuel, renouvelable par tacite reconduction, peut être résilié à tout moment après l'échéance de son premier anniversaire, moyennant un préavis de quinze jours matérialisé par écrit.</p>
+                    <p>La preuve de la réception du préavis peut être rapportée par la production d'un avis postal recommandé, d'une décharge, ou la saisie écran horodatée de l'envoi d'un mail ou d'un SMS. L'une quelconque des deux parties — General Esquire ou son mandant, professionnel du droit — peut prendre l'initiative de mettre un terme à cet abonnement en respectant ces modalités.</p>
+                    <p>L'abonnement annuel garantit au professionnel du droit, en toutes circonstances, de bénéficier de l'assistance d'un cabinet juridique expérimenté pour tous types d'intervention rédactionnelle et de consultation, sans limitation de volume, par téléphone, visioconférence et à l'écrit, même en situation d'urgence, exactement comme le ferait un avocat collaborateur ou un juriste de cabinet, clerc d'avocat.</p>
+                    <p>C'est en quelque sorte la version premium de notre facturation, qui nous place en qualité de mandataire à la disposition totale du professionnel du droit dont nous recevons la mission de lui donner des avis juridiques et de prendre des écritures pour sa propre activité professionnelle, qu'il l'exerce à titre individuel ou en société.</p>
+                    <div className="p-4 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/30 text-sm text-[#cabfa6] font-cormorant italic">
+                      Ce montant n'est remboursable que sur un solde calculé prorata temporis pour douze mois, advenant la défaillance de General Esquire — signalée par un écrit ayant date certaine — à délivrer sa mission pendant deux mois consécutifs.
+                      <br /><br />
+                      <strong className="text-[#E9D18F] not-italic">Exemple :</strong> pour un contrat annuel signé en janvier et inexécuté de notre fait à compter d'août, General Esquire rembourserait dès le mois d'octobre la somme de 6 250 € TTC, correspondant aux cinq mois restants avant la date anniversaire.
+                    </div>
+                    <p className="text-sm text-[#cabfa6]">La société General Esquire justifie d'une assurance garantissant sa solvabilité.</p>
+                  </div>
+                </div>
+
+                {/* Tarif 2 : Abonnement annuel trimestriel */}
+                <div className="p-6 rounded-2xl bg-[#131513] border border-[#C5A059]/40 shadow-lg">
+                  <div className="flex items-start justify-between flex-wrap gap-3 mb-3">
+                    <h3 className="font-cinzel text-sm sm:text-base text-[#E9D18F] uppercase tracking-wider font-bold">
+                      2. Abonnement annuel — facturation trimestrielle
+                    </h3>
+                    <div className="font-cinzel text-3xl text-[#E9D18F] font-extrabold whitespace-nowrap">
+                      3 500 € TTC <span className="text-xs text-[#cabfa6] font-normal font-cormorant">par trimestre</span>
+                    </div>
+                  </div>
+                  <div className="space-y-3 font-cormorant text-base text-[#EDE4CF]/85 leading-relaxed">
+                    <p>Si l'exécution de l'abonnement se déroule bien pendant les douze premiers mois, la facturation devient trimestrielle à compter du renouvellement tacite du contrat.</p>
+                    <p>Un bonus de fidélité est alors accordé au professionnel du droit.</p>
+                    <div className="inline-block px-4 py-2 rounded-lg bg-[#0F3823]/60 border border-[#C5A059]/30 text-sm text-[#C5A059] font-cinzel">
+                      au lieu de 3 750 € (bonus fidélité)
+                    </div>
+                    <p>Cette somme est payable d'avance, tout trimestre entamé étant dû, et se terminant au dernier jour du mois, quel que soit le nombre de jours dans le mois ou le nombre de jours outrés.</p>
+                    <div className="p-4 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/30 text-sm text-[#cabfa6] font-cormorant italic">
+                      <strong className="text-[#E9D18F] not-italic">Exemple :</strong> pour un contrat renouvelé en janvier, si notre client signale une défaillance le 20 février, General Esquire rembourse les jours restant depuis cette réclamation jusqu'au 31 mars, soit environ 39 ou 40 jours, correspondant à environ 1 555 €
+                    </div>
+                  </div>
+                </div>
+
+                {/* Tarif 3 : Pas d'abonnement mensuel */}
+                <div className="p-5 rounded-2xl bg-[#131513] border border-[#C5A059]/30">
+                  <h3 className="font-cinzel text-sm sm:text-base text-[#E9D18F] uppercase tracking-wider font-bold mb-2">
+                    3. Abonnement mensuel
+                  </h3>
+                  <p className="font-cormorant text-base text-[#EDE4CF]/80 leading-relaxed">
+                    Il n'est pas proposé d'abonnement mensuel pour les professionnels du droit. Ils peuvent en revanche demander au coup par coup une prestation ponctuelle.
                   </p>
                 </div>
 
-                {/* Tarif 2 */}
-                <div className="p-5 rounded-2xl bg-[#0e100e] border border-[#C5A059]/30">
-                  <h3 className="font-cinzel text-base text-[#E9D18F] uppercase tracking-wider mb-2 font-bold">
-                    2. Abonnement annuel — Facturation trimestrielle
+                {/* Tarif 4 : Prestation ponctuelle */}
+                <div className="p-6 rounded-2xl bg-[#131513] border border-[#C5A059]/40 shadow-lg">
+                  <h3 className="font-cinzel text-sm sm:text-base text-[#E9D18F] uppercase tracking-wider font-bold mb-3">
+                    4. Prestation ponctuelle — facturation à l'acte
                   </h3>
-                  <div className="font-cinzel text-2xl text-[#E9D18F] font-bold my-1">
-                    3 500 € TTC <span className="text-xs text-[#cabfa6] font-normal">/ trimestre (après 1an d'ancienneté)</span>
+                  <div className="space-y-4 font-cormorant text-base text-[#EDE4CF]/85 leading-relaxed">
+                    <p>Au titre de la prestation ponctuelle, la facturation se compose de deux éléments : un forfait fixe de rédaction, et un forfait variable de lecture.</p>
+
+                    <div className="p-4 rounded-xl bg-[#0F3823]/40 border border-[#C5A059]/30">
+                      <div className="flex items-center justify-between flex-wrap gap-2 mb-2">
+                        <span className="font-cinzel text-xs text-[#C5A059] uppercase tracking-wider">Le forfait fixe de rédaction</span>
+                        <span className="font-cinzel text-2xl text-[#E9D18F] font-bold">500 € TTC <span className="text-xs font-normal text-[#cabfa6] font-cormorant">par acte</span></span>
+                      </div>
+                      <p className="text-sm text-[#cabfa6]">Qu'il s'agisse de requête, d'assignation, de conclusions ou de mémoire, voire d'une question prioritaire de constitutionnalité devant un tribunal, une cour d'appel ou même la Cour de cassation, en demande, défense ou intervention, notre forfait de rédaction est de 500 € TTC, indifféremment du nombre de parties, du nombre de pages rédigées, de la complexité ou de la technicité de l'affaire.</p>
+                    </div>
+
+                    <div className="p-4 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/30">
+                      <span className="font-cinzel text-xs text-[#C5A059] uppercase tracking-wider block mb-3">Le forfait variable de lecture</span>
+                      <p className="text-sm text-[#cabfa6] mb-3">Le forfait de lecture n'est variable qu'en ce qu'il dépend du nombre de pages à lire par l'équipe de General Esquire.</p>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-sm border-b border-[#C5A059]/15 pb-2">
+                          <span className="text-[#EDE4CF]/80">Documents écrits (français / anglais)</span>
+                          <span className="font-cinzel text-[#E9D18F] font-bold">5 € TTC / page</span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm border-b border-[#C5A059]/15 pb-2">
+                          <span className="text-[#EDE4CF]/80">Documents audio, vidéo ou audiovisuels</span>
+                          <span className="font-cinzel text-[#E9D18F] font-bold">2 € TTC / minute</span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-[#EDE4CF]/80">Documents en chinois ou en russe (traduction incluse)</span>
+                          <span className="font-cinzel text-[#E9D18F] font-bold">10 € TTC / page ou / minute</span>
+                        </div>
+                      </div>
+                      <p className="text-xs text-[#cabfa6] mt-3 italic">Ne sont pas facturés : les textes de loi, codes, jurisprudences, articles de doctrine et coupures de presse que nous lisons dans le cadre de nos recherches, ni les documents déjà facturés lors d'une prestation antérieure et repris dans des écritures en réponse, réplique ou récapitulatives.</p>
+                    </div>
+
+                    <p className="text-sm text-[#cabfa6] italic">Le client doit avoir réglé intégralement — forfait fixe de rédaction et forfait variable de lecture — préalablement à l'exécution de sa mission par le cabinet.</p>
                   </div>
-                  <p className="text-sm text-[#cabfa6]">
-                    Bonus de fidélité accordé aux clients fidèles à partir de la 2e année.
+                </div>
+
+                {/* Tarif 5 : Urgence */}
+                <div className="p-6 rounded-2xl bg-red-950/30 border-2 border-red-500/50 shadow-xl">
+                  <div className="flex items-start justify-between flex-wrap gap-3 mb-3">
+                    <h3 className="font-cinzel text-sm sm:text-base text-[#FF5522] uppercase tracking-wider font-bold">
+                      5. Prestation en urgence — facturation majorée
+                    </h3>
+                    <div className="font-cinzel text-3xl text-[#FF5522] font-extrabold whitespace-nowrap">
+                      1 500 € TTC
+                    </div>
+                  </div>
+                  <p className="font-cormorant text-base text-[#EDE4CF]/80 leading-relaxed">
+                    Forfait de rédaction en urgence (délai &lt; 48 h) — les autres données demeurent inchangées.
                   </p>
                 </div>
 
-                {/* Tarif 3 */}
-                <div className="p-5 rounded-2xl bg-[#0e100e] border border-[#C5A059]/30">
-                  <h3 className="font-cinzel text-base text-[#E9D18F] uppercase tracking-wider mb-2 font-bold">
-                    3. Prestation ponctuelle — Facturation à l'acte
-                  </h3>
-                  <div className="font-cinzel text-xl text-[#E9D18F] font-bold my-1">
-                    500 € TTC <span className="text-xs text-[#cabfa6] font-normal">forfait fixe de rédaction / acte</span>
-                  </div>
-                  <p className="text-sm text-[#cabfa6]">
-                    + Forfait variable de lecture : 5 € TTC / page écrite (FR/EN), 2 € TTC / minute audio/vidéo, 10 € TTC / page (Traduction Chinois/Russe incluse).
-                  </p>
-                </div>
-
-                {/* Tarif 4 */}
-                <div className="p-5 rounded-2xl bg-red-950/40 border border-red-500/40">
-                  <h3 className="font-cinzel text-base text-[#FF5522] uppercase tracking-wider mb-2 font-bold">
-                    4. Prestation en urgence (Délai &lt; 48h)
-                  </h3>
-                  <div className="font-cinzel text-xl text-[#FF5522] font-bold my-1">
-                    1 500 € TTC <span className="text-xs text-[#cabfa6] font-normal">forfait de rédaction en urgence</span>
-                  </div>
-                </div>
               </div>
             </div>
           </div>

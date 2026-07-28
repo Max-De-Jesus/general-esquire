@@ -11,10 +11,9 @@ export default function ConseilJuridiquePage() {
   const [showForm, setShowForm] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-  // Form State
   const [formData, setFormData] = useState({
-    nom: "",
     prenoms: "",
+    nom: "",
     structure: "",
     dateNaissance: "",
     lieuNaissance: "",
@@ -28,6 +27,220 @@ export default function ConseilJuridiquePage() {
     urgent: "non",
     rgpd: false,
   });
+
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 Mo
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const validFiles = files.filter(f => f.size <= MAX_FILE_SIZE);
+    const tooBig = files.filter(f => f.size > MAX_FILE_SIZE);
+    if (tooBig.length > 0) {
+      alert(lang === "fr"
+        ? `${tooBig.length} fichier(s) dépassent 5 Mo et ont été ignorés.`
+        : `${tooBig.length} file(s) exceed 5 MB and were ignored.`);
+    }
+    setUploadedFiles(prev => [...prev, ...validFiles].slice(0, 4));
+  };
+
+  const removeFile = (index: number) => {
+    setUploadedFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // Liste des pays avec drapeaux
+  const PAYS_LIST = [
+    { code: "AF", flag: "🇦🇫", name: "Afghanistan" },
+    { code: "ZA", flag: "🇿🇦", name: "Afrique du Sud" },
+    { code: "AL", flag: "🇦🇱", name: "Albanie" },
+    { code: "DZ", flag: "🇩🇿", name: "Algérie" },
+    { code: "DE", flag: "🇩🇪", name: "Allemagne" },
+    { code: "AD", flag: "🇦🇩", name: "Andorre" },
+    { code: "AO", flag: "🇦🇴", name: "Angola" },
+    { code: "AG", flag: "🇦🇬", name: "Antigua-et-Barbuda" },
+    { code: "SA", flag: "🇸🇦", name: "Arabie Saoudite" },
+    { code: "AR", flag: "🇦🇷", name: "Argentine" },
+    { code: "AM", flag: "🇦🇲", name: "Arménie" },
+    { code: "AU", flag: "🇦🇺", name: "Australie" },
+    { code: "AT", flag: "🇦🇹", name: "Autriche" },
+    { code: "AZ", flag: "🇦🇿", name: "Azerbaïdjan" },
+    { code: "BS", flag: "🇧🇸", name: "Bahamas" },
+    { code: "BH", flag: "🇧🇭", name: "Bahreïn" },
+    { code: "BD", flag: "🇧🇩", name: "Bangladesh" },
+    { code: "BB", flag: "🇧🇧", name: "Barbade" },
+    { code: "BE", flag: "🇧🇪", name: "Belgique" },
+    { code: "BZ", flag: "🇧🇿", name: "Belize" },
+    { code: "BJ", flag: "🇧🇯", name: "Bénin" },
+    { code: "BT", flag: "🇧🇹", name: "Bhoutan" },
+    { code: "BY", flag: "🇧🇾", name: "Biélorussie" },
+    { code: "BO", flag: "🇧🇴", name: "Bolivie" },
+    { code: "BA", flag: "🇧🇦", name: "Bosnie-Herzégovine" },
+    { code: "BW", flag: "🇧🇼", name: "Botswana" },
+    { code: "BR", flag: "🇧🇷", name: "Brésil" },
+    { code: "BN", flag: "🇧🇳", name: "Brunéi" },
+    { code: "BG", flag: "🇧🇬", name: "Bulgarie" },
+    { code: "BF", flag: "🇧🇫", name: "Burkina Faso" },
+    { code: "BI", flag: "🇧🇮", name: "Burundi" },
+    { code: "CV", flag: "🇨🇻", name: "Cap-Vert" },
+    { code: "KH", flag: "🇰🇭", name: "Cambodge" },
+    { code: "CM", flag: "🇨🇲", name: "Cameroun" },
+    { code: "CA", flag: "🇨🇦", name: "Canada" },
+    { code: "CF", flag: "🇨🇫", name: "Centrafrique" },
+    { code: "CL", flag: "🇨🇱", name: "Chili" },
+    { code: "CN", flag: "🇨🇳", name: "Chine" },
+    { code: "CY", flag: "🇨🇾", name: "Chypre" },
+    { code: "CO", flag: "🇨🇴", name: "Colombie" },
+    { code: "KM", flag: "🇰🇲", name: "Comores" },
+    { code: "CG", flag: "🇨🇬", name: "Congo" },
+    { code: "CD", flag: "🇨🇩", name: "Congo (RDC)" },
+    { code: "KR", flag: "🇰🇷", name: "Corée du Sud" },
+    { code: "KP", flag: "🇰🇵", name: "Corée du Nord" },
+    { code: "CR", flag: "🇨🇷", name: "Costa Rica" },
+    { code: "CI", flag: "🇨🇮", name: "Côte d’Ivoire" },
+    { code: "HR", flag: "🇭🇷", name: "Croatie" },
+    { code: "CU", flag: "🇨🇺", name: "Cuba" },
+    { code: "DK", flag: "🇩🇰", name: "Danemark" },
+    { code: "DJ", flag: "🇩🇯", name: "Djibouti" },
+    { code: "DO", flag: "🇩🇴", name: "République dominicaine" },
+    { code: "EG", flag: "🇪🇬", name: "Égypte" },
+    { code: "AE", flag: "🇦🇪", name: "Émirats arabes unis" },
+    { code: "EC", flag: "🇪🇨", name: "Équateur" },
+    { code: "ER", flag: "🇪🇷", name: "Érythrée" },
+    { code: "ES", flag: "🇪🇸", name: "Espagne" },
+    { code: "EE", flag: "🇪🇪", name: "Estonie" },
+    { code: "SZ", flag: "🇸🇿", name: "Eswatini" },
+    { code: "ET", flag: "🇪🇹", name: "Éthiopie" },
+    { code: "FJ", flag: "🇫🇯", name: "Fidji" },
+    { code: "FI", flag: "🇫🇮", name: "Finlande" },
+    { code: "FR", flag: "🇫🇷", name: "France" },
+    { code: "GA", flag: "🇬🇦", name: "Gabon" },
+    { code: "GM", flag: "🇬🇲", name: "Gambie" },
+    { code: "GE", flag: "🇬🇪", name: "Géorgie" },
+    { code: "GH", flag: "🇬🇭", name: "Ghana" },
+    { code: "GR", flag: "🇬🇷", name: "Grèce" },
+    { code: "GD", flag: "🇬🇩", name: "Grenade" },
+    { code: "GT", flag: "🇬🇹", name: "Guatemala" },
+    { code: "GN", flag: "🇬🇳", name: "Guinée" },
+    { code: "GW", flag: "🇬🇼", name: "Guinée-Bissau" },
+    { code: "GQ", flag: "🇬🇶", name: "Guinée équatoriale" },
+    { code: "GY", flag: "🇬🇾", name: "Guyana" },
+    { code: "HT", flag: "🇭🇹", name: "Haïti" },
+    { code: "HN", flag: "🇭🇳", name: "Honduras" },
+    { code: "HU", flag: "🇭🇺", name: "Hongrie" },
+    { code: "IN", flag: "🇮🇳", name: "Inde" },
+    { code: "ID", flag: "🇮🇩", name: "Indonésie" },
+    { code: "IQ", flag: "🇮🇶", name: "Irak" },
+    { code: "IR", flag: "🇮🇷", name: "Iran" },
+    { code: "IE", flag: "🇮🇪", name: "Irlande" },
+    { code: "IS", flag: "🇮🇸", name: "Islande" },
+    { code: "IL", flag: "🇮🇱", name: "Israël" },
+    { code: "IT", flag: "🇮🇹", name: "Italie" },
+    { code: "JM", flag: "🇯🇲", name: "Jamaïque" },
+    { code: "JP", flag: "🇯🇵", name: "Japon" },
+    { code: "JO", flag: "🇯🇴", name: "Jordanie" },
+    { code: "KZ", flag: "🇰🇿", name: "Kazakhstan" },
+    { code: "KE", flag: "🇰🇪", name: "Kenya" },
+    { code: "KG", flag: "🇰🇬", name: "Kirghizistan" },
+    { code: "KI", flag: "🇰🇮", name: "Kiribati" },
+    { code: "KW", flag: "🇰🇼", name: "Koweët" },
+    { code: "LA", flag: "🇱🇦", name: "Laos" },
+    { code: "LS", flag: "🇱🇸", name: "Lesotho" },
+    { code: "LV", flag: "🇱🇻", name: "Lettonie" },
+    { code: "LB", flag: "🇱🇧", name: "Liban" },
+    { code: "LR", flag: "🇱🇷", name: "Libéria" },
+    { code: "LY", flag: "🇱🇾", name: "Libye" },
+    { code: "LI", flag: "🇱🇮", name: "Liechtenstein" },
+    { code: "LT", flag: "🇱🇹", name: "Lituanie" },
+    { code: "LU", flag: "🇱🇺", name: "Luxembourg" },
+    { code: "MK", flag: "🇲🇰", name: "Macédoine du Nord" },
+    { code: "MG", flag: "🇲🇬", name: "Madagascar" },
+    { code: "MY", flag: "🇲🇾", name: "Malaisie" },
+    { code: "MW", flag: "🇲🇼", name: "Malawi" },
+    { code: "MV", flag: "🇲🇻", name: "Maldives" },
+    { code: "ML", flag: "🇲🇱", name: "Mali" },
+    { code: "MT", flag: "🇲🇹", name: "Malte" },
+    { code: "MA", flag: "🇲🇦", name: "Maroc" },
+    { code: "MH", flag: "🇲🇭", name: "Marshall" },
+    { code: "MR", flag: "🇲🇷", name: "Mauritanie" },
+    { code: "MU", flag: "🇲🇺", name: "Maurice" },
+    { code: "MX", flag: "🇲🇽", name: "Mexique" },
+    { code: "FM", flag: "🇫🇲", name: "Micronésie" },
+    { code: "MD", flag: "🇲🇩", name: "Moldavie" },
+    { code: "MC", flag: "🇲🇨", name: "Monaco" },
+    { code: "MN", flag: "🇲🇳", name: "Mongolie" },
+    { code: "ME", flag: "🇲🇪", name: "Monténégro" },
+    { code: "MZ", flag: "🇲🇿", name: "Mozambique" },
+    { code: "MM", flag: "🇲🇲", name: "Myanmar" },
+    { code: "NA", flag: "🇳🇦", name: "Namibie" },
+    { code: "NR", flag: "🇳🇷", name: "Nauru" },
+    { code: "NP", flag: "🇳🇵", name: "Népal" },
+    { code: "NI", flag: "🇳🇮", name: "Nicaragua" },
+    { code: "NE", flag: "🇳🇪", name: "Niger" },
+    { code: "NG", flag: "🇳🇬", name: "Nigéria" },
+    { code: "NO", flag: "🇳🇴", name: "Norvège" },
+    { code: "NZ", flag: "🇳🇿", name: "Nouvelle-Zélande" },
+    { code: "OM", flag: "🇴🇲", name: "Oman" },
+    { code: "UG", flag: "🇺🇬", name: "Ouganda" },
+    { code: "UZ", flag: "🇺🇿", name: "Ouzbékistan" },
+    { code: "PK", flag: "🇵🇰", name: "Pakistan" },
+    { code: "PW", flag: "🇵🇼", name: "Palaos" },
+    { code: "PS", flag: "🇵🇸", name: "Palestine" },
+    { code: "PA", flag: "🇵🇦", name: "Panama" },
+    { code: "PG", flag: "🇵🇬", name: "Papouasie-Nouvelle-Guinée" },
+    { code: "PY", flag: "🇵🇾", name: "Paraguay" },
+    { code: "NL", flag: "🇳🇱", name: "Pays-Bas" },
+    { code: "PE", flag: "🇵🇪", name: "Pérou" },
+    { code: "PH", flag: "🇵🇭", name: "Philippines" },
+    { code: "PL", flag: "🇵🇱", name: "Pologne" },
+    { code: "PT", flag: "🇵🇹", name: "Portugal" },
+    { code: "QA", flag: "🇶🇦", name: "Qatar" },
+    { code: "RO", flag: "🇷🇴", name: "Roumanie" },
+    { code: "GB", flag: "🇬🇧", name: "Royaume-Uni" },
+    { code: "RU", flag: "🇷🇺", name: "Russie" },
+    { code: "RW", flag: "🇷🇼", name: "Rwanda" },
+    { code: "KN", flag: "🇰🇳", name: "Saint-Kitts-et-Nevis" },
+    { code: "LC", flag: "🇱🇨", name: "Sainte-Lucie" },
+    { code: "VC", flag: "🇻🇨", name: "Saint-Vincent-et-les-Grenadines" },
+    { code: "SB", flag: "🇸🇧", name: "Salomon" },
+    { code: "WS", flag: "🇼🇸", name: "Samoa" },
+    { code: "SM", flag: "🇸🇲", name: "Saint-Marin" },
+    { code: "ST", flag: "🇸🇹", name: "Sao Tomé-et-Principe" },
+    { code: "SN", flag: "🇸🇳", name: "Sénégal" },
+    { code: "RS", flag: "🇷🇸", name: "Serbie" },
+    { code: "SC", flag: "🇸🇨", name: "Seychelles" },
+    { code: "SL", flag: "🇸🇱", name: "Sierra Leone" },
+    { code: "SG", flag: "🇸🇬", name: "Singapour" },
+    { code: "SK", flag: "🇸🇰", name: "Slovaquie" },
+    { code: "SI", flag: "🇸🇮", name: "Slovénie" },
+    { code: "SO", flag: "🇸🇴", name: "Somalie" },
+    { code: "SD", flag: "🇸🇩", name: "Soudan" },
+    { code: "SS", flag: "🇸🇸", name: "Soudan du Sud" },
+    { code: "LK", flag: "🇱🇰", name: "Sri Lanka" },
+    { code: "SE", flag: "🇸🇪", name: "Suède" },
+    { code: "CH", flag: "🇨🇭", name: "Suisse" },
+    { code: "SR", flag: "🇸🇷", name: "Suriname" },
+    { code: "SY", flag: "🇸🇾", name: "Syrie" },
+    { code: "TJ", flag: "🇹🇯", name: "Tadjikistan" },
+    { code: "TZ", flag: "🇹🇿", name: "Tanzanie" },
+    { code: "TD", flag: "🇹🇩", name: "Tchad" },
+    { code: "CZ", flag: "🇨🇿", name: "Tchéquie" },
+    { code: "TH", flag: "🇹🇭", name: "Thaïlande" },
+    { code: "TL", flag: "🇹🇱", name: "Timor oriental" },
+    { code: "TG", flag: "🇹🇬", name: "Togo" },
+    { code: "TO", flag: "🇹🇴", name: "Tonga" },
+    { code: "TT", flag: "🇹🇹", name: "Trinité-et-Tobago" },
+    { code: "TN", flag: "🇹🇳", name: "Tunisie" },
+    { code: "TM", flag: "🇹🇲", name: "Turkménistan" },
+    { code: "TR", flag: "🇹🇷", name: "Turquie" },
+    { code: "TV", flag: "🇹🇻", name: "Tuvalu" },
+    { code: "UA", flag: "🇺🇦", name: "Ukraine" },
+    { code: "UY", flag: "🇺🇾", name: "Uruguay" },
+    { code: "VU", flag: "🇻🇺", name: "Vanuatu" },
+    { code: "VE", flag: "🇻🇪", name: "Venezuela" },
+    { code: "VN", flag: "🇻🇳", name: "Viêt Nam" },
+    { code: "YE", flag: "🇾🇪", name: "Yémen" },
+    { code: "ZM", flag: "🇿🇲", name: "Zambie" },
+    { code: "ZW", flag: "🇿🇼", name: "Zimbabwe" },
+  ].sort((a, b) => a.name.localeCompare(b.name, 'fr'));
 
   const countWords = (text: string) => {
     if (!text.trim()) return 0;
@@ -290,6 +503,19 @@ export default function ConseilJuridiquePage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
                     <label className="block font-cinzel text-xs text-[#C5A059] uppercase tracking-wider mb-2">
+                      {lang === "fr" ? "Vos prénoms" : "Your First Name"}
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="ex. Jean-Pierre"
+                      value={formData.prenoms}
+                      onChange={(e) => setFormData({ ...formData, prenoms: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] focus:border-[#E9D18F] focus:outline-none transition-colors placeholder:text-gray-600"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-cinzel text-xs text-[#C5A059] uppercase tracking-wider mb-2">
                       {lang === "fr" ? "Votre nom *" : "Your Last Name *"}
                     </label>
                     <input
@@ -298,19 +524,6 @@ export default function ConseilJuridiquePage() {
                       placeholder="ex. Dupont"
                       value={formData.nom}
                       onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] focus:border-[#E9D18F] focus:outline-none transition-colors placeholder:text-gray-600"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block font-cinzel text-xs text-[#C5A059] uppercase tracking-wider mb-2">
-                      {lang === "fr" ? "Vos prénoms" : "Your First Name"}
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="ex. Jean-Pierre"
-                      value={formData.prenoms}
-                      onChange={(e) => setFormData({ ...formData, prenoms: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] focus:border-[#E9D18F] focus:outline-none transition-colors placeholder:text-gray-600"
                     />
                   </div>
@@ -334,12 +547,26 @@ export default function ConseilJuridiquePage() {
                     <label className="block font-cinzel text-xs text-[#C5A059] uppercase tracking-wider mb-2">
                       {lang === "fr" ? "Date de naissance" : "Date of Birth"}
                     </label>
-                    <input
-                      type="date"
-                      value={formData.dateNaissance}
-                      onChange={(e) => setFormData({ ...formData, dateNaissance: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] focus:border-[#E9D18F] focus:outline-none transition-colors"
-                    />
+                    <div className="relative">
+                      <input
+                        type="date"
+                        value={formData.dateNaissance}
+                        onChange={(e) => setFormData({ ...formData, dateNaissance: e.target.value })}
+                        className="w-full px-4 py-3 pr-12 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] focus:border-[#E9D18F] focus:outline-none transition-colors [color-scheme:dark]"
+                      />
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="text-[#C5A059]">
+                          <rect x="3" y="4" width="18" height="18" rx="3" stroke="#C5A059" strokeWidth="1.8"/>
+                          <path d="M3 9h18" stroke="#C5A059" strokeWidth="1.8"/>
+                          <path d="M8 2v4M16 2v4" stroke="#C5A059" strokeWidth="1.8" strokeLinecap="round"/>
+                          <circle cx="8" cy="13" r="1.1" fill="#C5A059"/>
+                          <circle cx="12" cy="13" r="1.1" fill="#C5A059"/>
+                          <circle cx="16" cy="13" r="1.1" fill="#C5A059"/>
+                          <circle cx="8" cy="17" r="1.1" fill="#C5A059"/>
+                          <circle cx="12" cy="17" r="1.1" fill="#C5A059"/>
+                        </svg>
+                      </div>
+                    </div>
                   </div>
 
                   <div>
@@ -402,14 +629,23 @@ export default function ConseilJuridiquePage() {
                     <label className="block font-cinzel text-xs text-[#C5A059] uppercase tracking-wider mb-2">
                       {lang === "fr" ? "Pays *" : "Country *"}
                     </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="ex. France"
-                      value={formData.pays}
-                      onChange={(e) => setFormData({ ...formData, pays: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] focus:border-[#E9D18F] focus:outline-none transition-colors placeholder:text-gray-600"
-                    />
+                    <div className="relative">
+                      <select
+                        required
+                        value={formData.pays}
+                        onChange={(e) => setFormData({ ...formData, pays: e.target.value })}
+                        className="w-full px-4 py-3 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] focus:border-[#E9D18F] focus:outline-none transition-colors appearance-none cursor-pointer"
+                      >
+                        {PAYS_LIST.map((p) => (
+                          <option key={p.code} value={p.name}>
+                            {p.flag} {p.name}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[#C5A059]">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -460,6 +696,45 @@ export default function ConseilJuridiquePage() {
                     onChange={(e) => setFormData({ ...formData, probleme: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] focus:border-[#E9D18F] focus:outline-none transition-colors placeholder:text-gray-600"
                   ></textarea>
+                </div>
+
+                {/* Zone upload fichiers */}
+                <div>
+                  <label className="block font-cinzel text-xs text-[#C5A059] uppercase tracking-wider mb-2">
+                    {lang === "fr" ? "Joindre des documents (max 5 Mo / fichier)" : "Attach Documents (max 5 MB / file)"}
+                  </label>
+                  <label className="flex flex-col items-center justify-center w-full h-32 rounded-xl bg-[#0a0b0a] border-2 border-dashed border-[#C5A059]/40 hover:border-[#C5A059] text-[#C5A059] cursor-pointer transition-colors group">
+                    <svg className="w-8 h-8 mb-2 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                    </svg>
+                    <span className="font-cinzel text-xs tracking-wider">
+                      {lang === "fr" ? "Cliquer ou glisser-déposer vos fichiers" : "Click or drag and drop files"}
+                    </span>
+                    <span className="text-xs text-[#cabfa6] mt-1">
+                      {lang === "fr" ? "Tous formats acceptés — 5 Mo max / fichier" : "All formats accepted — 5 MB max / file"}
+                    </span>
+                    <input
+                      type="file"
+                      multiple
+                      accept="*/*"
+                      onChange={handleFileChange}
+                      className="hidden"
+                    />
+                  </label>
+                  {/* Liste des fichiers sélectionnés */}
+                  {uploadedFiles.length > 0 && (
+                    <ul className="mt-3 space-y-1.5">
+                      {uploadedFiles.map((file, idx) => (
+                        <li key={idx} className="flex items-center justify-between text-sm text-[#EDE4CF]/80 bg-[#0a0b0a] border border-[#C5A059]/20 rounded-lg px-3 py-2">
+                          <span className="truncate max-w-[80%]">{file.name}</span>
+                          <div className="flex items-center gap-2 ml-2 flex-shrink-0">
+                            <span className="text-[#cabfa6] text-xs">{(file.size / 1024 / 1024).toFixed(1)} Mo</span>
+                            <button type="button" onClick={() => removeFile(idx)} className="text-[#C5A059] hover:text-red-400 transition-colors text-base leading-none cursor-pointer">&times;</button>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
 
                 {/* Urgence Radio */}

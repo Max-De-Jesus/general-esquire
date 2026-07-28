@@ -60,7 +60,7 @@ export const translations = {
   entrepreneur_services_sub: { fr: "Sur une base annuelle, mensuelle ou ponctuelle :", en: "On an annual, monthly, or one-off basis:" },
 
   s_veille_title: { fr: "Veille Juridique", en: "Legal Monitoring" },
-  s_veille_desc: { fr: "Suivi des textes de loi et jurisprudences applicables à votre secteur.", en: "Monitoring of laws and jurisprudence relevant to your sector." },
+  s_veille_desc: { fr: "Suivi des textes de loi et jurisprudences applicables à votre secteur d'activité.", en: "Monitoring of laws and jurisprudence relevant to your sector of activity." },
   s_domicilation_title: { fr: "Domiciliation Courrier", en: "Mail Domiciliation" },
   s_domicilation_desc: { fr: "Domiciliation temporaire de vos courriers en cas d'urgence.", en: "Temporary mail domiciliation for urgent requirements." },
   s_formalites_title: { fr: "Assistance Formalités", en: "Formalities Assistance" },
@@ -68,7 +68,7 @@ export const translations = {
   s_conseils_title: { fr: "Conseils Adaptés", en: "Tailored Advice" },
   s_conseils_desc: { fr: "En présentiel, visioconférence, audioconférence ou par écrit.", en: "In-person, video call, phone call, or written advisory." },
   s_traduction_title: { fr: "Traduction Juridique", en: "Legal Translation" },
-  s_traduction_desc: { fr: "Français, anglais (inclus), chinois et russe (supplément) de vos documents.", en: "French, English (included), Chinese and Russian (extra) translation." },
+  s_traduction_desc: { fr: "Traduction de documents : français, anglais (gratuit), chinois et russe (frais ajoutés).", en: "Document translation: French, English (free), Chinese and Russian (additional fees)." },
   s_redaction_title: { fr: "Rédaction de Contrats", en: "Contract Drafting" },
   s_redaction_desc: { fr: "Contrats, lettres de recrutement, licenciement, courriers administratifs.", en: "Contracts, hiring & dismissal letters, administrative mail." },
   s_negociations_title: { fr: "Négociations Commerciales", en: "Commercial Negotiations" },

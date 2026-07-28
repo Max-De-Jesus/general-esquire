@@ -61,13 +61,13 @@ export default function Footer() {
             <p className="flex items-center justify-center md:justify-end gap-1.5">
               <a
                 href="tel:+33159581725"
-                className="inline-flex items-center text-[#C5A059] hover:text-[#E9D18F] transition-colors"
+                className="inline-flex items-center text-[#C5A059] hover:text-[#25D366] transition-colors duration-300 group"
                 aria-label="Téléphone Fixe"
               >
-                <svg className="w-4 h-4 fill-current mr-1.5" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 fill-current mr-1.5 group-hover:text-[#25D366] transition-colors" viewBox="0 0 24 24">
                   <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21c1.12.45 2.33.69 3.58.69a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.24 2.46.69 3.58a1 1 0 01-.21 1.11l-2.2 2.2z" />
                 </svg>
-                <span className="hover:text-[#E9D18F] transition-colors">+33(0)159581725</span>
+                <span className="group-hover:text-[#25D366] transition-colors duration-300">+33 (0)1 59 58 17 25</span>
               </a>
             </p>
             {/* 2. WhatsApp (icône uniquement, pas de mot (WhatsApp)) */}
@@ -89,7 +89,7 @@ export default function Footer() {
             <p>
               <a
                 href="mailto:contact@generalesquire.com"
-                className="hover:text-[#E9D18F] transition-colors"
+                className="hover:text-[#3B82F6] transition-colors duration-300"
               >
                 contact@generalesquire.com
               </a>
