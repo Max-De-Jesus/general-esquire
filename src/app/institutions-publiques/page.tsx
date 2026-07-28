@@ -277,7 +277,7 @@ export default function InstitutionsPubliquesPage() {
         {/* ── Photo Strip ── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-14">
           {[
-            { src: "/images/Embrassade.jpg", label: tx.photo1 },
+            { src: "/images/relation inter.png", label: tx.photo1 },
             { src: "/images/Board image.jpg", label: tx.photo2 },
           ].map((item, i) => (
             <div key={i} className="relative h-48 sm:h-56 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg group">
@@ -307,51 +307,120 @@ export default function InstitutionsPubliquesPage() {
           </div>
         </section>
 
-        {/* ── TARIFS ── */}
+        {/* ── TARIFS LUXE & ANIMATIONS ── */}
         <section className="mb-16">
           <div className="text-center mb-10">
             <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase block mb-2">{tx.rates_tag}</span>
-            <h2 className="font-cinzel text-3xl text-[#E9D18F]">{tx.rates_title}</h2>
+            <h2 className="font-cinzel text-3xl sm:text-4xl text-[#E9D18F] font-bold">{tx.rates_title}</h2>
+            <p className="font-cormorant text-lg text-[#cabfa6] mt-2 max-w-xl mx-auto">
+              {lang === "fr"
+                ? "Tarification forfaitaire claire, transparente et sans coûts cachés pour les institutions publiques."
+                : "Transparent flat-rate pricing designed for public institutions."}
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Rédaction */}
-            <div className="relative p-8 rounded-3xl bg-gradient-to-b from-[#0F3823] to-[#131513] border-2 border-[#C5A059] shadow-2xl overflow-hidden">
-              <div className="absolute top-0 right-0 px-4 py-1 bg-[#C5A059] text-black font-cinzel text-[10px] tracking-widest uppercase rounded-bl-2xl">Principal</div>
-              <h3 className="font-cinzel text-sm text-[#C5A059] uppercase tracking-widest mb-1">{tx.rate1_title}</h3>
-              <p className="font-cinzel text-4xl text-white font-extrabold my-3">
-                {tx.rate1_price}<span className="text-sm font-normal text-[#cabfa6] font-cormorant">{tx.rate1_tax}</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            {/* Carte 1 : Forfait Rédaction Principal */}
+            <div className="relative p-8 rounded-3xl bg-gradient-to-b from-[#0F3823]/90 via-[#131513] to-[#0F3823]/90 border-2 border-[#C5A059] shadow-[0_0_40px_rgba(197,160,89,0.25)] hover:shadow-[0_0_65px_rgba(197,160,89,0.45)] hover:scale-[1.03] transition-all duration-500 overflow-hidden group">
+              <div className="absolute top-0 right-0 px-4 py-1 bg-gradient-to-r from-[#C5A059] to-[#E9D18F] text-black font-cinzel text-[10px] font-bold tracking-widest uppercase rounded-bl-2xl shadow-md">
+                ✦ {lang === "fr" ? "FORFAIT PRINCIPAL" : "MAIN PACKAGE"}
+              </div>
+              <div className="w-12 h-12 rounded-2xl bg-[#C5A059]/20 border border-[#C5A059]/40 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                📜
+              </div>
+              <h3 className="font-cinzel text-base text-[#E9D18F] font-bold uppercase tracking-widest mb-1">{tx.rate1_title}</h3>
+              <p className="font-cinzel text-4xl sm:text-5xl text-white font-extrabold my-3 drop-shadow-md">
+                3 500 € <span className="text-sm font-normal text-[#C5A059] font-cormorant">TTC</span>
               </p>
-              <ul className="space-y-2 font-cormorant text-base text-[#EDE4CF]/80">
-                <li className="flex items-start gap-2"><span className="text-[#C5A059] mt-0.5">◆</span>{tx.rate1_f1}</li>
-                <li className="flex items-start gap-2"><span className="text-[#C5A059] mt-0.5">◆</span>{tx.rate1_f2}</li>
-                <li className="flex items-start gap-2"><span className="text-[#C5A059] mt-0.5">◆</span>{tx.rate1_f3}</li>
+              <div className="h-[1px] w-full bg-[#C5A059]/30 my-4" />
+              <ul className="space-y-3 font-cormorant text-lg text-[#EDE4CF]/90">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#C5A059] font-bold">✓</span>
+                  <span>{lang === "fr" ? "Dans la limite de 20 pages rédigées." : "Up to 20 written pages."}</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#C5A059] font-bold">✓</span>
+                  <span>{lang === "fr" ? "Expertise et rigueur du droit français." : "French legal expertise & accuracy."}</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#C5A059] font-bold">✓</span>
+                  <span>{lang === "fr" ? "Version finale devenant votre exclusive propriété." : "Final version becomes your property."}</span>
+                </li>
               </ul>
             </div>
 
-            {/* Pages suppl. */}
-            <div className="p-8 rounded-3xl bg-[#131513] border border-[#C5A059]/40 shadow-xl">
-              <h3 className="font-cinzel text-sm text-[#C5A059] uppercase tracking-widest mb-1">{tx.rate2_title}</h3>
+            {/* Carte 2 : Pages Supplémentaires */}
+            <div className="relative p-8 rounded-3xl bg-[#131513] border border-[#C5A059]/40 shadow-xl hover:border-[#C5A059] hover:shadow-[0_0_40px_rgba(197,160,89,0.2)] hover:scale-[1.02] transition-all duration-500 group">
+              <div className="w-12 h-12 rounded-2xl bg-[#C5A059]/15 border border-[#C5A059]/30 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                📑
+              </div>
+              <h3 className="font-cinzel text-base text-[#E9D18F] font-bold uppercase tracking-widest mb-1">{tx.rate2_title}</h3>
               <p className="font-cinzel text-4xl text-white font-extrabold my-3">
-                {tx.rate2_price}<span className="text-sm font-normal text-[#cabfa6] font-cormorant">{tx.rate2_unit}</span>
+                1 000 € <span className="text-sm font-normal text-[#cabfa6] font-cormorant">/ 10 pages</span>
               </p>
-              <ul className="space-y-2 font-cormorant text-base text-[#EDE4CF]/80">
-                <li className="flex items-start gap-2"><span className="text-[#C5A059] mt-0.5">◆</span>{tx.rate2_f1}</li>
-                <li className="flex items-start gap-2"><span className="text-[#C5A059] mt-0.5">◆</span>{tx.rate2_f2}</li>
+              <div className="h-[1px] w-full bg-[#C5A059]/20 my-4" />
+              <ul className="space-y-3 font-cormorant text-lg text-[#EDE4CF]/80">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#C5A059]">◆</span>
+                  <span>{lang === "fr" ? "Pour toutes les pages supplémentaires au-delà des 20 premières." : "For additional pages beyond the first 20."}</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#C5A059]">◆</span>
+                  <span>{lang === "fr" ? "Facturation ajustée par tranche de 10 pages." : "Billed in 10-page increments."}</span>
+                </li>
               </ul>
             </div>
 
-            {/* Consultation */}
-            <div className="p-8 rounded-3xl bg-[#131513] border border-[#C5A059]/40 shadow-xl">
-              <h3 className="font-cinzel text-sm text-[#C5A059] uppercase tracking-widest mb-1">{tx.rate3_title}</h3>
+            {/* Carte 3 : Consultation Orale Non Écrite */}
+            <div className="relative p-8 rounded-3xl bg-[#131513] border border-[#C5A059]/40 shadow-xl hover:border-[#C5A059] hover:shadow-[0_0_40px_rgba(197,160,89,0.2)] hover:scale-[1.02] transition-all duration-500 group">
+              <div className="w-12 h-12 rounded-2xl bg-[#C5A059]/15 border border-[#C5A059]/30 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                🎙️
+              </div>
+              <h3 className="font-cinzel text-base text-[#E9D18F] font-bold uppercase tracking-widest mb-1">{tx.rate3_title}</h3>
               <p className="font-cinzel text-4xl text-white font-extrabold my-3">
-                {tx.rate3_price}<span className="text-sm font-normal text-[#cabfa6] font-cormorant">{tx.rate3_unit}</span>
+                500 € <span className="text-sm font-normal text-[#cabfa6] font-cormorant">{lang === "fr" ? "/ conversation d'1h" : "/ 1h session"}</span>
               </p>
-              <ul className="space-y-2 font-cormorant text-base text-[#EDE4CF]/80">
-                <li className="flex items-start gap-2"><span className="text-[#C5A059] mt-0.5">◆</span>{tx.rate3_f1}</li>
-                <li className="flex items-start gap-2"><span className="text-[#C5A059] mt-0.5">◆</span>{tx.rate3_f2}</li>
-                <li className="flex items-start gap-2"><span className="text-[#C5A059] mt-0.5">◆</span>{tx.rate3_f3}</li>
+              <div className="h-[1px] w-full bg-[#C5A059]/20 my-4" />
+              <ul className="space-y-3 font-cormorant text-lg text-[#EDE4CF]/80">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#C5A059]">◆</span>
+                  <span>{lang === "fr" ? "Uniquement si vous avez besoin d'une consultation orale non écrite." : "For oral, non-written legal consultation."}</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#C5A059]">◆</span>
+                  <span>{lang === "fr" ? "Échange direct d'environ une heure avec nos experts." : "Direct ~1 hour video session."}</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#C5A059]">◆</span>
+                  <span>{lang === "fr" ? "Sans engagement de rédaction." : "No drafting obligation."}</span>
+                </li>
               </ul>
+            </div>
+          </div>
+
+          {/* BANDEAU SPÉCIAL : GRATUITÉ DE LA LECTURE ET VISIONNAGE */}
+          <div className="p-7 sm:p-9 rounded-3xl bg-gradient-to-r from-[#0F3823]/80 via-[#131513] to-[#0F3823]/80 border-2 border-[#C5A059]/60 shadow-[0_0_35px_rgba(197,160,89,0.2)] flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+            <div className="w-16 h-16 rounded-2xl bg-[#C5A059] text-black flex items-center justify-center text-3xl font-bold flex-shrink-0 shadow-lg animate-bounce">
+              🎁
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center justify-center md:justify-start gap-2">
+                <span className="font-cinzel text-xs text-[#C5A059] uppercase tracking-widest font-bold bg-[#C5A059]/20 px-3 py-1 rounded-full border border-[#C5A059]/40">
+                  ✦ {lang === "fr" ? "AVANTAGE EXCLUSIF" : "EXCLUSIVE BENEFIT"}
+                </span>
+                <span className="font-cinzel text-xs text-white font-bold uppercase">{lang === "fr" ? "GRATUITÉ D'ANALYSE" : "FREE REVIEW"}</span>
+              </div>
+              <p className="font-cormorant text-xl sm:text-2xl text-[#EDE4CF] leading-relaxed italic font-light">
+                {lang === "fr" ? (
+                  <>
+                    « Nous ne facturons pas la <strong className="text-[#E9D18F] not-italic font-semibold">lecture</strong>, l’<strong className="text-[#E9D18F] not-italic font-semibold">audition</strong> ou le <strong className="text-[#E9D18F] not-italic font-semibold">visionnage</strong> des documents ou des fichiers que vous produisez ou vers lesquels vous nous référez. »
+                  </>
+                ) : (
+                  <>
+                    “We do not bill for reading, listening to, or reviewing the documents or files you provide or refer us to.”
+                  </>
+                )}
+              </p>
             </div>
           </div>
         </section>
