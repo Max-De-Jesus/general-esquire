@@ -443,15 +443,15 @@ export default function RepasPage() {
 
               <div className="lg:col-span-5 relative h-64 sm:h-80 rounded-2xl overflow-hidden border-2 border-[#C5A059]/40 shadow-xl group">
                 <Image
-                  src="/images/Bouillie.jpg"
-                  alt="Saveurs du Matin et Douceurs"
+                  src="/images/Tchooh12.webp"
+                  alt="Beignet Yovodoko - Saveurs du Matin et Douceurs"
                   fill
                   sizes="(max-width: 1024px) 100vw, 450px"
                   className="object-cover object-center group-hover:scale-110 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
                 <span className="absolute bottom-4 left-4 font-cinzel text-[10px] text-[#E9D18F] tracking-widest uppercase bg-[#131513]/80 border border-[#C5A059]/40 px-3 py-1 rounded-full backdrop-blur-md">
-                  ✦ Bouillie & Yovodoko
+                  ✦ Beignet Yovodoko
                 </span>
               </div>
             </div>
