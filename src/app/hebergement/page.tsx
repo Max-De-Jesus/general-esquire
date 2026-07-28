@@ -323,8 +323,8 @@ export default function HebergementPage() {
               {/* Image côte à côte */}
               <div className="w-full md:w-2/5 relative h-80 sm:h-96 md:h-full min-h-[320px] overflow-hidden">
                 <Image
-                  src="/images/sejour14.jpg"
-                  alt="Résidence de standing"
+                  src="/images/luxury_villa_benin.png"
+                  alt="Résidence de standing — Villa d'exception au Bénin"
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-700"
                 />
