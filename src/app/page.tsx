@@ -69,7 +69,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#1A1C1A] text-[#EDE4CF] flex flex-col justify-between overflow-x-hidden">
       {/* ─── 1. EN-TÊTE : BANNIÈRE SEULE (WITH KEN BURNS ANIMATION) ───────── */}
-      <header className="w-full bg-[#131513] overflow-hidden">
+      <header className="w-full bg-[#131513] overflow-hidden relative z-10">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
           <Image
             src="/images/Embrassades001.png"
@@ -82,7 +82,7 @@ export default function Home() {
       </header>
 
       {/* ─── 2. BANDE DÉROULANTE (TICKER ALL-WIDTH) ────────────────────── */}
-      <div className="w-full bg-[#0d0e0d] border-y border-[#C5A059]/30 py-3 overflow-hidden shadow-inner z-20">
+      <div className="w-full bg-[#0d0e0d] border-y border-[#C5A059]/30 py-3 overflow-hidden shadow-inner relative z-20">
         <div className="flex whitespace-nowrap animate-ticker">
           {[...Array(6)].map((_, i) => (
             <div
@@ -110,8 +110,8 @@ export default function Home() {
 
       {/* ─── 3. MAIN ACCUEIL (MESSAGE DE BIENVENUE AVEC "LE TUEUR DE DRAGON" EN FOND) ─── */}
       <main className="relative z-0 py-10 sm:py-16 px-4 sm:px-8 flex-grow">
-        {/* Background image overlay : Le dragon.jpg — FIXE (ne bouge pas avec le défilement) */}
-        <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden opacity-85" style={{willChange: 'transform'}}>
+        {/* Background image overlay : Le dragon.jpg — FIXE en arrière-plan (-z-10) */}
+        <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden opacity-85" style={{willChange: 'transform'}}>
           <Image
             src="/images/Le dragon.jpg"
             alt="Le dragon — Fond General Esquire"
