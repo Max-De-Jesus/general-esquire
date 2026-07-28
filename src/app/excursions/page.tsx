@@ -1,107 +1,87 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 
 // ─── Carousel slides — bilingual ─────────────────────────────────────────────
 const SLIDES_FR = [
-  {
-    src: "/images/excursion1.jpg",
-    tag: "Bienvenue au Bénin",
-    title: "Un monde d'émerveillement vous attend",
-    desc: "Dès votre descente d'avion, votre guide General Esquire – Chrysalides vous accueille.",
-  },
-  {
-    src: "/images/Excursion22.jpg",
-    tag: "Cotonou",
-    title: "La capitale économique aux mille attraits",
-    desc: "Vibrant carrefour d'échanges, de cultures et d'histoires insolites.",
-  },
-  {
-    src: "/images/Excursion12.jpg",
-    tag: "Ouidah — Cité du Vaudou",
-    title: "Hauts-lieux historiques & Voodoo Days",
-    desc: "Participez au festival Voodoo Days, organisé justement pendant votre séjour.",
-  },
-  {
-    src: "/images/Excursion4.jpg",
-    tag: "Abomey — Palais Royaux",
-    title: "Les rois au passé glorieux",
-    desc: "Temples, forêts sacrées, palais royaux — l'histoire du Bénin s'offre à vous.",
-  },
-  {
-    src: "/images/Excursion9.jpg",
-    tag: "Découverte & Évasion",
-    title: "Plein les yeux, les oreilles et les mains",
-    desc: "Quinze jours d'enchantement : danses rituelles, cérémonies vaudou, villages lacustres.",
-  },
+  { src: "/images/ex1.png", tag: "Bienvenue au Bénin", title: "Un monde d'émerveillement vous attend", desc: "Dès votre descente d'avion, votre guide General Esquire – Chrysalides vous accueille." },
+  { src: "/images/Excursion22.jpg", tag: "Cotonou", title: "La capitale historique aux mille attraits", desc: "Vibrant carrefour d'échanges, de cultures et d'histoires insolites." },
+  { src: "/images/ex3.png", tag: "Ouidah — Cité du Vaudou", title: "Hauts-lieux historiques & Voodoo Days", desc: "Participez au festival Voodoo Days, organisé justement pendant votre séjour." },
+  { src: "/images/ex4.png", tag: "Abomey — Palais Royaux", title: "Les rois au passé glorieux", desc: "Temples, forêts sacrées, palais royaux — l'histoire du Bénin s'offre à vous." },
+  { src: "/images/ex5.png", tag: "Découverte & Évasion", title: "Plein les yeux, les oreilles et les mains", desc: "Quinze jours d'enchantement : danses rituelles, cérémonies vaudou, villages lacustres." },
 ];
-
 const SLIDES_EN = [
-  {
-    src: "/images/excursion1.jpg",
-    tag: "Welcome to Benin",
-    title: "A world of wonder awaits you",
-    desc: "From the moment you land, your General Esquire – Chrysalides guide is there to welcome you.",
-  },
-  {
-    src: "/images/Excursion22.jpg",
-    tag: "Cotonou",
-    title: "The vibrant economic capital",
-    desc: "A lively crossroads of commerce, cultures and fascinating stories.",
-  },
-  {
-    src: "/images/Excursion12.jpg",
-    tag: "Ouidah — City of Voodoo",
-    title: "Historic Sites & Voodoo Days Festival",
-    desc: "Take part in the Voodoo Days festival, which takes place during your stay.",
-  },
-  {
-    src: "/images/Excursion4.jpg",
-    tag: "Abomey — Royal Palaces",
-    title: "Kings of a glorious past",
-    desc: "Temples, sacred forests, royal palaces — the history of Benin unfolds before you.",
-  },
-  {
-    src: "/images/Excursion9.jpg",
-    tag: "Discovery & Escape",
-    title: "A feast for eyes, ears and hands",
-    desc: "Fifteen days of enchantment: ritual dances, voodoo ceremonies, lake villages.",
-  },
+  { src: "/images/excursion1.jpg", tag: "Welcome to Benin", title: "A world of wonder awaits you", desc: "From the moment you land, your General Esquire – Chrysalides guide is there to welcome you." },
+  { src: "/images/Excursion22.jpg", tag: "Cotonou", title: "The vibrant economic capital", desc: "A lively crossroads of commerce, cultures and fascinating stories." },
+  { src: "/images/Excursion12.jpg", tag: "Ouidah — City of Voodoo", title: "Historic Sites & Voodoo Days Festival", desc: "Take part in the Voodoo Days festival, which takes place during your stay." },
+  { src: "/images/Excursion4.jpg", tag: "Abomey — Royal Palaces", title: "Kings of a glorious past", desc: "Temples, sacred forests, royal palaces — the history of Benin unfolds before you." },
+  { src: "/images/Excursion9.jpg", tag: "Discovery & Escape", title: "A feast for eyes, ears and hands", desc: "Fifteen days of enchantment: ritual dances, voodoo ceremonies, lake villages." },
 ];
 
 const GALLERY = [
-  "/images/excursion1.jpg",
-  "/images/Excursion2.jpg",
-  "/images/Excursion4.jpg",
-  "/images/Excursion5.webp",
-  "/images/Excursion6.jpg",
-  "/images/Excursion7.jpg",
-  "/images/Excursion9.jpg",
-  "/images/Excursion10.jpg",
-  "/images/Excursion12.jpg",
-  "/images/Excursion17.jpg",
-  "/images/Excursion18.jpeg",
-  "/images/Excursion19.jpg",
-  "/images/Excursion20.jpg",
-  "/images/Excursion21.jpg",
-  "/images/Excursion22.jpg",
-  "/images/Excursion23.jpg",
-  "/images/Excursion24.jpg",
-  "/images/Excursion25.jpg",
-  "/images/Excursion26.jpg",
-  "/images/Excursions27.jpg",
-  "/images/Excursion28.jpg",
-  "/images/Excursion30.jpg",
-  "/images/Excursion31.jpg",
-  "/images/Egungun.jpg",
-  "/images/Chant2.jpg",
-  "/images/Chant3.jpg",
-  "/images/Tchooh7.jpg",
-  "/images/Tchooh9.jpg",
-  "/images/Tchooh12.jpeg",
+  { src: "/images/excursion1.jpg", label: "Accueil & Bienvenue" },
+  { src: "/images/Excursion2.jpg", label: "Cotonou by Night" },
+  { src: "/images/Excursion4.jpg", label: "Abomey — Royauté" },
+  { src: "/images/Excursion5.webp", label: "Forêt Sacrée" },
+  { src: "/images/Excursion6.jpg", label: "Voudou & Traditions" },
+  { src: "/images/Excursion7.jpg", label: "Villages Lacustres" },
+  { src: "/images/Excursion9.jpg", label: "Danses Rituelles" },
+  { src: "/images/Excursion10.jpg", label: "Art & Culture" },
+  { src: "/images/Excursion12.jpg", label: "Ouidah — Temple" },
+  { src: "/images/Excursion17.jpg", label: "Marchés Locaux" },
+  { src: "/images/Excursion18.jpeg", label: "Artisanat Béninois" },
+  { src: "/images/Excursion19.jpg", label: "Côte Atlantique" },
+  { src: "/images/Excursion20.jpg", label: "Voodoo Days" },
+  { src: "/images/Excursion21.jpg", label: "Échanges & Sourires" },
+  { src: "/images/Excursion22.jpg", label: "Cotonou — Centre Ville" },
+  { src: "/images/Excursion23.jpg", label: "Paysages du Bénin" },
+  { src: "/images/Excursion24.jpg", label: "Moments Précieux" },
+  { src: "/images/Excursion25.jpg", label: "Festival & Fêtes" },
+  { src: "/images/Excursion26.jpg", label: "Architecture Royale" },
+  { src: "/images/Excursions27.jpg", label: "Forêt Enchantée" },
+  { src: "/images/Excursion28.jpg", label: "Découverte Locale" },
+  { src: "/images/Excursion30.jpg", label: "Paysages Majestueux" },
+  { src: "/images/Excursion31.jpg", label: "Coucher de Soleil" },
+  { src: "/images/Egungun.jpg", label: "Masques Egungun" },
+  { src: "/images/Chant2.jpg", label: "Cérémonies & Chants" },
+  { src: "/images/Chant3.jpg", label: "Rythmes Africains" },
+  { src: "/images/Tchooh7.jpg", label: "Saveurs du Bénin" },
+  { src: "/images/Tchooh9.jpg", label: "Gastronomie Locale" },
+];
+
+// ─── Content sections with images ────────────────────────────────────────────
+const CONTENT_PANELS = [
+  {
+    image: "/images/Excursion7.jpg",
+    emoji: "🧭",
+    keyFR: "guide",
+    keyEN: "guide",
+    color: "from-[#0F3823] to-[#131513]",
+  },
+  {
+    image: "/images/Excursion20.jpg",
+    emoji: "📅",
+    keyFR: "prep",
+    keyEN: "prep",
+    color: "from-[#131513] to-[#0a1a0f]",
+  },
+  {
+    image: "/images/Excursion12.jpg",
+    emoji: "🌍",
+    keyFR: "heart",
+    keyEN: "heart",
+    color: "from-[#0a1a0f] to-[#131513]",
+  },
+  {
+    image: "/images/Excursion4.jpg",
+    emoji: "🏛️",
+    keyFR: "must",
+    keyEN: "must",
+    color: "from-[#131513] to-[#0F3823]",
+  },
 ];
 
 // ─── Hero Carousel ────────────────────────────────────────────────────────────
@@ -111,10 +91,7 @@ function HeroCarousel({ slides }: { slides: typeof SLIDES_FR }) {
 
   const goTo = useCallback((idx: number) => {
     setFading(true);
-    setTimeout(() => {
-      setCurrent(idx);
-      setFading(false);
-    }, 400);
+    setTimeout(() => { setCurrent(idx); setFading(false); }, 400);
   }, []);
 
   const next = useCallback(() => goTo((current + 1) % slides.length), [current, goTo, slides.length]);
@@ -128,45 +105,201 @@ function HeroCarousel({ slides }: { slides: typeof SLIDES_FR }) {
   const slide = slides[current];
 
   return (
-    <div className="relative w-full rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-2xl">
-      <div
-        className="relative w-full h-[340px] sm:h-[460px] transition-opacity duration-500"
-        style={{ opacity: fading ? 0 : 1 }}
-      >
-        <Image src={slide.src} alt={slide.title} fill priority className="object-cover object-center animate-kenburns" sizes="100vw" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent" />
+    <div className="relative w-full rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-2xl group">
+      <div className="relative w-full h-[340px] sm:h-[500px] transition-opacity duration-500" style={{ opacity: fading ? 0 : 1 }}>
+        <Image src={slide.src} alt={slide.title} fill priority className="object-cover object-center group-hover:scale-105 transition-transform duration-[8000ms] ease-out" sizes="100vw" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
       </div>
-
-      <div
-        className="absolute bottom-0 left-0 right-0 p-6 sm:p-10 transition-all duration-500"
-        style={{ opacity: fading ? 0 : 1, transform: fading ? "translateY(8px)" : "translateY(0)" }}
-      >
-        <span className="inline-flex items-center gap-2 px-4 py-1 rounded-full border border-[#C5A059]/50 bg-[#0F3823]/70 backdrop-blur-md text-[#C5A059] font-cinzel text-[10px] tracking-[0.25em] uppercase mb-3">
+      <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-12 transition-all duration-500" style={{ opacity: fading ? 0 : 1, transform: fading ? "translateY(12px)" : "translateY(0)" }}>
+        <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#C5A059]/60 bg-[#0F3823]/80 backdrop-blur-md text-[#C5A059] font-cinzel text-[10px] tracking-[0.25em] uppercase mb-4 shadow-md">
           ◆ {slide.tag}
         </span>
-        <h2 className="font-cinzel text-xl sm:text-3xl font-bold text-white leading-snug mb-2 drop-shadow-lg max-w-2xl">
-          {slide.title}
-        </h2>
-        <p className="font-cormorant text-base sm:text-xl text-[#EDE4CF]/90 max-w-xl leading-relaxed">{slide.desc}</p>
+        <h2 className="font-cinzel text-2xl sm:text-4xl font-bold text-white leading-snug mb-3 drop-shadow-lg max-w-2xl">{slide.title}</h2>
+        <p className="font-cormorant text-lg sm:text-xl text-[#EDE4CF]/90 max-w-xl leading-relaxed">{slide.desc}</p>
       </div>
-
-      <div className="absolute top-5 right-5 font-cinzel text-xs text-[#C5A059] bg-[#131513]/70 backdrop-blur-md px-3 py-1 rounded-full border border-[#C5A059]/30">
-        {current + 1} / {slides.length}
-      </div>
-
-      <button onClick={prev} className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-[#131513]/70 border border-[#C5A059]/40 text-[#E9D18F] hover:bg-[#C5A059]/20 transition-all flex items-center justify-center text-xl shadow-lg">‹</button>
-      <button onClick={next} className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-[#131513]/70 border border-[#C5A059]/40 text-[#E9D18F] hover:bg-[#C5A059]/20 transition-all flex items-center justify-center text-xl shadow-lg">›</button>
-
-      <div className="absolute bottom-4 right-6 flex items-center gap-2">
+      <div className="absolute top-5 right-5 font-cinzel text-xs text-[#C5A059] bg-[#131513]/80 backdrop-blur-md px-3 py-1 rounded-full border border-[#C5A059]/30">{current + 1} / {slides.length}</div>
+      <button onClick={prev} className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-[#131513]/80 border border-[#C5A059]/40 text-[#E9D18F] hover:bg-[#C5A059]/30 transition-all flex items-center justify-center text-2xl shadow-lg backdrop-blur-md">‹</button>
+      <button onClick={next} className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-[#131513]/80 border border-[#C5A059]/40 text-[#E9D18F] hover:bg-[#C5A059]/30 transition-all flex items-center justify-center text-2xl shadow-lg backdrop-blur-md">›</button>
+      <div className="absolute bottom-5 right-7 flex items-center gap-2">
         {slides.map((_, i) => (
           <button key={i} onClick={() => goTo(i)}
-            className={`transition-all duration-300 rounded-full ${i === current ? "w-7 h-2 bg-[#C5A059]" : "w-2 h-2 bg-white/30 hover:bg-[#C5A059]/60"}`}
+            className={`transition-all duration-300 rounded-full ${i === current ? "w-8 h-2.5 bg-[#C5A059] shadow-[0_0_8px_rgba(197,160,89,0.8)]" : "w-2.5 h-2.5 bg-white/30 hover:bg-[#C5A059]/60"}`}
           />
         ))}
       </div>
     </div>
   );
+}
+
+// ─── Radial 3D Scroll-Driven Gallery ─────────────────────────────────────────
+function RadialGallery3D({ items }: { items: typeof GALLERY }) {
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const total = items.length;
+  const visibleCount = 7; // cartes visibles à la fois (centre + 3 de chaque côté)
+  const angleStep = 38; // degrés entre chaque carte visible
+  const radius = 420; // rayon du cylindre 3D en px
+
+  const next = useCallback(() => setActiveIdx(p => (p + 1) % total), [total]);
+  const prev = useCallback(() => setActiveIdx(p => (p - 1 + total) % total), [total]);
+
+  useEffect(() => {
+    if (isHovered) return;
+    const t = setInterval(next, 4500);
+    return () => clearInterval(t);
+  }, [isHovered, next]);
+
+  // Wheel scroll horizontal
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        e.preventDefault();
+        if (e.deltaX > 30) next();
+        else if (e.deltaX < -30) prev();
+      } else if (Math.abs(e.deltaY) > 40) {
+        e.preventDefault();
+        if (e.deltaY > 0) next();
+        else prev();
+      }
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [next, prev]);
+
+  const handleTouchStart = (e: React.TouchEvent) => setTouchStartX(e.touches[0].clientX);
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX === null) return;
+    const dx = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(dx) > 40) dx > 0 ? next() : prev();
+    setTouchStartX(null);
+  };
+
+  // Compute cards relative to active (show -3 to +3)
+  const visibleCards = Array.from({ length: visibleCount }, (_, i) => {
+    const offset = i - Math.floor(visibleCount / 2); // -3..+3
+    const idx = ((activeIdx + offset) % total + total) % total;
+    return { idx, offset };
+  });
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative w-full py-16 overflow-hidden cursor-grab active:cursor-grabbing select-none"
+      style={{ perspective: "1100px", perspectiveOrigin: "50% 40%" }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* 3D Stage */}
+      <div className="relative flex items-center justify-center h-[360px] sm:h-[460px]" style={{ transformStyle: "preserve-3d" }}>
+        {visibleCards.map(({ idx, offset }) => {
+          const absOffset = Math.abs(offset);
+          const rotY = offset * angleStep;
+          const tz = offset === 0 ? 0 : -radius * (1 - Math.cos((absOffset * angleStep * Math.PI) / 180));
+          const scale = offset === 0 ? 1.12 : Math.max(0.55, 1 - absOffset * 0.14);
+          const opacity = offset === 0 ? 1 : Math.max(0.25, 1 - absOffset * 0.22);
+          const blur = offset === 0 ? 0 : absOffset * 1.5;
+          const isCenter = offset === 0;
+
+          return (
+            <div
+              key={idx}
+              onClick={() => setActiveIdx(idx)}
+              className={`absolute cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] rounded-2xl overflow-hidden border-2 ${
+                isCenter
+                  ? "border-[#E9D18F] shadow-[0_0_50px_rgba(197,160,89,0.7),0_25px_50px_rgba(0,0,0,0.8)] z-30"
+                  : "border-[#C5A059]/25 hover:border-[#C5A059]/60 z-10"
+              }`}
+              style={{
+                width: isCenter ? "clamp(200px, 30vw, 280px)" : "clamp(140px, 20vw, 200px)",
+                height: isCenter ? "clamp(260px, 38vw, 360px)" : "clamp(180px, 27vw, 260px)",
+                transform: `rotateY(${rotY}deg) translateZ(${tz}px) scale(${scale})`,
+                opacity,
+                filter: blur > 0 ? `blur(${blur}px)` : "none",
+                transformStyle: "preserve-3d",
+                WebkitBoxReflect: isCenter
+                  ? "below 8px linear-gradient(transparent, transparent 60%, rgba(0,0,0,0.4))"
+                  : undefined,
+              }}
+            >
+              <Image
+                src={items[idx].src}
+                alt={items[idx].label}
+                fill
+                sizes="(max-width: 640px) 200px, 280px"
+                className={`object-cover object-center transition-transform duration-700 ${isCenter ? "scale-105 brightness-110" : "brightness-75"}`}
+              />
+              <div className={`absolute inset-0 transition-all duration-500 ${isCenter ? "bg-gradient-to-t from-black/85 via-black/20 to-transparent" : "bg-black/55"}`} />
+              {isCenter && (
+                <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
+                  <span className="inline-block font-cinzel text-[9px] text-[#C5A059] tracking-widest uppercase bg-[#131513]/90 border border-[#C5A059]/50 px-3 py-1 rounded-full backdrop-blur-md mb-2">
+                    ✦ {items[idx].label}
+                  </span>
+                </div>
+              )}
+              {/* Shimmer on center */}
+              {isCenter && (
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent translate-x-[-200%] animate-[shimmer_3s_ease-in-out_infinite] pointer-events-none" />
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Nav Buttons */}
+      <div className="absolute top-1/2 -translate-y-1/2 left-2 right-2 sm:left-6 sm:right-6 flex justify-between pointer-events-none z-40">
+        <button onClick={prev} aria-label="Précédent"
+          className="pointer-events-auto w-12 h-12 rounded-full bg-[#131513]/85 border-2 border-[#C5A059]/60 text-[#E9D18F] hover:bg-[#0F3823] hover:border-[#E9D18F] transition-all duration-300 flex items-center justify-center text-2xl shadow-[0_0_20px_rgba(197,160,89,0.3)] hover:scale-110 backdrop-blur-md cursor-pointer">
+          ‹
+        </button>
+        <button onClick={next} aria-label="Suivant"
+          className="pointer-events-auto w-12 h-12 rounded-full bg-[#131513]/85 border-2 border-[#C5A059]/60 text-[#E9D18F] hover:bg-[#0F3823] hover:border-[#E9D18F] transition-all duration-300 flex items-center justify-center text-2xl shadow-[0_0_20px_rgba(197,160,89,0.3)] hover:scale-110 backdrop-blur-md cursor-pointer">
+          ›
+        </button>
+      </div>
+
+      {/* Pagination dots */}
+      <div className="flex justify-center gap-1.5 mt-10 flex-wrap px-4 z-30 relative">
+        {items.map((_, i) => (
+          <button key={i} onClick={() => setActiveIdx(i)}
+            className={`rounded-full transition-all duration-400 cursor-pointer ${
+              i === activeIdx
+                ? "w-7 h-2.5 bg-[#C5A059] shadow-[0_0_10px_rgba(197,160,89,0.9)]"
+                : "w-2 h-2 bg-white/20 hover:bg-[#C5A059]/50"
+            }`} aria-label={`Carte ${i + 1}`}
+          />
+        ))}
+      </div>
+
+      {/* Hint text */}
+      <p className="text-center font-cinzel text-[10px] text-[#C5A059]/50 tracking-widest mt-4">
+        ← GLISSEZ OU UTILISEZ LES BOUTONS →
+      </p>
+    </div>
+  );
+}
+
+// ─── Animated reveal hook ─────────────────────────────────────────────────────
+function useInView(threshold = 0.15) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { setInView(true); obs.disconnect(); }
+    }, { threshold });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [threshold]);
+  return { ref, inView };
 }
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
@@ -179,7 +312,7 @@ export default function ExcursionsPage() {
     breadcrumb_page: lang === "fr" ? "Excursions" : "Excursions",
     tag: lang === "fr" ? "Chrysalides — Cocooning Touristique" : "Chrysalides — Tourist Cocooning",
     title: lang === "fr" ? "Excursions au Bénin" : "Excursions in Benin",
-    subtitle: lang === "fr" ? "« Bienvenue dans un monde d'émerveillement »" : "\u201cWelcome to a World of Wonder\u201d",
+    subtitle: lang === "fr" ? "« Bienvenue dans un monde d'émerveillement »" : "\"Welcome to a World of Wonder\"",
     guide_title: lang === "fr" ? "Votre Guide Personnel" : "Your Personal Guide",
     guide_p1: lang === "fr"
       ? "Vous souvenez-vous qu'à votre descente d'avion, vous avez été accueilli(e) par votre guide ? Il ou elle porte un t-shirt, ou un chapeau, ou un badge floqué du logo de General Esquire – Chrysalides, afin d'être aisément dans votre visuel."
@@ -210,157 +343,216 @@ export default function ExcursionsPage() {
       : "Our goal is to entertain you, help you enjoy wonderful moments, and offer a form of psychological support beyond the hardships of daily life.",
     gallery_tag: lang === "fr" ? "Découvrez la variété" : "Discover the Variety",
     gallery_title: lang === "fr" ? "Galerie des Excursions" : "Excursions Gallery",
-    gallery_sub_pre: lang === "fr" ? "" : "",
     cta_title: lang === "fr" ? "Prêt pour l'aventure béninoise ?" : "Ready for the Beninese Adventure?",
-    cta_sub: lang === "fr"
-      ? "Inscriptions ouvertes de février à fin septembre pour le séjour de janvier."
-      : "Registrations open from February to end of September for the January stay.",
+    cta_sub: lang === "fr" ? "Inscriptions ouvertes de février à fin septembre pour le séjour de janvier." : "Registrations open from February to end of September for the January stay.",
     cta_btn: lang === "fr" ? "S'inscrire au Séjour →" : "Book Your Stay →",
     back: lang === "fr" ? "← RETOUR À L'ACCUEIL" : "← BACK TO HOME",
   };
 
+  const panelData = [
+    { title: tx.guide_title, emoji: "🧭", p1: tx.guide_p1, p2: tx.guide_p2, image: "/images/Excursion7.jpg", imageAlt: "Guide General Esquire" },
+    { title: tx.prep_title, emoji: "📅", p1: tx.prep_p, p2: null, image: "/images/Excursion20.jpg", imageAlt: "Préparation du Séjour" },
+    { title: tx.heart_title, emoji: "🌍", p1: tx.heart_p1, p2: tx.heart_p2, image: "/images/Excursion12.jpg", imageAlt: "Ouidah Temple Voudou" },
+    { title: tx.must_title, emoji: "🏛️", p1: tx.must_p1, p2: tx.must_p2, quote: tx.must_quote, image: "/images/Excursion4.jpg", imageAlt: "Palais Royaux Abomey" },
+  ];
+
   return (
-    <div className="min-h-screen bg-[#1a1c1a] text-[#EDE4CF] pb-12 md:pb-20 relative">
-      {/* ─── 1. EN-TÊTE : BANNIÈRE SEULE (PLEINE LARGEUR) ──────────────── */}
-      <header className="w-full bg-[#131513] overflow-hidden">
-        <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
+    <div className="min-h-screen bg-[#12140f] text-[#EDE4CF] pb-12 md:pb-20 relative overflow-x-hidden">
+
+      {/* ── ARRIÈRE-PLAN FIXE : Excursion23.jpg ─────────────────────────── */}
+      <div className="fixed inset-0 -z-20 overflow-hidden pointer-events-none">
+        <Image
+          src="/images/Excursion23.jpg"
+          alt="Arrière-plan Excursions Bénin"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center opacity-35 filter brightness-75 contrast-110"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#12140f]/80 via-[#12140f]/65 to-[#12140f]/88" />
+      </div>
+
+      {/* ── 1. BANNIÈRE HERO ────────────────────────────────────────────── */}
+      <header className="w-full bg-[#0d0f0c]/60 overflow-hidden relative">
+        <div className="w-full h-[clamp(180px,34vw,480px)] relative overflow-hidden">
           <Image
-            src="/images/Excursion30.jpg"
+            src="/images/Excursion23.jpg"
             alt="Bannière Excursions — General Esquire"
             fill
             priority
-            className="object-cover object-[center_40%] filter brightness-95 contrast-105"
+            className="object-cover object-center brightness-90 contrast-105 animate-kenburns"
           />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-[#12140f]" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
+          {/* Floating title on banner */}
+          <div className="absolute bottom-8 left-8 right-8">
+            <span className="inline-block font-cinzel text-[10px] text-[#C5A059] tracking-[0.4em] uppercase border border-[#C5A059]/50 px-4 py-1.5 rounded-full bg-[#131513]/70 backdrop-blur-md mb-3 shadow-md animate-pulse">
+              ✦ General Esquire — Chrysalides
+            </span>
+          </div>
         </div>
       </header>
 
-      {/* ─── 2. BANDE DÉROULANTE (TICKER ALL-WIDTH SOUS LA BANNIÈRE) ───────────────── */}
-      <div className="w-full bg-[#0d0e0d] border-y border-[#C5A059]/30 py-3 overflow-hidden shadow-inner z-20 mb-8">
+      {/* ── 2. TICKER ───────────────────────────────────────────────────── */}
+      <div className="w-full bg-[#0d0e0d]/90 border-y border-[#C5A059]/30 py-3 overflow-hidden shadow-inner z-20 mb-8 backdrop-blur-sm">
         <div className="flex whitespace-nowrap animate-ticker">
           {[...Array(6)].map((_, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-6 font-cinzel text-xs sm:text-sm text-[#C5A059] tracking-[0.26em] uppercase px-6"
-            >
-              <span className="drop-shadow-[0_0_12px_rgba(197,160,89,0.35)]">
-                General Esquire
-              </span>
+            <div key={i} className="flex items-center gap-6 font-cinzel text-xs sm:text-sm text-[#C5A059] tracking-[0.26em] uppercase px-6">
+              <span className="drop-shadow-[0_0_12px_rgba(197,160,89,0.35)]">General Esquire</span>
               <span className="text-[#C5A059]/40 text-[8px]">◆</span>
-              <span>Excellence</span>
+              <span>Excursions</span>
               <span className="text-[#C5A059]/40 text-[8px]">◆</span>
-              <span>Compétence</span>
+              <span>Bénin</span>
               <span className="text-[#C5A059]/40 text-[8px]">◆</span>
               <span>Chrysalides</span>
               <span className="text-[#C5A059]/40 text-[8px]">◆</span>
-              <span>Bienveillance</span>
+              <span>Voodoo Days</span>
               <span className="text-[#C5A059]/40 text-[8px]">◆</span>
-              <span>Résilience</span>
+              <span>Découverte</span>
               <span className="text-[#C5A059]/40 text-[8px]">◆</span>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 pb-12 md:pb-20">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 md:pb-20">
+
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 font-cinzel text-xs text-[#C5A059] mb-8 uppercase tracking-widest">
           <Link href="/" className="hover:text-[#E9D18F] transition-colors">{tx.breadcrumb_home}</Link>
-          <span>/</span>
+          <span className="text-[#C5A059]/40">/</span>
           <span className="text-[#EDE4CF]">{tx.breadcrumb_page}</span>
         </div>
 
-        {/* Page header */}
-        <div className="text-center mb-10">
-          <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase border border-[#C5A059]/40 px-4 py-1 rounded-full bg-[#131513]/80 backdrop-blur-md">
+        {/* Page Header */}
+        <div className="text-center mb-14">
+          <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase border border-[#C5A059]/40 px-5 py-1.5 rounded-full bg-[#131513]/80 backdrop-blur-md inline-block mb-4 shadow-md">
             {tx.tag}
           </span>
-          <h1 className="font-cinzel text-3xl sm:text-5xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] mt-4 mb-4">
+          <h1 className="font-cinzel text-4xl sm:text-6xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] mt-2 mb-4 drop-shadow-lg">
             {tx.title}
           </h1>
-          <p className="font-cormorant text-2xl text-[#E9D18F] italic font-light">{tx.subtitle}</p>
-          <div className="flex items-center justify-center gap-3 mt-4">
+          <p className="font-cormorant text-2xl text-[#E9D18F] italic font-light mb-6">{tx.subtitle}</p>
+          <div className="flex items-center justify-center gap-3">
             <div className="h-[1px] w-24 bg-gradient-to-r from-transparent to-[#C5A059]" />
-            <span className="text-[#C5A059]">◆</span>
+            <span className="text-[#C5A059] animate-spin" style={{ animationDuration: "8s" }}>◆</span>
             <div className="h-[1px] w-24 bg-gradient-to-l from-transparent to-[#C5A059]" />
           </div>
         </div>
 
         {/* Hero Carousel */}
-        <section className="mb-16">
+        <section className="mb-20">
           <HeroCarousel slides={slides} />
         </section>
 
-        {/* Content Blocks */}
-        <div className="space-y-10 font-cormorant text-xl text-[#EDE4CF]/90 leading-relaxed mb-16">
+        {/* ── PANNEAUX FULLSCREEN (Image + Texte en alternance HAUT/BAS) ── */}
+        <div className="space-y-16 mb-20">
+          {panelData.map((panel, i) => {
+            const { ref, inView } = useInView();
+            const isEven = i % 2 === 0;
+            return (
+              <div
+                key={i}
+                ref={ref}
+                className={`relative rounded-3xl overflow-hidden border border-[#C5A059]/20 shadow-2xl transition-all duration-1000 ${
+                  inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
+                }`}
+              >
+                {/* Background tint */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#0F3823]/60 via-[#131513]/80 to-[#0a1a0f]/90" />
 
-          <div className="bg-[#131513]/90 border border-[#C5A059]/25 rounded-3xl p-8 sm:p-12 shadow-xl">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="w-7 h-7 text-[#C5A059] text-2xl">🧭</span>
-              <h2 className="font-cinzel text-xl text-[#E9D18F] font-bold">{tx.guide_title}</h2>
-            </div>
-            <p className="first-letter:text-4xl first-letter:font-cinzel first-letter:text-[#C5A059] first-letter:font-bold">{tx.guide_p1}</p>
-            <p className="mt-4">{tx.guide_p2}</p>
-          </div>
+                <div className={`relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-0 min-h-[380px]`}>
+                  {/* Image side */}
+                  <div className={`relative h-64 lg:h-auto ${isEven ? "lg:order-1" : "lg:order-2"} overflow-hidden`}>
+                    <Image
+                      src={panel.image}
+                      alt={panel.imageAlt}
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                      className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                    />
+                    <div className={`absolute inset-0 ${isEven ? "bg-gradient-to-r from-transparent to-[#0F3823]/60" : "bg-gradient-to-l from-transparent to-[#0F3823]/60"}`} />
+                    {/* Image label */}
+                    <div className="absolute bottom-4 left-4">
+                      <span className="font-cinzel text-[9px] text-[#E9D18F] tracking-widest uppercase bg-[#131513]/80 border border-[#C5A059]/40 px-3 py-1 rounded-full backdrop-blur-md">
+                        {panel.emoji} {panel.imageAlt}
+                      </span>
+                    </div>
+                  </div>
 
-          <div className="bg-[#131513]/90 border border-[#C5A059]/25 rounded-3xl p-8 sm:p-12 shadow-xl">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="text-2xl">📅</span>
-              <h2 className="font-cinzel text-xl text-[#E9D18F] font-bold">{tx.prep_title}</h2>
-            </div>
-            <p>{tx.prep_p}</p>
-          </div>
+                  {/* Text side */}
+                  <div className={`relative z-10 p-8 sm:p-12 flex flex-col justify-center ${isEven ? "lg:order-2" : "lg:order-1"}`}>
+                    {/* Accent line */}
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-10 h-[3px] bg-gradient-to-r from-[#C5A059] to-[#E9D18F] rounded-full" />
+                      <span className="text-2xl">{panel.emoji}</span>
+                    </div>
 
-          <div className="bg-[#131513]/90 border border-[#C5A059]/25 rounded-3xl p-8 sm:p-12 shadow-xl">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="text-2xl">🌍</span>
-              <h2 className="font-cinzel text-xl text-[#E9D18F] font-bold">{tx.heart_title}</h2>
-            </div>
-            <p>{tx.heart_p1}</p>
-            <p className="mt-4">{tx.heart_p2}</p>
-          </div>
+                    <h2 className="font-cinzel text-xl sm:text-2xl text-[#E9D18F] font-extrabold uppercase tracking-wider mb-5 leading-tight">
+                      {panel.title}
+                    </h2>
 
-          <div className="bg-[#131513]/90 border border-[#C5A059]/25 rounded-3xl p-8 sm:p-12 shadow-xl">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="text-2xl">🏛️</span>
-              <h2 className="font-cinzel text-xl text-[#E9D18F] font-bold">{tx.must_title}</h2>
-            </div>
-            <p>{tx.must_p1}</p>
-            <p className="mt-4">{tx.must_p2}</p>
-            <blockquote className="mt-6 pl-6 border-l-4 border-[#C5A059] text-[#E9D18F] italic font-light text-lg">
-              {tx.must_quote}
-            </blockquote>
-          </div>
+                    <div className="space-y-4 font-cormorant text-lg text-[#EDE4CF]/90 leading-relaxed">
+                      <p className="first-letter:text-4xl first-letter:font-cinzel first-letter:text-[#C5A059] first-letter:font-bold first-letter:float-left first-letter:mr-1 first-letter:leading-none">
+                        {panel.p1}
+                      </p>
+                      {panel.p2 && <p>{panel.p2}</p>}
+                      {panel.quote && (
+                        <blockquote className="mt-4 pl-5 border-l-4 border-[#C5A059] text-[#E9D18F] italic font-light text-base bg-[#C5A059]/5 py-3 pr-3 rounded-r-xl">
+                          « {panel.quote} »
+                        </blockquote>
+                      )}
+                    </div>
+
+                    {/* Bottom accent */}
+                    <div className="flex items-center gap-2 mt-6">
+                      <div className="w-6 h-[2px] bg-[#C5A059]/40 rounded-full" />
+                      <span className="text-[#C5A059]/40 text-xs">◆</span>
+                      <div className="w-6 h-[2px] bg-[#C5A059]/40 rounded-full" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Glowing border effect */}
+                <div className={`absolute inset-0 rounded-3xl border border-[#C5A059]/0 hover:border-[#C5A059]/30 transition-all duration-700 pointer-events-none`} />
+              </div>
+            );
+          })}
         </div>
 
-        {/* Gallery */}
-        <section className="mb-16">
+        {/* ── GALERIE RADIALE 3D ─────────────────────────────────────────── */}
+        <section className="mb-20">
           <div className="text-center mb-10">
-            <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase block mb-2">{tx.gallery_tag}</span>
-            <h2 className="font-cinzel text-3xl text-[#E9D18F]">{tx.gallery_title}</h2>
-            <p className="font-cormorant text-base text-[#cabfa6] mt-2">
+            <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase block mb-3 animate-pulse">
+              ✦ {tx.gallery_tag}
+            </span>
+            <h2 className="font-cinzel text-3xl sm:text-5xl text-[#E9D18F] font-bold mb-3">
+              {tx.gallery_title}
+            </h2>
+            <p className="font-cormorant text-lg text-[#cabfa6]">
               {GALLERY.length} {lang === "fr" ? "photos pour vous donner un avant-goût de votre aventure béninoise" : "photos to give you a taste of your Beninese adventure"}
             </p>
+            <div className="flex items-center justify-center gap-3 mt-4">
+              <div className="h-[1px] w-20 bg-gradient-to-r from-transparent to-[#C5A059]/60" />
+              <span className="text-[#C5A059]/60 text-sm">◆</span>
+              <div className="h-[1px] w-20 bg-gradient-to-l from-transparent to-[#C5A059]/60" />
+            </div>
           </div>
-          <div className="[column-count:2] sm:[column-count:3] lg:[column-count:4]" style={{ columnGap: "1rem" }}>
-            {GALLERY.map((src, i) => (
-              <div key={i} className="relative mb-4 break-inside-avoid rounded-xl overflow-hidden border border-[#C5A059]/20 shadow-lg group" style={{ breakInside: "avoid" }}>
-                <Image src={src} alt={`Excursion Bénin ${i + 1}`} width={400} height={300}
-                  className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
-                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw" />
-                <div className="absolute inset-0 bg-[#C5A059]/0 group-hover:bg-[#C5A059]/10 transition-all duration-300 flex items-end p-3 opacity-0 group-hover:opacity-100">
-                  <span className="font-cinzel text-[10px] text-[#E9D18F] tracking-widest uppercase bg-[#131513]/70 px-2 py-0.5 rounded-full">◆ Bénin</span>
-                </div>
-              </div>
-            ))}
+          <div className="bg-[#0d0f0c]/70 border border-[#C5A059]/20 rounded-3xl backdrop-blur-sm shadow-2xl overflow-hidden">
+            <RadialGallery3D items={GALLERY} />
           </div>
         </section>
 
-        {/* CTA */}
-        <div className="text-center p-10 rounded-3xl bg-gradient-to-r from-[#0F3823]/70 via-[#131513] to-[#0F3823]/70 border border-[#C5A059]/40 shadow-2xl">
-          <h3 className="font-cinzel text-xl text-[#E9D18F] font-bold mb-2">{tx.cta_title}</h3>
-          <p className="font-cormorant text-lg text-[#cabfa6] mb-6">{tx.cta_sub}</p>
+        {/* ── CTA ──────────────────────────────────────────────────────── */}
+        <div className="text-center p-10 sm:p-16 rounded-3xl bg-gradient-to-r from-[#0F3823]/80 via-[#131513]/90 to-[#0F3823]/80 border border-[#C5A059]/40 shadow-[0_0_60px_rgba(197,160,89,0.2)] relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_#C5A059]/8,transparent)] pointer-events-none" />
+          <span className="inline-block font-cinzel text-xs text-[#E9D18F] tracking-[0.3em] uppercase mb-4 border border-[#C5A059]/50 px-5 py-1.5 rounded-full bg-[#131513]/80 shadow-md animate-pulse">
+            ✦ {lang === "fr" ? "Rejoignez l'Aventure" : "Join the Adventure"}
+          </span>
+          <h3 className="font-cinzel text-2xl sm:text-4xl text-[#E9D18F] font-bold mb-3 drop-shadow-[0_0_20px_rgba(197,160,89,0.4)]">{tx.cta_title}</h3>
+          <p className="font-cormorant text-xl text-[#cabfa6] mb-8 max-w-2xl mx-auto leading-relaxed">{tx.cta_sub}</p>
           <Link href="/cocooning-touristique#formulaire"
-            className="inline-block px-12 py-4 rounded-full font-cinzel text-xs tracking-widest font-semibold uppercase text-black bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] hover:brightness-110 transition-all duration-300 shadow-[0_0_30px_rgba(197,160,89,0.5)] hover:scale-105">
+            className="inline-block px-14 py-4 rounded-full font-cinzel text-sm tracking-widest font-bold uppercase text-black bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] hover:brightness-110 transition-all duration-300 shadow-[0_0_40px_rgba(197,160,89,0.6)] hover:scale-105">
             {tx.cta_btn}
           </Link>
         </div>
