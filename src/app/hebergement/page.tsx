@@ -9,7 +9,7 @@ import { HomeIcon, HandshakeIcon, StarIcon } from "@/components/Icons";
 // ─── Hero carousel slides (Images 100% uniques) ─────────────────────────────
 const SLIDES = [
   {
-    src: "/images/Bienvenue.jpg",
+    src: "/images/carousel1.png",
     tag: "Chrysalides — Bénin",
     title: "Bienvenue dans un monde de bienveillance",
     desc: "Un accueil chaleureux vous attend dès votre arrivée à l'aéroport Bernardin Gantin de Cotonou.",
@@ -21,7 +21,7 @@ const SLIDES = [
     desc: "Un subtil mélange entre le confort hôtelier occidental et la chaleur humaine de votre hôte.",
   },
   {
-    src: "/images/Welcome.jpg",
+    src: "/images/carousel2.png",
     tag: "Confort & Propreté",
     title: "Votre lieu de vie pendant 15 jours",
     desc: "Chaque pensionnaire se voit affecter un ou une guide dédiée, aux petits soins avec lui.",
@@ -33,7 +33,7 @@ const SLIDES = [
     desc: "General Esquire a pris toutes les dispositions matérielles pour garantir un séjour de haute qualité.",
   },
   {
-    src: "/images/Femmezen.jpg",
+    src: "/images/carousel5.png",
     tag: "Bienveillance & Ressourcement",
     title: "Fuyez la solitude anonyme des hôtels",
     desc: "Ici, vous êtes reçu comme un membre de la famille, avec authenticité et chaleur africaine.",
@@ -132,7 +132,7 @@ export default function HebergementPage() {
       <header className="w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
           <Image
-            src="/images/bannercoo.png"
+            src="/apps/frontend/public/images/Welcome.jpg"
             alt="Bannière Hébergement — General Esquire"
             fill
             priority
@@ -232,7 +232,7 @@ export default function HebergementPage() {
 
             <div className="w-full md:w-1/2 relative h-72 sm:h-80 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-xl flex-shrink-0">
               <Image
-                src="/images/Embrassade.jpg"
+                src="/images/bienvenue1.png"
                 alt="Départ et accueil — General Esquire"
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-700"
@@ -269,7 +269,7 @@ export default function HebergementPage() {
 
             <div className="w-full md:w-1/2 relative h-72 sm:h-80 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-xl flex-shrink-0">
               <Image
-                src="/images/Welcome.jpg"
+                src="/images/bienvenue 2.png"
                 alt="Accueil chaleureux au Bénin — General Esquire"
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-700"

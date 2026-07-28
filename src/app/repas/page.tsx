@@ -251,7 +251,7 @@ export default function RepasPage() {
       <header className="w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
           <Image
-            src="/images/Food.jpg"
+            src="/images/bannerrepas.png"
             alt="Bannière Repas & Gastronomie — General Esquire"
             fill
             priority
