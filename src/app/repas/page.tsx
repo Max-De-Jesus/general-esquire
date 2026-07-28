@@ -70,53 +70,174 @@ const FOOD_GALLERY = [
   { src: "/images/salmon.jpg", title: "Pavé de Saumon", tag: "Poissons" },
 ];
 
-// ─── Carrousel Rotatif des Repas ─────────────────────────────────────────────
-function RotatingFoodCarousel() {
-  const [currentIndex, setCurrentIndex] = useState(0);
+// ─── CARROUSEL ROTATIF 3D EN CERCLE (COVER FLOW CYLINDER 3D) ──────────────────
+const CAROUSEL_3D_ITEMS = [
+  { src: "/images/Food.jpg", title: "Pain Artisanal & Baguette", tag: "Petit-Déjeuner" },
+  { src: "/images/Bouillie.jpg", title: "Bouillie de Maïs & Mil", tag: "Petit-Déjeuner Local" },
+  { src: "/images/Tchooh13.jpg", title: "Mets Béninois & Igname", tag: "Spécialité Locale" },
+  { src: "/images/Tchooh12.webp", title: "Beignet Yovodoko", tag: "Douceurs Béninoises" },
+  { src: "/images/Tchooh14.jpg", title: "Gari Délayé & Kluiklui", tag: "Goûter Béninois" },
+  { src: "/images/food4.jpg", title: "Pâtisseries aux Fraises", tag: "Dessert & Douceurs" },
+  { src: "/images/gourmet_cuisine_benin.png", title: "Plat Gourmand Bénin", tag: "Pension Complète" },
+  { src: "/images/croissant.jpg", title: "Viennoiseries & Croissants", tag: "Option Occidentale" },
+];
 
+function Rotating3DFoodCarousel() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+
+  const totalCards = CAROUSEL_3D_ITEMS.length;
+  const angleStep = 360 / totalCards; // 45° par carte pour 8 cartes
+
+  const nextCard = useCallback(() => {
+    setActiveIndex((prev) => (prev + 1) % totalCards);
+  }, [totalCards]);
+
+  const prevCard = useCallback(() => {
+    setActiveIndex((prev) => (prev - 1 + totalCards) % totalCards);
+  }, [totalCards]);
+
+  // Autoplay toutes les 4 secondes (mis en pause au survol)
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % FOOD_GALLERY.length);
+    if (isHovered) return;
+    const timer = setInterval(() => {
+      nextCard();
     }, 4000);
-    return () => clearInterval(interval);
-  }, []);
+    return () => clearInterval(timer);
+  }, [isHovered, nextCard]);
 
-  const currentItem = FOOD_GALLERY[currentIndex];
+  // Gestion du glissement sur mobile (Swipe)
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) nextCard();
+      else prevCard();
+    }
+    setTouchStartX(null);
+  };
 
   return (
-    <div className="relative w-full max-w-4xl mx-auto rounded-3xl overflow-hidden border-2 border-[#C5A059]/50 shadow-2xl bg-[#131513]">
-      <div className="relative h-80 sm:h-[480px] w-full overflow-hidden">
-        <Image
-          src={currentItem.src}
-          alt={currentItem.title}
-          fill
-          priority
-          className="object-cover transition-opacity duration-700"
-          sizes="(max-width: 768px) 100vw, 900px"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
-        <div className="absolute bottom-6 left-6 right-6 text-left">
-          <span className="font-cinzel text-xs text-[#C5A059] tracking-widest uppercase bg-[#131513]/80 px-3 py-1 rounded-full border border-[#C5A059]/30">
-            {currentItem.tag}
-          </span>
-          <h3 className="font-cinzel text-xl sm:text-3xl text-white font-bold mt-2">
-            {currentItem.title}
-          </h3>
+    <div
+      className="relative w-full max-w-5xl mx-auto py-12 px-4 overflow-hidden"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* Container avec Perspective 3D */}
+      <div
+        className="relative w-full h-[380px] sm:h-[480px] flex items-center justify-center"
+        style={{
+          perspective: "1200px",
+          perspectiveOrigin: "50% 35%",
+        }}
+      >
+        {/* Anneau rotatif 3D (Cylindre) */}
+        <div
+          className="relative w-full h-full flex items-center justify-center transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+          style={{
+            transformStyle: "preserve-3d",
+            transform: `rotateY(${-activeIndex * angleStep}deg)`,
+          }}
+        >
+          {CAROUSEL_3D_ITEMS.map((item, idx) => {
+            const cardAngle = idx * angleStep;
+            
+            // Calcul de la distance angulaire relative par rapport à la carte active (0 à Math.PI)
+            const rawDiff = (idx - activeIndex + totalCards) % totalCards;
+            const diff = rawDiff > totalCards / 2 ? totalCards - rawDiff : rawDiff;
+            const isCenter = idx === activeIndex;
+
+            return (
+              <div
+                key={idx}
+                onClick={() => setActiveIndex(idx)}
+                className={`absolute w-[240px] sm:w-[280px] h-[300px] sm:h-[360px] rounded-3xl overflow-hidden cursor-pointer transition-all duration-700 ease-out select-none border-2 ${
+                  isCenter
+                    ? "border-[#E9D18F] shadow-[0_0_40px_rgba(197,160,89,0.6)] z-30"
+                    : "border-[#C5A059]/40 opacity-70 hover:opacity-90 hover:border-[#C5A059]"
+                }`}
+                style={{
+                  transformStyle: "preserve-3d",
+                  // Placement circulaire 3D autour de l'axe Y (350px de rayon desktop, 230px mobile)
+                  transform: `rotateY(${cardAngle}deg) translateZ(calc(min(350px, 58vw))) ${
+                    isCenter ? "scale(1.08)" : "scale(0.92)"
+                  }`,
+                  WebkitBoxReflect:
+                    "below 12px linear-gradient(transparent, transparent 65%, rgba(0,0,0,0.35))",
+                }}
+              >
+                {/* Image de la carte */}
+                <Image
+                  src={item.src}
+                  alt={item.title}
+                  fill
+                  priority={idx < 3}
+                  sizes="(max-width: 640px) 240px, 280px"
+                  className="object-cover object-center filter brightness-95 contrast-105"
+                />
+
+                {/* Overlay Dégradé Sombre Luxueux */}
+                <div
+                  className={`absolute inset-0 transition-colors duration-500 ${
+                    isCenter
+                      ? "bg-gradient-to-t from-black/90 via-black/35 to-transparent"
+                      : "bg-black/50 hover:bg-black/30"
+                  }`}
+                />
+
+                {/* Texte et Badge d'information */}
+                <div className="absolute bottom-0 left-0 right-0 p-5 text-left z-20">
+                  <span className="inline-block font-cinzel text-[9px] sm:text-[10px] text-[#C5A059] tracking-widest uppercase bg-[#131513]/90 border border-[#C5A059]/40 px-3 py-1 rounded-full backdrop-blur-md mb-2 shadow-md">
+                    ✦ {item.tag}
+                  </span>
+                  <h3 className="font-cinzel text-sm sm:text-base font-extrabold text-white leading-snug drop-shadow-md">
+                    {item.title}
+                  </h3>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* Thumbnails indicator bar */}
-      <div className="p-4 bg-[#0d0e0d] border-t border-[#C5A059]/20 flex items-center justify-center gap-2 overflow-x-auto">
-        {FOOD_GALLERY.map((item, idx) => (
+      {/* Boutons de Navigation Précédent / Suivant */}
+      <div className="flex items-center justify-between absolute top-1/2 -translate-y-1/2 left-2 right-2 sm:left-6 sm:right-6 pointer-events-none z-40">
+        <button
+          onClick={prevCard}
+          aria-label="Carte précédente"
+          className="pointer-events-auto w-12 h-12 rounded-full bg-[#131513]/80 border-2 border-[#C5A059]/60 text-[#E9D18F] hover:border-[#E9D18F] hover:bg-[#0F3823] hover:text-white transition-all duration-300 flex items-center justify-center text-2xl shadow-[0_0_20px_rgba(197,160,89,0.3)] hover:scale-110 cursor-pointer backdrop-blur-md"
+        >
+          ‹
+        </button>
+        <button
+          onClick={nextCard}
+          aria-label="Carte suivante"
+          className="pointer-events-auto w-12 h-12 rounded-full bg-[#131513]/80 border-2 border-[#C5A059]/60 text-[#E9D18F] hover:border-[#E9D18F] hover:bg-[#0F3823] hover:text-white transition-all duration-300 flex items-center justify-center text-2xl shadow-[0_0_20px_rgba(197,160,89,0.3)] hover:scale-110 cursor-pointer backdrop-blur-md"
+        >
+          ›
+        </button>
+      </div>
+
+      {/* Puces de Pagination de l'Anneau 3D */}
+      <div className="mt-6 flex items-center justify-center gap-2 relative z-30">
+        {CAROUSEL_3D_ITEMS.map((_, idx) => (
           <button
             key={idx}
-            onClick={() => setCurrentIndex(idx)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
-              idx === currentIndex
-                ? "bg-[#C5A059] scale-125 shadow-[0_0_10px_rgba(197,160,89,0.8)]"
-                : "bg-[#C5A059]/30 hover:bg-[#C5A059]/60"
+            onClick={() => setActiveIndex(idx)}
+            className={`transition-all duration-500 rounded-full cursor-pointer ${
+              idx === activeIndex
+                ? "w-8 h-2.5 bg-[#C5A059] shadow-[0_0_12px_rgba(197,160,89,0.9)]"
+                : "w-2.5 h-2.5 bg-white/20 hover:bg-[#C5A059]/50"
             }`}
-            aria-label={`Photo ${idx + 1}`}
+            aria-label={`Aller à la carte ${idx + 1}`}
           />
         ))}
       </div>
@@ -507,7 +628,7 @@ export default function RepasPage() {
             </p>
           </div>
 
-          <RotatingFoodCarousel />
+          <Rotating3DFoodCarousel />
         </section>
 
         {/* ── CTA DE RÉSERVATION & 3 BOUTONS DE CONTACT ANIMÉS ── */}
