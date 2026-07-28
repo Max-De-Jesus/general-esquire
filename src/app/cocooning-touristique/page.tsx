@@ -205,104 +205,124 @@ export default function CocooningTouristiquePage() {
             {/* Carte 1 : L'Hébergement */}
             <Link
               href="/hebergement"
-              className="group relative w-[230px] h-[230px] sm:w-[250px] sm:h-[250px] rounded-full bg-[#FFFDF9] border-2 border-[#C5A059] shadow-xl hover:shadow-[0_20px_40px_rgba(197,160,89,0.35)] hover:-translate-y-2 transition-all duration-300 ease-out flex flex-col items-center justify-center p-6 text-center overflow-hidden cursor-pointer"
+              className="group relative w-[230px] h-[230px] sm:w-[250px] sm:h-[250px] rounded-full border-2 border-[#C5A059] hover:border-[#E9D18F] shadow-2xl hover:shadow-[0_20px_40px_rgba(197,160,89,0.45)] hover:-translate-y-2 transition-all duration-500 ease-out flex flex-col items-center justify-center p-6 text-center overflow-hidden cursor-pointer"
             >
-              <div className="absolute inset-0 bg-gradient-to-b from-[#FFFDF9] via-[#FAF6ED] to-[#F4EBD9] opacity-100 rounded-full" />
-              <div className="absolute inset-0 rounded-full border border-[#C5A059]/20 group-hover:border-[#C5A059] transition-colors" />
+              {/* Image en arrière-plan du cercle */}
+              <Image
+                src="/images/Dormir.jpg"
+                alt="L'Hébergement"
+                fill
+                priority
+                className="object-cover object-center group-hover:scale-110 transition-transform duration-700 rounded-full"
+              />
+              {/* Overlay sombre translucide pour garantir une parfaite lisibilité du texte */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/60 to-black/40 rounded-full group-hover:bg-black/50 transition-colors" />
 
-              <div className="relative z-10 flex flex-col items-center justify-center h-full">
-                <div className="w-14 h-14 rounded-full bg-[#131513] border border-[#C5A059] flex items-center justify-center text-2xl mb-2.5 shadow-md group-hover:scale-110 group-hover:bg-[#0F3823] transition-all duration-300">
+              <div className="relative z-10 flex flex-col items-center justify-center h-full px-2">
+                <div className="w-12 h-12 rounded-full bg-[#131513]/90 border border-[#C5A059] flex items-center justify-center text-xl mb-2 shadow-md group-hover:scale-110 group-hover:bg-[#0F3823] transition-all duration-300">
                   🏡
                 </div>
-                <h3 className="font-cinzel text-sm sm:text-base font-extrabold text-[#0F3823] group-hover:text-[#C5A059] tracking-wider uppercase mb-1 transition-colors">
+                <h3 className="font-cinzel text-sm sm:text-base font-extrabold text-[#E9D18F] group-hover:text-white tracking-wider uppercase mb-1 drop-shadow-md transition-colors">
                   {lang === "fr" ? "L'HÉBERGEMENT" : "ACCOMMODATION"}
                 </h3>
-                <p className="font-cormorant text-xs sm:text-sm text-[#4A4A4A] leading-snug max-w-[190px] font-medium">
+                <p className="font-cormorant text-xs sm:text-sm text-[#EDE4CF] leading-snug max-w-[190px] font-medium drop-shadow-sm">
                   {lang === "fr"
                     ? "Villas et résidences de standing tout confort pour votre séjour."
                     : "Luxury residences & comfortable villas for your stay."}
                 </p>
-                <span className="mt-2 font-cinzel text-[10px] text-[#C5A059] tracking-widest uppercase font-bold group-hover:underline">
-                  {lang === "fr" ? "Découvrir →" : "Discover →"}
-                </span>
               </div>
             </Link>
 
             {/* Carte 2 : Les Repas */}
             <Link
               href="/repas"
-              className="group relative w-[230px] h-[230px] sm:w-[250px] sm:h-[250px] rounded-full bg-[#FFFDF9] border-2 border-[#C5A059] shadow-xl hover:shadow-[0_20px_40px_rgba(197,160,89,0.35)] hover:-translate-y-2 transition-all duration-300 ease-out flex flex-col items-center justify-center p-6 text-center overflow-hidden cursor-pointer"
+              className="group relative w-[230px] h-[230px] sm:w-[250px] sm:h-[250px] rounded-full border-2 border-[#C5A059] hover:border-[#E9D18F] shadow-2xl hover:shadow-[0_20px_40px_rgba(197,160,89,0.45)] hover:-translate-y-2 transition-all duration-500 ease-out flex flex-col items-center justify-center p-6 text-center overflow-hidden cursor-pointer"
             >
-              <div className="absolute inset-0 bg-gradient-to-b from-[#FFFDF9] via-[#FAF6ED] to-[#F4EBD9] opacity-100 rounded-full" />
-              <div className="absolute inset-0 rounded-full border border-[#C5A059]/20 group-hover:border-[#C5A059] transition-colors" />
+              {/* Image en arrière-plan du cercle */}
+              <Image
+                src="/images/Food.jpg"
+                alt="Les Repas"
+                fill
+                priority
+                className="object-cover object-center group-hover:scale-110 transition-transform duration-700 rounded-full"
+              />
+              {/* Overlay sombre translucide */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/60 to-black/40 rounded-full group-hover:bg-black/50 transition-colors" />
 
-              <div className="relative z-10 flex flex-col items-center justify-center h-full">
-                <div className="w-14 h-14 rounded-full bg-[#131513] border border-[#C5A059] flex items-center justify-center text-2xl mb-2.5 shadow-md group-hover:scale-110 group-hover:bg-[#0F3823] transition-all duration-300">
+              <div className="relative z-10 flex flex-col items-center justify-center h-full px-2">
+                <div className="w-12 h-12 rounded-full bg-[#131513]/90 border border-[#C5A059] flex items-center justify-center text-xl mb-2 shadow-md group-hover:scale-110 group-hover:bg-[#0F3823] transition-all duration-300">
                   🍽️
                 </div>
-                <h3 className="font-cinzel text-sm sm:text-base font-extrabold text-[#0F3823] group-hover:text-[#C5A059] tracking-wider uppercase mb-1 transition-colors">
+                <h3 className="font-cinzel text-sm sm:text-base font-extrabold text-[#E9D18F] group-hover:text-white tracking-wider uppercase mb-1 drop-shadow-md transition-colors">
                   {lang === "fr" ? "LES REPAS" : "MEALS"}
                 </h3>
-                <p className="font-cormorant text-xs sm:text-sm text-[#4A4A4A] leading-snug max-w-[190px] font-medium">
+                <p className="font-cormorant text-xs sm:text-sm text-[#EDE4CF] leading-snug max-w-[190px] font-medium drop-shadow-sm">
                   {lang === "fr"
                     ? "Gastronomie raffinée, pension complète et saveurs locales."
                     : "Refined cuisine, full board & local flavors."}
                 </p>
-                <span className="mt-2 font-cinzel text-[10px] text-[#C5A059] tracking-widest uppercase font-bold group-hover:underline">
-                  {lang === "fr" ? "Découvrir →" : "Discover →"}
-                </span>
               </div>
             </Link>
 
             {/* Carte 3 : Les Excursions */}
             <Link
               href="/excursions"
-              className="group relative w-[230px] h-[230px] sm:w-[250px] sm:h-[250px] rounded-full bg-[#FFFDF9] border-2 border-[#C5A059] shadow-xl hover:shadow-[0_20px_40px_rgba(197,160,89,0.35)] hover:-translate-y-2 transition-all duration-300 ease-out flex flex-col items-center justify-center p-6 text-center overflow-hidden cursor-pointer"
+              className="group relative w-[230px] h-[230px] sm:w-[250px] sm:h-[250px] rounded-full border-2 border-[#C5A059] hover:border-[#E9D18F] shadow-2xl hover:shadow-[0_20px_40px_rgba(197,160,89,0.45)] hover:-translate-y-2 transition-all duration-500 ease-out flex flex-col items-center justify-center p-6 text-center overflow-hidden cursor-pointer"
             >
-              <div className="absolute inset-0 bg-gradient-to-b from-[#FFFDF9] via-[#FAF6ED] to-[#F4EBD9] opacity-100 rounded-full" />
-              <div className="absolute inset-0 rounded-full border border-[#C5A059]/20 group-hover:border-[#C5A059] transition-colors" />
+              {/* Image en arrière-plan du cercle */}
+              <Image
+                src="/images/Excursion22.jpg"
+                alt="Les Excursions"
+                fill
+                priority
+                className="object-cover object-center group-hover:scale-110 transition-transform duration-700 rounded-full"
+              />
+              {/* Overlay sombre translucide */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/60 to-black/40 rounded-full group-hover:bg-black/50 transition-colors" />
 
-              <div className="relative z-10 flex flex-col items-center justify-center h-full">
-                <div className="w-14 h-14 rounded-full bg-[#131513] border border-[#C5A059] flex items-center justify-center text-2xl mb-2.5 shadow-md group-hover:scale-110 group-hover:bg-[#0F3823] transition-all duration-300">
+              <div className="relative z-10 flex flex-col items-center justify-center h-full px-2">
+                <div className="w-12 h-12 rounded-full bg-[#131513]/90 border border-[#C5A059] flex items-center justify-center text-xl mb-2 shadow-md group-hover:scale-110 group-hover:bg-[#0F3823] transition-all duration-300">
                   🗺️
                 </div>
-                <h3 className="font-cinzel text-sm sm:text-base font-extrabold text-[#0F3823] group-hover:text-[#C5A059] tracking-wider uppercase mb-1 transition-colors">
+                <h3 className="font-cinzel text-sm sm:text-base font-extrabold text-[#E9D18F] group-hover:text-white tracking-wider uppercase mb-1 drop-shadow-md transition-colors">
                   {lang === "fr" ? "LES EXCURSIONS" : "EXCURSIONS"}
                 </h3>
-                <p className="font-cormorant text-xs sm:text-sm text-[#4A4A4A] leading-snug max-w-[190px] font-medium">
+                <p className="font-cormorant text-xs sm:text-sm text-[#EDE4CF] leading-snug max-w-[190px] font-medium drop-shadow-sm">
                   {lang === "fr"
                     ? "Découvertes culturelles, visites guidées et paysages d'exception."
                     : "Cultural discoveries, guided tours & stunning sites."}
                 </p>
-                <span className="mt-2 font-cinzel text-[10px] text-[#C5A059] tracking-widest uppercase font-bold group-hover:underline">
-                  {lang === "fr" ? "Découvrir →" : "Discover →"}
-                </span>
               </div>
             </Link>
 
             {/* Carte 4 : La Détente */}
             <Link
               href="/detente"
-              className="group relative w-[230px] h-[230px] sm:w-[250px] sm:h-[250px] rounded-full bg-[#FFFDF9] border-2 border-[#C5A059] shadow-xl hover:shadow-[0_20px_40px_rgba(197,160,89,0.35)] hover:-translate-y-2 transition-all duration-300 ease-out flex flex-col items-center justify-center p-6 text-center overflow-hidden cursor-pointer"
+              className="group relative w-[230px] h-[230px] sm:w-[250px] sm:h-[250px] rounded-full border-2 border-[#C5A059] hover:border-[#E9D18F] shadow-2xl hover:shadow-[0_20px_40px_rgba(197,160,89,0.45)] hover:-translate-y-2 transition-all duration-500 ease-out flex flex-col items-center justify-center p-6 text-center overflow-hidden cursor-pointer"
             >
-              <div className="absolute inset-0 bg-gradient-to-b from-[#FFFDF9] via-[#FAF6ED] to-[#F4EBD9] opacity-100 rounded-full" />
-              <div className="absolute inset-0 rounded-full border border-[#C5A059]/20 group-hover:border-[#C5A059] transition-colors" />
+              {/* Image en arrière-plan du cercle */}
+              <Image
+                src="/images/Detente_Dtente.jpg.jpg"
+                alt="La Détente"
+                fill
+                priority
+                className="object-cover object-center group-hover:scale-110 transition-transform duration-700 rounded-full"
+              />
+              {/* Overlay sombre translucide */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/60 to-black/40 rounded-full group-hover:bg-black/50 transition-colors" />
 
-              <div className="relative z-10 flex flex-col items-center justify-center h-full">
-                <div className="w-14 h-14 rounded-full bg-[#131513] border border-[#C5A059] flex items-center justify-center text-2xl mb-2.5 shadow-md group-hover:scale-110 group-hover:bg-[#0F3823] transition-all duration-300">
+              <div className="relative z-10 flex flex-col items-center justify-center h-full px-2">
+                <div className="w-12 h-12 rounded-full bg-[#131513]/90 border border-[#C5A059] flex items-center justify-center text-xl mb-2 shadow-md group-hover:scale-110 group-hover:bg-[#0F3823] transition-all duration-300">
                   🧘
                 </div>
-                <h3 className="font-cinzel text-sm sm:text-base font-extrabold text-[#0F3823] group-hover:text-[#C5A059] tracking-wider uppercase mb-1 transition-colors">
+                <h3 className="font-cinzel text-sm sm:text-base font-extrabold text-[#E9D18F] group-hover:text-white tracking-wider uppercase mb-1 drop-shadow-md transition-colors">
                   {lang === "fr" ? "LA DÉTENTE" : "RELAXATION"}
                 </h3>
-                <p className="font-cormorant text-xs sm:text-sm text-[#4A4A4A] leading-snug max-w-[190px] font-medium">
+                <p className="font-cormorant text-xs sm:text-sm text-[#EDE4CF] leading-snug max-w-[190px] font-medium drop-shadow-sm">
                   {lang === "fr"
                     ? "Soins, massages, bien-être et ressourcement en toute quiétude."
                     : "Massages, wellness care & total relaxation in serenity."}
                 </p>
-                <span className="mt-2 font-cinzel text-[10px] text-[#C5A059] tracking-widest uppercase font-bold group-hover:underline">
-                  {lang === "fr" ? "Découvrir →" : "Discover →"}
-                </span>
               </div>
             </Link>
           </div>
