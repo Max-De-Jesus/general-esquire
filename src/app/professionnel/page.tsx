@@ -119,24 +119,10 @@ export default function ProfessionnelPage() {
           </div>
         </figure>
 
-        {/* Bloc Développement : Texte à gauche + Deuxième Photo (Avocate enceinte) à droite (Design Exact Screenshot) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center my-12">
-          <div className="font-cormorant text-lg sm:text-xl text-[#EDE4CF]/90 leading-[1.9] font-light text-justify">
-            <p>
-              {lang === "fr" ? (
-                <>
-                  Justement, pour peu qu'ils soient de la vieille école et peu ou prou familiarisés aux nouvelles technologies de l'information, ne maîtrisent pas tel langage en particulier, aient une activité, politque, social, plaidante chronophage, des ennuis ponctuels de santé, un heureux évènement en route, des charges si élevées que le recrutement d'un collaborateur est inenvisageable dans l'immédiat, ou pour tout autre motif d'empêchement prévisible ou non, le risque est grand, soit qu'ils ne tiennent pas leurs délais et s'exposent à une forclusion, soit qu'ils n'adoptent pas la meilleure stratégie dans la défense des intérêts qui leur tiennent à cœur, ce qui les exposerait à une action en responsabilité.
-                </>
-              ) : (
-                <>
-                  Whether adapting to modern IT tools, overcoming language barriers, managing heavy court schedules, health leaves, or high overheads restricting hiring, attorneys face immense risks of missing critical deadlines or compromising legal strategies.
-                </>
-              )}
-            </p>
-          </div>
-
-          {/* Photo Avocate Enceinte avec Cadre Doré Décalé (Exact Screenshot 2) */}
-          <div className="relative p-2">
+        {/* Bloc Développement : Texte s'enroulant autour de l'image flottante à droite */}
+        <div className="relative my-12 font-cormorant text-lg sm:text-xl text-[#EDE4CF]/90 leading-[1.9] font-light text-justify">
+          {/* Photo Avocate Enceinte Flottante à Droite (Cadre Doré) */}
+          <div className="float-none sm:float-right sm:ml-7 sm:mb-4 sm:mt-1 w-full sm:w-[320px] md:w-[380px] relative p-2 my-6 sm:my-0">
             <div className="absolute -inset-2 border-2 border-[#C5A059]/45 rounded-xl pointer-events-none"></div>
             <div className="relative w-full h-80 sm:h-[360px] rounded-lg overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.5),0_0_0_1px_rgba(197,160,89,0.2)]">
               <Image
@@ -147,6 +133,31 @@ export default function ProfessionnelPage() {
               />
             </div>
           </div>
+
+          {/* Texte Continu qui s'enroule autour et s'étend sous l'image */}
+          <p className="mb-4">
+            {lang === "fr" ? (
+              <>
+                Justement, pour peu qu'ils soient de la vieille école et peu ou prou familiarisés aux nouvelles technologies de l'information, ne maîtrisent pas tel langage en particulier, aient une activité, politque, social, plaidante chronophage, des ennuis ponctuels de santé, un heureux évènement en route, des charges si élevées que le recrutement d'un collaborateur est inenvisageable dans l'immédiat, ou pour tout autre motif d'empêchement prévisible ou non, le risque est grand, soit qu'ils ne tiennent pas leurs délais et s'exposent à une forclusion, soit qu'ils n'adoptent pas la meilleure stratégie dans la défense des intérêts qui leur tiennent à cœur, ce qui les exposerait à une action en responsabilité.
+              </>
+            ) : (
+              <>
+                Whether adapting to modern IT tools, overcoming language barriers, managing heavy court schedules, health leaves, or high overheads restricting hiring, attorneys face immense risks of missing critical deadlines or compromising legal strategies.
+              </>
+            )}
+          </p>
+          <p>
+            {lang === "fr" ? (
+              <>
+                Face à ces multiples exigences juridiques et déontologiques, l'intervention ponctuelle d'un confrère dédié permet de sécuriser l'ensemble de vos actes tout en garantissant un accompagnement sur mesure pour vos clients.
+              </>
+            ) : (
+              <>
+                Faced with these daily legal challenges, dedicated external associate support ensures full compliance with deadlines and rigorous protection of client interests.
+              </>
+            )}
+          </p>
+          <div className="clear-both" />
         </div>
 
         {/* PHRASE ANIMÉE "PAS DE PANIQUE : GENERAL ESQUIRE EST LÀ." (Exact Screenshot 2 Glow) */}
