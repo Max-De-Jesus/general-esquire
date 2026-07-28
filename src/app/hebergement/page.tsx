@@ -132,15 +132,10 @@ export default function HebergementPage() {
       <header className="w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
           <Image
-            src="/images/séléction_hebergement.jpg"
+            src="/images/bannercoo.png"
             alt="Bannière Hébergement — General Esquire"
             fill
             priority
-            onError={(e) => {
-              // Fallback si l'image spécifique n'est pas présente
-              const target = e.target as HTMLImageElement;
-              target.src = "/images/sejour.jpg";
-            }}
             className="object-cover object-[center_40%] filter brightness-95 contrast-105 animate-kenburns"
           />
         </div>
