@@ -316,82 +316,145 @@ export default function RepasPage() {
         </div>
 
         {/* Hero Carousel */}
-        <section className="mb-16">
-          <HeroCarousel />
-        </section>
+        {/* ── TEXT CONTENT SECTIONS EN ZIG-ZAG ── */}
+        <div className="space-y-12 font-cormorant text-xl text-[#EDE4CF]/90 leading-relaxed mb-16">
 
-        {/* ── TEXT CONTENT SECTIONS ── */}
-        <div className="space-y-10 font-cormorant text-xl text-[#EDE4CF]/90 leading-relaxed mb-16">
+          {/* Section 1 — Les 3 repas et goûter (Texte à Gauche, Image à Droite) */}
+          <div className="bg-[#131513]/90 border border-[#C5A059]/30 rounded-3xl p-6 sm:p-10 shadow-2xl overflow-hidden hover:border-[#E9D18F]/60 transition-all duration-500">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div className="lg:col-span-7 space-y-4">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-3 rounded-full bg-[#0F3823] border border-[#C5A059]/40 text-[#C5A059]">
+                    <UtensilsIcon className="w-6 h-6 text-[#C5A059]" />
+                  </div>
+                  <h2 className="font-cinzel text-xl sm:text-2xl text-[#E9D18F] font-extrabold uppercase tracking-wider">
+                    {t("repas_sec1_title")}
+                  </h2>
+                </div>
+                <p className="first-letter:text-4xl first-letter:font-cinzel first-letter:text-[#C5A059] first-letter:font-bold">
+                  {lang === "fr" ? (
+                    "Trois repas sont compris dans votre forfait, tous les jours, pendant tout votre séjour : il s'agit du petit-déjeuner, du déjeuner, et du dîner. Lors des excursions, et en cas de fringale, nous aurons également plaisir à vous servir un goûter ou une collation, en attendant le retour sur votre lieu de résidence."
+                  ) : (
+                    "Three full meals are included in your stay every single day: breakfast, lunch, and dinner. During excursions or whenever hunger strikes, we delight in offering tea snacks and light refreshments."
+                  )}
+                </p>
+                <p className="text-[#EDE4CF]/80">
+                  {lang === "fr" ? (
+                    "Nous mettons la priorité sur les mets locaux afin d'éveiller vos papilles à la découverte de nouvelles saveurs ; mais nous respectons toujours votre régime alimentaire si vous avez des préférences particulières. Vous pouvez, si vous le souhaitez, participer à la confection du repas dans une perspective ludique ou pour en acquérir la recette."
+                  ) : (
+                    "We highlight rich local gastronomy to introduce your palate to vibrant new flavors, while accommodating any dietary preferences. You are welcome to join cooking workshops to learn authentic recipes."
+                  )}
+                </p>
+              </div>
 
-          {/* Section 1 — Les 3 repas et goûter */}
-          <div className="bg-[#131513]/90 border border-[#C5A059]/25 rounded-3xl p-8 sm:p-12 shadow-xl">
-            <div className="flex items-center gap-3 mb-6">
-              <UtensilsIcon className="w-8 h-8 text-[#C5A059]" />
-              <h2 className="font-cinzel text-xl sm:text-2xl text-[#E9D18F] font-bold">{t("repas_sec1_title")}</h2>
+              <div className="lg:col-span-5 relative h-64 sm:h-80 rounded-2xl overflow-hidden border-2 border-[#C5A059]/40 shadow-xl group">
+                <Image
+                  src="/images/gourmet_cuisine_benin.png"
+                  alt="Gastronomie et Trois Repas"
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 450px"
+                  className="object-cover object-center group-hover:scale-110 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                <span className="absolute bottom-4 left-4 font-cinzel text-[10px] text-[#E9D18F] tracking-widest uppercase bg-[#131513]/80 border border-[#C5A059]/40 px-3 py-1 rounded-full backdrop-blur-md">
+                  ✦ Pension Complète
+                </span>
+              </div>
             </div>
-            <p className="first-letter:text-4xl first-letter:font-cinzel first-letter:text-[#C5A059] first-letter:font-bold">
-              {lang === "fr" ? (
-                "Trois repas sont compris dans votre forfait, tous les jours, pendant tout votre séjour : il s'agit du petit-déjeuner, du déjeuner, et du dîner. Lors des excursions, et en cas de fringale, nous aurons également plaisir à vous servir un goûter ou une collation, en attendant le retour sur votre lieu de résidence."
-              ) : (
-                "Three full meals are included in your stay every single day: breakfast, lunch, and dinner. During excursions or whenever hunger strikes, we delight in offering tea snacks and light refreshments."
-              )}
-            </p>
-            <p className="mt-4">
-              {lang === "fr" ? (
-                "Nous mettons la priorité sur les mets locaux afin d'éveiller vos papilles à la découverte de nouvelles saveurs ; mais nous respectons toujours votre régime alimentaire si vous avez des préférences particulières. Vous pouvez, si vous le souhaitez, participer à la confection du repas dans une perspective ludique ou pour en acquérir la recette."
-              ) : (
-                "We highlight rich local gastronomy to introduce your palate to vibrant new flavors, while accommodating any dietary preferences. You are welcome to join cooking workshops to learn authentic recipes."
-              )}
-            </p>
           </div>
 
-          {/* Section 2 — La cuisine béninoise */}
-          <div className="bg-[#131513]/90 border border-[#C5A059]/25 rounded-3xl p-8 sm:p-12 shadow-xl">
-            <div className="flex items-center gap-3 mb-6">
-              <FlameIcon className="w-8 h-8 text-[#C5A059]" />
-              <h2 className="font-cinzel text-xl sm:text-2xl text-[#E9D18F] font-bold">{t("repas_sec2_title")}</h2>
+          {/* Section 2 — La cuisine béninoise (Image à Gauche, Texte à Droite) */}
+          <div className="bg-[#131513]/90 border border-[#C5A059]/30 rounded-3xl p-6 sm:p-10 shadow-2xl overflow-hidden hover:border-[#E9D18F]/60 transition-all duration-500">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div className="lg:col-span-5 order-2 lg:order-1 relative h-64 sm:h-80 rounded-2xl overflow-hidden border-2 border-[#C5A059]/40 shadow-xl group">
+                <Image
+                  src="/images/Tchooh13.jpg"
+                  alt="Cuisine Roborative et Épicée"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 450px"
+                  className="object-cover object-center group-hover:scale-110 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                <span className="absolute bottom-4 left-4 font-cinzel text-[10px] text-[#E9D18F] tracking-widest uppercase bg-[#131513]/80 border border-[#C5A059]/40 px-3 py-1 rounded-full backdrop-blur-md">
+                  ✦ Spécialités Locales
+                </span>
+              </div>
+
+              <div className="lg:col-span-7 order-1 lg:order-2 space-y-4">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-3 rounded-full bg-[#0F3823] border border-[#C5A059]/40 text-[#C5A059]">
+                    <FlameIcon className="w-6 h-6 text-[#C5A059]" />
+                  </div>
+                  <h2 className="font-cinzel text-xl sm:text-2xl text-[#E9D18F] font-extrabold uppercase tracking-wider">
+                    {t("repas_sec2_title")}
+                  </h2>
+                </div>
+                <p>
+                  {lang === "fr" ? (
+                    "Roborative et épicée à souhait, la cuisine du Bénin est riche de la diversité de ses sources, résultats d'influences multiples des autres cultures autour d'elle, notamment nigérianes, togolaises, ghanéennes, ivoiriennes, sénégalaises."
+                  ) : (
+                    "Hearty and delightfully spiced, Beninese gastronomy draws inspiration from neighboring West African culinary traditions—including Nigerian, Togolese, Ghanaian, Ivorian, and Senegalese flavors."
+                  )}
+                </p>
+                <p className="text-[#EDE4CF]/80">
+                  {lang === "fr" ? (
+                    "Viandes, crabes, crevettes, poissons et peaux de bœuf sont facilement au menu des plats les plus appréciés qui sont généralement gluants. Pour bien apprécier certains plats comme la pâte de maïs ou le foufou, il vous faudra manger avec les doigts… et les laper aussi régulièrement que possible."
+                  ) : (
+                    "Meats, crabs, prawns, fish, and savory sauces accompany popular dishes like corn dough or foufou—traditionally enjoyed with fingers for the full authentic experience."
+                  )}
+                </p>
+              </div>
             </div>
-            <p>
-              {lang === "fr" ? (
-                "Roborative et épicée à souhait, la cuisine du Bénin est riche de la diversité de ses sources, résultats d'influences multiples des autres cultures autour d'elle, notamment nigérianes, togolaises, ghanéennes, ivoiriennes, sénégalaises."
-              ) : (
-                "Hearty and delightfully spiced, Beninese gastronomy draws inspiration from neighboring West African culinary traditions—including Nigerian, Togolese, Ghanaian, Ivorian, and Senegalese flavors."
-              )}
-            </p>
-            <p className="mt-4">
-              {lang === "fr" ? (
-                "Viandes, crabes, crevettes, poissons et peaux de bœuf sont facilement au menu des plats les plus appréciés qui sont généralement gluants. Pour bien apprécier certains plats comme la pâte de maïs ou le foufou, il vous faudra manger avec les doigts… et les laper aussi régulièrement que possible."
-              ) : (
-                "Meats, crabs, prawns, fish, and savory sauces accompany popular dishes like corn dough or foufou—traditionally enjoyed with fingers for the full authentic experience."
-              )}
-            </p>
           </div>
 
-          {/* Section 3 — Petit-déjeuner et gouters */}
-          <div className="bg-[#131513]/90 border border-[#C5A059]/25 rounded-3xl p-8 sm:p-12 shadow-xl">
-            <div className="flex items-center gap-3 mb-6">
-              <CoffeeIcon className="w-8 h-8 text-[#C5A059]" />
-              <h2 className="font-cinzel text-xl sm:text-2xl text-[#E9D18F] font-bold">{t("repas_sec3_title")}</h2>
+          {/* Section 3 — Petit-déjeuner et goûters (Texte à Gauche, Image à Droite) */}
+          <div className="bg-[#131513]/90 border border-[#C5A059]/30 rounded-3xl p-6 sm:p-10 shadow-2xl overflow-hidden hover:border-[#E9D18F]/60 transition-all duration-500">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div className="lg:col-span-7 space-y-4">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-3 rounded-full bg-[#0F3823] border border-[#C5A059]/40 text-[#C5A059]">
+                    <CoffeeIcon className="w-6 h-6 text-[#C5A059]" />
+                  </div>
+                  <h2 className="font-cinzel text-xl sm:text-2xl text-[#E9D18F] font-extrabold uppercase tracking-wider">
+                    {t("repas_sec3_title")}
+                  </h2>
+                </div>
+                <p>
+                  {lang === "fr" ? (
+                    "Le petit-déjeuner est généralement fait de bouillie de maïs, mil ou sorgho que l'on prend avec du lait ou du sucre, sinon des beignets ronds à base de farine de blé appelés yovodoko (littéralement, le beignet du blanc)."
+                  ) : (
+                    "Breakfast features warm corn or millet porridge served with milk or sugar, alongside crispy golden fritters called yovodoko."
+                  )}
+                </p>
+                <p className="text-[#EDE4CF]/80">
+                  {lang === "fr" ? (
+                    "On peut aussi prendre au goûter, du tapioka au lait ou des frites d'igname et de banane appelées talétalé. Vous aurez sans doute aussi grand plaisir à découvrir le fameux gari délayé avec des glaçons, des noix ou galettes d'arachide appelées kluiklui. Mais si vous préférez un petit-déjeuner occidental classique, nous saurons vous accommoder."
+                  ) : (
+                    "Enjoy afternoon snacks like milk tapioca, fried yam, sweet banana fritters (talétalé), and iced gari with peanut crackers (kluiklui). Western breakfast options are always available."
+                  )}
+                </p>
+                <blockquote className="mt-4 pl-4 border-l-4 border-[#C5A059] text-[#E9D18F] italic text-base sm:text-lg">
+                  {lang === "fr"
+                    ? "Imaginez un instant que c'est votre main qui tient ce magnifique beignet qui va régaler vos papilles."
+                    : "Imagine holding a freshly baked, warm golden fritter ready to delight your taste buds."}
+                </blockquote>
+              </div>
+
+              <div className="lg:col-span-5 relative h-64 sm:h-80 rounded-2xl overflow-hidden border-2 border-[#C5A059]/40 shadow-xl group">
+                <Image
+                  src="/images/Bouillie.jpg"
+                  alt="Saveurs du Matin et Douceurs"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 450px"
+                  className="object-cover object-center group-hover:scale-110 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                <span className="absolute bottom-4 left-4 font-cinzel text-[10px] text-[#E9D18F] tracking-widest uppercase bg-[#131513]/80 border border-[#C5A059]/40 px-3 py-1 rounded-full backdrop-blur-md">
+                  ✦ Bouillie & Yovodoko
+                </span>
+              </div>
             </div>
-            <p>
-              {lang === "fr" ? (
-                "Le petit-déjeuner est généralement fait de bouillie de maïs, mil ou sorgho que l'on prend avec du lait ou du sucre, sinon des beignets ronds à base de farine de blé appelés yovodoko (littéralement, le beignet du blanc)."
-              ) : (
-                "Breakfast features warm corn or millet porridge served with milk or sugar, alongside crispy golden fritters called yovodoko."
-              )}
-            </p>
-            <p className="mt-4">
-              {lang === "fr" ? (
-                "On peut aussi prendre au goûter, du tapioka au lait ou des frites d'igname et de banane appelées talétalé. Vous aurez sans doute aussi grand plaisir à découvrir le fameux gari délayé avec des glaçons, des noix ou galettes d'arachide appelées kluiklui. Mais si vous préférez un petit-déjeuner occidental classique, nous saurons vous accommoder."
-              ) : (
-                "Enjoy afternoon snacks like milk tapioca, fried yam, sweet banana fritters (talétalé), and iced gari with peanut crackers (kluiklui). Western breakfast options are always available."
-              )}
-            </p>
-            <blockquote className="mt-6 pl-6 border-l-4 border-[#C5A059] text-[#E9D18F] italic text-lg sm:text-xl font-light">
-              {lang === "fr"
-                ? "Imaginez un instant que c'est votre main qui tient ce magnifique beignet qui va régaler vos papilles."
-                : "Imagine holding a freshly baked, warm golden fritter ready to delight your taste buds."}
-            </blockquote>
           </div>
 
           {/* Section 4 — Proverbe & Philosophie */}
