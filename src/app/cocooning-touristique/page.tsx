@@ -147,33 +147,7 @@ export default function CocooningTouristiquePage() {
           </div>
         </div>
 
-        {/* ── SUB-NAVIGATION PILLS BAR (ONGLETS DES 4 SOUS-PAGES) ── */}
-        <div className="mb-12 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-          <Link
-            href="/hebergement"
-            className="px-5 py-2.5 rounded-full font-cinzel text-xs font-bold tracking-wider uppercase bg-[#131513] border-2 border-[#C5A059] text-[#E9D18F] hover:bg-[#C5A059] hover:text-black transition-all shadow-[0_0_15px_rgba(197,160,89,0.3)] hover:scale-105"
-          >
-            🏡 {lang === "fr" ? "L'Hébergement" : "Accommodation"}
-          </Link>
-          <Link
-            href="/repas"
-            className="px-5 py-2.5 rounded-full font-cinzel text-xs font-bold tracking-wider uppercase bg-[#131513] border-2 border-[#C5A059] text-[#E9D18F] hover:bg-[#C5A059] hover:text-black transition-all shadow-[0_0_15px_rgba(197,160,89,0.3)] hover:scale-105"
-          >
-            🍽️ {lang === "fr" ? "Les Repas" : "Meals"}
-          </Link>
-          <Link
-            href="/excursions"
-            className="px-5 py-2.5 rounded-full font-cinzel text-xs font-bold tracking-wider uppercase bg-[#131513] border-2 border-[#C5A059] text-[#E9D18F] hover:bg-[#C5A059] hover:text-black transition-all shadow-[0_0_15px_rgba(197,160,89,0.3)] hover:scale-105"
-          >
-            🗺️ {lang === "fr" ? "Les Excursions" : "Excursions"}
-          </Link>
-          <Link
-            href="/detente"
-            className="px-5 py-2.5 rounded-full font-cinzel text-xs font-bold tracking-wider uppercase bg-[#131513] border-2 border-[#C5A059] text-[#E9D18F] hover:bg-[#C5A059] hover:text-black transition-all shadow-[0_0_15px_rgba(197,160,89,0.3)] hover:scale-105"
-          >
-            🧘 {lang === "fr" ? "La Détente" : "Relaxation"}
-          </Link>
-        </div>
+
 
         {/* Subtitle Quote */}
         <div className="text-center max-w-3xl mx-auto mb-16">
