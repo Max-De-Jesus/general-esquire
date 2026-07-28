@@ -368,6 +368,19 @@ export default function RepasPage() {
 
   return (
     <div className="min-h-screen bg-[#1a1c1a] text-[#EDE4CF] pb-12 md:pb-20 relative overflow-x-hidden">
+      {/* ─── IMAGE EN ARRIÈRE-PLAN DE LA PAGE REPAS (Tchooh6.png) ─────────── */}
+      <div className="fixed inset-0 -z-20 overflow-hidden pointer-events-none">
+        <Image
+          src="/images/Tchooh6.png"
+          alt="Arrière-plan Repas General Esquire"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center opacity-40 filter brightness-90 contrast-105"
+        />
+        {/* Layer dégradé sombre pour garantir une parfaite lisibilité du texte */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1a1c1a]/85 via-[#1a1c1a]/70 to-[#1a1c1a]/90 backdrop-blur-[2px]" />
+      </div>
       {/* ─── 1. EN-TÊTE : BANNIÈRE SEULE (PLEINE LARGEUR) ──────────────── */}
       <header className="w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
