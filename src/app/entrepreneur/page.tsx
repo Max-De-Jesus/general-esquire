@@ -356,81 +356,161 @@ export default function EntrepreneurPage() {
           </div>
         </section>
 
-        {/* ── TARIFS ── */}
+        {/* ── TARIFS LUXE & ANIMATIONS ── */}
         <section className="mb-16">
           <div className="text-center mb-10">
             <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase block mb-2">
               Clarté & Transparence
             </span>
-            <h2 className="font-cinzel text-3xl text-[#E9D18F]">Nos Tarifs</h2>
+            <h2 className="font-cinzel text-3xl sm:text-4xl text-[#E9D18F] font-bold">
+              Nos Formules & Tarifs
+            </h2>
+            <p className="font-cormorant text-lg text-[#cabfa6] mt-2 max-w-xl mx-auto">
+              Des formules adaptées aux enjeux des chefs d'entreprise et des PME.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Annual */}
-            <div className="relative p-8 rounded-3xl bg-gradient-to-b from-[#0F3823] to-[#131513] border-2 border-[#C5A059] shadow-2xl overflow-hidden">
-              <div className="absolute top-0 right-0 px-4 py-1 bg-[#C5A059] text-black font-cinzel text-[10px] tracking-widest uppercase rounded-bl-2xl">
-                Recommandé
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+            {/* 1. Abonnement Annuel */}
+            <div className="relative p-8 rounded-3xl bg-gradient-to-b from-[#0F3823]/90 via-[#131513] to-[#0F3823]/90 border-2 border-[#C5A059] shadow-[0_0_40px_rgba(197,160,89,0.25)] hover:shadow-[0_0_65px_rgba(197,160,89,0.45)] hover:scale-[1.03] transition-all duration-500 overflow-hidden group">
+              <div className="absolute top-0 right-0 px-4 py-1 bg-gradient-to-r from-[#C5A059] to-[#E9D18F] text-black font-cinzel text-[10px] font-bold tracking-widest uppercase rounded-bl-2xl shadow-md">
+                ✦ RECOMMANDÉ
               </div>
-              <h3 className="font-cinzel text-sm text-[#C5A059] uppercase tracking-widest mb-1">
+              <div className="w-12 h-12 rounded-2xl bg-[#C5A059]/20 border border-[#C5A059]/40 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                👑
+              </div>
+              <h3 className="font-cinzel text-base text-[#E9D18F] font-bold uppercase tracking-widest mb-1">
                 Abonnement Annuel
               </h3>
-              <p className="font-cinzel text-4xl text-white font-extrabold my-3">
-                10 000 €<span className="text-sm font-normal text-[#cabfa6] font-cormorant"> / an</span>
+              <p className="font-cinzel text-4xl sm:text-5xl text-white font-extrabold my-3 drop-shadow-md">
+                10 000 € <span className="text-sm font-normal text-[#C5A059] font-cormorant">/ an (prépayé)</span>
               </p>
-              <ul className="space-y-2 font-cormorant text-base text-[#EDE4CF]/80">
-                <li className="flex items-start gap-2"><span className="text-[#C5A059] mt-0.5">◆</span>Volume illimité de missions</li>
-                <li className="flex items-start gap-2"><span className="text-[#C5A059] mt-0.5">◆</span>Urgence 48h : +1 500 € / prestation rédigée</li>
-                <li className="flex items-start gap-2"><span className="text-[#C5A059] mt-0.5">◆</span>Traduction CN/RU : 10 € / page ou min</li>
-                <li className="flex items-start gap-2"><span className="text-[#C5A059] mt-0.5">◆</span>Reconduction tacite (résil. 3 mois avant)</li>
+              <div className="h-[1px] w-full bg-[#C5A059]/30 my-4" />
+              <ul className="space-y-3 font-cormorant text-lg text-[#EDE4CF]/90">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#C5A059] font-bold">✓</span>
+                  <span><strong>Sans restriction de volume</strong> de mission.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#C5A059] font-bold">✓</span>
+                  <span><strong>Urgence (≤ 48h) :</strong> Supplément de 1 500 € par rédaction.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#C5A059] font-bold">✓</span>
+                  <span><strong>Traductions Chinois & Russe :</strong> 10 € / page (écrit) ou 10 € / min (multimédia).</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#C5A059] font-bold">✓</span>
+                  <span><strong>Tacite reconduction :</strong> Résiliation 3 mois avant la date anniversaire par écrit ayant date certaine.</span>
+                </li>
               </ul>
             </div>
 
-            {/* Monthly */}
-            <div className="p-8 rounded-3xl bg-[#131513] border border-[#C5A059]/40 shadow-xl">
-              <h3 className="font-cinzel text-sm text-[#C5A059] uppercase tracking-widest mb-1">
+            {/* 2. Abonnement Mensuel */}
+            <div className="relative p-8 rounded-3xl bg-[#131513] border border-[#C5A059]/40 shadow-xl hover:border-[#C5A059] hover:shadow-[0_0_40px_rgba(197,160,89,0.2)] hover:scale-[1.02] transition-all duration-500 group">
+              <div className="w-12 h-12 rounded-2xl bg-[#C5A059]/15 border border-[#C5A059]/30 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                📅
+              </div>
+              <h3 className="font-cinzel text-base text-[#E9D18F] font-bold uppercase tracking-widest mb-1">
                 Abonnement Mensuel
               </h3>
               <p className="font-cinzel text-4xl text-white font-extrabold my-3">
-                1 000 €<span className="text-sm font-normal text-[#cabfa6] font-cormorant"> / mois</span>
+                1 000 € <span className="text-sm font-normal text-[#cabfa6] font-cormorant">/ mois</span>
               </p>
-              <ul className="space-y-2 font-cormorant text-base text-[#EDE4CF]/80">
-                <li className="flex items-start gap-2"><span className="text-[#C5A059] mt-0.5">◆</span>Accès à l'ensemble des prestations</li>
-                <li className="flex items-start gap-2"><span className="text-[#C5A059] mt-0.5">◆</span>Résiliable à tout moment</li>
-                <li className="flex items-start gap-2"><span className="text-[#C5A059] mt-0.5">◆</span>Tout paiement est définitivement acquis</li>
+              <div className="h-[1px] w-full bg-[#C5A059]/20 my-4" />
+              <ul className="space-y-3 font-cormorant text-lg text-[#EDE4CF]/80">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#C5A059]">◆</span>
+                  <span>Accès à l'ensemble de nos prestations dans les mêmes conditions.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#C5A059]">◆</span>
+                  <span><strong>Résiliable à tout moment.</strong></span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#C5A059]">◆</span>
+                  <span>Tout paiement fait à General Esquire lui reste acquis.</span>
+                </li>
               </ul>
             </div>
 
-            {/* Ponctual */}
-            <div className="p-8 rounded-3xl bg-[#131513] border border-[#C5A059]/40 shadow-xl">
-              <h3 className="font-cinzel text-sm text-[#C5A059] uppercase tracking-widest mb-1">
+            {/* 3. Prestation Ponctuelle */}
+            <div className="relative p-8 rounded-3xl bg-[#131513] border border-[#C5A059]/40 shadow-xl hover:border-[#C5A059] hover:shadow-[0_0_40px_rgba(197,160,89,0.2)] hover:scale-[1.02] transition-all duration-500 group">
+              <div className="w-12 h-12 rounded-2xl bg-[#C5A059]/15 border border-[#C5A059]/30 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                🤝
+              </div>
+              <h3 className="font-cinzel text-base text-[#E9D18F] font-bold uppercase tracking-widest mb-1">
                 Prestation Ponctuelle
               </h3>
-              <p className="font-cinzel text-2xl text-white font-bold my-3">
-                Au gré à gré
+              <p className="font-cinzel text-3xl text-white font-bold my-3">
+                Gré à gré
               </p>
-              <ul className="space-y-2 font-cormorant text-base text-[#EDE4CF]/80">
-                <li className="flex items-start gap-2"><span className="text-[#C5A059] mt-0.5">◆</span>Facturation selon la nature du besoin</li>
-                <li className="flex items-start gap-2"><span className="text-[#C5A059] mt-0.5">◆</span>Selon nos disponibilités</li>
-                <li className="flex items-start gap-2"><span className="text-[#C5A059] mt-0.5">◆</span>Convention personnalisée</li>
+              <div className="h-[1px] w-full bg-[#C5A059]/20 my-4" />
+              <ul className="space-y-3 font-cormorant text-lg text-[#EDE4CF]/80">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#C5A059]">◆</span>
+                  <span>Facturation sur convention de gré à gré.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#C5A059]">◆</span>
+                  <span>Prise en compte des données propres à votre dossier.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#C5A059]">◆</span>
+                  <span>En fonction de notre disponibilité.</span>
+                </li>
               </ul>
             </div>
           </div>
         </section>
 
-        {/* ── CTA ── */}
-        <div className="text-center p-10 rounded-3xl bg-gradient-to-r from-[#0F3823]/70 via-[#131513] to-[#0F3823]/70 border border-[#C5A059]/40 shadow-2xl">
-          <h3 className="font-cinzel text-xl text-[#E9D18F] font-bold mb-2">
-            Prêt à sécuriser votre entreprise ?
+        {/* ── CTA : PRISE DE RENDEZ-VOUS (3 BOUTONS) ── */}
+        <div className="text-center p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-[#0F3823]/80 via-[#131513] to-[#0F3823]/80 border-2 border-[#C5A059]/40 shadow-2xl">
+          <h3 className="font-cinzel text-xl sm:text-2xl text-[#E9D18F] font-bold mb-3 uppercase tracking-wider">
+            {lang === "fr" ? "Prise de Rendez-vous" : "Book an Appointment"}
           </h3>
-          <p className="font-cormorant text-lg text-[#cabfa6] mb-6">
-            General Esquire se tient à votre entière disposition pour protéger vos intérêts.
+          <p className="font-cormorant text-lg sm:text-xl text-[#cabfa6] mb-8 max-w-2xl mx-auto">
+            {lang === "fr"
+              ? "Prêt à sécuriser votre entreprise ? Contactez-nous directement via le canal de votre choix :"
+              : "Ready to secure your business? Contact us directly via your preferred channel:"}
           </p>
-          <a
-            href="mailto:contact@generalesquire.com"
-            className="inline-block px-12 py-4 rounded-full font-cinzel text-xs tracking-widest font-semibold uppercase text-black bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] hover:brightness-110 transition-all duration-300 shadow-[0_0_30px_rgba(197,160,89,0.5)] hover:scale-105"
-          >
-            Prendre Rendez-vous →
-          </a>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-4xl mx-auto">
+            {/* 1. Bouton contacter par mail */}
+            <a
+              href="mailto:contact@generalesquire.com"
+              className="flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-gradient-to-r from-[#0F3823] via-[#131513] to-[#0F3823] border-2 border-[#C5A059]/60 hover:border-[#E9D18F] text-[#EDE4CF] hover:text-white font-cinzel text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-[0_0_20px_rgba(197,160,89,0.2)] hover:scale-105 group"
+            >
+              <svg className="w-5 h-5 text-[#C5A059] group-hover:text-[#3B82F6] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <span>{lang === "fr" ? "Contacter par Mail" : "Contact via Mail"}</span>
+            </a>
+
+            {/* 2. Bouton contacter par WhatsApp ou Visio */}
+            <a
+              href="https://wa.me/33758264254"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-gradient-to-r from-[#0F3823] via-[#131513] to-[#0F3823] border-2 border-[#25D366]/70 hover:border-[#25D366] text-[#EDE4CF] hover:text-white font-cinzel text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-[0_0_20px_rgba(37,211,102,0.2)] hover:scale-105 group"
+            >
+              <svg className="w-5 h-5 text-[#25D366] group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+              </svg>
+              <span>{lang === "fr" ? "WhatsApp / Visio" : "WhatsApp / Visio"}</span>
+            </a>
+
+            {/* 3. Bouton contacter par téléphone */}
+            <a
+              href="tel:+33159581725"
+              className="flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-gradient-to-r from-[#0F3823] via-[#131513] to-[#0F3823] border-2 border-[#C5A059]/60 hover:border-[#E9D18F] text-[#EDE4CF] hover:text-white font-cinzel text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-[0_0_20px_rgba(197,160,89,0.2)] hover:scale-105 group"
+            >
+              <svg className="w-5 h-5 text-[#C5A059] group-hover:text-[#25D366] transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21c1.12.45 2.33.69 3.58.69a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.24 2.46.69 3.58a1 1 0 01-.21 1.11l-2.2 2.2z" />
+              </svg>
+              <span>{lang === "fr" ? "Téléphone" : "Phone Call"}</span>
+            </a>
+          </div>
         </div>
 
         {/* Back link */}
