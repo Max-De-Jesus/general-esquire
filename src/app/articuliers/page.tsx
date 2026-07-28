@@ -167,7 +167,7 @@ export default function ParticuliersPage() {
         <div className="relative rounded-3xl overflow-hidden border border-[#C5A059]/40 mb-12 shadow-2xl">
           <div className="relative h-64 sm:h-80 md:h-96 w-full">
             <Image
-              src="/images/Avocate enceinte.jpg"
+              src="/images/Image ParticuLiers9.avif"
               alt="Espace Particuliers — General Esquire"
               fill
               priority
@@ -243,7 +243,7 @@ export default function ParticuliersPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div className="relative h-64 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg group">
               <Image
-                src="/images/Image Particuliers5.jpg"
+                src="/images/Image particuliers.jfif"
                 alt="Accompagnement Particuliers"
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -251,7 +251,7 @@ export default function ParticuliersPage() {
             </div>
             <div className="relative h-64 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg group">
               <Image
-                src="/images/Avocate enceinte3.jpg"
+                src="/images/Image ParticuLiers8.avif"
                 alt="Ecoute et conseils"
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -259,7 +259,7 @@ export default function ParticuliersPage() {
             </div>
             <div className="relative h-64 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg group">
               <Image
-                src="/images/Image Particuliers9.jpg"
+                src="/images/Image ParticuLiers2.avif"
                 alt="Protection des droits"
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -313,7 +313,7 @@ export default function ParticuliersPage() {
           <div className="flex flex-col md:flex-row-reverse items-center gap-8 mb-16">
             <div className="w-full md:w-1/2 relative h-72 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-2xl flex-shrink-0 group">
               <Image
-                src="/images/Avocate enceinte3.jpg"
+                src="/images/Image ParticuLiers3.avif"
                 alt="Dévouement et expertise — General Esquire"
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-700"
