@@ -350,7 +350,7 @@ export default function CocooningTouristiquePage() {
             </div>
             <div className="relative h-64 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg group">
               <Image
-                src="/images/Soins.jpg"
+                src="/images/food3.jpg"
                 alt="Soins et bien-être"
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -358,7 +358,7 @@ export default function CocooningTouristiquePage() {
             </div>
             <div className="relative h-64 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg group">
               <Image
-                src="/images/Detente_Dtente.jpg.jpg"
+                src="/images/Excursion3.jfif"
                 alt="Espaces de détente"
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -367,89 +367,145 @@ export default function CocooningTouristiquePage() {
           </div>
         </section>
 
-        {/* Tarifs et Inclusions Banner */}
-        <section className="mb-16 bg-gradient-to-r from-[#0F3823]/80 via-[#131513] to-[#0F3823]/80 border border-[#C5A059]/40 rounded-3xl p-8 sm:p-12 shadow-2xl">
-          <div className="text-center mb-8">
-            <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase block mb-2">
-              {lang === "fr" ? "Formule Complète 2 Semaines" : "Full 2-Week Package"}
+        {/* Tarifs et Inclusions Banner — DESIGN DE LUXE ANIMÉ */}
+        <section className="mb-16 bg-gradient-to-r from-[#0F3823]/90 via-[#131513] to-[#0F3823]/90 border-2 border-[#C5A059]/50 rounded-3xl p-8 sm:p-12 shadow-[0_0_50px_rgba(197,160,89,0.25)] relative overflow-hidden">
+          {/* Header Prix & Titre */}
+          <div className="text-center mb-10 relative z-10">
+            <span className="inline-block font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase mb-3 border border-[#C5A059]/40 px-5 py-1.5 rounded-full bg-[#131513]/80 backdrop-blur-md shadow-md animate-pulse">
+              ✦ {lang === "fr" ? "Formule Complète 2 Semaines" : "Full 2-Week Package"}
             </span>
-            <h2 className="font-cinzel text-3xl sm:text-4xl text-[#E9D18F] font-bold">
-              1 350 € <span className="text-sm font-normal text-[#cabfa6] font-cormorant">{lang === "fr" ? "/ pensionnaire " : "/ guest (excl. airfare)"}</span>
-            </h2>
-            <p className="font-cormorant text-base text-[#cabfa6] mt-2">
+            
+            <div className="my-4">
+              <h2 className="font-cinzel text-4xl sm:text-6xl text-white font-extrabold tracking-tight drop-shadow-[0_0_25px_rgba(197,160,89,0.5)]">
+                1 350 € <span className="text-base sm:text-xl font-normal text-[#E9D18F] font-cormorant">{lang === "fr" ? "/ pensionnaire" : "/ guest"}</span>
+              </h2>
+            </div>
+
+            <p className="font-cormorant text-lg sm:text-xl text-[#EDE4CF]/90 max-w-2xl mx-auto leading-relaxed">
               {lang === "fr"
-                ? "Outre le billet d’avion Paris-Cotonou-Paris, le coût global indicatif comprend :"
-                : "In addition to your Paris-Cotonou round-trip airfare, the package includes:"}
+                ? "Outre le billet d’avion Paris-Cotonou-Paris, le coût global indicatif comprend l'ensemble des 4 prestations exclusives :"
+                : "In addition to your Paris-Cotonou round-trip airfare, the package includes all 4 exclusive services:"}
             </p>
           </div>
 
-          {/* 4 Pillars Grid (Cases cliquables vers les 4 sous-pages) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-center my-8">
+          {/* 4 Pillars Grid — Cartes avec images de fond & animations de surbrillance */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 my-10 relative z-10">
+            {/* 1. L'Hébergement */}
             <Link
               href="/hebergement"
-              className="p-6 rounded-2xl bg-[#1a1c1a] border-2 border-[#C5A059]/40 hover:border-[#E9D18F] hover:bg-[#0F3823]/80 transition-all duration-300 shadow-xl group flex flex-col items-center justify-between min-h-[160px]"
+              className="group relative h-64 sm:h-72 rounded-2xl border-2 border-[#C5A059]/60 hover:border-[#E9D18F] shadow-xl hover:shadow-[0_0_35px_rgba(197,160,89,0.5)] hover:-translate-y-2 transition-all duration-500 overflow-hidden flex flex-col justify-end p-6 cursor-pointer"
             >
-              <div>
-                <span className="text-4xl mb-3 block group-hover:scale-110 transition-transform">🏡</span>
-                <h3 className="font-cinzel text-sm font-bold text-[#E9D18F] tracking-wider group-hover:text-white">
+              <Image
+                src="/images/luxury_villa_benin.png"
+                alt="L'Hébergement"
+                fill
+                sizes="(max-width: 768px) 100vw, 250px"
+                className="object-cover object-center group-hover:scale-110 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent group-hover:from-black/80 transition-colors" />
+
+              <div className="relative z-10 text-center">
+                <div className="w-12 h-12 rounded-full bg-[#131513]/90 border border-[#C5A059] flex items-center justify-center text-xl mx-auto mb-3 shadow-md group-hover:scale-110 group-hover:bg-[#0F3823] transition-all">
+                  🏡
+                </div>
+                <h3 className="font-cinzel text-sm sm:text-base font-extrabold text-[#E9D18F] group-hover:text-white tracking-wider uppercase mb-1 drop-shadow-md">
                   {lang === "fr" ? "L'HÉBERGEMENT" : "ACCOMMODATION"}
                 </h3>
+                <span className="inline-flex items-center gap-1 font-cinzel text-[10px] text-[#C5A059] group-hover:text-[#E9D18F] tracking-widest uppercase font-bold transition-colors">
+                  {lang === "fr" ? "En savoir plus →" : "Learn more →"}
+                </span>
               </div>
-              <span className="mt-4 font-cinzel text-[11px] text-[#C5A059] group-hover:text-[#E9D18F] tracking-widest uppercase inline-flex items-center gap-1">
-                {lang === "fr" ? "Découvrir →" : "Discover →"}
-              </span>
             </Link>
 
+            {/* 2. Les Repas */}
             <Link
               href="/repas"
-              className="p-6 rounded-2xl bg-[#1a1c1a] border-2 border-[#C5A059]/40 hover:border-[#E9D18F] hover:bg-[#0F3823]/80 transition-all duration-300 shadow-xl group flex flex-col items-center justify-between min-h-[160px]"
+              className="group relative h-64 sm:h-72 rounded-2xl border-2 border-[#C5A059]/60 hover:border-[#E9D18F] shadow-xl hover:shadow-[0_0_35px_rgba(197,160,89,0.5)] hover:-translate-y-2 transition-all duration-500 overflow-hidden flex flex-col justify-end p-6 cursor-pointer"
             >
-              <div>
-                <span className="text-4xl mb-3 block group-hover:scale-110 transition-transform">🍽️</span>
-                <h3 className="font-cinzel text-sm font-bold text-[#E9D18F] tracking-wider group-hover:text-white">
+              <Image
+                src="/images/gourmet_cuisine_benin.png"
+                alt="Les Repas"
+                fill
+                sizes="(max-width: 768px) 100vw, 250px"
+                className="object-cover object-center group-hover:scale-110 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent group-hover:from-black/80 transition-colors" />
+
+              <div className="relative z-10 text-center">
+                <div className="w-12 h-12 rounded-full bg-[#131513]/90 border border-[#C5A059] flex items-center justify-center text-xl mx-auto mb-3 shadow-md group-hover:scale-110 group-hover:bg-[#0F3823] transition-all">
+                  🍽️
+                </div>
+                <h3 className="font-cinzel text-sm sm:text-base font-extrabold text-[#E9D18F] group-hover:text-white tracking-wider uppercase mb-1 drop-shadow-md">
                   {lang === "fr" ? "LES REPAS" : "MEALS"}
                 </h3>
+                <span className="inline-flex items-center gap-1 font-cinzel text-[10px] text-[#C5A059] group-hover:text-[#E9D18F] tracking-widest uppercase font-bold transition-colors">
+                  {lang === "fr" ? "En savoir plus →" : "Learn more →"}
+                </span>
               </div>
-              <span className="mt-4 font-cinzel text-[11px] text-[#C5A059] group-hover:text-[#E9D18F] tracking-widest uppercase inline-flex items-center gap-1">
-                {lang === "fr" ? "Découvrir →" : "Discover →"}
-              </span>
             </Link>
 
+            {/* 3. Les Excursions */}
             <Link
               href="/excursions"
-              className="p-6 rounded-2xl bg-[#1a1c1a] border-2 border-[#C5A059]/40 hover:border-[#E9D18F] hover:bg-[#0F3823]/80 transition-all duration-300 shadow-xl group flex flex-col items-center justify-between min-h-[160px]"
+              className="group relative h-64 sm:h-72 rounded-2xl border-2 border-[#C5A059]/60 hover:border-[#E9D18F] shadow-xl hover:shadow-[0_0_35px_rgba(197,160,89,0.5)] hover:-translate-y-2 transition-all duration-500 overflow-hidden flex flex-col justify-end p-6 cursor-pointer"
             >
-              <div>
-                <span className="text-4xl mb-3 block group-hover:scale-110 transition-transform">🗺️</span>
-                <h3 className="font-cinzel text-sm font-bold text-[#E9D18F] tracking-wider group-hover:text-white">
+              <Image
+                src="/images/Excursion22.jpg"
+                alt="Les Excursions"
+                fill
+                sizes="(max-width: 768px) 100vw, 250px"
+                className="object-cover object-center group-hover:scale-110 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent group-hover:from-black/80 transition-colors" />
+
+              <div className="relative z-10 text-center">
+                <div className="w-12 h-12 rounded-full bg-[#131513]/90 border border-[#C5A059] flex items-center justify-center text-xl mx-auto mb-3 shadow-md group-hover:scale-110 group-hover:bg-[#0F3823] transition-all">
+                  🗺️
+                </div>
+                <h3 className="font-cinzel text-sm sm:text-base font-extrabold text-[#E9D18F] group-hover:text-white tracking-wider uppercase mb-1 drop-shadow-md">
                   {lang === "fr" ? "LES EXCURSIONS" : "EXCURSIONS"}
                 </h3>
+                <span className="inline-flex items-center gap-1 font-cinzel text-[10px] text-[#C5A059] group-hover:text-[#E9D18F] tracking-widest uppercase font-bold transition-colors">
+                  {lang === "fr" ? "En savoir plus →" : "Learn more →"}
+                </span>
               </div>
-              <span className="mt-4 font-cinzel text-[11px] text-[#C5A059] group-hover:text-[#E9D18F] tracking-widest uppercase inline-flex items-center gap-1">
-                {lang === "fr" ? "Découvrir →" : "Discover →"}
-              </span>
             </Link>
 
+            {/* 4. La Détente */}
             <Link
               href="/detente"
-              className="p-6 rounded-2xl bg-[#1a1c1a] border-2 border-[#C5A059]/40 hover:border-[#E9D18F] hover:bg-[#0F3823]/80 transition-all duration-300 shadow-xl group flex flex-col items-center justify-between min-h-[160px]"
+              className="group relative h-64 sm:h-72 rounded-2xl border-2 border-[#C5A059]/60 hover:border-[#E9D18F] shadow-xl hover:shadow-[0_0_35px_rgba(197,160,89,0.5)] hover:-translate-y-2 transition-all duration-500 overflow-hidden flex flex-col justify-end p-6 cursor-pointer"
             >
-              <div>
-                <span className="text-4xl mb-3 block group-hover:scale-110 transition-transform">🧘</span>
-                <h3 className="font-cinzel text-sm font-bold text-[#E9D18F] tracking-wider group-hover:text-white">
+              <Image
+                src="/images/Massage.jpg"
+                alt="La Détente"
+                fill
+                sizes="(max-width: 768px) 100vw, 250px"
+                className="object-cover object-center group-hover:scale-110 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent group-hover:from-black/80 transition-colors" />
+
+              <div className="relative z-10 text-center">
+                <div className="w-12 h-12 rounded-full bg-[#131513]/90 border border-[#C5A059] flex items-center justify-center text-xl mx-auto mb-3 shadow-md group-hover:scale-110 group-hover:bg-[#0F3823] transition-all">
+                  🧘
+                </div>
+                <h3 className="font-cinzel text-sm sm:text-base font-extrabold text-[#E9D18F] group-hover:text-white tracking-wider uppercase mb-1 drop-shadow-md">
                   {lang === "fr" ? "LA DÉTENTE" : "RELAXATION"}
                 </h3>
+                <span className="inline-flex items-center gap-1 font-cinzel text-[10px] text-[#C5A059] group-hover:text-[#E9D18F] tracking-widest uppercase font-bold transition-colors">
+                  {lang === "fr" ? "En savoir plus →" : "Learn more →"}
+                </span>
               </div>
-              <span className="mt-4 font-cinzel text-[11px] text-[#C5A059] group-hover:text-[#E9D18F] tracking-widest uppercase inline-flex items-center gap-1">
-                {lang === "fr" ? "Découvrir →" : "Discover →"}
-              </span>
             </Link>
           </div>
 
-          <div className="p-6 rounded-2xl bg-[#1a1c1a] border border-[#C5A059]/20 font-cormorant text-base text-[#EDE4CF] text-center max-w-2xl mx-auto">
-            {lang === "fr"
-              ? "Pour des raisons de logistique, nous organisons une fois par an, au cours des deux premières semaines de janvier, un séjour groupé pour au moins 10 pensionnaires. Inscriptions ouvertes de février à fin septembre."
-              : "For logistics reasons, we organize once a year, during the first two weeks of January, a group stay for at least 10 guests. Registrations open from February to end of September."}
+          {/* Encadré d'information logistique avec effet verre dépoli */}
+          <div className="p-6 sm:p-8 rounded-2xl bg-[#131513]/90 border border-[#C5A059]/30 font-cormorant text-lg text-[#EDE4CF] text-center max-w-3xl mx-auto shadow-2xl relative z-10 backdrop-blur-md">
+            <p className="leading-relaxed">
+              {lang === "fr"
+                ? "Pour des raisons de logistique, nous organisons une fois par an, au cours des deux premières semaines de janvier, un séjour groupé pour au moins 10 pensionnaires. Inscriptions ouvertes de février à fin septembre."
+                : "For logistics reasons, we organize once a year, during the first two weeks of January, a group stay for at least 10 guests. Registrations open from February to end of September."}
+            </p>
           </div>
         </section>
 
