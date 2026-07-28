@@ -150,7 +150,21 @@ export default function InstitutionsPubliquesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#1a1c1a] text-[#EDE4CF] relative">
+    <div className="min-h-screen text-[#EDE4CF] relative">
+      {/* Background backinstitu.png fixe et parfaitement visible */}
+      <div className="fixed inset-0 -z-20 overflow-hidden pointer-events-none">
+        <Image
+          src="/images/backinstitu.png"
+          alt="Arrière-plan Institutions — General Esquire"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center opacity-60 filter brightness-95 contrast-105"
+        />
+        {/* Voile sombre léger pour garantir une lisibilité optimale tout en laissant voir le décor */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/45 to-black/75" />
+      </div>
+
       {/* ─── 1. EN-TÊTE : BANNIÈRE SEULE (vs/1 style exact) ──────────────── */}
       <header className="w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
@@ -165,7 +179,7 @@ export default function InstitutionsPubliquesPage() {
       </header>
 
       {/* ─── 2. BANDE DÉROULANTE (TICKER ALL-WIDTH SOUS LA BANNIÈRE) ───────────────── */}
-      <div className="w-full bg-[#0d0e0d] border-y border-[#C5A059]/30 py-3 overflow-hidden shadow-inner z-20 mb-8">
+      <div className="w-full bg-[#0d0e0d]/90 border-y border-[#C5A059]/30 py-3 overflow-hidden shadow-inner z-20 mb-8 backdrop-blur-sm">
         <div className="flex whitespace-nowrap animate-ticker">
           {[...Array(6)].map((_, i) => (
             <div
@@ -189,19 +203,6 @@ export default function InstitutionsPubliquesPage() {
             </div>
           ))}
         </div>
-      </div>
-
-      {/* Background backinstitu.png avec voile sombre pour lisibilité optimale */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <Image
-          src="/images/backinstitu.png"
-          alt="Arrière-plan Institutions — General Esquire"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-center opacity-30 filter brightness-90 contrast-110"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#1a1c1a]/80 via-[#1a1c1a]/70 to-[#1a1c1a]/90" />
       </div>
 
       <div className="max-w-5xl mx-auto px-6 pb-12 md:pb-20">
