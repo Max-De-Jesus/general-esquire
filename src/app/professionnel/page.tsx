@@ -162,14 +162,7 @@ export default function ProfessionnelPage() {
 
         {/* PHRASE ANIMÉE "PAS DE PANIQUE : GENERAL ESQUIRE EST LÀ." (Exact Screenshot 2 Glow) */}
         <div className="text-center py-10 my-8">
-          <p
-            className="font-cormorant italic text-3xl sm:text-4xl md:text-5xl font-semibold tracking-wide"
-            style={{
-              color: "#FF5522",
-              textShadow:
-                "0 0 14px rgba(231,76,60,1), 0 0 38px rgba(192,57,43,0.9), 0 0 75px rgba(192,57,43,0.55), 0 0 120px rgba(231,76,60,0.22)",
-            }}
-          >
+          <p className="font-cormorant italic text-3xl sm:text-4xl md:text-5xl font-semibold tracking-wide animate-panic-text text-[#FF5522]">
             Pas de panique : General Esquire est là.
           </p>
         </div>

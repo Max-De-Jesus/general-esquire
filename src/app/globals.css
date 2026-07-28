@@ -67,6 +67,31 @@ html, body {
   animation: pulseGlow 2.5s ease-in-out infinite;
 }
 
+/* ─── ANIMATION CLIGNOTANTE & DYNAMIQUE POUR "PAS DE PANIQUE : GENERAL ESQUIRE EST LÀ." ─── */
+@keyframes panicGlowBlink {
+  0%, 100% {
+    opacity: 1;
+    transform: translateY(0px) scale(1);
+    text-shadow: 
+      0 0 14px rgba(255, 85, 34, 1),
+      0 0 35px rgba(231, 76, 60, 0.95),
+      0 0 70px rgba(192, 57, 43, 0.7);
+  }
+  50% {
+    opacity: 0.55;
+    transform: translateY(-6px) scale(1.03);
+    text-shadow: 
+      0 0 6px rgba(255, 85, 34, 0.4),
+      0 0 15px rgba(231, 76, 60, 0.3),
+      0 0 25px rgba(192, 57, 43, 0.15);
+  }
+}
+
+.animate-panic-text {
+  animation: panicGlowBlink 2.2s ease-in-out infinite;
+  will-change: transform, opacity, text-shadow;
+}
+
 /* ─── ANIMATION TEXTE DÉFILANT EN BOUCLE PARFAITE (SANS TROU NI ESPACE VIDE) ──── */
 @keyframes remonterTexteBoucled {
   0% { transform: translateY(0%); }
