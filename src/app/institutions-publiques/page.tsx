@@ -62,7 +62,7 @@ function RotatingGlobe() {
 // ─── Scenario Card ────────────────────────────────────────────────────────────
 function ScenarioCard({ icon, text }: { icon: React.ReactNode; text: string }) {
   return (
-    <div className="p-6 rounded-2xl bg-[#0F3823]/50 border border-[#C5A059]/40 hover:border-[#C5A059] hover:bg-[#0F3823]/80 transition-all duration-300 shadow-lg flex gap-4 items-start group">
+    <div className="p-6 rounded-2xl bg-[#0F3823]/85 backdrop-blur-md border border-[#C5A059]/40 hover:border-[#C5A059] hover:bg-[#0F3823]/95 transition-all duration-300 shadow-xl flex gap-4 items-start group">
       <div className="mt-0.5 flex-shrink-0">{icon}</div>
       <p className="font-cormorant text-base sm:text-lg text-[#EDE4CF] leading-snug font-semibold group-hover:text-white transition-colors">
         {text}
@@ -191,9 +191,17 @@ export default function InstitutionsPubliquesPage() {
         </div>
       </div>
 
-      {/* Background filigrane */}
-      <div className="absolute inset-0 -z-10 opacity-[0.07] pointer-events-none">
-        <Image src="/images/background.jpeg" alt="" fill sizes="100vw" className="object-cover" />
+      {/* Background backinstitu.png avec voile sombre pour lisibilité optimale */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <Image
+          src="/images/backinstitu.png"
+          alt="Arrière-plan Institutions — General Esquire"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center opacity-30 filter brightness-90 contrast-110"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1a1c1a]/80 via-[#1a1c1a]/70 to-[#1a1c1a]/90" />
       </div>
 
       <div className="max-w-5xl mx-auto px-6 pb-12 md:pb-20">
