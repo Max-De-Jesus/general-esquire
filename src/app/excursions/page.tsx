@@ -4,6 +4,7 @@ import React, { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
+import TickerBanner from "@/components/TickerBanner";
 
 // ─── Carousel slides — bilingual ─────────────────────────────────────────────
 const SLIDES_FR = [
@@ -443,26 +444,7 @@ export default function ExcursionsPage() {
       </header>
 
       {/* ── 2. TICKER ───────────────────────────────────────────────────── */}
-      <div className="w-full bg-[#0d0e0d]/90 border-y border-[#C5A059]/30 py-3 overflow-hidden shadow-inner z-20 mb-8 backdrop-blur-sm">
-        <div className="flex whitespace-nowrap animate-ticker">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="flex items-center gap-6 font-cinzel text-xs sm:text-sm text-[#C5A059] tracking-[0.26em] uppercase px-6">
-              <span className="drop-shadow-[0_0_12px_rgba(197,160,89,0.35)]">General Esquire</span>
-              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
-              <span>Excursions</span>
-              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
-              <span>Bénin</span>
-              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
-              <span>Chrysalides</span>
-              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
-              <span>Voodoo Days</span>
-              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
-              <span>Découverte</span>
-              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
-            </div>
-          ))}
-        </div>
-      </div>
+      <TickerBanner items={["GENERAL ESQUIRE", "EXCURSIONS", "BÉNIN", "CHRYSALIDES", "VOODOO DAYS", "DÉCOUVERTE"]} className="mb-8" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 md:pb-20">
 

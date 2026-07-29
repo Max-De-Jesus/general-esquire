@@ -7,6 +7,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { supabase } from "@/lib/supabase";
 import type { Actualite } from "@/lib/supabase";
 import { NewsItem } from "@/data/adminStore";
+import TickerBanner from "@/components/TickerBanner";
 
 export default function PublicActualitesPage() {
   const { lang } = useLanguage();
@@ -89,31 +90,7 @@ export default function PublicActualitesPage() {
       </header>
 
       {/* ─── 2. BANDE DÉROULANTE (TICKER) ────────────────────────────────── */}
-      <div className="w-full bg-[#0d0e0d] border-y border-[#C5A059]/30 py-3 overflow-hidden shadow-inner z-20 mb-8">
-        <div className="flex whitespace-nowrap animate-ticker">
-          {[...Array(6)].map((_, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-6 font-cinzel text-xs sm:text-sm text-[#C5A059] tracking-[0.26em] uppercase px-6"
-            >
-              <span className="drop-shadow-[0_0_12px_rgba(197,160,89,0.35)]">
-                General Esquire
-              </span>
-              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
-              <span>Actualités</span>
-              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
-              <span>Communiqués Officiels</span>
-              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
-              <span>Chrysalides</span>
-              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
-              <span>Événements</span>
-              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
-              <span>Excellence</span>
-              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
-            </div>
-          ))}
-        </div>
-      </div>
+      <TickerBanner items={["GENERAL ESQUIRE", "ACTUALITÉS", "COMMUNIQUÉS OFFICIELS", "CHRYSALIDES", "ÉVÉNEMENTS", "EXCELLENCE"]} className="mb-8" />
 
       {/* ─── CONTENU PRINCIPAL ────────────────────────────── */}
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-8 py-8 md:py-16">

@@ -4,6 +4,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
+import TickerBanner from "@/components/TickerBanner";
 import { HomeIcon, HandshakeIcon, StarIcon } from "@/components/Icons";
 
 // ─── Hero carousel slides (Images 100% uniques) ─────────────────────────────
@@ -142,31 +143,7 @@ export default function HebergementPage() {
       </header>
 
       {/* ─── 2. BANDE DÉROULANTE (TICKER ALL-WIDTH SOUS LA BANNIÈRE) ───────────────── */}
-      <div className="w-full bg-[#0d0e0d] border-y border-[#C5A059]/30 py-3 overflow-hidden shadow-inner z-20 mb-8">
-        <div className="flex whitespace-nowrap animate-ticker">
-          {[...Array(6)].map((_, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-6 font-cinzel text-xs sm:text-sm text-[#C5A059] tracking-[0.26em] uppercase px-6"
-            >
-              <span className="drop-shadow-[0_0_12px_rgba(197,160,89,0.35)]">
-                General Esquire
-              </span>
-              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
-              <span>Excellence</span>
-              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
-              <span>Compétence</span>
-              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
-              <span>Chrysalides</span>
-              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
-              <span>Bienveillance</span>
-              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
-              <span>Résilience</span>
-              <span className="text-[#C5A059]/40 text-[8px]">◆</span>
-            </div>
-          ))}
-        </div>
-      </div>
+      <TickerBanner className="mb-8" />
 
       <div className="max-w-5xl mx-auto px-6">
         {/* Breadcrumb */}
