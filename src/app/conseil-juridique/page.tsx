@@ -291,7 +291,27 @@ export default function ConseilJuridiquePage() {
       console.error(err);
     }
 
-    // 3. Envoi d'email direct à contact@generalesquire.com via mailto
+    // 3. Envoi d'email direct automatique à contact@generalesquire.com via API
+    try {
+      await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: fullName,
+          email: formData.courriel,
+          phone: phone,
+          structure: formData.structure,
+          country: formData.pays,
+          subject: `Nouvelle demande Conseil Juridique — ${fullName}`,
+          message: `Ville / Code Postal : ${formData.ville} (${formData.codePostal})\nUrgent : ${formData.urgent === 'oui' ? 'OUI' : 'NON'}\n\nDescription du besoin :\n${formData.probleme}`,
+          type: "Formulaire Conseil Juridique",
+        }),
+      });
+    } catch (apiErr) {
+      console.warn("API /api/contact error:", apiErr);
+    }
+
+    // 4. Secours mailto
     const mailSubject = encodeURIComponent(`Nouvelle demande de contact — ${fullName}`);
     const mailBody = encodeURIComponent(
       `Bonjour General Esquire,\n\nUne nouvelle demande de contact / consultation a été soumise sur le site :\n\n` +
@@ -306,7 +326,9 @@ export default function ConseilJuridiquePage() {
       `Date : ${new Date().toLocaleString("fr-FR")}`
     );
 
-    window.location.href = `mailto:contact@generalesquire.com?subject=${mailSubject}&body=${mailBody}`;
+    try {
+      window.location.href = `mailto:contact@generalesquire.com?subject=${mailSubject}&body=${mailBody}`;
+    } catch {}
 
     setFormSubmitted(true);
   };

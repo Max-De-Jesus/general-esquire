@@ -66,6 +66,27 @@ export default function CocooningTouristiquePage() {
       console.error(err);
     }
 
+    // 3. Envoi direct automatique à contact@generalesquire.com via API
+    try {
+      await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: fullName,
+          email: formData.courriel,
+          phone: phone,
+          structure: formData.profession || "Cocooning Touristique",
+          country: formData.nationalite,
+          subject: `Inscription Cocooning Touristique — ${fullName}`,
+          message: `Profession: ${formData.profession}\nNationalité: ${formData.nationalite}\nAdresse: ${formData.adresse}\n\nPrésentation:\n${formData.presentationLibre}`,
+          type: "Formulaire Cocooning Touristique",
+        }),
+      });
+    } catch (apiErr) {
+      console.warn("API /api/contact error:", apiErr);
+    }
+
+    // 4. Secours mailto
     const mailSubject = encodeURIComponent(`Inscription Cocooning Touristique — ${fullName}`);
     const mailBody = encodeURIComponent(
       `Bonjour General Esquire,\n\nUne nouvelle inscription pour le programme Cocooning Touristique a été transmise :\n\n` +
@@ -79,7 +100,9 @@ export default function CocooningTouristiquePage() {
       `Date : ${new Date().toLocaleString("fr-FR")}`
     );
 
-    window.location.href = `mailto:contact@generalesquire.com?subject=${mailSubject}&body=${mailBody}`;
+    try {
+      window.location.href = `mailto:contact@generalesquire.com?subject=${mailSubject}&body=${mailBody}`;
+    } catch {}
 
     setFormSubmitted(true);
   };
