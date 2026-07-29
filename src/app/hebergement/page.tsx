@@ -219,7 +219,14 @@ export default function HebergementPage() {
           <div className="flex flex-col md:flex-row-reverse items-center gap-8 bg-[#131513]/90 border border-[#C5A059]/30 rounded-3xl p-6 sm:p-10 shadow-2xl overflow-hidden group hover:border-[#C5A059] transition-all">
             <div className="w-full md:w-1/2 space-y-4">
               <div className="flex items-center gap-3 mb-2">
-                <span className="text-3xl">🇧🇯</span>
+                <div className="relative w-8 h-8 sm:w-10 sm:h-10 flex-shrink-0">
+                  <Image
+                    src="/images/contour.jpg"
+                    alt="Bénin"
+                    fill
+                    className="object-contain rounded-md"
+                  />
+                </div>
                 <h2 className="font-cinzel text-xl sm:text-2xl text-[#E9D18F] font-bold">
                   {t("hebergement_arrival_title")}
                 </h2>
