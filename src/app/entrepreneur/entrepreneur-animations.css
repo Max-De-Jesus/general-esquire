@@ -1,6 +1,6 @@
 @keyframes sparklePop {
-  0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
-  50%       { opacity: 1; transform: scale(1) rotate(180deg); }
+  0%, 100% { opacity: 0; transform: scale(0) rotate(0deg) translate(0, 0); }
+  50%       { opacity: 1; transform: scale(1.4) rotate(180deg) translate(var(--tx, 0px), var(--ty, 0px)); filter: drop-shadow(0 0 10px #E9D18F); }
 }
 
 /* Gold shimmer sweep across the sentence */
@@ -9,19 +9,32 @@
   100% { background-position: 200% center; }
 }
 
+/* Swirl / Wave text animation */
+@keyframes textSwirlWave {
+  0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+  25%       { transform: translateY(-4px) rotate(-0.5deg) scale(1.01); }
+  50%       { transform: translateY(2px) rotate(0.5deg) scale(1); }
+  75%       { transform: translateY(-2px) rotate(-0.3deg) scale(1.005); }
+}
+
 /* Subtle border pulse on the wow box */
 @keyframes borderGlow {
-  0%, 100% { box-shadow: 0 0 12px rgba(197,160,89,0.2), inset 0 0 12px rgba(197,160,89,0.05); }
-  50%       { box-shadow: 0 0 32px rgba(197,160,89,0.5), inset 0 0 24px rgba(197,160,89,0.12); }
+  0%, 100% { box-shadow: 0 0 20px rgba(197,160,89,0.25), inset 0 0 20px rgba(197,160,89,0.08); border-color: rgba(197,160,89,0.4); }
+  50%       { box-shadow: 0 0 45px rgba(233,209,143,0.6), inset 0 0 30px rgba(233,209,143,0.2); border-color: rgba(233,209,143,0.8); }
+}
+
+/* 3D Vertical Wheel Carousel Animation Keyframes */
+@keyframes verticalWheelRotate {
+  0%   { transform: rotateX(0deg); }
+  100% { transform: rotateX(360deg); }
 }
 
 .wow-sentence {
-  /* Shimmering gold gradient text */
   background: linear-gradient(
     90deg,
     #C5A059 0%,
     #E9D18F 20%,
-    #fff8e7 40%,
+    #ffffff 40%,
     #E9D18F 60%,
     #C5A059 80%,
     #E9D18F 100%
@@ -30,7 +43,8 @@
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: shimmerSweep 4s linear infinite;
+  animation: shimmerSweep 3.5s linear infinite, textSwirlWave 6s ease-in-out infinite;
+  display: inline-block;
 }
 
 .wow-box {
@@ -40,7 +54,8 @@
 .sparkle {
   position: absolute;
   pointer-events: none;
-  font-size: 1rem;
-  animation: sparklePop 1.6s ease-in-out infinite;
+  font-size: 1.2rem;
+  animation: sparklePop 2.2s ease-in-out infinite;
   color: #E9D18F;
+  text-shadow: 0 0 8px rgba(233, 209, 143, 0.8);
 }
