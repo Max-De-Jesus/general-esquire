@@ -103,9 +103,21 @@ export default function ParticuliersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#1a1c1a] text-[#EDE4CF] pb-12 md:pb-20 relative">
+    <div className="min-h-screen bg-[#0d0e0d]/50 text-[#EDE4CF] pb-12 md:pb-20 relative">
+      {/* Background image backpa.png */}
+      <div className="fixed inset-0 z-0 opacity-55 pointer-events-none overflow-hidden">
+        <Image
+          src="/images/backpa.png"
+          alt="Background Particuliers"
+          fill
+          priority
+          className="object-cover object-center filter brightness-110 contrast-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0d0e0d]/70 via-[#0d0e0d]/40 to-[#0d0e0d]/80" />
+      </div>
+
       {/* ─── 1. EN-TÊTE : BANNIÈRE SEULE (vs/1 style exact) ──────────────── */}
-      <header className="w-full bg-[#131513] overflow-hidden">
+      <header className="relative z-10 w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
           <Image
             src="/images/bannerparticulier.png"
@@ -118,7 +130,7 @@ export default function ParticuliersPage() {
       </header>
 
       {/* ─── 2. BANDE DÉROULANTE (TICKER ALL-WIDTH SOUS LA BANNIÈRE) ───────────────── */}
-      <div className="w-full bg-[#0d0e0d] border-y border-[#C5A059]/30 py-3 overflow-hidden shadow-inner z-20 mb-8">
+      <div className="relative z-10 w-full bg-[#0d0e0d]/90 border-y border-[#C5A059]/30 py-3 overflow-hidden shadow-inner mb-8">
         <div className="flex whitespace-nowrap animate-ticker">
           {[...Array(6)].map((_, i) => (
             <div
@@ -144,18 +156,7 @@ export default function ParticuliersPage() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-6">
-        
-        {/* Background image backpa.png */}
-        <div className="fixed inset-0 -z-10 opacity-30 pointer-events-none overflow-hidden">
-          <Image
-            src="/images/backpa.png"
-            alt="Background Particuliers"
-            fill
-            priority
-            className="object-cover object-center filter brightness-95"
-          />
-        </div>
+      <div className="relative z-10 max-w-6xl mx-auto px-6">
 
         {/* Breadcrumb Navigation */}
         <div className="flex items-center gap-2 font-cinzel text-xs text-[#C5A059] mb-8 uppercase tracking-widest">

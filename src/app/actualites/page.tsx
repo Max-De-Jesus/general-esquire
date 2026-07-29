@@ -29,7 +29,7 @@ export default function PublicActualitesPage() {
           .eq("is_published", true)
           .order("date", { ascending: false });
 
-        if (!error && data && data.length > 0) {
+        if (!error && data) {
           const mapped: NewsItem[] = data.map((a: Actualite) => ({
             id: a.id,
             title: a.title,
@@ -43,6 +43,7 @@ export default function PublicActualitesPage() {
             isFeatured: a.is_featured,
           }));
           setNews(mapped);
+          localStorage.setItem("ge_admin_news", JSON.stringify(mapped));
         } else {
           // Fallback sur le stockage local admin si présent
           const localStored = localStorage.getItem("ge_admin_news");

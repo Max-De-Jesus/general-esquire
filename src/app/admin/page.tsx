@@ -69,7 +69,7 @@ export default function AdminPage() {
         .select("*")
         .order("created_at", { ascending: false });
 
-      if (!error && data && data.length > 0) {
+      if (!error && data) {
         const mapped: NewsItem[] = data.map((a: Actualite) => ({
           id: a.id,
           title: a.title,
@@ -178,7 +178,7 @@ export default function AdminPage() {
         },
       ]);
     } catch {
-      // Ignore RLS or offline errors, fallback to local storage
+      // Fallback
     }
 
     // 2. Save to Local State + LocalStorage
@@ -206,7 +206,7 @@ export default function AdminPage() {
     try {
       await supabase.from("actualites").delete().eq("id", id);
     } catch {
-      // Ignore errors
+      // Ignore
     }
 
     // 2. Delete from Local State + LocalStorage
@@ -221,12 +221,13 @@ export default function AdminPage() {
     if (!confirm(lang === "fr" ? "ATTENTION : Supprimer TOUTES les actualités ?" : "WARNING: Delete ALL news articles?")) return;
 
     try {
-      await supabase.from("actualites").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+      await supabase.from("actualites").delete().filter("id", "neq", "00000000-0000-0000-0000-000000000000");
     } catch {
       // Ignore
     }
 
     setNewsList([]);
+    localStorage.setItem("ge_admin_news", JSON.stringify([]));
     localStorage.removeItem("ge_admin_news");
     setNewsSuccess(lang === "fr" ? "Toutes les actualités ont été supprimées !" : "All news articles deleted!");
   };
