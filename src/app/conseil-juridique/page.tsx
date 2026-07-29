@@ -596,14 +596,15 @@ export default function ConseilJuridiquePage() {
                     <label className="block font-cinzel text-xs text-[#C5A059] uppercase tracking-wider mb-2">
                       {lang === "fr" ? "Date de naissance" : "Date of Birth"}
                     </label>
-                    <div className="relative">
+                    <div className="relative cursor-pointer">
                       <input
                         type="date"
                         value={formData.dateNaissance}
                         onChange={(e) => setFormData({ ...formData, dateNaissance: e.target.value })}
-                        className="w-full px-4 py-3 pr-12 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] focus:border-[#E9D18F] focus:outline-none transition-colors [color-scheme:dark]"
+                        onClick={(e) => e.currentTarget.showPicker?.()}
+                        className="w-full px-4 py-3 pr-12 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] focus:border-[#E9D18F] focus:outline-none transition-colors [color-scheme:dark] cursor-pointer"
                       />
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                      <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-0">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="text-[#C5A059]">
                           <rect x="3" y="4" width="18" height="18" rx="3" stroke="#C5A059" strokeWidth="1.8"/>
                           <path d="M3 9h18" stroke="#C5A059" strokeWidth="1.8"/>

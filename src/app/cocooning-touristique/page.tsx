@@ -737,13 +737,28 @@ export default function CocooningTouristiquePage() {
                     <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-2">
                       {lang === "fr" ? "Date de naissance *" : "Date of Birth *"}
                     </label>
-                    <input
-                      type="date"
-                      required
-                      value={formData.dateNaissance}
-                      onChange={(e) => setFormData({ ...formData, dateNaissance: e.target.value })}
-                      className="w-full px-4 py-3.5 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] focus:outline-none focus:border-[#E9D18F] transition-colors [color-scheme:dark]"
-                    />
+                    <div className="relative cursor-pointer">
+                      <input
+                        type="date"
+                        required
+                        value={formData.dateNaissance}
+                        onChange={(e) => setFormData({ ...formData, dateNaissance: e.target.value })}
+                        onClick={(e) => e.currentTarget.showPicker?.()}
+                        className="w-full px-4 py-3.5 pr-12 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] focus:outline-none focus:border-[#E9D18F] transition-colors [color-scheme:dark] cursor-pointer"
+                      />
+                      <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-0">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="text-[#C5A059]">
+                          <rect x="3" y="4" width="18" height="18" rx="3" stroke="#C5A059" strokeWidth="1.8"/>
+                          <path d="M3 9h18" stroke="#C5A059" strokeWidth="1.8"/>
+                          <path d="M8 2v4M16 2v4" stroke="#C5A059" strokeWidth="1.8" strokeLinecap="round"/>
+                          <circle cx="8" cy="13" r="1.1" fill="#C5A059"/>
+                          <circle cx="12" cy="13" r="1.1" fill="#C5A059"/>
+                          <circle cx="16" cy="13" r="1.1" fill="#C5A059"/>
+                          <circle cx="8" cy="17" r="1.1" fill="#C5A059"/>
+                          <circle cx="12" cy="17" r="1.1" fill="#C5A059"/>
+                        </svg>
+                      </div>
+                    </div>
                   </div>
                   <div>
                     <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-2">

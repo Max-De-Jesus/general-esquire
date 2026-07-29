@@ -592,13 +592,28 @@ export default function AdminPage() {
                     <label className="block text-xs font-cinzel font-semibold text-[#C5A059] uppercase tracking-wider mb-2">
                       Date de Publication *
                     </label>
-                    <input
-                      type="date"
-                      required
-                      value={formDate}
-                      onChange={(e) => setFormDate(e.target.value)}
-                      className="w-full px-4 py-3 bg-[#131513] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-sm focus:outline-none focus:border-[#E9D18F]"
-                    />
+                    <div className="relative cursor-pointer">
+                      <input
+                        type="date"
+                        required
+                        value={formDate}
+                        onChange={(e) => setFormDate(e.target.value)}
+                        onClick={(e) => e.currentTarget.showPicker?.()}
+                        className="w-full px-4 py-3 pr-12 bg-[#131513] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-sm focus:outline-none focus:border-[#E9D18F] [color-scheme:dark] cursor-pointer"
+                      />
+                      <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-0">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-[#C5A059]">
+                          <rect x="3" y="4" width="18" height="18" rx="3" stroke="#C5A059" strokeWidth="1.8"/>
+                          <path d="M3 9h18" stroke="#C5A059" strokeWidth="1.8"/>
+                          <path d="M8 2v4M16 2v4" stroke="#C5A059" strokeWidth="1.8" strokeLinecap="round"/>
+                          <circle cx="8" cy="13" r="1.1" fill="#C5A059"/>
+                          <circle cx="12" cy="13" r="1.1" fill="#C5A059"/>
+                          <circle cx="16" cy="13" r="1.1" fill="#C5A059"/>
+                          <circle cx="8" cy="17" r="1.1" fill="#C5A059"/>
+                          <circle cx="12" cy="17" r="1.1" fill="#C5A059"/>
+                        </svg>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Auteur */}
