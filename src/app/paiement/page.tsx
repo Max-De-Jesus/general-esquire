@@ -43,7 +43,7 @@ const SERVICE_PRESETS: Record<string, ServicePreset[]> = {
     { id: "pro-custom", nameFr: "Prestation sur devis", nameEn: "Quote-based service", price: 0, isCustom: true },
   ],
   Chrysalides: [
-    { id: "chrys-stay", nameFr: "Séjour Cocooning Touristique Bénin (2 semaines)", nameEn: "Bénin Tourist Cocooning Stay (2 weeks)", price: 1350 },
+    { id: "chrys-stay", nameFr: "Séjour Cocooning Touristique Bénin (2 semaines)", nameEn: "Bénin Tourist Cocooning Stay (2 weeks)", price: 1500 },
     { id: "chrys-custom", nameFr: "Forfait de groupe sur devis", nameEn: "Group Package Quote", price: 0, isCustom: true },
   ],
 };

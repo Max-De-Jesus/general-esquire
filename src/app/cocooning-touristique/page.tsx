@@ -427,7 +427,7 @@ export default function CocooningTouristiquePage() {
             
             <div className="my-4">
               <h2 className="font-cinzel text-4xl sm:text-6xl text-white font-extrabold tracking-tight drop-shadow-[0_0_25px_rgba(197,160,89,0.5)]">
-                1 350 € <span className="text-base sm:text-xl font-normal text-[#E9D18F] font-cormorant">{lang === "fr" ? "/ pensionnaire" : "/ guest"}</span>
+                1 500 € <span className="text-base sm:text-xl font-normal text-[#E9D18F] font-cormorant">{lang === "fr" ? "/ pensionnaire" : "/ guest"}</span>
               </h2>
             </div>
 

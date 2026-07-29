@@ -56,7 +56,7 @@ export const INITIAL_PAYMENTS: PaymentItem[] = [
     clientName: "Claire de Saint-Martin",
     clientEmail: "claire.stmartin@entreprise-vital.fr",
     service: "Forfait Cocooning Touristique 2 Semaines",
-    amount: 1350,
+    amount: 1500,
     currency: "EUR",
     date: "2026-07-21 16:30",
     status: "Payé",
