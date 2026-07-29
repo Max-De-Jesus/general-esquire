@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
+import { supabase } from "@/lib/supabase";
+import type { Actualite } from "@/lib/supabase";
+import { NewsItem } from "@/data/adminStore";
 
 export default function AdminPage() {
   const { user, isAdmin, signIn, signOut, loading } = useAuth();
@@ -19,7 +22,88 @@ export default function AdminPage() {
   const [successMessage, setSuccessMessage] = useState("");
 
   // Admin Dashboard State
-  const [activeTab, setActiveTab] = useState<"overview" | "clients" | "payments" | "news">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "clients" | "payments" | "news">("news");
+
+  // News Manager State
+  const [newsList, setNewsList] = useState<NewsItem[]>([]);
+  const [loadingNews, setLoadingNews] = useState(false);
+  const [savingNews, setSavingNews] = useState(false);
+  const [newsSuccess, setNewsSuccess] = useState("");
+  const [newsError, setNewsError] = useState("");
+
+  // New Article Form Fields
+  const [formTitle, setFormTitle] = useState("");
+  const [formSubtitle, setFormSubtitle] = useState("");
+  const [formCategory, setFormCategory] = useState<NewsItem["category"]>("Annonce");
+  const [formDate, setFormDate] = useState(new Date().toISOString().split("T")[0]);
+  const [formAuthor, setFormAuthor] = useState("Administration General Esquire");
+  const [formSummary, setFormSummary] = useState("");
+  const [formContent, setFormContent] = useState("");
+  const [formImageUrl, setFormImageUrl] = useState("");
+  const [formIsFeatured, setFormIsFeatured] = useState(false);
+  const [formIsPublished, setFormIsPublished] = useState(true);
+
+  // Handle Image File Upload (converted to DataURL / base64 or stored)
+  const handleImageFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setNewsError(lang === "fr" ? "L'image ne doit pas dépasser 5 Mo." : "Image must be under 5MB.");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormImageUrl(reader.result as string);
+        setNewsError("");
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Fetch News from Supabase & LocalStorage
+  const fetchNewsList = async () => {
+    setLoadingNews(true);
+    try {
+      const { data, error } = await supabase
+        .from("actualites")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (!error && data && data.length > 0) {
+        const mapped: NewsItem[] = data.map((a: Actualite) => ({
+          id: a.id,
+          title: a.title,
+          subtitle: a.subtitle ?? undefined,
+          summary: a.summary,
+          content: a.content,
+          category: a.category as NewsItem["category"],
+          date: a.date,
+          imageUrl: a.image_url,
+          author: a.author,
+          isFeatured: a.is_featured,
+          isPublished: a.is_published,
+        }));
+        setNewsList(mapped);
+        localStorage.setItem("ge_admin_news", JSON.stringify(mapped));
+      } else {
+        const local = localStorage.getItem("ge_admin_news");
+        if (local) setNewsList(JSON.parse(local));
+        else setNewsList([]);
+      }
+    } catch {
+      const local = localStorage.getItem("ge_admin_news");
+      if (local) setNewsList(JSON.parse(local));
+      else setNewsList([]);
+    } finally {
+      setLoadingNews(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user && isAdmin) {
+      fetchNewsList();
+    }
+  }, [user, isAdmin]);
 
   const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +129,106 @@ export default function AdminPage() {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  // Create / Publish New Article
+  const handleCreateNews = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setNewsSuccess("");
+    setNewsError("");
+
+    if (!formTitle || !formSummary || !formContent) {
+      setNewsError(lang === "fr" ? "Veuillez remplir le titre, le résumé et le contenu." : "Please fill title, summary and content.");
+      return;
+    }
+
+    setSavingNews(true);
+    const newId = "news-" + Date.now();
+    const finalImage = formImageUrl || "/images/chant.avif";
+
+    const newItem: NewsItem = {
+      id: newId,
+      title: formTitle,
+      subtitle: formSubtitle || undefined,
+      summary: formSummary,
+      content: formContent,
+      category: formCategory,
+      date: formDate,
+      imageUrl: finalImage,
+      author: formAuthor || "Administration General Esquire",
+      isFeatured: formIsFeatured,
+      isPublished: formIsPublished,
+    };
+
+    // 1. Try saving to Supabase
+    try {
+      await supabase.from("actualites").insert([
+        {
+          id: newId,
+          title: formTitle,
+          subtitle: formSubtitle || null,
+          summary: formSummary,
+          content: formContent,
+          category: formCategory,
+          date: formDate,
+          image_url: finalImage,
+          author: formAuthor || "Administration General Esquire",
+          is_featured: formIsFeatured,
+          is_published: formIsPublished,
+        },
+      ]);
+    } catch {
+      // Ignore RLS or offline errors, fallback to local storage
+    }
+
+    // 2. Save to Local State + LocalStorage
+    const updated = [newItem, ...newsList];
+    setNewsList(updated);
+    localStorage.setItem("ge_admin_news", JSON.stringify(updated));
+
+    setNewsSuccess(lang === "fr" ? "Actualité publiée avec succès !" : "News article published successfully!");
+
+    // Reset Form
+    setFormTitle("");
+    setFormSubtitle("");
+    setFormSummary("");
+    setFormContent("");
+    setFormImageUrl("");
+    setFormIsFeatured(false);
+    setSavingNews(false);
+  };
+
+  // Delete an article
+  const handleDeleteNews = async (id: string) => {
+    if (!confirm(lang === "fr" ? "Voulez-vous vraiment supprimer cette actualité ?" : "Are you sure you want to delete this news article?")) return;
+
+    // 1. Delete from Supabase
+    try {
+      await supabase.from("actualites").delete().eq("id", id);
+    } catch {
+      // Ignore errors
+    }
+
+    // 2. Delete from Local State + LocalStorage
+    const updated = newsList.filter((item) => item.id !== id);
+    setNewsList(updated);
+    localStorage.setItem("ge_admin_news", JSON.stringify(updated));
+    setNewsSuccess(lang === "fr" ? "Actualité supprimée !" : "News article deleted!");
+  };
+
+  // Clear ALL articles
+  const handleClearAllNews = async () => {
+    if (!confirm(lang === "fr" ? "ATTENTION : Supprimer TOUTES les actualités ?" : "WARNING: Delete ALL news articles?")) return;
+
+    try {
+      await supabase.from("actualites").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+    } catch {
+      // Ignore
+    }
+
+    setNewsList([]);
+    localStorage.removeItem("ge_admin_news");
+    setNewsSuccess(lang === "fr" ? "Toutes les actualités ont été supprimées !" : "All news articles deleted!");
   };
 
   if (loading) {
@@ -166,7 +350,7 @@ export default function AdminPage() {
           {user && (
             <button
               onClick={() => signOut()}
-              className="w-full mt-4 py-2 text-center text-xs font-cinzel text-rose-300 hover:text-rose-200 transition-colors"
+              className="w-full mt-4 py-2 text-center text-xs font-cinzel text-rose-300 hover:text-rose-200 transition-colors cursor-pointer"
             >
               Se déconnecter du compte actuel
             </button>
@@ -178,7 +362,7 @@ export default function AdminPage() {
 
   // AUTHENTICATED ADMIN DASHBOARD VIEW
   return (
-    <div className="min-h-screen bg-[#131513] text-[#EDE4CF] py-12 px-4 md:px-12">
+    <div className="min-h-screen bg-[#131513] text-[#EDE4CF] py-10 px-4 md:px-12">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Top Admin Header Bar */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-6 bg-[#1a1c1a] border border-[#C5A059]/40 rounded-3xl shadow-xl">
@@ -189,37 +373,49 @@ export default function AdminPage() {
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-cinzel text-xl font-bold text-[#E9D18F]">Console d'Administration</span>
-                <span className="px-2 py-0.5 rounded-full bg-[#C5A059]/20 text-[#E9D18F] text-[10px] font-cinzel font-bold border border-[#C5A059]/40">
-                  ADMIN
+                <span className="px-2.5 py-0.5 rounded-full bg-[#C5A059]/20 text-[#E9D18F] text-[10px] font-cinzel font-bold border border-[#C5A059]/40">
+                  ADMINISTRATEUR
                 </span>
               </div>
-              <p className="text-xs text-[#cabfa6]">Connecté : {user.email}</p>
+              <p className="text-xs text-[#cabfa6]">Connecté en tant que : {user.email}</p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
             <Link
-              href="/"
-              className="px-4 py-2 rounded-full border border-[#C5A059]/40 text-[#E9D18F] font-cinzel text-xs font-bold hover:bg-[#0F3823] transition-all"
+              href="/actualites"
+              target="_blank"
+              className="px-4 py-2 rounded-full border border-[#C5A059]/40 text-[#E9D18F] font-cinzel text-xs font-bold hover:bg-[#0F3823] transition-all flex items-center gap-1.5"
             >
-              Voir le Site
+              <span>Voir la Page Actualités</span>
+              <span>↗</span>
             </Link>
             <button
               onClick={() => signOut()}
               className="px-4 py-2 rounded-full bg-rose-950/40 border border-rose-500/40 text-rose-300 font-cinzel text-xs font-bold hover:bg-rose-900/60 transition-all cursor-pointer"
             >
-              Déconnexion Admin
+              Déconnexion
             </button>
           </div>
         </div>
 
         {/* Admin Navigation Tabs */}
-        <div className="flex flex-wrap gap-2 border-b border-[#C5A059]/30 pb-3 font-cinzel text-sm font-bold">
+        <div className="flex flex-wrap gap-3 border-b border-[#C5A059]/30 pb-4 font-cinzel text-sm font-bold">
+          <button
+            onClick={() => setActiveTab("news")}
+            className={`px-6 py-3 rounded-full transition-all cursor-pointer ${
+              activeTab === "news"
+                ? "bg-gradient-to-r from-[#C5A059] to-[#E9D18F] text-black shadow-lg scale-105"
+                : "text-[#cabfa6] hover:text-[#E9D18F] hover:bg-[#1a1c1a]"
+            }`}
+          >
+            📢 Gestion des Actualités (Uploader)
+          </button>
           <button
             onClick={() => setActiveTab("overview")}
-            className={`px-5 py-2.5 rounded-full transition-all ${
+            className={`px-6 py-3 rounded-full transition-all cursor-pointer ${
               activeTab === "overview"
-                ? "bg-gradient-to-r from-[#C5A059] to-[#E9D18F] text-black shadow-md"
+                ? "bg-gradient-to-r from-[#C5A059] to-[#E9D18F] text-black shadow-lg scale-105"
                 : "text-[#cabfa6] hover:text-[#E9D18F] hover:bg-[#1a1c1a]"
             }`}
           >
@@ -227,9 +423,9 @@ export default function AdminPage() {
           </button>
           <button
             onClick={() => setActiveTab("clients")}
-            className={`px-5 py-2.5 rounded-full transition-all ${
+            className={`px-6 py-3 rounded-full transition-all cursor-pointer ${
               activeTab === "clients"
-                ? "bg-gradient-to-r from-[#C5A059] to-[#E9D18F] text-black shadow-md"
+                ? "bg-gradient-to-r from-[#C5A059] to-[#E9D18F] text-black shadow-lg scale-105"
                 : "text-[#cabfa6] hover:text-[#E9D18F] hover:bg-[#1a1c1a]"
             }`}
           >
@@ -237,27 +433,333 @@ export default function AdminPage() {
           </button>
           <button
             onClick={() => setActiveTab("payments")}
-            className={`px-5 py-2.5 rounded-full transition-all ${
+            className={`px-6 py-3 rounded-full transition-all cursor-pointer ${
               activeTab === "payments"
-                ? "bg-gradient-to-r from-[#C5A059] to-[#E9D18F] text-black shadow-md"
+                ? "bg-gradient-to-r from-[#C5A059] to-[#E9D18F] text-black shadow-lg scale-105"
                 : "text-[#cabfa6] hover:text-[#E9D18F] hover:bg-[#1a1c1a]"
             }`}
           >
             Paiements Reçus
           </button>
-          <button
-            onClick={() => setActiveTab("news")}
-            className={`px-5 py-2.5 rounded-full transition-all ${
-              activeTab === "news"
-                ? "bg-gradient-to-r from-[#C5A059] to-[#E9D18F] text-black shadow-md"
-                : "text-[#cabfa6] hover:text-[#E9D18F] hover:bg-[#1a1c1a]"
-            }`}
-          >
-            Actualités & Articles
-          </button>
         </div>
 
         {/* Tab Contents */}
+        {activeTab === "news" && (
+          <div className="space-y-10">
+            {/* Formulaire de Publication d'Actualités */}
+            <div className="p-8 bg-[#1a1c1a] border border-[#C5A059]/40 rounded-3xl shadow-2xl space-y-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#C5A059]/30 pb-4">
+                <div>
+                  <h3 className="font-cinzel text-2xl font-bold text-[#E9D18F] flex items-center gap-2">
+                    <span>📝</span>
+                    <span>Publier une Nouvelle Actualité</span>
+                  </h3>
+                  <p className="text-sm font-cormorant text-[#cabfa6]">
+                    Uploadez une image et ajoutez vos informations pour publier immédiatement un article.
+                  </p>
+                </div>
+                {newsList.length > 0 && (
+                  <button
+                    onClick={handleClearAllNews}
+                    className="px-4 py-2 rounded-xl bg-rose-950/60 border border-rose-500/40 text-rose-300 font-cinzel text-xs font-bold hover:bg-rose-900 transition-colors cursor-pointer"
+                  >
+                    🗑️ Supprimer TOUTES les actualités ({newsList.length})
+                  </button>
+                )}
+              </div>
+
+              {newsSuccess && (
+                <div className="p-4 bg-emerald-950/70 border border-emerald-500/60 rounded-2xl text-emerald-200 text-sm font-cinzel flex items-center gap-3">
+                  <span className="text-xl">✅</span>
+                  <span>{newsSuccess}</span>
+                </div>
+              )}
+
+              {newsError && (
+                <div className="p-4 bg-rose-950/70 border border-rose-500/60 rounded-2xl text-rose-200 text-sm font-cinzel flex items-center gap-3">
+                  <span className="text-xl">⚠️</span>
+                  <span>{newsError}</span>
+                </div>
+              )}
+
+              <form onSubmit={handleCreateNews} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Titre */}
+                  <div>
+                    <label className="block text-xs font-cinzel font-semibold text-[#C5A059] uppercase tracking-wider mb-2">
+                      Titre de l'Actualité *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Ex: Conférence sur les risques juridiques..."
+                      value={formTitle}
+                      onChange={(e) => setFormTitle(e.target.value)}
+                      className="w-full px-4 py-3 bg-[#131513] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-sm focus:outline-none focus:border-[#E9D18F]"
+                    />
+                  </div>
+
+                  {/* Sous-titre */}
+                  <div>
+                    <label className="block text-xs font-cinzel font-semibold text-[#C5A059] uppercase tracking-wider mb-2">
+                      Sous-titre (Optionnel)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Ex: Protéger sa réputation et son patrimoine..."
+                      value={formSubtitle}
+                      onChange={(e) => setFormSubtitle(e.target.value)}
+                      className="w-full px-4 py-3 bg-[#131513] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-sm focus:outline-none focus:border-[#E9D18F]"
+                    />
+                  </div>
+
+                  {/* Catégorie */}
+                  <div>
+                    <label className="block text-xs font-cinzel font-semibold text-[#C5A059] uppercase tracking-wider mb-2">
+                      Catégorie *
+                    </label>
+                    <select
+                      value={formCategory}
+                      onChange={(e) => setFormCategory(e.target.value as NewsItem["category"])}
+                      className="w-full px-4 py-3 bg-[#131513] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-sm focus:outline-none focus:border-[#E9D18F]"
+                    >
+                      <option value="Conseil Juridique">Conseil Juridique</option>
+                      <option value="Chrysalides">Chrysalides</option>
+                      <option value="Événement">Événement</option>
+                      <option value="Annonce">Annonce</option>
+                    </select>
+                  </div>
+
+                  {/* Date */}
+                  <div>
+                    <label className="block text-xs font-cinzel font-semibold text-[#C5A059] uppercase tracking-wider mb-2">
+                      Date de Publication *
+                    </label>
+                    <input
+                      type="date"
+                      required
+                      value={formDate}
+                      onChange={(e) => setFormDate(e.target.value)}
+                      className="w-full px-4 py-3 bg-[#131513] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-sm focus:outline-none focus:border-[#E9D18F]"
+                    />
+                  </div>
+
+                  {/* Auteur */}
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-cinzel font-semibold text-[#C5A059] uppercase tracking-wider mb-2">
+                      Auteur / Signataire
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Administration General Esquire"
+                      value={formAuthor}
+                      onChange={(e) => setFormAuthor(e.target.value)}
+                      className="w-full px-4 py-3 bg-[#131513] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-sm focus:outline-none focus:border-[#E9D18F]"
+                    />
+                  </div>
+                </div>
+
+                {/* IMAGE UPLOAD & PREVIEW SECTION */}
+                <div className="p-6 bg-[#131513] border border-[#C5A059]/30 rounded-2xl space-y-4">
+                  <label className="block text-xs font-cinzel font-semibold text-[#E9D18F] uppercase tracking-wider">
+                    🖼️ Image de l'Actualité (Uploader ou URL)
+                  </label>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                    <div className="space-y-3">
+                      <div>
+                        <span className="text-xs text-[#cabfa6] block mb-1.5 font-cormorant">
+                          1. Choisir un fichier image depuis votre ordinateur :
+                        </span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageFileUpload}
+                          className="w-full px-3 py-2 bg-[#1a1c1a] border border-[#C5A059]/40 rounded-xl text-xs text-[#EDE4CF] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-cinzel file:font-bold file:bg-[#C5A059] file:text-black hover:file:bg-[#E9D18F] cursor-pointer"
+                        />
+                      </div>
+
+                      <div className="text-center text-xs text-[#cabfa6]/60 font-cinzel uppercase py-1">
+                        — OU —
+                      </div>
+
+                      <div>
+                        <span className="text-xs text-[#cabfa6] block mb-1.5 font-cormorant">
+                          2. Saisir l'URL ou le chemin d'une image existante :
+                        </span>
+                        <input
+                          type="text"
+                          placeholder="/images/chant.avif ou https://..."
+                          value={formImageUrl}
+                          onChange={(e) => setFormImageUrl(e.target.value)}
+                          className="w-full px-4 py-2.5 bg-[#1a1c1a] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-xs focus:outline-none focus:border-[#E9D18F]"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Aperçu de l'image */}
+                    <div className="flex flex-col items-center justify-center p-4 bg-[#1a1c1a] border border-[#C5A059]/20 rounded-xl min-h-[160px]">
+                      {formImageUrl ? (
+                        <div className="relative w-full h-40 rounded-lg overflow-hidden border border-[#C5A059]/40">
+                          <Image
+                            src={formImageUrl}
+                            alt="Aperçu actualité"
+                            fill
+                            className="object-cover object-center"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setFormImageUrl("")}
+                            className="absolute top-2 right-2 px-2 py-1 bg-rose-950/80 text-rose-200 text-[10px] font-cinzel rounded-md border border-rose-500/40"
+                          >
+                            Supprimer l'image
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="text-center text-xs text-[#cabfa6]/70 py-6 font-cormorant">
+                          <span className="text-3xl block mb-1">🖼️</span>
+                          Aucune image sélectionnée. L'image par défaut (/images/chant.avif) sera utilisée.
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Résumé */}
+                <div>
+                  <label className="block text-xs font-cinzel font-semibold text-[#C5A059] uppercase tracking-wider mb-2">
+                    Résumé de l'Article (Chapeau) *
+                  </label>
+                  <textarea
+                    rows={3}
+                    required
+                    placeholder="Bref résumé accrocheur affiché sur les cartes d'actualités..."
+                    value={formSummary}
+                    onChange={(e) => setFormSummary(e.target.value)}
+                    className="w-full px-4 py-3 bg-[#131513] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-sm focus:outline-none focus:border-[#E9D18F]"
+                  />
+                </div>
+
+                {/* Contenu Détaillé */}
+                <div>
+                  <label className="block text-xs font-cinzel font-semibold text-[#C5A059] uppercase tracking-wider mb-2">
+                    Contenu Détaillé de l'Article *
+                  </label>
+                  <textarea
+                    rows={6}
+                    required
+                    placeholder="Rédigez ici le texte intégral de votre article..."
+                    value={formContent}
+                    onChange={(e) => setFormContent(e.target.value)}
+                    className="w-full px-4 py-3 bg-[#131513] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-sm focus:outline-none focus:border-[#E9D18F]"
+                  />
+                </div>
+
+                {/* Checkboxes */}
+                <div className="flex flex-wrap items-center gap-6 pt-2">
+                  <label className="flex items-center gap-2.5 cursor-pointer text-xs font-cinzel text-[#EDE4CF]">
+                    <input
+                      type="checkbox"
+                      checked={formIsFeatured}
+                      onChange={(e) => setFormIsFeatured(e.target.checked)}
+                      className="w-4 h-4 accent-[#C5A059]"
+                    />
+                    <span>⭐ Mettre cet article à la Une</span>
+                  </label>
+
+                  <label className="flex items-center gap-2.5 cursor-pointer text-xs font-cinzel text-[#EDE4CF]">
+                    <input
+                      type="checkbox"
+                      checked={formIsPublished}
+                      onChange={(e) => setFormIsPublished(e.target.checked)}
+                      className="w-4 h-4 accent-[#C5A059]"
+                    />
+                    <span>✅ Publier immédiatement</span>
+                  </label>
+                </div>
+
+                {/* Submit button */}
+                <button
+                  type="submit"
+                  disabled={savingNews}
+                  className="w-full py-4 rounded-full bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] text-black font-cinzel font-bold text-sm uppercase tracking-widest shadow-xl hover:brightness-110 transition-all cursor-pointer disabled:opacity-50"
+                >
+                  {savingNews ? "Publication en cours..." : "🚀 Publier l'Actualité"}
+                </button>
+              </form>
+            </div>
+
+            {/* Liste des Actualités Existantes */}
+            <div className="p-8 bg-[#1a1c1a] border border-[#C5A059]/40 rounded-3xl shadow-xl space-y-6">
+              <h3 className="font-cinzel text-xl font-bold text-[#E9D18F] flex items-center justify-between">
+                <span>📚 Liste des Actualités Publiées ({newsList.length})</span>
+                <button
+                  onClick={fetchNewsList}
+                  className="text-xs font-cinzel text-[#C5A059] hover:text-[#E9D18F] transition-colors"
+                >
+                  🔄 Raîfraîchir la liste
+                </button>
+              </h3>
+
+              {loadingNews ? (
+                <div className="text-center py-10">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#C5A059] mx-auto"></div>
+                </div>
+              ) : newsList.length > 0 ? (
+                <div className="space-y-4">
+                  {newsList.map((item) => (
+                    <div
+                      key={item.id}
+                      className="p-5 bg-[#131513] border border-[#C5A059]/30 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 hover:border-[#E9D18F] transition-colors"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="relative w-20 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-[#1a1c1a] border border-[#C5A059]/30">
+                          <Image
+                            src={item.imageUrl || "/images/chant.avif"}
+                            alt={item.title}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="px-2 py-0.5 bg-[#C5A059]/20 text-[#E9D18F] text-[10px] font-cinzel font-bold rounded-full border border-[#C5A059]/40 uppercase">
+                              {item.category}
+                            </span>
+                            <span className="text-xs text-[#cabfa6]">{item.date}</span>
+                            {item.isFeatured && (
+                              <span className="text-amber-400 text-xs">⭐ À la une</span>
+                            )}
+                          </div>
+                          <h4 className="font-cinzel text-base font-bold text-[#EDE4CF] leading-snug">
+                            {item.title}
+                          </h4>
+                          <p className="font-cormorant text-xs text-[#cabfa6] line-clamp-1">
+                            {item.summary}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3 w-full md:w-auto justify-end">
+                        <button
+                          onClick={() => handleDeleteNews(item.id)}
+                          className="px-3 py-1.5 rounded-xl bg-rose-950/70 border border-rose-500/50 text-rose-300 font-cinzel text-xs font-bold hover:bg-rose-900 transition-colors cursor-pointer"
+                        >
+                          🗑️ Supprimer
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12 text-[#cabfa6] font-cormorant text-lg">
+                  Aucune actualité présente. Utilisez le formulaire ci-dessus pour publier votre premier article !
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {activeTab === "overview" && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="p-6 bg-[#1a1c1a] border border-[#C5A059]/30 rounded-2xl space-y-2">
@@ -289,13 +791,6 @@ export default function AdminPage() {
           <div className="p-8 bg-[#1a1c1a] border border-[#C5A059]/30 rounded-3xl text-center space-y-4">
             <h3 className="font-cinzel text-xl font-bold text-[#E9D18F]">Historique des Paiements</h3>
             <p className="text-sm text-[#cabfa6]">Les règlements en ligne et virements enregistrés sont répertoriés ici.</p>
-          </div>
-        )}
-
-        {activeTab === "news" && (
-          <div className="p-8 bg-[#1a1c1a] border border-[#C5A059]/30 rounded-3xl text-center space-y-4">
-            <h3 className="font-cinzel text-xl font-bold text-[#E9D18F]">Gestion des Actualités</h3>
-            <p className="text-sm text-[#cabfa6]">Publiez et modifiez les communiqués et articles du cabinet.</p>
           </div>
         )}
       </div>
