@@ -10,78 +10,83 @@ import { UtensilsIcon, FlameIcon, CoffeeIcon } from "@/components/Icons";
 // ─── Hero Carousel Slides ─────────────────────────────────────────────────────
 const SLIDES = [
   {
-    src: "/images/Food.jpg",
+    src: "/images/car repas/Food.jpg",
     tag: "Chrysalides — Gastronomie",
     title: "Bienvenue dans un monde de saveurs",
     desc: "Trois repas par jour préparés avec soin, plus des collations lors des excursions.",
   },
   {
-    src: "/images/Bouillie.jpg",
+    src: "/images/car repas/Bouillie.jpg",
     tag: "Petit-Déjeuner Traditionnel",
     title: "Bouillie & Yovodoko",
     desc: "Découvrez la bouillie de maïs, mil ou sorgho et les fameux beignets yovodoko.",
   },
   {
-    src: "/images/food3.jpg",
+    src: "/images/car repas/food3.jpg",
     tag: "Cuisine Roborative",
     title: "Mets locaux & Plats généreux",
     desc: "Viandes, poissons, crabes et sauces savoureuses à apprécier avec les doigts.",
   },
   {
-    src: "/images/Tchooh13.jpg",
+    src: "/images/car repas/Tchooh14 - Copie.jpg",
     tag: "Spécialités Béninoises",
-    title: "Gari délayé & Kluiklui",
+    title: "Gari Délayé & Arachide",
     desc: "Dégustez le gari glacé accompagné des galettes d'arachide croquantes.",
   },
   {
-    src: "/images/croissant.jpg",
+    src: "/images/car repas/food14.jpg",
     tag: "Options Sur-Mesure",
     title: "Petit-déjeuner occidental aussi disponible",
     desc: "Nous nous adaptons avec plaisir à vos préférences et régimes alimentaires.",
   },
 ];
 
-// ─── Complete Food Gallery ────────────────────────────────────────────────────
+// ─── Complete Food Gallery (Toutes les 40 images du dossier CAR REPAS) ───────
 const FOOD_GALLERY = [
-  { src: "/images/Food.jpg", title: "Pain Artisanal & Baguette", tag: "Petit-Déjeuner" },
-  { src: "/images/Bouillie.jpg", title: "Bouillie de Maïs & Mil", tag: "Petit-Déjeuner Local" },
-  { src: "/images/food2.jpg", title: "Bol de Légumes & Riz", tag: "Plat Équilibré" },
-  { src: "/images/food3.jpg", title: "Dîner Convivial & Vin", tag: "Repas du Soir" },
-  { src: "/images/food4.jpg", title: "Pâtisseries aux Fraises", tag: "Dessert & Douceurs" },
-  { src: "/images/food5.jpg", title: "Jus de Fruits & Toast", tag: "Petit-Déjeuner" },
-  { src: "/images/food6.jpg", title: "Œuf au Plat à la Poêle", tag: "Petit-Déjeuner Chaud" },
-  { src: "/images/food7.jpg", title: "Rafraîchissement & Moments Zen", tag: "Détente" },
-  { src: "/images/food8.jpg", title: "Salade & Pâtes Gourmandes", tag: "Entrée Fraîche" },
-  { src: "/images/food9.jpg", title: "Burger Gourmet & Frites", tag: "Snack & Repas" },
-  { src: "/images/food10.jpg", title: "Soupe Maison & Légumes", tag: "Potage Warm" },
-  { src: "/images/food11.jpg", title: "Sauté Asiatique & Nouilles", tag: "Cuisine du Monde" },
-  { src: "/images/food12.jpg", title: "Cocotte d'Œufs & Herbes", tag: "Brunch" },
-  { src: "/images/food13.jpg", title: "Muesli Gourmand aux Fruits", tag: "Petit-Déjeuner" },
-  { src: "/images/food14.jpg", title: "Assiette Équilibrée & Avocat", tag: "Repas Léger" },
-  { src: "/images/food15.jpg", title: "Riz Frit & Cocktails", tag: "Cuisine Épicée" },
-  { src: "/images/food16.jpg", title: "Pains Rustiques & Bols", tag: "Buffet" },
-  { src: "/images/Tchooh13.jpg", title: "Mets Béninois & Igname", tag: "Spécialité Locale" },
-  { src: "/images/Tchooh14.jpg", title: "Gari Délayé & Kluiklui", tag: "Goûter Béninois" },
-  { src: "/images/Tchooh15.jpg", title: "Tapioca & Bouillie Blanche", tag: "Saveurs du Bénin" },
-  { src: "/images/croissant.jpg", title: "Viennoiseries & Croissants", tag: "Option Occidentale" },
-  { src: "/images/cherries.jpg", title: "Cerises & Fruits de Saison", tag: "Vitamines" },
-  { src: "/images/sandwich.jpg", title: "Sandwichs Garnis", tag: "Collation Excursion" },
-  { src: "/images/Spaghetti.jpg", title: "Spaghetti & Saint-Jacques", tag: "Plat International" },
-  { src: "/images/steak.jpg", title: "Grillade de Bœuf", tag: "Viandes" },
-  { src: "/images/salmon.jpg", title: "Pavé de Saumon", tag: "Poissons" },
+  { src: "/images/car repas/Food.jpg", title: "Pain Artisanal & Baguette", tag: "Petit-Déjeuner" },
+  { src: "/images/car repas/Bouillie.jpg", title: "Bouillie de Maïs & Mil", tag: "Petit-Déjeuner Local" },
+  { src: "/images/car repas/food2.jpg", title: "Bol de Légumes & Riz", tag: "Plat Équilibré" },
+  { src: "/images/car repas/food3.jpg", title: "Dîner Convivial & Vin", tag: "Repas du Soir" },
+  { src: "/images/car repas/food4.jpg", title: "Gateaux aux Fraises", tag: "Dessert & Douceurs" },
+  { src: "/images/car repas/food5.jpg", title: "Jus de Fruits & Toast", tag: "Petit-Déjeuner" },
+  { src: "/images/car repas/food6.jpg", title: "Œuf au Plat à la Poêle", tag: "Petit-Déjeuner Chaud" },
+  { src: "/images/car repas/food8.jpg", title: "Salade & Pâtes Gourmandes", tag: "Entrée Fraîche" },
+  { src: "/images/car repas/food9.jpg", title: "Burger Gourmet & Frites", tag: "Snack & Repas" },
+  { src: "/images/car repas/food10.jpg", title: "Soupe Maison & Légumes", tag: "Potage Warm" },
+  { src: "/images/car repas/food11.jpg", title: "Sauté Asiatique & Nouilles", tag: "Cuisine du Monde" },
+  { src: "/images/car repas/food12.jpg", title: "Cocotte d'Œufs & Herbes", tag: "Brunch" },
+  { src: "/images/car repas/food13.jpg", title: "Muesli Gourmand aux Fruits", tag: "Petit-Déjeuner" },
+  { src: "/images/car repas/food14.jpg", title: "Assiette Équilibrée & Avocat", tag: "Repas Léger" },
+  { src: "/images/car repas/food15.jpg", title: "Riz Frit & Cocktails", tag: "Cuisine Épicée" },
+  { src: "/images/car repas/food16.jpg", title: "Pains Rustiques & Bols", tag: "Buffet" },
+  { src: "/images/car repas/sandwich.jpg", title: "Sandwichs Garnis", tag: "Collation Excursion" },
+  { src: "/images/car repas/Spaghetti.jpg", title: "Spaghetti & Saint-Jacques", tag: "Plat International" },
+  { src: "/images/car repas/steak - Copie.jpg", title: "Grillade de Bœuf", tag: "Viandes" },
+  { src: "/images/car repas/salmon.jpg", title: "Pavé de Saumon", tag: "Poissons" },
+  { src: "/images/car repas/Tchooh12 - Copie.jpeg", title: "Beignet Yovodoko", tag: "Douceurs Béninoises" },
+  { src: "/images/car repas/Tchooh14 - Copie.jpg", title: "Gari Délayé & Arachide", tag: "Goûter Béninois" },
+  { src: "/images/car repas/Tchooh15 - Copie.jpg", title: "Tapioca & Bouillie Blanche", tag: "Saveurs du Bénin" },
+  { src: "/images/car repas/Excursion26.jpg", title: "", tag: "" },
+  { src: "/images/car repas/tchooh - Copie.webp", title: "", tag: "" },
+  { src: "/images/car repas/Tchooh2 - Copie.jpeg", title: "", tag: "" },
+  { src: "/images/car repas/Tchooh3 - Copie.jpg", title: "", tag: "" },
+  { src: "/images/car repas/tTchooh4 - Copie.webp", title: "", tag: "" },
+  { src: "/images/car repas/Tchooh5 - Copie.png", title: "", tag: "" },
+  { src: "/images/car repas/Tchooh6 - Copie.jpeg", title: "", tag: "" },
+  { src: "/images/car repas/Tchooh6 - Copie.png", title: "", tag: "" },
+  { src: "/images/car repas/Tchooh7 - Copie.jpg", title: "", tag: "" },
+  { src: "/images/car repas/Tchooh7 - Copie.webp", title: "", tag: "" },
+  { src: "/images/car repas/Tchooh8 - Copie.jpg", title: "", tag: "" },
+  { src: "/images/car repas/Tchooh9 - Copie.jpg", title: "", tag: "" },
+  { src: "/images/car repas/Tchooh10 - Copie.webp", title: "", tag: "" },
+  { src: "/images/car repas/Tchooh11 - Copie.webp", title: "", tag: "" },
+  { src: "/images/car repas/Tchooh16 - Copie.jpg", title: "", tag: "" },
+  { src: "/images/car repas/Tchooh17 - Copie.jpg", title: "", tag: "" },
+  { src: "/images/car repas/Tchooh18 - Copie.png", title: "", tag: "" },
 ];
 
 // ─── CARROUSEL ROTATIF 3D EN CERCLE (COVER FLOW CYLINDER 3D) ──────────────────
-const CAROUSEL_3D_ITEMS = [
-  { src: "/images/Food.jpg", title: "Pain Artisanal & Baguette", tag: "Petit-Déjeuner" },
-  { src: "/images/Bouillie.jpg", title: "Bouillie de Maïs & Mil", tag: "Petit-Déjeuner Local" },
-  { src: "/images/Tchooh13.jpg", title: "Mets Béninois & Igname", tag: "Spécialité Locale" },
-  { src: "/images/Tchooh12.webp", title: "Beignet Yovodoko", tag: "Douceurs Béninoises" },
-  { src: "/images/Tchooh14.jpg", title: "Gari Délayé & Kluiklui", tag: "Goûter Béninois" },
-  { src: "/images/food4.jpg", title: "Pâtisseries aux Fraises", tag: "Dessert & Douceurs" },
-  { src: "/images/gourmet_cuisine_benin.png", title: "Plat Gourmand Bénin", tag: "Pension Complète" },
-  { src: "/images/croissant.jpg", title: "Viennoiseries & Croissants", tag: "Option Occidentale" },
-];
+const CAROUSEL_3D_ITEMS = FOOD_GALLERY;
 
 function Rotating3DFoodCarousel() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -195,14 +200,20 @@ function Rotating3DFoodCarousel() {
                 />
 
                 {/* Texte et Badge d'information */}
-                <div className="absolute bottom-0 left-0 right-0 p-5 text-left z-20">
-                  <span className="inline-block font-cinzel text-[9px] sm:text-[10px] text-[#C5A059] tracking-widest uppercase bg-[#131513]/90 border border-[#C5A059]/40 px-3 py-1 rounded-full backdrop-blur-md mb-2 shadow-md">
-                    ✦ {item.tag}
-                  </span>
-                  <h3 className="font-cinzel text-sm sm:text-base font-extrabold text-white leading-snug drop-shadow-md">
-                    {item.title}
-                  </h3>
-                </div>
+                {(item.tag || item.title) && (
+                  <div className="absolute bottom-0 left-0 right-0 p-5 text-left z-20">
+                    {item.tag && (
+                      <span className="inline-block font-cinzel text-[9px] sm:text-[10px] text-[#C5A059] tracking-widest uppercase bg-[#131513]/90 border border-[#C5A059]/40 px-3 py-1 rounded-full backdrop-blur-md mb-2 shadow-md">
+                        ✦ {item.tag}
+                      </span>
+                    )}
+                    {item.title && (
+                      <h3 className="font-cinzel text-sm sm:text-base font-extrabold text-white leading-snug drop-shadow-md">
+                        {item.title}
+                      </h3>
+                    )}
+                  </div>
+                )}
               </div>
             );
           })}
@@ -351,14 +362,20 @@ function SmoothScrollCard({ item, index }: { item: typeof FOOD_GALLERY[0]; index
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent opacity-80 group-hover:opacity-95 transition-opacity duration-300" />
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 p-5 transform group-hover:-translate-y-1 transition-transform duration-300">
-        <span className="font-cinzel text-[10px] text-[#C5A059] tracking-widest uppercase bg-[#0F3823]/80 border border-[#C5A059]/30 px-3 py-1 rounded-full backdrop-blur-md inline-block mb-2">
-          ◆ {item.tag}
-        </span>
-        <h3 className="font-cinzel text-base sm:text-lg font-bold text-white leading-snug drop-shadow-md">
-          {item.title}
-        </h3>
-      </div>
+      {(item.tag || item.title) && (
+        <div className="absolute bottom-0 left-0 right-0 p-5 transform group-hover:-translate-y-1 transition-transform duration-300">
+          {item.tag && (
+            <span className="font-cinzel text-[10px] text-[#C5A059] tracking-widest uppercase bg-[#0F3823]/80 border border-[#C5A059]/30 px-3 py-1 rounded-full backdrop-blur-md inline-block mb-2">
+              ◆ {item.tag}
+            </span>
+          )}
+          {item.title && (
+            <h3 className="font-cinzel text-base sm:text-lg font-bold text-white leading-snug drop-shadow-md">
+              {item.title}
+            </h3>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -619,6 +636,13 @@ export default function RepasPage() {
           </div>
 
           <Rotating3DFoodCarousel />
+
+          {/* Grille complète des 40 photos du dossier CAR REPAS */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
+            {FOOD_GALLERY.map((item, idx) => (
+              <SmoothScrollCard key={idx} item={item} index={idx} />
+            ))}
+          </div>
         </section>
 
         {/* ── CTA DE RÉSERVATION & 3 BOUTONS DE CONTACT ANIMÉS ── */}
