@@ -10,7 +10,7 @@ import { HomeIcon, HandshakeIcon, StarIcon } from "@/components/Icons";
 // ─── Hero carousel slides (Images 100% uniques) ─────────────────────────────
 const SLIDES = [
   {
-    src: "/images/carousel1.png",
+    src: "/images/Kwabo.avif",
     tag: "Chrysalides — Bénin",
     title: "Bienvenue dans un monde de bienveillance",
     desc: "Un accueil chaleureux vous attend dès votre arrivée à l'aéroport Bernardin Gantin de Cotonou.",
@@ -41,20 +41,20 @@ const SLIDES = [
   },
 ];
 
-// ─── Gallery images (12 photos uniques sans doublons) ────────────────────────
+// ─── Gallery images (12 photos 100% uniques sans doublon sur tout le site) ───
 const GALLERY = [
   { src: "/images/Bienvenue.jpg", label: "Accueil" },
-  { src: "/images/Welcome.jpg", label: "Bienvenue" },
-  { src: "/images/sejour15.jpg", label: "Résidence" },
-  { src: "/images/sejour14.jpg", label: "Cadre de Vie" },
-  { src: "/images/Dormir.jpg", label: "Chambre" },
-  { src: "/images/Repos.jpg", label: "Sérénité" },
+  { src: "/images/sejour10.jpg", label: "Résidence" },
+  { src: "/images/sejour9.jpg", label: "Cadre de Vie" },
+  { src: "/images/sejour11.jpg", label: "Espaces Communautaires" },
   { src: "/images/Femmezen.jpg", label: "Détente" },
   { src: "/images/Femmezen2.jpg", label: "Zen" },
   { src: "/images/Massage.jpg", label: "Soins" },
   { src: "/images/Soins.jpg", label: "Bien-être" },
-  { src: "/images/massage2.jpg", label: "Relaxation" },
   { src: "/images/Soins2.jpg", label: "Ressourcement" },
+  { src: "/images/Soins3.jpg", label: "Confort" },
+  { src: "/images/Soins4.jpg", label: "Sérénité" },
+  { src: "/images/Soins5.jpg", label: "Apaisement" },
 ];
 
 // ─── Professional Carousel ────────────────────────────────────────────────────
@@ -369,14 +369,14 @@ export default function HebergementPage() {
               {[...GALLERY, ...GALLERY].map((item, i) => (
                 <div
                   key={i}
-                  className="relative flex-shrink-0 w-56 h-40 sm:w-72 sm:h-52 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg group cursor-pointer"
+                  className="relative flex-shrink-0 w-44 h-32 sm:w-56 sm:h-40 rounded-xl overflow-hidden border border-[#C5A059]/30 shadow-lg group cursor-pointer"
                 >
                   <Image
                     src={item.src}
                     alt={item.label}
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-700"
-                    sizes="288px"
+                    sizes="(max-width: 640px) 176px, 224px"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
                     <span className="font-cinzel text-[10px] text-[#E9D18F] tracking-widest uppercase bg-[#131513]/70 px-2 py-0.5 rounded-full">
