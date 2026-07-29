@@ -111,9 +111,9 @@ export const translations = {
   // ─── REPAS & GASTRONOMIE ───
   repas_title: { fr: "Repas & Gastronomie", en: "Dining & Gastronomy" },
   repas_subtitle: { fr: "« Bienvenue dans un monde de saveurs »", en: "“Welcome to a World of Flavors”" },
-  repas_sec1_title: { fr: "Trois Repas Quotidiens Compris", en: "Three Daily Meals Included" },
+  repas_sec1_title: { fr: "Trois Repas Quotidiens garantis", en: "Three Daily Meals Guaranteed" },
   repas_sec2_title: { fr: "Une Cuisine Roborative & Épicée", en: "Rich & Flavorful Cuisine" },
-  repas_sec3_title: { fr: "Saveurs du Matin & Douceurs", en: "Morning Delights & Snacks" },
+  repas_sec3_title: { fr: "Saveurs & Douceurs du Matin", en: "Morning Flavors & Delights" },
   repas_quote: { fr: "« C’est ce qui entre dans ton ventre qui t’appartient. »", en: "“What goes into your stomach belongs to you.”" },
   repas_gallery_title: { fr: "Découvrez la Richesse de Nos Plats", en: "Discover the Richness of Our Dishes" }
 } as const;

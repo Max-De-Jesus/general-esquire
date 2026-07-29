@@ -444,7 +444,7 @@ export default function RepasPage() {
                 </div>
                 <p className="first-letter:text-4xl first-letter:font-cinzel first-letter:text-[#C5A059] first-letter:font-bold">
                   {lang === "fr" ? (
-                    "Trois repas sont compris dans votre forfait, tous les jours, pendant tout votre séjour : il s'agit du petit-déjeuner, du déjeuner, et du dîner. Lors des excursions, et en cas de fringale, nous aurons également plaisir à vous servir un goûter ou une collation, en attendant le retour sur votre lieu de résidence."
+                    "Trois repas sont garantis dans votre forfait, tous les jours, pendant tout votre séjour : il s'agit du petit-déjeuner, du déjeuner, et du dîner. Lors des excursions, et en cas de fringale, nous aurons également plaisir à vous servir un goûter ou une collation, en attendant le retour sur votre lieu de résidence."
                   ) : (
                     "Three full meals are included in your stay every single day: breakfast, lunch, and dinner. During excursions or whenever hunger strikes, we delight in offering tea snacks and light refreshments."
                   )}
@@ -591,12 +591,12 @@ export default function RepasPage() {
               </blockquote>
 
               <p className="font-cormorant text-lg sm:text-xl text-[#EDE4CF]/90 max-w-2xl mx-auto leading-relaxed">
-                Vous l’avez déjà compris, la gastronomie est une composante essentielle du cocooning que nous vous promettons. Alors dans toute situation, bonne ou mauvaise, <strong className="text-[#E9D18F]">mangeons d’abord !</strong>
+                Vous l’avez déjà compris, la gastronomie est une composante essentielle du cocooning que nous vous promettons. Alors dans toute situation, bonne ou mauvaise, <strong className="text-[#E9D18F] whitespace-nowrap">mangeons d’abord !</strong>
               </p>
 
               <div className="h-[1px] w-24 bg-[#C5A059]/40 mx-auto" />
 
-              <p className="font-cinzel text-xs text-[#cabfa6] tracking-widest uppercase">
+              <p className="font-cinzel text-[10px] sm:text-xs text-[#cabfa6] tracking-wider uppercase whitespace-nowrap overflow-x-auto">
                 Toutefois, dans une démarche responsable, les boissons alcoolisées ne sont pas incluses dans votre forfait.
               </p>
             </div>
