@@ -14,19 +14,19 @@ const WELLNESS_SLIDES = [
   { src: "/images/Chant2.jpg", tag: "Soirées & Spectacles", title: "Récitals, Musique & Convivialité", desc: "Des moments de joie partagée dans une ambiance amicale et chaleureuse." },
 ];
 
-// ─── Gallery items (galerie radiale 3D) ───────────────────────────────────────────
+// ─── Gallery items (galerie radiale 3D avec le dossier CAR DETENTE) ─────────────
 const GALLERY = [
-  { src: "/images/Massage.jpg",    label: "Massage & Relaxation",       cat: "Soins" },
-  { src: "/images/massage2.jpg",   label: "Rituel Bien-Être",           cat: "Détente" },
-  { src: "/images/massage3.jpg",   label: "Apaisement Profond",          cat: "Sérénité" },
-  { src: "/images/massage4.jpg",   label: "Soins & Huiles Essentielles", cat: "Massage" },
-  { src: "/images/Soins.jpg",      label: "Soins du Corps",              cat: "Esthétique" },
-  { src: "/images/Soins2.jpg",     label: "Ressourcement",               cat: "Calme" },
-  { src: "/images/Femmezen.jpg",   label: "Sérénité Intérieure",       cat: "Bien-Être" },
-  { src: "/images/Bougie.jpg",     label: "Ambiance Tamisée",           cat: "Soirées" },
-  { src: "/images/Chant2.jpg",     label: "Spectacles & Musique",        cat: "Culture" },
-  { src: "/images/Embrassade.jpg", label: "Chaleur Humaine",             cat: "Bienveillance" },
-  { src: "/images/Welcome.jpg",    label: "Promenades en Ville",         cat: "Balades" },
+  { src: "/images/CAR DETENTE/massage10.jpg",           label: "Massage & Relaxation",       cat: "Soins" },
+  { src: "/images/CAR DETENTE/séjour.jpg",              label: "Rituel Bien-Être",           cat: "Détente" },
+  { src: "/images/CAR DETENTE/séjour4.jpg",             label: "Apaisement Profond",          cat: "Sérénité" },
+  { src: "/images/CAR DETENTE/séjour7.jpg",             label: "Soins & Huiles Essentielles", cat: "Massage" },
+  { src: "/images/CAR DETENTE/séjour8.jpg",             label: "Ressourcement Intérieur",     cat: "Calme" },
+  { src: "/images/CAR DETENTE/Excursion18.jpeg",        label: "Évasion & Nature",            cat: "Découverte" },
+  { src: "/images/CAR DETENTE/Excursion21.jpg",        label: "Espaces de Détente",          cat: "Sérénité" },
+  { src: "/images/CAR DETENTE/Excursion24.jpg",        label: "Moments Privilégiés",         cat: "Bien-Être" },
+  { src: "/images/CAR DETENTE/Excursion25.jpg",        label: "Cadre Régénérant",           cat: "Calme" },
+  { src: "/images/CAR DETENTE/Excursion29.avif",       label: "Ambiance Paisible",           cat: "Détente" },
+  { src: "/images/CAR DETENTE/Image Particuliers6.webp", label: "Chaleur & Convivialité",      cat: "Accueil" },
 ];
 
 // ─── Hero Carousel ────────────────────────────────────────────────────────────
@@ -68,10 +68,8 @@ function RadialGallery3D() {
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const total      = GALLERY.length;
-  const VISIBLE    = 7;
-  const ANGLE_STEP = 34;
-  const RADIUS     = 400;
+  const total   = GALLERY.length;
+  const VISIBLE = 5; // -2, -1, 0, +1, +2
 
   const next = useCallback(() => setActiveIdx(p => (p + 1) % total), [total]);
   const prev = useCallback(() => setActiveIdx(p => (p - 1 + total) % total), [total]);
@@ -79,7 +77,7 @@ function RadialGallery3D() {
   // Auto-play
   useEffect(() => {
     if (isHovered) return;
-    const t = setInterval(next, 4000);
+    const t = setInterval(next, 4200);
     return () => clearInterval(t);
   }, [isHovered, next]);
 
@@ -119,23 +117,21 @@ function RadialGallery3D() {
     <div
       ref={containerRef}
       className="relative w-full select-none"
-      style={{ perspective: "1200px", perspectiveOrigin: "50% 42%" }}
+      style={{ perspective: "1000px" }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
       {/* 3D Stage */}
-      <div
-        className="relative flex items-center justify-center h-[380px] sm:h-[480px]"
-        style={{ transformStyle: "preserve-3d" }}
-      >
+      <div className="relative flex items-center justify-center h-[380px] sm:h-[480px]">
         {slots.map(({ idx, offset }) => {
           const abs     = Math.abs(offset);
-          const rotY    = offset * ANGLE_STEP;
-          const tz      = offset === 0 ? 0 : -RADIUS * (1 - Math.cos((abs * ANGLE_STEP * Math.PI) / 180));
-          const scale   = offset === 0 ? 1.15 : Math.max(0.5, 1 - abs * 0.16);
-          const opacity = offset === 0 ? 1    : Math.max(0.2, 1 - abs * 0.25);
+          const tx      = offset * 145; // X displacement to separate side cards cleanly
+          const rotY    = offset * -20; // Gentle curved Y-rotation
+          const tz      = offset === 0 ? 0 : -abs * 110;
+          const scale   = offset === 0 ? 1.15 : Math.max(0.68, 1 - abs * 0.16);
+          const opacity = offset === 0 ? 1    : Math.max(0.4, 1 - abs * 0.25);
           const isCenter = offset === 0;
 
           return (
@@ -144,38 +140,34 @@ function RadialGallery3D() {
               onClick={() => setActiveIdx(idx)}
               style={{
                 position:   "absolute",
-                width:      isCenter ? "clamp(210px,28vw,290px)" : "clamp(120px,16vw,185px)",
-                height:     isCenter ? "clamp(280px,36vw,380px)" : "clamp(160px,22vw,250px)",
-                transform:  `rotateY(${rotY}deg) translateZ(${tz}px) scale(${scale})`,
+                width:      isCenter ? "clamp(220px,28vw,300px)" : "clamp(150px,18vw,210px)",
+                height:     isCenter ? "clamp(290px,36vw,390px)" : "clamp(190px,24vw,270px)",
+                transform:  `translateX(${tx}px) rotateY(${rotY}deg) translateZ(${tz}px) scale(${scale})`,
                 opacity,
-                zIndex:     isCenter ? 30 : 10 - abs,
+                zIndex:     isCenter ? 50 : 30 - abs * 10,
                 transition: "all 0.7s cubic-bezier(0.16,1,0.3,1)",
-                transformStyle: "preserve-3d",
-                WebkitBoxReflect: isCenter
-                  ? "below 6px linear-gradient(transparent 55%, rgba(0,0,0,0.45))"
-                  : undefined,
               }}
               className={`rounded-2xl overflow-hidden bg-[#0d0e0c] cursor-pointer border-2 ${
                 isCenter
-                  ? "border-[#E9D18F] shadow-[0_0_55px_rgba(197,160,89,0.65),0_24px_48px_rgba(0,0,0,0.85)]"
-                  : "border-[#C5A059]/20 hover:border-[#C5A059]/50"
+                  ? "border-[#E9D18F] shadow-[0_0_55px_rgba(197,160,89,0.65),0_24px_48px_rgba(0,0,0,0.9)]"
+                  : "border-[#C5A059]/25 hover:border-[#C5A059]/60 shadow-xl"
               }`}
             >
               <Image
                 src={GALLERY[idx].src}
                 alt={GALLERY[idx].label}
                 fill
-                sizes="290px"
+                sizes="300px"
                 className={`object-cover object-center transition-transform duration-700 ${
-                  isCenter ? "scale-105 brightness-105" : "brightness-55"
+                  isCenter ? "scale-105 brightness-105" : "brightness-60"
                 }`}
               />
               <div
                 className="absolute inset-0 transition-all duration-500"
                 style={{
                   background: isCenter
-                    ? "linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.12) 55%, transparent 100%)"
-                    : `rgba(0,0,0,${Math.min(0.82, 0.52 + abs * 0.12)})`,
+                    ? "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.1) 55%, transparent 100%)"
+                    : "rgba(0,0,0,0.45)",
                 }}
               />
               {isCenter && (
@@ -183,17 +175,8 @@ function RadialGallery3D() {
                   <span className="font-cinzel text-[9px] text-[#C5A059] tracking-widest uppercase bg-[#131513]/90 border border-[#C5A059]/50 px-3 py-1 rounded-full backdrop-blur-sm inline-block mb-2">
                     ✦ {GALLERY[idx].cat}
                   </span>
-                  <h3 className="font-cinzel text-sm font-bold text-white drop-shadow-lg">{GALLERY[idx].label}</h3>
+                  <h3 className="font-cinzel text-sm sm:text-base font-bold text-white drop-shadow-lg">{GALLERY[idx].label}</h3>
                 </div>
-              )}
-              {isCenter && (
-                <div
-                  className="absolute inset-0 pointer-events-none"
-                  style={{
-                    background: "linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.06) 50%, transparent 70%)",
-                    animation:  "shimmerCard 2.8s ease-in-out infinite",
-                  }}
-                />
               )}
             </div>
           );
@@ -227,13 +210,6 @@ function RadialGallery3D() {
       <p className="text-center font-cinzel text-[10px] text-[#C5A059]/45 tracking-widest mt-4">
         ← GLISSEZ OU UTILISEZ LES BOUTONS →
       </p>
-
-      <style jsx>{`
-        @keyframes shimmerCard {
-          0%   { transform: translateX(-100%); }
-          100% { transform: translateX(200%); }
-        }
-      `}</style>
     </div>
   );
 }
