@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 import TickerBanner from "@/components/TickerBanner";
+import { supabase } from "@/lib/supabase";
 
 export default function ConseilJuridiquePage() {
   const { lang } = useLanguage();
@@ -248,7 +249,7 @@ export default function ConseilJuridiquePage() {
     return text.trim().split(/\s+/).length;
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.rgpd) {
       alert(
@@ -258,6 +259,55 @@ export default function ConseilJuridiquePage() {
       );
       return;
     }
+
+    const fullName = `${formData.prenoms} ${formData.nom}`.trim() || "Client Anonyme";
+    const phone = formData.telephone.trim();
+    const newDemande = {
+      id: "dem_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
+      full_name: fullName,
+      email: formData.courriel,
+      phone: phone,
+      structure: formData.structure,
+      country: formData.pays,
+      subject: formData.probleme ? (formData.probleme.slice(0, 80) + (formData.probleme.length > 80 ? "..." : "")) : "Consultation Juridique",
+      message: formData.probleme,
+      status: "Nouveau",
+      registered_at: new Date().toISOString(),
+    };
+
+    // 1. Sauvegarde Supabase
+    try {
+      await supabase.from("demandes_clients").insert([newDemande]);
+    } catch (err) {
+      console.warn("Supabase insert fallback:", err);
+    }
+
+    // 2. Sauvegarde LocalStorage (garantie zéro perte)
+    try {
+      const stored = JSON.parse(localStorage.getItem("ge_demandes_clients") || "[]");
+      stored.unshift(newDemande);
+      localStorage.setItem("ge_demandes_clients", JSON.stringify(stored));
+    } catch (err) {
+      console.error(err);
+    }
+
+    // 3. Envoi d'email direct à contact@generalesquire.com via mailto
+    const mailSubject = encodeURIComponent(`Nouvelle demande de contact — ${fullName}`);
+    const mailBody = encodeURIComponent(
+      `Bonjour General Esquire,\n\nUne nouvelle demande de contact / consultation a été soumise sur le site :\n\n` +
+      `Nom complet : ${fullName}\n` +
+      `Email : ${formData.courriel}\n` +
+      `Téléphone : ${phone}\n` +
+      `Structure / Organisation : ${formData.structure || 'Non spécifié'}\n` +
+      `Pays : ${formData.pays}\n` +
+      `Ville / Code Postal : ${formData.ville} (${formData.codePostal})\n` +
+      `Caractère urgent : ${formData.urgent === 'oui' ? 'OUI' : 'NON'}\n\n` +
+      `Description du besoin :\n${formData.probleme}\n\n` +
+      `Date : ${new Date().toLocaleString("fr-FR")}`
+    );
+
+    window.location.href = `mailto:contact@generalesquire.com?subject=${mailSubject}&body=${mailBody}`;
+
     setFormSubmitted(true);
   };
 
@@ -348,10 +398,10 @@ export default function ConseilJuridiquePage() {
           {/* 1. Professionnel du droit */}
           <Link
             href="/professionnel"
-            className="group px-5 py-4 rounded-md bg-[#0F1E14]/80 border border-[#C5A059]/40 hover:border-[#C5A059] hover:bg-[#0F3823] transition-all duration-300 flex items-center gap-2.5 shadow-sm cursor-pointer"
+            className="group px-3.5 sm:px-5 py-4 rounded-md bg-[#0F1E14]/80 border border-[#C5A059]/40 hover:border-[#C5A059] hover:bg-[#0F3823] transition-all duration-300 flex items-center gap-2 shadow-sm cursor-pointer overflow-hidden"
           >
             <span className="text-[#C5A059] group-hover:text-[#E9D18F] font-cinzel text-base flex-shrink-0">—</span>
-            <span className="font-cinzel text-[0.72rem] sm:text-[0.78rem] font-semibold tracking-[0.11em] text-[#C5A059] group-hover:text-[#EDE4CF] transition-colors uppercase leading-snug">
+            <span className="font-cinzel text-[0.64rem] xs:text-[0.70rem] sm:text-[0.78rem] font-semibold tracking-[0.05em] sm:tracking-[0.10em] text-[#C5A059] group-hover:text-[#EDE4CF] transition-colors uppercase leading-snug whitespace-nowrap overflow-hidden text-ellipsis">
               {lang === "fr" ? "VOUS ÊTES UN PROFESSIONNEL DU DROIT" : "YOU ARE A LEGAL PROFESSIONAL"}
             </span>
           </Link>
@@ -359,10 +409,10 @@ export default function ConseilJuridiquePage() {
           {/* 2. Institution publique */}
           <Link
             href="/institution"
-            className="group px-5 py-4 rounded-md bg-[#0F1E14]/80 border border-[#C5A059]/40 hover:border-[#C5A059] hover:bg-[#0F3823] transition-all duration-300 flex items-center gap-2.5 shadow-sm cursor-pointer"
+            className="group px-3.5 sm:px-5 py-4 rounded-md bg-[#0F1E14]/80 border border-[#C5A059]/40 hover:border-[#C5A059] hover:bg-[#0F3823] transition-all duration-300 flex items-center gap-2 shadow-sm cursor-pointer overflow-hidden"
           >
             <span className="text-[#C5A059] group-hover:text-[#E9D18F] font-cinzel text-base flex-shrink-0">—</span>
-            <span className="font-cinzel text-[0.72rem] sm:text-[0.78rem] font-semibold tracking-[0.11em] text-[#C5A059] group-hover:text-[#EDE4CF] transition-colors uppercase leading-snug">
+            <span className="font-cinzel text-[0.64rem] xs:text-[0.70rem] sm:text-[0.78rem] font-semibold tracking-[0.05em] sm:tracking-[0.10em] text-[#C5A059] group-hover:text-[#EDE4CF] transition-colors uppercase leading-snug whitespace-nowrap overflow-hidden text-ellipsis">
               {lang === "fr" ? "VOUS ÊTES UNE INSTITUTION PUBLIQUE" : "YOU ARE A PUBLIC INSTITUTION"}
             </span>
           </Link>
@@ -370,10 +420,10 @@ export default function ConseilJuridiquePage() {
           {/* 3. Chef d'entreprise */}
           <Link
             href="/entrepreneur"
-            className="group px-5 py-4 rounded-md bg-[#0F1E14]/80 border border-[#C5A059]/40 hover:border-[#C5A059] hover:bg-[#0F3823] transition-all duration-300 flex items-center gap-2.5 shadow-sm cursor-pointer"
+            className="group px-3.5 sm:px-5 py-4 rounded-md bg-[#0F1E14]/80 border border-[#C5A059]/40 hover:border-[#C5A059] hover:bg-[#0F3823] transition-all duration-300 flex items-center gap-2 shadow-sm cursor-pointer overflow-hidden"
           >
             <span className="text-[#C5A059] group-hover:text-[#E9D18F] font-cinzel text-base flex-shrink-0">—</span>
-            <span className="font-cinzel text-[0.72rem] sm:text-[0.78rem] font-semibold tracking-[0.11em] text-[#C5A059] group-hover:text-[#EDE4CF] transition-colors uppercase leading-snug">
+            <span className="font-cinzel text-[0.64rem] xs:text-[0.70rem] sm:text-[0.78rem] font-semibold tracking-[0.05em] sm:tracking-[0.10em] text-[#C5A059] group-hover:text-[#EDE4CF] transition-colors uppercase leading-snug whitespace-nowrap overflow-hidden text-ellipsis">
               {lang === "fr" ? "VOUS ÊTES UN CHEF D'ENTREPRISE" : "YOU ARE A BUSINESS LEADER"}
             </span>
           </Link>
@@ -381,10 +431,10 @@ export default function ConseilJuridiquePage() {
           {/* 4. Simple particulier */}
           <Link
             href="/articuliers"
-            className="group px-5 py-4 rounded-md bg-[#0F1E14]/80 border border-[#C5A059]/40 hover:border-[#C5A059] hover:bg-[#0F3823] transition-all duration-300 flex items-center gap-2.5 shadow-sm cursor-pointer"
+            className="group px-3.5 sm:px-5 py-4 rounded-md bg-[#0F1E14]/80 border border-[#C5A059]/40 hover:border-[#C5A059] hover:bg-[#0F3823] transition-all duration-300 flex items-center gap-2 shadow-sm cursor-pointer overflow-hidden"
           >
             <span className="text-[#C5A059] group-hover:text-[#E9D18F] font-cinzel text-base flex-shrink-0">—</span>
-            <span className="font-cinzel text-[0.72rem] sm:text-[0.78rem] font-semibold tracking-[0.11em] text-[#C5A059] group-hover:text-[#EDE4CF] transition-colors uppercase leading-snug">
+            <span className="font-cinzel text-[0.64rem] xs:text-[0.70rem] sm:text-[0.78rem] font-semibold tracking-[0.05em] sm:tracking-[0.10em] text-[#C5A059] group-hover:text-[#EDE4CF] transition-colors uppercase leading-snug whitespace-nowrap overflow-hidden text-ellipsis">
               {lang === "fr" ? "VOUS ÊTES UN SIMPLE PARTICULIER" : "YOU ARE AN INDIVIDUAL"}
             </span>
           </Link>

@@ -99,9 +99,65 @@ export default function AdminPage() {
     }
   };
 
+  // Demandes Clients State
+  const [demandesList, setDemandesList] = useState<any[]>([]);
+  const [loadingDemandes, setLoadingDemandes] = useState(false);
+  const [demandesFilter, setDemandesFilter] = useState("");
+
+  // Fetch Demandes Clients from Supabase & LocalStorage
+  const fetchDemandesList = async () => {
+    setLoadingDemandes(true);
+    try {
+      const { data, error } = await supabase
+        .from("demandes_clients")
+        .select("*")
+        .order("registered_at", { ascending: false });
+
+      if (!error && data && data.length > 0) {
+        setDemandesList(data);
+        localStorage.setItem("ge_demandes_clients", JSON.stringify(data));
+      } else {
+        const local = localStorage.getItem("ge_demandes_clients");
+        if (local) setDemandesList(JSON.parse(local));
+        else setDemandesList([]);
+      }
+    } catch {
+      const local = localStorage.getItem("ge_demandes_clients");
+      if (local) setDemandesList(JSON.parse(local));
+      else setDemandesList([]);
+    } finally {
+      setLoadingDemandes(false);
+    }
+  };
+
+  const handleDeleteDemande = async (id: string) => {
+    if (!confirm(lang === "fr" ? "Voulez-vous vraiment supprimer cette demande client ?" : "Delete this client request?")) return;
+    try {
+      await supabase.from("demandes_clients").delete().eq("id", id);
+    } catch (err) {
+      console.error(err);
+    }
+    const updated = demandesList.filter((d) => d.id !== id);
+    setDemandesList(updated);
+    localStorage.setItem("ge_demandes_clients", JSON.stringify(updated));
+  };
+
+  const handleToggleDemandeStatus = async (id: string, currentStatus: string) => {
+    const newStatus = currentStatus === "Traité" ? "Nouveau" : "Traité";
+    try {
+      await supabase.from("demandes_clients").update({ status: newStatus }).eq("id", id);
+    } catch (err) {
+      console.error(err);
+    }
+    const updated = demandesList.map((d) => (d.id === id ? { ...d, status: newStatus } : d));
+    setDemandesList(updated);
+    localStorage.setItem("ge_demandes_clients", JSON.stringify(updated));
+  };
+
   useEffect(() => {
     if (user && isAdmin) {
       fetchNewsList();
+      fetchDemandesList();
     }
   }, [user, isAdmin]);
 
@@ -782,9 +838,163 @@ export default function AdminPage() {
         )}
 
         {activeTab === "clients" && (
-          <div className="p-8 bg-[#1a1c1a] border border-[#C5A059]/30 rounded-3xl text-center space-y-4">
-            <h3 className="font-cinzel text-xl font-bold text-[#E9D18F]">Gestion des Demandes Clients</h3>
-            <p className="text-sm text-[#cabfa6]">Les demandes de contacts et consultations apparaissent ici.</p>
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#1a1c1a] p-6 rounded-2xl border border-[#C5A059]/30 shadow-md">
+              <div>
+                <h3 className="font-cinzel text-xl font-bold text-[#E9D18F]">
+                  {lang === "fr" ? "Gestion des Demandes Clients" : "Client Requests Management"}
+                </h3>
+                <p className="text-xs text-[#cabfa6] mt-1">
+                  {lang === "fr"
+                    ? `${demandesList.length} demande(s) reçue(s) via les formulaires de contact et consultation.`
+                    : `${demandesList.length} request(s) received via contact and consultation forms.`}
+                </p>
+              </div>
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <input
+                  type="text"
+                  placeholder={lang === "fr" ? "Rechercher un client ou sujet…" : "Search client or subject…"}
+                  value={demandesFilter}
+                  onChange={(e) => setDemandesFilter(e.target.value)}
+                  className="px-4 py-2 rounded-xl bg-[#0d0e0d] border border-[#C5A059]/40 text-xs text-[#EDE4CF] focus:outline-none focus:border-[#E9D18F] w-full sm:w-64"
+                />
+                <button
+                  onClick={fetchDemandesList}
+                  className="px-4 py-2 rounded-xl bg-[#C5A059]/20 hover:bg-[#C5A059]/30 text-[#E9D18F] text-xs font-cinzel font-bold border border-[#C5A059]/40 transition-colors whitespace-nowrap"
+                >
+                  ↻ {lang === "fr" ? "Actualiser" : "Refresh"}
+                </button>
+              </div>
+            </div>
+
+            {loadingDemandes ? (
+              <div className="p-12 text-center text-[#C5A059] font-cinzel text-sm animate-pulse">
+                {lang === "fr" ? "Chargement des demandes clients…" : "Loading client requests…"}
+              </div>
+            ) : demandesList.length === 0 ? (
+              <div className="p-12 bg-[#1a1c1a] border border-[#C5A059]/30 rounded-3xl text-center space-y-3">
+                <div className="text-4xl text-[#C5A059]">📩</div>
+                <h4 className="font-cinzel text-lg font-bold text-[#E9D18F]">
+                  {lang === "fr" ? "Aucune Demande Pour le Moment" : "No Client Requests Yet"}
+                </h4>
+                <p className="text-xs text-[#cabfa6] max-w-md mx-auto">
+                  {lang === "fr"
+                    ? "Les formulaires de contact de la page Conseil Juridique et Cocooning Touristique enregistreront directement les demandes des clients ici."
+                    : "Contact forms from Legal Advisory and Tourist Cocooning pages will log client requests directly here."}
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {demandesList
+                  .filter((d) => {
+                    if (!demandesFilter.trim()) return true;
+                    const query = demandesFilter.toLowerCase();
+                    return (
+                      d.full_name?.toLowerCase().includes(query) ||
+                      d.email?.toLowerCase().includes(query) ||
+                      d.subject?.toLowerCase().includes(query) ||
+                      d.phone?.toLowerCase().includes(query) ||
+                      d.country?.toLowerCase().includes(query)
+                    );
+                  })
+                  .map((d) => (
+                    <div
+                      key={d.id}
+                      className="p-6 bg-[#1a1c1a] border border-[#C5A059]/30 rounded-2xl space-y-4 shadow-lg hover:border-[#C5A059]/60 transition-colors"
+                    >
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#C5A059]/20 pb-3">
+                        <div className="flex items-center gap-3 flex-wrap">
+                          <span className="font-cinzel font-bold text-base text-[#E9D18F]">
+                            {d.full_name || "Client"}
+                          </span>
+                          {d.structure && (
+                            <span className="px-2.5 py-0.5 rounded-full bg-[#0e2a1b] text-emerald-300 border border-emerald-500/30 text-[10px] font-cinzel uppercase">
+                              {d.structure}
+                            </span>
+                          )}
+                          {d.country && (
+                            <span className="px-2.5 py-0.5 rounded-full bg-[#2a240e] text-amber-300 border border-amber-500/30 text-[10px] font-cinzel">
+                              🌍 {d.country}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`px-3 py-1 rounded-full text-[10px] font-cinzel font-bold uppercase tracking-wider ${
+                              d.status === "Traité"
+                                ? "bg-emerald-950/80 text-emerald-400 border border-emerald-500/40"
+                                : "bg-amber-950/80 text-amber-400 border border-amber-500/40"
+                            }`}
+                          >
+                            {d.status || "Nouveau"}
+                          </span>
+                          <span className="text-xs text-gray-400 font-mono">
+                            {d.registered_at ? new Date(d.registered_at).toLocaleString("fr-FR") : ""}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-sans text-[#EDE4CF]">
+                        <div>
+                          <span className="text-[#C5A059] font-cinzel block mb-1">Coordonnées :</span>
+                          <p>📧 Email : <a href={`mailto:${d.email}`} className="text-[#E9D18F] underline">{d.email}</a></p>
+                          {d.phone && (
+                            <p>📞 Tél : <a href={`tel:${d.phone}`} className="text-[#E9D18F] underline">{d.phone}</a></p>
+                          )}
+                        </div>
+                        <div>
+                          <span className="text-[#C5A059] font-cinzel block mb-1">Sujet :</span>
+                          <p className="font-semibold text-[#E9D18F]">{d.subject || "Demande de contact"}</p>
+                        </div>
+                      </div>
+
+                      {d.message && (
+                        <div className="p-4 rounded-xl bg-[#0d0e0d] border border-[#C5A059]/20 font-cormorant text-base text-[#EDE4CF] whitespace-pre-wrap leading-relaxed">
+                          {d.message}
+                        </div>
+                      )}
+
+                      {/* Action buttons */}
+                      <div className="flex items-center justify-end gap-3 pt-2 flex-wrap">
+                        <a
+                          href={`mailto:${d.email}?subject=${encodeURIComponent(
+                            `Réponse General Esquire — ${d.subject || "Votre demande"}`
+                          )}`}
+                          className="px-4 py-2 rounded-xl bg-[#C5A059] hover:bg-[#E9D18F] text-black font-cinzel font-bold text-xs transition-colors flex items-center gap-1.5"
+                        >
+                          ✉️ {lang === "fr" ? "Répondre par Email" : "Reply via Email"}
+                        </a>
+
+                        {d.phone && (
+                          <a
+                            href={`https://wa.me/${d.phone.replace(/[^0-9]/g, "")}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-cinzel font-bold text-xs transition-colors flex items-center gap-1.5"
+                          >
+                            💬 WhatsApp
+                          </a>
+                        )}
+
+                        <button
+                          onClick={() => handleToggleDemandeStatus(d.id, d.status)}
+                          className="px-4 py-2 rounded-xl bg-[#1f2d22] hover:bg-[#2e4533] text-emerald-400 font-cinzel font-semibold text-xs border border-emerald-500/30 transition-colors"
+                        >
+                          {d.status === "Traité" ? "↩️ Marquer Nouveau" : "✅ Marquer Traité"}
+                        </button>
+
+                        <button
+                          onClick={() => handleDeleteDemande(d.id)}
+                          className="px-4 py-2 rounded-xl bg-red-950/40 hover:bg-red-900/60 text-red-400 font-cinzel font-semibold text-xs border border-red-500/30 transition-colors"
+                        >
+                          🗑️ {lang === "fr" ? "Supprimer" : "Delete"}
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            )}
           </div>
         )}
 

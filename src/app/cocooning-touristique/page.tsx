@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 import TickerBanner from "@/components/TickerBanner";
+import { supabase } from "@/lib/supabase";
 
 export default function CocooningTouristiquePage() {
   const { lang } = useLanguage();
@@ -33,6 +34,55 @@ export default function CocooningTouristiquePage() {
     avisMedical: null,
     autreDocument: null,
   });
+
+  const handleCocooningSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const fullName = `${formData.prenoms} ${formData.nom}`.trim() || "Participant Anonyme";
+    const phone = formData.telephone.trim();
+    const newDemande = {
+      id: "dem_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
+      full_name: fullName,
+      email: formData.courriel,
+      phone: phone,
+      structure: formData.profession || "Cocooning Touristique",
+      country: formData.nationalite,
+      subject: "Inscription Cocooning Touristique",
+      message: `Profession: ${formData.profession}\nAdresse: ${formData.adresse}\nPrésentation: ${formData.presentationLibre}\nPréférences: ${formData.preferencesAlimentaires.join(', ')}`,
+      status: "Nouveau",
+      registered_at: new Date().toISOString(),
+    };
+
+    try {
+      await supabase.from("demandes_clients").insert([newDemande]);
+    } catch (err) {
+      console.warn("Supabase insert fallback:", err);
+    }
+
+    try {
+      const stored = JSON.parse(localStorage.getItem("ge_demandes_clients") || "[]");
+      stored.unshift(newDemande);
+      localStorage.setItem("ge_demandes_clients", JSON.stringify(stored));
+    } catch (err) {
+      console.error(err);
+    }
+
+    const mailSubject = encodeURIComponent(`Inscription Cocooning Touristique — ${fullName}`);
+    const mailBody = encodeURIComponent(
+      `Bonjour General Esquire,\n\nUne nouvelle inscription pour le programme Cocooning Touristique a été transmise :\n\n` +
+      `Nom complet : ${fullName}\n` +
+      `Email : ${formData.courriel}\n` +
+      `Téléphone : ${phone}\n` +
+      `Profession : ${formData.profession}\n` +
+      `Nationalité : ${formData.nationalite}\n` +
+      `Adresse : ${formData.adresse}\n\n` +
+      `Présentation libre :\n${formData.presentationLibre}\n\n` +
+      `Date : ${new Date().toLocaleString("fr-FR")}`
+    );
+
+    window.location.href = `mailto:contact@generalesquire.com?subject=${mailSubject}&body=${mailBody}`;
+
+    setFormSubmitted(true);
+  };
 
   const handleDietToggle = (item: string) => {
     if (formData.preferencesAlimentaires.includes(item)) {
@@ -576,10 +626,7 @@ export default function CocooningTouristiquePage() {
           </div>
 
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              setFormSubmitted(true);
-            }}
+            onSubmit={handleCocooningSubmit}
             className="space-y-6 max-w-4xl mx-auto font-cormorant text-lg"
           >
             {formSubmitted ? (
