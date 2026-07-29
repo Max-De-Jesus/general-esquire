@@ -248,13 +248,7 @@ function SymmetricCard({
     <div className={`relative rounded-3xl overflow-hidden border border-[#C5A059]/25 shadow-2xl hover:border-[#C5A059]/50 transition-all duration-700 ${wide ? "lg:col-span-2" : ""}`}>
       {/* Glass BG */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#0F3823]/70 via-[#131513]/90 to-[#0a1a0f]/80" />
-      <div className={`relative z-10 flex flex-col ${reverse ? "lg:flex-row-reverse" : "lg:flex-row"} min-h-[320px]`}>
-        {/* Image */}
-        <div className="relative w-full lg:w-2/5 h-56 lg:h-auto flex-shrink-0 overflow-hidden">
-          <Image src={image} alt={imageAlt} fill sizes="(max-width: 1024px) 100vw, 40vw" className="object-cover object-center brightness-90" />
-          <div className={`absolute inset-0 ${reverse ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-transparent to-[#131513]/70`} />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#131513]/60 via-transparent to-transparent" />
-        </div>
+      <div className={`relative z-10 flex flex-col ${reverse ? "lg:flex-row-reverse" : "lg:flex-row"} min-h-[360px] items-stretch`}>
         {/* Content */}
         <div className="flex-1 flex flex-col justify-center px-8 sm:px-14 py-10 text-center">
           {/* Decorative top line */}
@@ -275,6 +269,12 @@ function SymmetricCard({
             <span className="text-[#C5A059]/40 text-xs">◆</span>
             <div className="h-[1px] w-8 bg-[#C5A059]/30" />
           </div>
+        </div>
+        {/* Image Container — Spans full height down to the bottom */}
+        <div className="relative w-full lg:w-2/5 min-h-[280px] sm:min-h-[340px] lg:min-h-full flex-shrink-0 overflow-hidden self-stretch">
+          <Image src={image} alt={imageAlt} fill sizes="(max-width: 1024px) 100vw, 40vw" className="object-cover object-center brightness-95" />
+          <div className={`absolute inset-0 ${reverse ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-transparent via-transparent to-[#131513]/60 hidden lg:block`} />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#131513]/80 via-transparent to-transparent" />
         </div>
       </div>
     </div>
