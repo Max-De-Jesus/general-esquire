@@ -61,10 +61,11 @@ export default function ServicesModal({ isOpen, onClose }: ServicesModalProps) {
         <button
           type="button"
           onClick={handleClose}
-          className="absolute top-6 right-6 sm:top-8 sm:right-8 w-12 h-12 rounded-full bg-transparent border border-[#C5A059]/45 text-[#C5A059] hover:bg-[#C5A059]/12 hover:shadow-[0_0_14px_rgba(197,160,89,0.35)] hover:rotate-90 flex items-center justify-center transition-all duration-300 cursor-pointer z-20"
+          className="absolute top-6 right-6 sm:top-8 sm:right-8 px-4 py-2 rounded-full bg-[#0a0b0a] border border-[#C5A059]/45 text-[#C5A059] hover:text-[#E9D18F] hover:bg-[#C5A059]/20 hover:border-[#E9D18F] flex items-center gap-2 font-cinzel text-xs sm:text-sm font-semibold tracking-widest uppercase transition-all duration-300 cursor-pointer z-20 shadow-md"
           aria-label="Fermer le menu"
         >
-          <span className="font-cinzel text-2xl leading-none">&times;</span>
+          <span>{lang === "fr" ? "FERMER" : "CLOSE"}</span>
+          <span className="font-cinzel text-lg leading-none font-bold">&times;</span>
         </button>
 
         {/* Logo Cheval Ailé (menu-panel__logo avec revealUp) */}

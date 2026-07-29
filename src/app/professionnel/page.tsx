@@ -115,7 +115,7 @@ export default function ProfessionnelPage() {
           <p className="mb-4">
             {lang === "fr" ? (
               <>
-                Justement, pour peu qu'ils soient de la vieille école et peu ou prou familiarisés aux nouvelles technologies de l'information, ne maîtrisent pas tel langage en particulier, aient une activité, politque, social, plaidante chronophage, des ennuis ponctuels de santé, un heureux évènement en route, des charges si élevées que le recrutement d'un collaborateur est inenvisageable dans l'immédiat, ou pour tout autre motif d'empêchement prévisible ou non, le risque est grand, soit qu'ils ne tiennent pas leurs délais et s'exposent à une forclusion, soit qu'ils n'adoptent pas la meilleure stratégie dans la défense des intérêts qui leur tiennent à cœur, ce qui les exposerait à une action en responsabilité.
+                Justement, pour peu qu'ils soient de la vieille école et peu ou prou familiarisés aux nouvelles technologies de l'information, ne maîtrisent pas tel langage en particulier, aient une activité, politque, sociale, plaidante chronophage, des ennuis ponctuels de santé, un heureux évènement en route, des charges si élevées que le recrutement d'un collaborateur est inenvisageable dans l'immédiat, ou pour tout autre motif d'empêchement prévisible ou non, le risque est grand, soit qu'ils ne tiennent pas leurs délais et s'exposent à une forclusion, soit qu'ils n'adoptent pas la meilleure stratégie dans la défense des intérêts qui leur tiennent à cœur, ce qui les exposerait à une action en responsabilité.
               </>
             ) : (
               <>
@@ -197,9 +197,11 @@ export default function ProfessionnelPage() {
                 </h2>
                 <button
                   onClick={() => setActiveModal(null)}
-                  className="w-10 h-10 rounded-full bg-[#0a0b0a] border border-[#C5A059]/50 text-[#C5A059] hover:text-white hover:bg-[#C5A059]/20 flex items-center justify-center font-cinzel text-xl transition-all duration-200 cursor-pointer flex-shrink-0"
+                  className="px-4 py-2 rounded-full bg-[#0a0b0a] border border-[#C5A059]/50 text-[#C5A059] hover:text-[#E9D18F] hover:bg-[#C5A059]/25 hover:border-[#E9D18F] flex items-center gap-2 font-cinzel text-xs sm:text-sm font-semibold tracking-widest uppercase transition-all duration-200 cursor-pointer flex-shrink-0 shadow-md"
+                  aria-label="Fermer la fenêtre"
                 >
-                  &times;
+                  <span>{lang === "fr" ? "FERMER" : "CLOSE"}</span>
+                  <span className="text-base leading-none font-bold">&times;</span>
                 </button>
               </div>
 
@@ -243,37 +245,50 @@ export default function ProfessionnelPage() {
                 </div>
 
                 <h3 className="font-cinzel text-lg text-[#E9D18F] uppercase tracking-wider font-bold">Nos domaines d'intervention</h3>
-                <p className="text-[#EDE4CF]/80 text-base italic">
+                <p className="text-[#EDE4CF]/80 text-base italic leading-relaxed">
                   Généraliste et éclectique, notre champ de pratique juridique porte notamment, mais non exhaustivement, sur les matières suivantes :
                 </p>
 
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm sm:text-base text-[#EDE4CF]/85 list-none pl-0">
-                  {[
-                    "Droit civil — contrats, obligations, responsabilité contractuelle et quasi-délictuelle",
-                    "Droit commercial — montage de contrats, recouvrement de créances, voies d'exécution",
-                    "Droit de la consommation — surendettement, crédit personnel et immobilier",
-                    "Droit bancaire — fraude aux instruments de paiement",
-                    "Droit des assurances — assurance-vie, assurances professionnelles",
-                    "Droit successoral — litiges du testament",
-                    "Droit de la famille — divorce, pension alimentaire",
-                    "Droit de la construction — garantie décennale, garantie de parfait achèvement, vices cachés",
-                    "Droit des baux — litiges locatifs, troubles de voisinage, copropriété",
-                    "Droit du travail — procédure de licenciement disciplinaire et économique, reclassement professionnel",
-                    "Droit de la sécurité sociale — litiges avec la CAF, France Travail",
-                    "Droit pénal — procédure pénale, chambre de l'instruction, droit pénitentiaire, crimes et délits contre les personnes et contre les biens, infractions routières",
-                    "Droit pénal des affaires — abus de biens sociaux, délit d'initié",
-                    "Droit des étrangers — titres de séjour, procédures de référé administratif, visas d'entrée, OQTF, IRTF, regroupement familial, OFPRA et CNDA",
-                    "Droit de la nationalité — naturalisation française",
-                    "Droit administratif — litiges de la fonction publique",
-                    "Droit de la profession d'avocat — inscription, omission, procédure disciplinaire, défense à une action en responsabilité civile professionnelle",
-                    "Droits et libertés fondamentaux — requête et procédure devant la Cour européenne des droits de l'Homme",
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <span className="text-[#C5A059] mt-1 flex-shrink-0 text-xs">◆</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
+                {/* Grille 2 colonnes symétriques avec interligne uniforme */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-base sm:text-lg text-[#EDE4CF]/90">
+                  <ul className="space-y-4 list-none p-0 m-0">
+                    {[
+                      "Droit civil — contrats, obligations, responsabilité contractuelle et quasi-délictuelle",
+                      "Droit de la consommation — surendettement, crédit personnel et immobilier",
+                      "Droit des assurances — assurance-vie, assurances professionnelles",
+                      "Droit de la famille — divorce, pension alimentaire",
+                      "Droit des baux — litiges locatifs, troubles de voisinage, copropriété",
+                      "Droit de la sécurité sociale — litiges avec la CAF, France Travail",
+                      "Droit pénal des affaires — abus de biens sociaux, délit d'initié",
+                      "Droit de la nationalité — naturalisation française",
+                      "Droit de la profession d'avocat — inscription, omission, procédure disciplinaire, défense à une action en responsabilité civile professionnelle",
+                    ].map((item, i) => (
+                      <li key={i} className="flex items-start gap-2.5 leading-relaxed">
+                        <span className="text-[#C5A059] mt-1.5 flex-shrink-0 text-xs">◆</span>
+                        <span className="leading-relaxed font-cormorant">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <ul className="space-y-4 list-none p-0 m-0">
+                    {[
+                      "Droit commercial — montage de contrats, recouvrement de créances, voies d'exécution",
+                      "Droit bancaire — fraude aux instruments de paiement",
+                      "Droit successoral — litiges du testament",
+                      "Droit de la construction — garantie décennale, garantie de parfait achèvement, vices cachés",
+                      "Droit du travail — procédure de licenciement disciplinaire et économique, reclassement professionnel",
+                      "Droit pénal — procédure pénale, chambre de l'instruction, droit pénitentiaire, crimes et délits contre les personnes et contre les biens, infractions routières",
+                      "Droit des étrangers — titres de séjour, procédures de référé administratif, visas d'entrée, OQTF, IRTF, regroupement familial, OFPRA et CNDA",
+                      "Droit administratif — litiges de la fonction publique",
+                      "Droits et libertés fondamentaux — requête et procédure devant la Cour européenne des droits de l'Homme",
+                    ].map((item, i) => (
+                      <li key={i} className="flex items-start gap-2.5 leading-relaxed">
+                        <span className="text-[#C5A059] mt-1.5 flex-shrink-0 text-xs">◆</span>
+                        <span className="leading-relaxed font-cormorant">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
                 {/* Séparateur */}
                 <div className="flex items-center gap-3 py-2">
@@ -308,9 +323,11 @@ export default function ProfessionnelPage() {
                 </h2>
                 <button
                   onClick={() => setActiveModal(null)}
-                  className="w-10 h-10 rounded-full bg-[#0a0b0a] border border-[#C5A059]/50 text-[#C5A059] hover:text-white hover:bg-[#C5A059]/20 flex items-center justify-center font-cinzel text-xl transition-all duration-200 cursor-pointer flex-shrink-0"
+                  className="px-4 py-2 rounded-full bg-[#0a0b0a] border border-[#C5A059]/50 text-[#C5A059] hover:text-[#E9D18F] hover:bg-[#C5A059]/25 hover:border-[#E9D18F] flex items-center gap-2 font-cinzel text-xs sm:text-sm font-semibold tracking-widest uppercase transition-all duration-200 cursor-pointer flex-shrink-0 shadow-md"
+                  aria-label="Fermer la fenêtre"
                 >
-                  &times;
+                  <span>{lang === "fr" ? "FERMER" : "CLOSE"}</span>
+                  <span className="text-base leading-none font-bold">&times;</span>
                 </button>
               </div>
 
