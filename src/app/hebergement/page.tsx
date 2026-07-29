@@ -41,20 +41,17 @@ const SLIDES = [
   },
 ];
 
-// ─── Gallery images (12 photos 100% uniques sans doublon sur tout le site) ───
+// ─── Gallery images (Photos valides uniques & sans doublons) ─────────────────
 const GALLERY = [
   { src: "/images/Bienvenue.jpg", label: "Accueil" },
-  { src: "/images/sejour10.jpg", label: "Résidence" },
-  { src: "/images/sejour9.jpg", label: "Cadre de Vie" },
-  { src: "/images/sejour11.jpg", label: "Espaces Communautaires" },
   { src: "/images/Femmezen.jpg", label: "Détente" },
-  { src: "/images/Femmezen2.jpg", label: "Zen" },
   { src: "/images/Massage.jpg", label: "Soins" },
   { src: "/images/Soins.jpg", label: "Bien-être" },
   { src: "/images/Soins2.jpg", label: "Ressourcement" },
   { src: "/images/Soins3.jpg", label: "Confort" },
   { src: "/images/Soins4.jpg", label: "Sérénité" },
   { src: "/images/Soins5.jpg", label: "Apaisement" },
+  { src: "/images/Soins6.jpg", label: "Tranquillité" },
 ];
 
 // ─── Professional Carousel ────────────────────────────────────────────────────
