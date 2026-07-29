@@ -367,16 +367,16 @@ export default function ExcursionsPage() {
           fill
           priority
           sizes="100vw"
-          className="object-cover object-center opacity-35 filter brightness-75 contrast-110"
+          className="object-cover object-center opacity-60 filter brightness-60 saturate-110"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#12140f]/80 via-[#12140f]/65 to-[#12140f]/88" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#12140f]/70 via-[#12140f]/50 to-[#12140f]/75" />
       </div>
 
-      {/* ── 1. BANNIÈRE HERO ────────────────────────────────────────────── */}
+      {/* ── 1. BANNIÈRE HERO (ancienne bannière restaurée) ───────────────── */}
       <header className="w-full bg-[#0d0f0c]/60 overflow-hidden relative">
         <div className="w-full h-[clamp(180px,34vw,480px)] relative overflow-hidden">
           <Image
-            src="/images/Excursion23.jpg"
+            src="/images/Excursion30.jpg"
             alt="Bannière Excursions — General Esquire"
             fill
             priority
