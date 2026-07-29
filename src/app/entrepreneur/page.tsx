@@ -310,9 +310,9 @@ export default function EntrepreneurPage() {
         </div>
       </div>
 
-      {/* Background filigrane */}
-      <div className="absolute inset-0 -z-10 opacity-[0.08] pointer-events-none overflow-hidden">
-        <Image src="/images/background.jpeg" alt="" fill className="object-cover" />
+      {/* Background image BACKRN.png */}
+      <div className="fixed inset-0 -z-10 opacity-30 pointer-events-none overflow-hidden">
+        <Image src="/images/BACKRN.png" alt="Background Chef d'Entreprise" fill priority className="object-cover object-center filter brightness-95" />
       </div>
 
       <div className="max-w-5xl mx-auto px-6 pb-12 md:pb-20">
