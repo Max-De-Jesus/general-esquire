@@ -170,7 +170,7 @@ function VerticalWheelCarousel() {
 
       {/* 3D Vertical Stage */}
       <div
-        className="relative flex items-center justify-center h-[340px] sm:h-[440px] md:h-[480px] w-full"
+        className="relative flex items-center justify-center h-[360px] sm:h-[460px] md:h-[500px] w-full"
         style={{ perspective: "1200px", perspectiveOrigin: "50% 50%" }}
       >
         <div className="relative w-full h-full flex items-center justify-center" style={{ transformStyle: "preserve-3d" }}>
@@ -178,9 +178,8 @@ function VerticalWheelCarousel() {
             const abs = Math.abs(offset);
             const rotX = -offset * ANGLE_STEP; // Vertical rotation angle around X axis
             const tz = offset === 0 ? 0 : -RADIUS * (1 - Math.cos((abs * ANGLE_STEP * Math.PI) / 180));
-            const ty = offset * 85; // Vertical displacement offset
+            const ty = offset * 95; // Vertical displacement offset
             const scale = offset === 0 ? 1.08 : Math.max(0.65, 1 - abs * 0.18);
-            const opacity = offset === 0 ? 1 : Math.max(0.2, 1 - abs * 0.32);
             const isCenter = offset === 0;
 
             return (
@@ -190,52 +189,54 @@ function VerticalWheelCarousel() {
                 style={{
                   position: "absolute",
                   // Strict uniform dimensioning across laptop & mobile
-                  width: isCenter ? "clamp(260px, 60vw, 560px)" : "clamp(200px, 48vw, 440px)",
-                  height: isCenter ? "clamp(170px, 32vw, 290px)" : "clamp(130px, 24vw, 220px)",
+                  width: isCenter ? "clamp(270px, 62vw, 580px)" : "clamp(200px, 48vw, 440px)",
+                  height: isCenter ? "clamp(200px, 36vw, 310px)" : "clamp(130px, 24vw, 210px)",
                   transform: `translateY(${ty}px) rotateX(${rotX}deg) translateZ(${tz}px) scale(${scale})`,
-                  opacity,
+                  opacity: isCenter ? 1 : Math.max(0.35, 1 - abs * 0.28),
                   zIndex: isCenter ? 30 : 10 - abs,
                   transition: "all 0.8s cubic-bezier(0.16, 1, 0.3, 1)",
                   transformStyle: "preserve-3d",
                 }}
-                className={`rounded-2xl overflow-hidden cursor-pointer border-2 shadow-2xl transition-all duration-700 bg-[#0c0e0c] ${
+                className={`rounded-2xl overflow-hidden cursor-pointer border-2 shadow-2xl transition-all duration-700 bg-[#0a0c0a] ${
                   isCenter
-                    ? "border-[#E9D18F] shadow-[0_0_50px_rgba(197,160,89,0.5),0_20px_40px_rgba(0,0,0,0.9)]"
-                    : "border-[#C5A059]/30 hover:border-[#C5A059]/60"
+                    ? "border-[#E9D18F] shadow-[0_0_50px_rgba(197,160,89,0.65),0_25px_50px_rgba(0,0,0,0.95)]"
+                    : "border-[#C5A059]/25 hover:border-[#C5A059]/50"
                 }`}
               >
-                {/* Image — Strict 100% normalized cover */}
+                {/* Image — Strict 100% normalized cover & object positioning to hide watermarks */}
                 <Image
                   src={WHEEL_SLIDES[idx].src}
                   alt={WHEEL_SLIDES[idx].title}
                   fill
                   priority={isCenter}
-                  sizes="(max-width: 640px) 280px, 560px"
-                  className={`object-cover object-center transition-transform duration-700 ${
-                    isCenter ? "scale-105 brightness-105" : "brightness-60"
+                  sizes="(max-width: 640px) 280px, 580px"
+                  className={`object-cover object-[center_30%] transition-transform duration-700 ${
+                    isCenter ? "scale-105 brightness-105" : "brightness-50 opacity-80"
                   }`}
                 />
 
-                {/* Fade Overlay */}
+                {/* Fade Overlay — Opaque mask for back cards to eliminate bleed-through */}
                 <div
                   className="absolute inset-0 transition-opacity duration-500"
                   style={{
                     background: isCenter
-                      ? "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.15) 50%, transparent 100%)"
-                      : `rgba(0,0,0,${Math.min(0.85, 0.45 + abs * 0.2)})`,
+                      ? "linear-gradient(to top, rgba(13,15,13,0.95) 0%, rgba(13,15,13,0.4) 45%, transparent 100%)"
+                      : "rgba(10,12,10,0.65)",
                   }}
                 />
 
-                {/* Label Overlay for Active Center Slide */}
+                {/* Text Overlay — Cleanly framed inside active slide */}
                 {isCenter && (
-                  <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 z-20 transition-all duration-500">
-                    <span className="font-cinzel text-[9px] sm:text-xs text-[#C5A059] tracking-widest uppercase bg-[#131513]/90 border border-[#C5A059]/50 px-3 py-1 rounded-full backdrop-blur-md inline-block mb-2 shadow-md">
-                      ✦ {WHEEL_SLIDES[idx].tag}
-                    </span>
-                    <h3 className="font-cinzel text-base sm:text-2xl font-bold text-white drop-shadow-md leading-tight mb-1">
+                  <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 z-20 bg-gradient-to-t from-[#0c0e0c] via-[#0c0e0c]/90 to-transparent">
+                    <div className="inline-block mb-2">
+                      <span className="font-cinzel text-[9px] sm:text-xs text-[#E9D18F] font-bold tracking-widest uppercase bg-[#0F3823]/90 border border-[#C5A059]/60 px-3 py-1 rounded-full backdrop-blur-md shadow-md">
+                        ✦ {WHEEL_SLIDES[idx].tag}
+                      </span>
+                    </div>
+                    <h3 className="font-cinzel text-base sm:text-2xl font-bold text-white drop-shadow-md leading-snug mb-1">
                       {WHEEL_SLIDES[idx].title}
                     </h3>
-                    <p className="font-cormorant text-xs sm:text-base text-[#EDE4CF]/90 line-clamp-1 drop-shadow">
+                    <p className="font-cormorant text-xs sm:text-base text-[#EDE4CF]/90 line-clamp-2 leading-relaxed">
                       {WHEEL_SLIDES[idx].desc}
                     </p>
                   </div>
