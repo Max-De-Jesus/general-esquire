@@ -240,7 +240,7 @@ export default function CocooningTouristiquePage() {
             >
               {/* Image en arrière-plan du cercle */}
               <Image
-                src="/images/Food.jpg"
+                src="/images/Tchooh10.webp"
                 alt="Les Repas"
                 fill
                 priority
@@ -423,7 +423,7 @@ export default function CocooningTouristiquePage() {
               className="group relative h-64 sm:h-72 rounded-2xl border-2 border-[#C5A059]/60 hover:border-[#E9D18F] shadow-xl hover:shadow-[0_0_35px_rgba(197,160,89,0.5)] hover:-translate-y-2 transition-all duration-500 overflow-hidden flex flex-col justify-end p-6 cursor-pointer"
             >
               <Image
-                src="/images/gourmet_cuisine_benin.png"
+                src="/images/wine.jpg"
                 alt="Les Repas"
                 fill
                 sizes="(max-width: 768px) 100vw, 250px"
@@ -477,7 +477,7 @@ export default function CocooningTouristiquePage() {
               className="group relative h-64 sm:h-72 rounded-2xl border-2 border-[#C5A059]/60 hover:border-[#E9D18F] shadow-xl hover:shadow-[0_0_35px_rgba(197,160,89,0.5)] hover:-translate-y-2 transition-all duration-500 overflow-hidden flex flex-col justify-end p-6 cursor-pointer"
             >
               <Image
-                src="/images/Massage.jpg"
+                src="/images/Sport10.jpg"
                 alt="La Détente"
                 fill
                 sizes="(max-width: 768px) 100vw, 250px"
