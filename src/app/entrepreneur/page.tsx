@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import "./entrepreneur-animations.css";
@@ -18,7 +18,7 @@ import {
 } from "@/components/Icons";
 
 // ─── Carousel slides — Uniform dimensions & high visual impact ─────────────────
-const WHEEL_SLIDES = [
+const SLIDES = [
   {
     src: "/images/Chef d'entreprise3.jpg",
     tag: "Conseil & Stratégie",
@@ -92,182 +92,162 @@ function Sparkles() {
   );
 }
 
-// ─── 3D Vertical Wheel Carousel (Roue Verticale 3D) ─────────────────────────
-function VerticalWheelCarousel() {
+// ─── 3D Executive Luxury Coverflow Slider ────────────────────────────────────
+function ExecutiveLuxurySlider() {
   const [activeIdx, setActiveIdx] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
-  const [touchStartY, setTouchStartY] = useState<number | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
-  const total = WHEEL_SLIDES.length;
-  const VISIBLE_SLOTS = 5; // -2, -1, 0, +1, +2
-  const ANGLE_STEP = 36;   // 36 degrees per step on the vertical circle
-  const RADIUS = 280;       // Vertical wheel radius in px
+  const total = SLIDES.length;
 
   const next = useCallback(() => setActiveIdx((p) => (p + 1) % total), [total]);
   const prev = useCallback(() => setActiveIdx((p) => (p - 1 + total) % total), [total]);
 
-  // Infinite slow-rhythm auto-rotation
+  // Infinite smooth rotation
   useEffect(() => {
     if (isHovered) return;
-    const timer = setInterval(next, 4200);
+    const timer = setInterval(next, 5200);
     return () => clearInterval(timer);
   }, [isHovered, next]);
 
-  // Trackpad / Mouse wheel interaction
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    let lastWheel = 0;
-    const onWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      const now = Date.now();
-      if (now - lastWheel < 300) return;
-      lastWheel = now;
-      if (e.deltaY > 15 || e.deltaX > 15) next();
-      if (e.deltaY < -15 || e.deltaX < -15) prev();
-    };
-    el.addEventListener("wheel", onWheel, { passive: false });
-    return () => el.removeEventListener("wheel", onWheel);
-  }, [next, prev]);
-
-  // Mobile Touch Swipe
-  const onTouchStart = (e: React.TouchEvent) => setTouchStartY(e.touches[0].clientY);
+  // Touch Swipe
+  const onTouchStart = (e: React.TouchEvent) => setTouchStartX(e.touches[0].clientX);
   const onTouchEnd = (e: React.TouchEvent) => {
-    if (touchStartY === null) return;
-    const dy = touchStartY - e.changedTouches[0].clientY;
-    if (Math.abs(dy) > 35) dy > 0 ? next() : prev();
-    setTouchStartY(null);
+    if (touchStartX === null) return;
+    const dx = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(dx) > 35) dx > 0 ? next() : prev();
+    setTouchStartX(null);
   };
 
-  // Slots calculations (-2 to +2 relative to active index)
-  const slots = Array.from({ length: VISIBLE_SLOTS }, (_, i) => {
-    const offset = i - Math.floor(VISIBLE_SLOTS / 2);
-    const idx = ((activeIdx + offset) % total + total) % total;
-    return { idx, offset };
-  });
+  // Calculate 3D Coverflow positioning
+  const getSlideProps = (index: number) => {
+    const diff = (index - activeIdx + total) % total;
+    let offset = diff;
+    if (diff > total / 2) offset = diff - total;
 
-  const activeSlide = WHEEL_SLIDES[activeIdx];
+    if (offset === 0) {
+      return {
+        transform: "translateX(0%) rotateY(0deg) scale(1)",
+        opacity: 1,
+        zIndex: 30,
+        isCenter: true,
+      };
+    } else if (offset === 1 || (activeIdx === total - 1 && index === 0)) {
+      return {
+        transform: "translateX(52%) rotateY(-26deg) scale(0.84)",
+        opacity: 0.55,
+        zIndex: 10,
+        isCenter: false,
+      };
+    } else if (offset === -1 || (activeIdx === 0 && index === total - 1)) {
+      return {
+        transform: "translateX(-52%) rotateY(26deg) scale(0.84)",
+        opacity: 0.55,
+        zIndex: 10,
+        isCenter: false,
+      };
+    } else {
+      return {
+        transform: offset > 0 ? "translateX(100%) scale(0.6)" : "translateX(-100%) scale(0.6)",
+        opacity: 0,
+        zIndex: 0,
+        isCenter: false,
+      };
+    }
+  };
+
+  const activeSlide = SLIDES[activeIdx];
 
   return (
     <div
-      ref={containerRef}
-      className="relative w-full rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-2xl bg-gradient-to-b from-[#0d0f0c] via-[#131513] to-[#0d0f0c] py-8 sm:py-12 select-none"
+      className="relative w-full rounded-3xl overflow-hidden border border-[#C5A059]/40 bg-[#0d0f0c] p-6 sm:p-10 shadow-2xl select-none"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
-      {/* Background radial glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(197,160,89,0.12),transparent_70%)] pointer-events-none" />
+      {/* Background Gold Ambient Glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(197,160,89,0.14),transparent_70%)] pointer-events-none" />
 
-      {/* Title Tag Header */}
-      <div className="text-center mb-6 relative z-20">
-        <span className="inline-flex items-center gap-2 px-4 py-1 rounded-full border border-[#C5A059]/50 bg-[#0F3823]/80 backdrop-blur-md text-[#C5A059] font-cinzel text-[10px] tracking-[0.25em] uppercase shadow-md">
-          ◆ CARROUSEL 3D — ROUE VERTICALE
-        </span>
-      </div>
-
-      {/* 3D Vertical Stage */}
+      {/* 3D Coverflow Stage */}
       <div
-        className="relative flex items-center justify-center h-[360px] sm:h-[460px] md:h-[500px] w-full"
-        style={{ perspective: "1200px", perspectiveOrigin: "50% 50%" }}
+        className="relative flex items-center justify-center h-[260px] sm:h-[380px] md:h-[420px] w-full"
+        style={{ perspective: "1000px" }}
       >
         <div className="relative w-full h-full flex items-center justify-center" style={{ transformStyle: "preserve-3d" }}>
-          {slots.map(({ idx, offset }) => {
-            const abs = Math.abs(offset);
-            const rotX = -offset * ANGLE_STEP; // Vertical rotation angle around X axis
-            const tz = offset === 0 ? 0 : -RADIUS * (1 - Math.cos((abs * ANGLE_STEP * Math.PI) / 180));
-            const ty = offset * 95; // Vertical displacement offset
-            const scale = offset === 0 ? 1.08 : Math.max(0.65, 1 - abs * 0.18);
-            const isCenter = offset === 0;
+          {SLIDES.map((slide, i) => {
+            const { transform, opacity, zIndex, isCenter } = getSlideProps(i);
 
             return (
               <div
-                key={`${idx}-${offset}`}
-                onClick={() => setActiveIdx(idx)}
+                key={i}
+                onClick={() => setActiveIdx(i)}
                 style={{
                   position: "absolute",
-                  // Strict uniform dimensioning across laptop & mobile
-                  width: isCenter ? "clamp(270px, 62vw, 580px)" : "clamp(200px, 48vw, 440px)",
-                  height: isCenter ? "clamp(200px, 36vw, 310px)" : "clamp(130px, 24vw, 210px)",
-                  transform: `translateY(${ty}px) rotateX(${rotX}deg) translateZ(${tz}px) scale(${scale})`,
-                  opacity: isCenter ? 1 : Math.max(0.35, 1 - abs * 0.28),
-                  zIndex: isCenter ? 30 : 10 - abs,
-                  transition: "all 0.8s cubic-bezier(0.16, 1, 0.3, 1)",
+                  width: "clamp(260px, 64vw, 680px)",
+                  height: "clamp(180px, 38vw, 360px)",
+                  transform,
+                  opacity,
+                  zIndex,
+                  transition: "all 0.75s cubic-bezier(0.16, 1, 0.3, 1)",
                   transformStyle: "preserve-3d",
                 }}
-                className={`rounded-2xl overflow-hidden cursor-pointer border-2 shadow-2xl transition-all duration-700 bg-[#0a0c0a] ${
+                className={`rounded-3xl overflow-hidden cursor-pointer border-2 transition-all duration-700 bg-[#131513] ${
                   isCenter
-                    ? "border-[#E9D18F] shadow-[0_0_50px_rgba(197,160,89,0.65),0_25px_50px_rgba(0,0,0,0.95)]"
-                    : "border-[#C5A059]/25 hover:border-[#C5A059]/50"
+                    ? "border-[#E9D18F] shadow-[0_0_55px_rgba(197,160,89,0.55),0_20px_45px_rgba(0,0,0,0.95)]"
+                    : "border-[#C5A059]/30 hover:border-[#C5A059]/60 shadow-xl"
                 }`}
               >
-                {/* Image — Strict 100% normalized cover & object positioning to hide watermarks */}
                 <Image
-                  src={WHEEL_SLIDES[idx].src}
-                  alt={WHEEL_SLIDES[idx].title}
+                  src={slide.src}
+                  alt={slide.title}
                   fill
                   priority={isCenter}
-                  sizes="(max-width: 640px) 280px, 580px"
-                  className={`object-cover object-[center_30%] transition-transform duration-700 ${
-                    isCenter ? "scale-105 brightness-105" : "brightness-50 opacity-80"
+                  sizes="(max-width: 768px) 300px, 680px"
+                  className={`object-cover object-[center_35%] transition-transform duration-700 ${
+                    isCenter ? "scale-105 brightness-105" : "brightness-50"
                   }`}
                 />
-
-                {/* Fade Overlay — Opaque mask for back cards to eliminate bleed-through */}
-                <div
-                  className="absolute inset-0 transition-opacity duration-500"
-                  style={{
-                    background: isCenter
-                      ? "linear-gradient(to top, rgba(13,15,13,0.95) 0%, rgba(13,15,13,0.4) 45%, transparent 100%)"
-                      : "rgba(10,12,10,0.65)",
-                  }}
-                />
-
-                {/* Text Overlay — Cleanly framed inside active slide */}
-                {isCenter && (
-                  <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 z-20 bg-gradient-to-t from-[#0c0e0c] via-[#0c0e0c]/90 to-transparent">
-                    <div className="inline-block mb-2">
-                      <span className="font-cinzel text-[9px] sm:text-xs text-[#E9D18F] font-bold tracking-widest uppercase bg-[#0F3823]/90 border border-[#C5A059]/60 px-3 py-1 rounded-full backdrop-blur-md shadow-md">
-                        ✦ {WHEEL_SLIDES[idx].tag}
-                      </span>
-                    </div>
-                    <h3 className="font-cinzel text-base sm:text-2xl font-bold text-white drop-shadow-md leading-snug mb-1">
-                      {WHEEL_SLIDES[idx].title}
-                    </h3>
-                    <p className="font-cormorant text-xs sm:text-base text-[#EDE4CF]/90 line-clamp-2 leading-relaxed">
-                      {WHEEL_SLIDES[idx].desc}
-                    </p>
-                  </div>
-                )}
+                {/* Gradient overlay on image */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0c0e0c]/90 via-[#0c0e0c]/20 to-transparent" />
               </div>
             );
           })}
         </div>
-      </div>
 
-      {/* Nav Controls */}
-      <div className="absolute top-1/2 -translate-y-1/2 left-3 right-3 sm:left-6 sm:right-6 flex justify-between pointer-events-none z-40">
+        {/* Minimalist Gold Arrow Buttons */}
         <button
           onClick={prev}
           aria-label="Précédent"
-          className="pointer-events-auto w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#131513]/85 border-2 border-[#C5A059]/60 text-[#E9D18F] hover:bg-[#0F3823] hover:border-[#E9D18F] hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center text-2xl shadow-[0_0_20px_rgba(197,160,89,0.3)] backdrop-blur-md cursor-pointer"
+          className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-40 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#131513]/90 border border-[#C5A059]/60 text-[#E9D18F] text-xl hover:bg-[#0F3823] hover:border-[#E9D18F] hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center shadow-lg backdrop-blur-md cursor-pointer"
         >
           ‹
         </button>
         <button
           onClick={next}
           aria-label="Suivant"
-          className="pointer-events-auto w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#131513]/85 border-2 border-[#C5A059]/60 text-[#E9D18F] hover:bg-[#0F3823] hover:border-[#E9D18F] hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center text-2xl shadow-[0_0_20px_rgba(197,160,89,0.3)] backdrop-blur-md cursor-pointer"
+          className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-40 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#131513]/90 border border-[#C5A059]/60 text-[#E9D18F] text-xl hover:bg-[#0F3823] hover:border-[#E9D18F] hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center shadow-lg backdrop-blur-md cursor-pointer"
         >
           ›
         </button>
       </div>
 
-      {/* Dot Indicators */}
-      <div className="flex justify-center gap-2 mt-4 flex-wrap px-4 relative z-20">
-        {WHEEL_SLIDES.map((_, i) => (
+      {/* Sleek Active Slide Details Panel (Framed beneath the stage) */}
+      <div className="mt-6 text-center max-w-2xl mx-auto px-4 relative z-30 transition-all duration-500">
+        <span className="inline-block font-cinzel text-xs text-[#E9D18F] font-bold tracking-[0.25em] uppercase bg-[#0F3823]/80 border border-[#C5A059]/50 px-4 py-1.5 rounded-full backdrop-blur-md mb-3 shadow-md">
+          ✦ {activeSlide.tag}
+        </span>
+        <h3 className="font-cinzel text-xl sm:text-3xl font-bold text-white tracking-wide mb-2 drop-shadow-md">
+          {activeSlide.title}
+        </h3>
+        <p className="font-cormorant text-base sm:text-xl text-[#EDE4CF]/90 font-light leading-relaxed">
+          {activeSlide.desc}
+        </p>
+      </div>
+
+      {/* Luxury Dot Pagination */}
+      <div className="flex justify-center gap-2 mt-6 flex-wrap relative z-30">
+        {SLIDES.map((_, i) => (
           <button
             key={i}
             onClick={() => setActiveIdx(i)}
@@ -280,10 +260,6 @@ function VerticalWheelCarousel() {
           />
         ))}
       </div>
-
-      <p className="text-center font-cinzel text-[10px] text-[#C5A059]/50 tracking-widest mt-3 relative z-20">
-        ↑ FAITES DÉFILER OU UTILISEZ LES FLÈCHES POUR TOURNER LA ROUE ↓
-      </p>
     </div>
   );
 }
@@ -364,9 +340,9 @@ export default function EntrepreneurPage() {
           </div>
         </div>
 
-        {/* ── 3D VERTICAL WHEEL CAROUSEL (ROUE VERTICALE) ── */}
+        {/* ── 3D EXECUTIVE LUXURY COVERFLOW SLIDER ── */}
         <section className="mb-16">
-          <VerticalWheelCarousel />
+          <ExecutiveLuxurySlider />
         </section>
 
         {/* ── BODY TEXT (EXACT USER INSTRUCTIONS) ── */}
@@ -615,7 +591,7 @@ export default function EntrepreneurPage() {
 
             <a
               href="tel:+33159581725"
-              className="flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-gradient-to-r from-[#0F3823] via-[#131513] to-[#0F3823] border-2 border-[#C5A059]/60 hover:border-[#E9D18F] text-[#EDE4CF] hover:text-white font-cinzel text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-[0_0_20px_rgba(197,160,89,0.2)] hover:scale-105 group"
+              className="flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-[#0F3823] border-2 border-[#C5A059]/60 hover:border-[#E9D18F] text-[#EDE4CF] hover:text-white font-cinzel text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-[0_0_20px_rgba(197,160,89,0.2)] hover:scale-105 group"
             >
               <svg className="w-5 h-5 text-[#C5A059] group-hover:text-[#25D366] transition-colors" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21c1.12.45 2.33.69 3.58.69a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.24 2.46.69 3.58a1 1 0 01-.21 1.11l-2.2 2.2z" />
