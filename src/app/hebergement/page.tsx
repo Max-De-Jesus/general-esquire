@@ -264,12 +264,13 @@ export default function HebergementPage() {
             <div className="flex flex-col md:flex-row items-center">
               {/* Texte */}
               <div className="w-full md:w-3/5 p-8 sm:p-12 space-y-6 bg-[#0F3823]/90 relative z-10">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center justify-center gap-3">
                   <div className="h-[1px] w-12 bg-[#C5A059]" />
                   <span className="text-[#C5A059] text-xs font-cinzel tracking-widest uppercase">L'Esprit Chrysalides</span>
+                  <div className="h-[1px] w-12 bg-[#C5A059]" />
                 </div>
 
-                <p className="font-cormorant text-xl sm:text-2xl text-[#EDE4CF] leading-relaxed italic">
+                <p className="font-cormorant text-xl sm:text-2xl text-[#EDE4CF] leading-relaxed italic text-center">
                   {lang === "fr" ? (
                     <>
                       « Le lieu de résidence n'est pas forcément un hôtel, car il ne sert à rien de prétendre rechercher un cocooning touristique en Afrique si c'est pour demeurer dans la <span className="text-[#E9D18F] font-semibold">solitude anonyme, monotone et aseptisée d'un hôtel</span>. »
@@ -281,7 +282,7 @@ export default function HebergementPage() {
                   )}
                 </p>
 
-                <div className="h-[1px] w-24 bg-[#C5A059]/40" />
+                <div className="h-[1px] w-24 bg-[#C5A059]/40 mx-auto" />
 
                 <p className="font-cinzel text-sm sm:text-base text-[#E9D18F] leading-loose tracking-wide font-bold">
                   {lang === "fr" ? (

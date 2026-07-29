@@ -514,12 +514,13 @@ export default function ExcursionsPage() {
                   {/* Text side */}
                   <div className={`relative z-10 p-8 sm:p-12 flex flex-col justify-center ${isEven ? "lg:order-2" : "lg:order-1"}`}>
                     {/* Accent line */}
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className="w-10 h-[3px] bg-gradient-to-r from-[#C5A059] to-[#E9D18F] rounded-full" />
+                    <div className="flex items-center justify-center gap-3 mb-6">
+                      <div className="w-10 h-[2px] bg-gradient-to-r from-transparent via-[#C5A059] to-[#E9D18F] rounded-full" />
                       <span className="text-2xl">{panel.emoji}</span>
+                      <div className="w-10 h-[2px] bg-gradient-to-l from-transparent via-[#C5A059] to-[#E9D18F] rounded-full" />
                     </div>
 
-                    <h2 className="font-cinzel text-xl sm:text-2xl text-[#E9D18F] font-extrabold uppercase tracking-wider mb-5 leading-tight">
+                    <h2 className="font-cinzel text-xl sm:text-2xl text-[#E9D18F] font-extrabold uppercase tracking-wider mb-5 leading-tight text-center">
                       {panel.title}
                     </h2>
 
@@ -536,10 +537,10 @@ export default function ExcursionsPage() {
                     </div>
 
                     {/* Bottom accent */}
-                    <div className="flex items-center gap-2 mt-6">
-                      <div className="w-6 h-[2px] bg-[#C5A059]/40 rounded-full" />
-                      <span className="text-[#C5A059]/40 text-xs">◆</span>
-                      <div className="w-6 h-[2px] bg-[#C5A059]/40 rounded-full" />
+                    <div className="flex items-center justify-center gap-2 mt-6">
+                      <div className="w-10 h-[2px] bg-[#C5A059]/60 rounded-full" />
+                      <span className="text-[#C5A059] text-xs">◆</span>
+                      <div className="w-10 h-[2px] bg-[#C5A059]/60 rounded-full" />
                     </div>
                   </div>
                 </div>
