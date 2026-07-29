@@ -146,13 +146,14 @@ export default function ParticuliersPage() {
 
       <div className="max-w-6xl mx-auto px-6">
         
-        {/* Background */}
-        <div className="absolute inset-0 -z-10 opacity-15 overflow-hidden pointer-events-none">
+        {/* Background image backpa.png */}
+        <div className="fixed inset-0 -z-10 opacity-30 pointer-events-none overflow-hidden">
           <Image
-            src="/images/background.jpeg"
-            alt="Fond Filigrane"
+            src="/images/backpa.png"
+            alt="Background Particuliers"
             fill
-            className="object-cover object-center filter brightness-75 contrast-125"
+            priority
+            className="object-cover object-center filter brightness-95"
           />
         </div>
 
