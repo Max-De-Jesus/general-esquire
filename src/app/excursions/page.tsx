@@ -87,47 +87,91 @@ const CONTENT_PANELS = [
 // ─── Hero Carousel ────────────────────────────────────────────────────────────
 function HeroCarousel({ slides }: { slides: typeof SLIDES_FR }) {
   const [current, setCurrent] = useState(0);
-  const [fading, setFading] = useState(false);
+  const [prev2, setPrev2] = useState<number | null>(null);
+  const [transitioning, setTransitioning] = useState(false);
 
   const goTo = useCallback((idx: number) => {
-    setFading(true);
-    setTimeout(() => { setCurrent(idx); setFading(false); }, 400);
-  }, []);
+    if (transitioning || idx === current) return;
+    setPrev2(current);
+    setTransitioning(true);
+    setCurrent(idx);
+    setTimeout(() => { setPrev2(null); setTransitioning(false); }, 700);
+  }, [current, transitioning]);
 
-  const next = useCallback(() => goTo((current + 1) % slides.length), [current, goTo, slides.length]);
-  const prev = useCallback(() => goTo((current - 1 + slides.length) % slides.length), [current, goTo, slides.length]);
+  const goNext = useCallback(() => goTo((current + 1) % slides.length), [current, goTo, slides.length]);
+  const goPrev = useCallback(() => goTo((current - 1 + slides.length) % slides.length), [current, goTo, slides.length]);
 
   useEffect(() => {
-    const t = setInterval(next, 6000);
+    const t = setInterval(goNext, 6000);
     return () => clearInterval(t);
-  }, [next]);
+  }, [goNext]);
 
   const slide = slides[current];
 
   return (
-    <div className="relative w-full rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-2xl group">
-      <div className="relative w-full h-[340px] sm:h-[500px] transition-opacity duration-500" style={{ opacity: fading ? 0 : 1 }}>
-        <Image src={slide.src} alt={slide.title} fill priority className="object-cover object-center group-hover:scale-105 transition-transform duration-[8000ms] ease-out" sizes="100vw" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
+    <div className="relative w-full rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-2xl group bg-[#131513]">
+      <div className="relative w-full h-[340px] sm:h-[500px]">
+
+        {/* ── Previous slide (fades OUT) */}
+        {prev2 !== null && (
+          <div className="absolute inset-0 z-10 animate-fadeOut pointer-events-none">
+            <Image
+              src={slides[prev2].src}
+              alt={slides[prev2].title}
+              fill
+              sizes="100vw"
+              className="object-cover object-center"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
+          </div>
+        )}
+
+        {/* ── Current slide (fades IN) */}
+        <div className={`absolute inset-0 z-20 ${transitioning ? "animate-fadeIn" : ""}`}>
+          <Image
+            src={slide.src}
+            alt={slide.title}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center group-hover:scale-105 transition-transform duration-[8000ms] ease-out"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
+        </div>
       </div>
-      <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-12 transition-all duration-500" style={{ opacity: fading ? 0 : 1, transform: fading ? "translateY(12px)" : "translateY(0)" }}>
+
+      {/* ── Text overlay */}
+      <div
+        className="absolute bottom-0 left-0 right-0 p-6 sm:p-12 z-30 transition-all duration-500"
+        style={{ opacity: transitioning ? 0 : 1, transform: transitioning ? "translateY(10px)" : "translateY(0)" }}
+      >
         <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#C5A059]/60 bg-[#0F3823]/80 backdrop-blur-md text-[#C5A059] font-cinzel text-[10px] tracking-[0.25em] uppercase mb-4 shadow-md">
           ◆ {slide.tag}
         </span>
         <h2 className="font-cinzel text-2xl sm:text-4xl font-bold text-white leading-snug mb-3 drop-shadow-lg max-w-2xl">{slide.title}</h2>
         <p className="font-cormorant text-lg sm:text-xl text-[#EDE4CF]/90 max-w-xl leading-relaxed">{slide.desc}</p>
       </div>
-      <div className="absolute top-5 right-5 font-cinzel text-xs text-[#C5A059] bg-[#131513]/80 backdrop-blur-md px-3 py-1 rounded-full border border-[#C5A059]/30">{current + 1} / {slides.length}</div>
-      <button onClick={prev} className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-[#131513]/80 border border-[#C5A059]/40 text-[#E9D18F] hover:bg-[#C5A059]/30 transition-all flex items-center justify-center text-2xl shadow-lg backdrop-blur-md">‹</button>
-      <button onClick={next} className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-[#131513]/80 border border-[#C5A059]/40 text-[#E9D18F] hover:bg-[#C5A059]/30 transition-all flex items-center justify-center text-2xl shadow-lg backdrop-blur-md">›</button>
-      <div className="absolute bottom-5 right-7 flex items-center gap-2">
+
+      <div className="absolute top-5 right-5 font-cinzel text-xs text-[#C5A059] bg-[#131513]/80 backdrop-blur-md px-3 py-1 rounded-full border border-[#C5A059]/30 z-30">{current + 1} / {slides.length}</div>
+      <button onClick={goPrev} className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-[#131513]/80 border border-[#C5A059]/40 text-[#E9D18F] hover:bg-[#C5A059]/30 transition-all flex items-center justify-center text-2xl shadow-lg backdrop-blur-md z-30">‹</button>
+      <button onClick={goNext} className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-[#131513]/80 border border-[#C5A059]/40 text-[#E9D18F] hover:bg-[#C5A059]/30 transition-all flex items-center justify-center text-2xl shadow-lg backdrop-blur-md z-30">›</button>
+      <div className="absolute bottom-5 right-7 flex items-center gap-2 z-30">
         {slides.map((_, i) => (
           <button key={i} onClick={() => goTo(i)}
             className={`transition-all duration-300 rounded-full ${i === current ? "w-8 h-2.5 bg-[#C5A059] shadow-[0_0_8px_rgba(197,160,89,0.8)]" : "w-2.5 h-2.5 bg-white/30 hover:bg-[#C5A059]/60"}`}
           />
         ))}
       </div>
+
+      {/* Keyframes */}
+      <style jsx>{`
+        @keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+        .animate-fadeIn  { animation: fadeIn  0.7s ease forwards; }
+        .animate-fadeOut { animation: fadeOut 0.7s ease forwards; }
+      `}</style>
     </div>
   );
 }
@@ -212,17 +256,17 @@ function RadialGallery3D({ items }: { items: typeof GALLERY }) {
             <div
               key={idx}
               onClick={() => setActiveIdx(idx)}
-              className={`absolute cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] rounded-2xl overflow-hidden border-2 ${
+              className={`absolute cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] rounded-2xl overflow-hidden border-2 bg-[#0d0e0c] ${
                 isCenter
                   ? "border-[#E9D18F] shadow-[0_0_50px_rgba(197,160,89,0.7),0_25px_50px_rgba(0,0,0,0.8)] z-30"
                   : "border-[#C5A059]/25 hover:border-[#C5A059]/60 z-10"
               }`}
               style={{
-                width: isCenter ? "clamp(200px, 30vw, 280px)" : "clamp(140px, 20vw, 200px)",
-                height: isCenter ? "clamp(260px, 38vw, 360px)" : "clamp(180px, 27vw, 260px)",
+                width: isCenter ? "clamp(200px, 30vw, 280px)" : "clamp(130px, 18vw, 190px)",
+                height: isCenter ? "clamp(260px, 38vw, 360px)" : "clamp(170px, 25vw, 240px)",
                 transform: `rotateY(${rotY}deg) translateZ(${tz}px) scale(${scale})`,
                 opacity,
-                filter: blur > 0 ? `blur(${blur}px)` : "none",
+                // No CSS blur — use opacity + dark overlay instead (blur causes ghost bleed)
                 transformStyle: "preserve-3d",
                 WebkitBoxReflect: isCenter
                   ? "below 8px linear-gradient(transparent, transparent 60%, rgba(0,0,0,0.4))"
@@ -233,10 +277,15 @@ function RadialGallery3D({ items }: { items: typeof GALLERY }) {
                 src={items[idx].src}
                 alt={items[idx].label}
                 fill
-                sizes="(max-width: 640px) 200px, 280px"
-                className={`object-cover object-center transition-transform duration-700 ${isCenter ? "scale-105 brightness-110" : "brightness-75"}`}
+                sizes="(max-width: 640px) 190px, 280px"
+                className={`object-cover object-center transition-transform duration-700 ${isCenter ? "scale-105 brightness-105" : "brightness-60"}`}
               />
-              <div className={`absolute inset-0 transition-all duration-500 ${isCenter ? "bg-gradient-to-t from-black/85 via-black/20 to-transparent" : "bg-black/55"}`} />
+              {/* Dark overlay — heavier on side cards to hide them cleanly */}
+              <div className={`absolute inset-0 transition-all duration-500 ${
+                isCenter
+                  ? "bg-gradient-to-t from-black/80 via-black/10 to-transparent"
+                  : `bg-black/${Math.min(85, 55 + absOffset * 10)}`
+              }`} />
               {isCenter && (
                 <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
                   <span className="inline-block font-cinzel text-[9px] text-[#C5A059] tracking-widest uppercase bg-[#131513]/90 border border-[#C5A059]/50 px-3 py-1 rounded-full backdrop-blur-md mb-2">
@@ -350,14 +399,14 @@ export default function ExcursionsPage() {
   };
 
   const panelData = [
-    { title: tx.guide_title, emoji: "🧭", p1: tx.guide_p1, p2: tx.guide_p2, image: "/images/Excursion7.jpg", imageAlt: "Guide General Esquire" },
-    { title: tx.prep_title, emoji: "📅", p1: tx.prep_p, p2: null, image: "/images/Excursion20.jpg", imageAlt: "Préparation du Séjour" },
-    { title: tx.heart_title, emoji: "🌍", p1: tx.heart_p1, p2: tx.heart_p2, image: "/images/Excursion12.jpg", imageAlt: "Ouidah Temple Voudou" },
-    { title: tx.must_title, emoji: "🏛️", p1: tx.must_p1, p2: tx.must_p2, quote: tx.must_quote, image: "/images/Excursion4.jpg", imageAlt: "Palais Royaux Abomey" },
+    { title: tx.guide_title, emoji: "🧭", p1: tx.guide_p1, p2: tx.guide_p2, image: "/images/GUIDE.png", imageAlt: "Guide General Esquire" },
+    { title: tx.prep_title, emoji: "📅", p1: tx.prep_p, p2: null, image: "/images/PREPARE.png", imageAlt: "Préparation du Séjour" },
+    { title: tx.heart_title, emoji: "🌍", p1: tx.heart_p1, p2: tx.heart_p2, image: "/images/Excursion12.jpg", imageAlt: "CITE DE GANVIE" },
+    { title: tx.must_title, emoji: "🏛️", p1: tx.must_p1, p2: tx.must_p2, quote: tx.must_quote, image: "/images/Excursion4.jpg", imageAlt: "Ouidah Temple Voudou" },
   ];
 
   return (
-    <div className="min-h-screen bg-[#12140f] text-[#EDE4CF] pb-12 md:pb-20 relative overflow-x-hidden">
+    <div className="min-h-screen text-[#EDE4CF] pb-12 md:pb-20 relative overflow-x-hidden">
 
       {/* ── ARRIÈRE-PLAN FIXE : Excursion23.jpg ─────────────────────────── */}
       <div className="fixed inset-0 -z-20 overflow-hidden pointer-events-none">
