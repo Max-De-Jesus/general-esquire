@@ -610,7 +610,7 @@ export default function RepasPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto mb-8">
             {/* 1. Email */}
             <a
-              href="mailto:contact@generalesquire.com"
+              href="mailto:generalesquire@proton.me"
               className="flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-[#131513] border-2 border-[#C5A059]/60 hover:border-[#E9D18F] text-[#EDE4CF] hover:text-white font-cinzel text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-[0_0_20px_rgba(197,160,89,0.2)] hover:scale-105 hover:shadow-[0_0_30px_rgba(197,160,89,0.4)] group"
             >
               <svg className="w-5 h-5 text-[#C5A059] group-hover:text-[#3B82F6] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">

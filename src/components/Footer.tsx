@@ -88,10 +88,10 @@ export default function Footer() {
             {/* 3. Email (après les deux numéros) */}
             <p>
               <a
-                href="mailto:contact@generalesquire.com"
+                href="mailto:generalesquire@proton.me"
                 className="hover:text-[#3B82F6] transition-colors duration-300"
               >
-                contact@generalesquire.com
+                generalesquire@proton.me
               </a>
             </p>
           </div>

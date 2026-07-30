@@ -21,8 +21,8 @@ export async function POST(request: Request) {
       "Date": new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" }),
     };
 
-    // Forward to FormSubmit service targeting contact@generalesquire.com
-    const response = await fetch("https://formsubmit.co/ajax/contact@generalesquire.com", {
+    // Forward to FormSubmit service targeting generalesquire@proton.me
+    const response = await fetch("https://formsubmit.co/ajax/generalesquire@proton.me", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     });
 
     if (response.ok) {
-      return NextResponse.json({ success: true, message: "Email transmis avec succès à contact@generalesquire.com" });
+      return NextResponse.json({ success: true, message: "Email transmis avec succès à generalesquire@proton.me" });
     } else {
       console.warn("FormSubmit HTTP status:", response.status);
       return NextResponse.json({ success: true, warning: "Email en file d'attente" });

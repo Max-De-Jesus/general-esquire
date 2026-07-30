@@ -185,7 +185,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
             <p className="font-cormorant text-sm text-[#cabfa6]">Notre cabinet se tient à votre entière disposition.</p>
           </div>
           <a
-            href="mailto:contact@generalesquire.com"
+            href="mailto:generalesquire@proton.me"
             className="px-8 py-3 rounded-full font-cinzel text-xs tracking-widest uppercase font-semibold text-black bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] hover:brightness-110 transition-all shadow-lg hover:scale-105"
           >
             Contactez-nous

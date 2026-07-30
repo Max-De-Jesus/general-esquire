@@ -291,7 +291,7 @@ export default function ConseilJuridiquePage() {
       console.error(err);
     }
 
-    // 3. Envoi d'email direct automatique à contact@generalesquire.com via API
+    // 3. Envoi d'email direct automatique à generalesquire@proton.me via API
     try {
       await fetch("/api/contact", {
         method: "POST",
@@ -327,7 +327,7 @@ export default function ConseilJuridiquePage() {
     );
 
     try {
-      window.location.href = `mailto:contact@generalesquire.com?subject=${mailSubject}&body=${mailBody}`;
+      window.location.href = `mailto:generalesquire@proton.me?subject=${mailSubject}&body=${mailBody}`;
     } catch {}
 
     setFormSubmitted(true);
