@@ -15,19 +15,19 @@ const WELLNESS_SLIDES = [
   { src: "/images/Chant2.jpg", tag: "Soirées & Spectacles", title: "Récitals, Musique & Convivialité", desc: "Des moments de joie partagée dans une ambiance amicale et chaleureuse." },
 ];
 
-// ─── Gallery items (galerie radiale 3D avec le dossier CAR DETENTE) ─────────────
+// ─── Gallery items ────────────────────────────────────────────────────────────
 const GALLERY = [
-  { src: "/images/CAR DETENTE/massage10.jpg",           label: "Massage & Relaxation",       cat: "Soins" },
-  { src: "/images/CAR DETENTE/séjour.jpg",              label: "Rituel Bien-Être",           cat: "Détente" },
-  { src: "/images/CAR DETENTE/séjour4.jpg",             label: "Apaisement Profond",          cat: "Sérénité" },
-  { src: "/images/CAR DETENTE/séjour7.jpg",             label: "Soins & Huiles Essentielles", cat: "Massage" },
-  { src: "/images/CAR DETENTE/séjour8.jpg",             label: "Ressourcement Intérieur",     cat: "Calme" },
-  { src: "/images/CAR DETENTE/Excursion18.jpeg",        label: "Évasion & Nature",            cat: "Découverte" },
-  { src: "/images/CAR DETENTE/Excursion21.jpg",        label: "Espaces de Détente",          cat: "Sérénité" },
-  { src: "/images/CAR DETENTE/Excursion24.jpg",        label: "Moments Privilégiés",         cat: "Bien-Être" },
-  { src: "/images/CAR DETENTE/Excursion25.jpg",        label: "Cadre Régénérant",           cat: "Calme" },
-  { src: "/images/CAR DETENTE/Excursion29.avif",       label: "Ambiance Paisible",           cat: "Détente" },
-  { src: "/images/CAR DETENTE/Image Particuliers6.webp", label: "Chaleur & Convivialité",      cat: "Accueil" },
+  { src: "/images/detente_massage10.jpg", label: "Massage & Relaxation", cat: "Soins" },
+  { src: "/images/detente_sejour_7.jpg", label: "Rituel Bien-Être", cat: "Détente" },
+  { src: "/images/detente_sejour_8.jpg", label: "Apaisement Profond", cat: "Sérénité" },
+  { src: "/images/detente_sejour_9.jpg", label: "Soins & Huiles Essentielles", cat: "Massage" },
+  { src: "/images/detente_sejour_10.jpg", label: "Ressourcement Intérieur", cat: "Calme" },
+  { src: "/images/detente_excursion18.jpeg", label: "Évasion & Nature", cat: "Découverte" },
+  { src: "/images/detente_excursion21.jpg", label: "Espaces de Détente", cat: "Sérénité" },
+  { src: "/images/detente_excursion24.jpg", label: "Moments Privilégiés", cat: "Bien-Être" },
+  { src: "/images/detente_excursion25.jpg", label: "Cadre Régénérant", cat: "Calme" },
+  { src: "/images/detente_excursion29.avif", label: "Ambiance Paisible", cat: "Détente" },
+  { src: "/images/detente_particuliers6.webp", label: "Chaleur & Convivialité", cat: "Accueil" },
 ];
 
 // ─── Hero Carousel ────────────────────────────────────────────────────────────
