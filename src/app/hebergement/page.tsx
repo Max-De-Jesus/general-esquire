@@ -414,7 +414,7 @@ export default function HebergementPage() {
             href="/cocooning-touristique#formulaire"
             className="inline-block px-12 py-4 rounded-full font-cinzel text-xs tracking-widest font-semibold uppercase text-black bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] hover:brightness-110 transition-all duration-300 shadow-[0_0_30px_rgba(197,160,89,0.5)] hover:scale-105"
           >
-            S'inscrire au Séjour →
+            Inscrivez-vous au Séjour →
           </Link>
         </div>
 

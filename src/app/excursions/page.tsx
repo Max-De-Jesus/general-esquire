@@ -383,7 +383,7 @@ export default function ExcursionsPage() {
       : "For fifteen days, you will be immersed in sights, sounds and sensations. Ouidah alone, with its historic and cultural landmarks, will dazzle you — and you will have the opportunity to attend the Voodoo Days festival, which takes place precisely during your stay.",
     must_title: lang === "fr" ? "Les Incontournables du Bénin" : "Benin's Must-See Destinations",
     must_p1: lang === "fr"
-      ? "En quinze jours, vous n'aurez peut-être pas vu tout le Bénin ; mais il y a des incontournables, à commencer par la capitale économique Cotonou, Ouidah, la cité du Vaudou, et Abomey, celle des rois au passé glorieux."
+      ? "En quinze jours, vous n'aurez peut-être pas vu tout le Bénin ; mais il y a des incontournables, à commencer par la capitale économique Cotonou, le temple de  Python a Ouidah, la cité du Vaudou, et Abomey, celle des rois au passé glorieux."
       : "In fifteen days you may not see all of Benin, but the must-sees include the economic capital Cotonou, Ouidah the city of Voodoo, and Abomey, the city of kings with a glorious past.",
     must_p2: lang === "fr"
       ? "Vous aurez sans doute l'occasion d'assister à des danses rituelles, des démonstrations de magie, des cérémonies vaudou… toutes choses qui vont vous émerveiller et élargir votre ouverture d'esprit."
@@ -395,7 +395,7 @@ export default function ExcursionsPage() {
     gallery_title: lang === "fr" ? "Galerie des Excursions" : "Excursions Gallery",
     cta_title: lang === "fr" ? "Prêt pour l'aventure béninoise ?" : "Ready for the Beninese Adventure?",
     cta_sub: lang === "fr" ? "Inscriptions ouvertes de février à fin septembre pour le séjour de janvier." : "Registrations open from February to end of September for the January stay.",
-    cta_btn: lang === "fr" ? "S'inscrire au Séjour →" : "Book Your Stay →",
+    cta_btn: lang === "fr" ? "Inscrivez-vous au Séjour →" : "Book Your Stay →",
     back: lang === "fr" ? "← RETOUR À L'ACCUEIL" : "← BACK TO HOME",
   };
 
@@ -561,9 +561,7 @@ export default function ExcursionsPage() {
             <h2 className="font-cinzel text-3xl sm:text-5xl text-[#E9D18F] font-bold mb-3">
               {tx.gallery_title}
             </h2>
-            <p className="font-cormorant text-lg text-[#cabfa6]">
-              {GALLERY.length} {lang === "fr" ? "photos pour vous donner un avant-goût de votre aventure béninoise" : "photos to give you a taste of your Beninese adventure"}
-            </p>
+           
             <div className="flex items-center justify-center gap-3 mt-4">
               <div className="h-[1px] w-20 bg-gradient-to-r from-transparent to-[#C5A059]/60" />
               <span className="text-[#C5A059]/60 text-sm">◆</span>

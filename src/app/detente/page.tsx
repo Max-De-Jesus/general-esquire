@@ -449,7 +449,7 @@ export default function DetentePage() {
               : "Join us for our upcoming tourist cocooning retreat. Everything is tailored for your well-being and resilience."}
           </p>
           <Link href="/cocooning-touristique" className="inline-block px-14 py-4 rounded-full font-cinzel text-sm tracking-widest font-bold uppercase text-black bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] hover:brightness-110 hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(197,160,89,0.5)]">
-            {lang === "fr" ? "Réserver mon séjour →" : "Book My Stay →"}
+            {lang === "fr" ? "Inscrivez-vous au Séjour →" : "Book My Stay →"}
           </Link>
         </section>
       </div>

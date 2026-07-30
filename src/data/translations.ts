@@ -22,7 +22,7 @@ export const translations = {
   back_to_home: { fr: "← RETOUR À L'ACCUEIL", en: "← BACK TO HOME" },
   take_appointment: { fr: "Prendre Rendez-vous →", en: "Book an Appointment →" },
   contact_us: { fr: "Nous Contacter →", en: "Contact Us →" },
-  book_stay: { fr: "S'inscrire au Séjour →", en: "Book Your Stay →" },
+  book_stay: { fr: "Inscrivez-vous au Séjour →", en: "Book Your Stay →" },
   our_rates: { fr: "Nos Tarifs", en: "Our Pricing" },
   clarity_transparency: { fr: "Clarté & Transparence", en: "Clarity & Transparency" },
   our_services_tag: { fr: "NOS SERVICES", en: "OUR SERVICES" },

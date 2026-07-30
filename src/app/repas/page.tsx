@@ -703,7 +703,7 @@ export default function RepasPage() {
             href="/cocooning-touristique#formulaire"
             className="inline-flex items-center gap-3 px-10 py-4 rounded-full font-cinzel text-xs sm:text-sm tracking-widest uppercase font-bold text-black bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] hover:brightness-110 transition-all shadow-[0_0_35px_rgba(197,160,89,0.5)] hover:scale-105 group cursor-pointer"
           >
-            <span>{lang === "fr" ? "Réserver mon Séjour →" : "Book my Stay →"}</span>
+            <span>{lang === "fr" ? "Inscrivez-vous au Séjour →" : "Book my Stay →"}</span>
           </Link>
         </section>
 
