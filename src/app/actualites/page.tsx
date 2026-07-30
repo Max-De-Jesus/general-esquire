@@ -8,6 +8,14 @@ import type { Actualite } from "@/lib/supabase";
 import { NewsItem } from "@/data/adminStore";
 import TickerBanner from "@/components/TickerBanner";
 
+// Initial seed article IDs created before admin deployment (to be hidden on public view when deleted)
+const INITIAL_SEED_IDS = [
+  "7b22d610-8c3c-4638-8376-d93611c665ff",
+  "c034d4de-0563-45eb-a1c8-bbb158742284",
+  "36bfe58e-6e46-4697-a555-b014c980e0da",
+  "4f92327e-2c9a-44b5-bd57-b98dcd4e5c4c",
+];
+
 export default function PublicActualitesPage() {
   const { lang } = useLanguage();
   const [news, setNews] = useState<NewsItem[]>([]);
@@ -40,13 +48,15 @@ export default function PublicActualitesPage() {
         deletedIds = JSON.parse(localStorage.getItem("ge_deleted_news_ids") || "[]");
       } catch {}
 
+      const isExcluded = (id: string) => INITIAL_SEED_IDS.includes(id) || deletedIds.includes(id);
+
       const isInitialized = typeof window !== "undefined" && localStorage.getItem("ge_admin_news_initialized") === "true";
       const localNewsStored = typeof window !== "undefined" ? localStorage.getItem("ge_admin_news") : null;
 
       if (isInitialized && localNewsStored) {
         try {
           const parsed: NewsItem[] = JSON.parse(localNewsStored);
-          const filtered = parsed.filter((n) => n.isPublished !== false && !deletedIds.includes(n.id));
+          const filtered = parsed.filter((n) => n.isPublished !== false && !isExcluded(n.id));
           setNews(filtered);
           setLoadingNews(false);
           return;
@@ -62,7 +72,7 @@ export default function PublicActualitesPage() {
 
         if (!error && data) {
           const mapped: NewsItem[] = data
-            .filter((a: Actualite) => !deletedIds.includes(a.id))
+            .filter((a: Actualite) => !isExcluded(a.id))
             .map((a: Actualite) => {
               const allImgs: string[] = Array.isArray((a as any).images) && (a as any).images.length > 0
                 ? (a as any).images
@@ -87,14 +97,14 @@ export default function PublicActualitesPage() {
           localStorage.setItem("ge_admin_news", JSON.stringify(mapped));
         } else if (localNewsStored) {
           const parsed: NewsItem[] = JSON.parse(localNewsStored);
-          setNews(parsed.filter((n) => n.isPublished !== false && !deletedIds.includes(n.id)));
+          setNews(parsed.filter((n) => n.isPublished !== false && !isExcluded(n.id)));
         } else {
           setNews([]);
         }
       } catch {
         if (localNewsStored) {
           const parsed: NewsItem[] = JSON.parse(localNewsStored);
-          setNews(parsed.filter((n) => n.isPublished !== false && !deletedIds.includes(n.id)));
+          setNews(parsed.filter((n) => n.isPublished !== false && !isExcluded(n.id)));
         } else {
           setNews([]);
         }
