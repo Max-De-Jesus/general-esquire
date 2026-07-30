@@ -911,12 +911,12 @@ export default function CocooningTouristiquePage() {
                 </div>
 
                 {/* 9. SURVEILLANCE MÉDICALE */}
-                <div className="p-5 rounded-2xl bg-[#1a1c1a] border border-[#C5A059]/30 space-y-3">
+                <div className="p-5 rounded-2xl bg-[#1a1c1a] border border-[#C5A059]/30 space-y-3 text-center">
                   <div>
-                    <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-3">
+                    <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-3 text-center">
                       {lang === "fr" ? "Surveillance médicale *" : "Medical Monitoring *"}
                     </label>
-                    <div className="flex items-center gap-8 font-cinzel text-sm">
+                    <div className="flex items-center justify-center gap-8 font-cinzel text-sm">
                       <label className="flex items-center gap-2.5 cursor-pointer">
                         <input
                           type="radio"
@@ -942,7 +942,7 @@ export default function CocooningTouristiquePage() {
                     </div>
                   </div>
                   {formData.surveillanceMedicale === "oui" && (
-                    <p className="text-xs text-[#E9D18F] font-cinzel italic">
+                    <p className="text-xs text-[#E9D18F] font-cinzel italic text-center">
                       {lang === "fr"
                         ? "⚠ Si oui, joignez un avis médical dans la section ci-dessous."
                         : "⚠ If yes, please attach a medical notice below."}
