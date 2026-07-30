@@ -483,7 +483,7 @@ export default function PaymentPage() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
-                      <label className={labelClass}>{lang === "fr" ? "Nom Complet *" : "Full Name *"}</label>
+                      <label className={labelClass}>{lang === "fr" ? "Prénoms & Nom *" : "First & Last Name *"}</label>
                       <input
                         type="text"
                         required

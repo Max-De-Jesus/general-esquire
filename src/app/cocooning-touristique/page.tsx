@@ -675,21 +675,8 @@ export default function CocooningTouristiquePage() {
               </div>
             ) : (
               <>
-                {/* 1. NOM & PRÉNOMS */}
+                {/* 1. PRÉNOMS & NOM */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-2">
-                      {lang === "fr" ? "Votre nom *" : "Your Last Name *"}
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.nom}
-                      onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
-                      placeholder={lang === "fr" ? "ex. Dupont" : "e.g. Smith"}
-                      className="w-full px-5 py-3.5 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] placeholder-gray-600 focus:outline-none focus:border-[#E9D18F] transition-colors"
-                    />
-                  </div>
                   <div>
                     <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-2">
                       {lang === "fr" ? "Vos prénoms *" : "Your First Names *"}
@@ -700,6 +687,19 @@ export default function CocooningTouristiquePage() {
                       value={formData.prenoms}
                       onChange={(e) => setFormData({ ...formData, prenoms: e.target.value })}
                       placeholder={lang === "fr" ? "ex. Jean-Pierre" : "e.g. Jane"}
+                      className="w-full px-5 py-3.5 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] placeholder-gray-600 focus:outline-none focus:border-[#E9D18F] transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-2">
+                      {lang === "fr" ? "Votre nom *" : "Your Last Name *"}
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.nom}
+                      onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
+                      placeholder={lang === "fr" ? "ex. Dupont" : "e.g. Smith"}
                       className="w-full px-5 py-3.5 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] placeholder-gray-600 focus:outline-none focus:border-[#E9D18F] transition-colors"
                     />
                   </div>

@@ -210,7 +210,7 @@ function ClientAuthForm() {
               {mode === "register" && (
                 <div>
                   <label className="block text-xs font-cinzel font-semibold text-[#C5A059] uppercase tracking-wider mb-1">
-                    {lang === "fr" ? "Nom & Prénoms *" : "Full Name *"}
+                    {lang === "fr" ? "Prénoms & Nom *" : "First & Last Name *"}
                   </label>
                   <input
                     type="text"
