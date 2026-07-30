@@ -102,10 +102,6 @@ export default function Footer() {
       <div className="border-t border-[#C5A059]/15 text-center py-4 px-6 pb-20 sm:pb-6 overflow-x-auto">
         <p className="font-cinzel text-[0.6rem] sm:text-xs tracking-[0.18em] uppercase text-[#C5A059]/70 leading-relaxed whitespace-nowrap flex items-center justify-center gap-3">
           <span>&copy; 2026 General Esquire — {lang === "fr" ? "Tous droits réservés" : "All rights reserved"}</span>
-          <span>•</span>
-          <Link href="/admin" className="hover:text-[#E9D18F] transition-colors font-bold" title="Accès réservé aux administrateurs">
-            {lang === "fr" ? "Espace Admin" : "Admin Portal"}
-          </Link>
         </p>
       </div>
     </footer>
