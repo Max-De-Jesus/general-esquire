@@ -6,7 +6,6 @@ import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { supabase } from "@/lib/supabase";
-import type { Actualite } from "@/lib/supabase";
 import { NewsItem } from "@/data/adminStore";
 
 // Helper client-side image compressor (max 1200px width/height, quality 0.82 ~100-150KB)
@@ -124,7 +123,7 @@ export default function EspaceSecurisePage() {
     setFormImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // Fetch News from LocalStorage & Supabase
+  // Fetch News from Supabase & LocalStorage
   const fetchNewsList = async () => {
     setLoadingNews(true);
     let deletedIds: string[] = [];
@@ -132,16 +131,11 @@ export default function EspaceSecurisePage() {
       deletedIds = JSON.parse(localStorage.getItem("ge_deleted_news_ids") || "[]");
     } catch {}
 
-    const isInitialized = typeof window !== "undefined" && localStorage.getItem("ge_admin_news_initialized") === "true";
-    const localNewsStored = typeof window !== "undefined" ? localStorage.getItem("ge_admin_news") : null;
-
-    if (isInitialized && localNewsStored) {
+    const localStored = typeof window !== "undefined" ? localStorage.getItem("ge_admin_news") : null;
+    let localItems: NewsItem[] = [];
+    if (localStored) {
       try {
-        const parsed: NewsItem[] = JSON.parse(localNewsStored);
-        const filtered = parsed.filter((n) => !deletedIds.includes(n.id));
-        setNewsList(filtered);
-        setLoadingNews(false);
-        return;
+        localItems = JSON.parse(localStored).filter((n: NewsItem) => !deletedIds.includes(n.id));
       } catch {}
     }
 
@@ -153,8 +147,8 @@ export default function EspaceSecurisePage() {
 
       if (!error && data) {
         const mapped: NewsItem[] = data
-          .filter((a: Actualite) => !deletedIds.includes(a.id))
-          .map((a: Actualite) => ({
+          .filter((a: any) => !deletedIds.includes(a.id))
+          .map((a: any) => ({
             id: a.id,
             title: a.title,
             subtitle: a.subtitle ?? undefined,
@@ -162,25 +156,25 @@ export default function EspaceSecurisePage() {
             content: a.content,
             category: a.category as NewsItem["category"],
             date: a.date,
-            imageUrl: a.image_url,
-            images: Array.isArray((a as any).images) && (a as any).images.length > 0 ? (a as any).images : [a.image_url],
+            imageUrl: (a.images && a.images[0]) || a.image_url || "/images/chant.avif",
+            images: a.images || (a.image_url ? [a.image_url] : ["/images/chant.avif"]),
             author: a.author,
             isFeatured: a.is_featured,
             isPublished: a.is_published,
           }));
-        setNewsList(mapped);
-        localStorage.setItem("ge_admin_news", JSON.stringify(mapped));
+
+        // Merge mapped with local items avoiding duplicate IDs
+        const existingIds = new Set(mapped.map((m) => m.id));
+        const extraLocal = localItems.filter((item) => !existingIds.has(item.id));
+        const merged = [...extraLocal, ...mapped];
+
+        setNewsList(merged);
+        localStorage.setItem("ge_admin_news", JSON.stringify(merged));
       } else {
-        if (localNewsStored) {
-          const parsed: NewsItem[] = JSON.parse(localNewsStored);
-          setNewsList(parsed.filter((n) => !deletedIds.includes(n.id)));
-        } else setNewsList([]);
+        setNewsList(localItems);
       }
     } catch {
-      if (localNewsStored) {
-        const parsed: NewsItem[] = JSON.parse(localNewsStored);
-        setNewsList(parsed.filter((n) => !deletedIds.includes(n.id)));
-      } else setNewsList([]);
+      setNewsList(localItems);
     } finally {
       setLoadingNews(false);
     }
@@ -274,7 +268,7 @@ export default function EspaceSecurisePage() {
     }
   };
 
-  // Create / Publish New Article
+  // Create / Publish New Article (syncs with Supabase DB & LocalStorage)
   const handleCreateNews = async (e: React.FormEvent) => {
     e.preventDefault();
     setNewsSuccess("");
@@ -286,8 +280,10 @@ export default function EspaceSecurisePage() {
     }
 
     setSavingNews(true);
-    // Standard UUID v4 format to satisfy Supabase Postgres UUID column constraint
-    const newId = typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `10000000-1000-4000-8000-${Date.now().toString().padStart(12, "0").slice(-12)}`;
+    const newId = typeof crypto !== "undefined" && crypto.randomUUID 
+      ? crypto.randomUUID() 
+      : "10000000-0000-4000-8000-" + Date.now().toString().padStart(12, "0");
+
     const finalImagesList = formImages.length > 0 ? formImages : ["/images/chant.avif"];
     const mainImage = finalImagesList[0];
 
@@ -306,37 +302,34 @@ export default function EspaceSecurisePage() {
       isPublished: formIsPublished,
     };
 
-    // 1. Try saving to Supabase
+    // Attempt Supabase insert
     try {
-      await supabase.from("actualites").insert([
-        {
-          id: newId,
-          title: formTitle,
-          subtitle: formSubtitle || null,
-          summary: formSummary,
-          content: formContent,
-          category: formCategory,
-          date: formDate,
-          image_url: mainImage,
-          images: finalImagesList,
-          author: formAuthor || "Administration General Esquire",
-          is_featured: formIsFeatured,
-          is_published: formIsPublished,
-        },
-      ]);
+      await supabase.from("actualites").insert([{
+        id: newId,
+        title: formTitle,
+        subtitle: formSubtitle || null,
+        summary: formSummary,
+        content: formContent,
+        category: formCategory,
+        date: formDate,
+        author: formAuthor || "Administration General Esquire",
+        image_url: mainImage,
+        images: finalImagesList,
+        is_featured: formIsFeatured,
+        is_published: formIsPublished,
+      }]);
     } catch (err) {
-      console.error("Supabase insert warning:", err);
+      console.error("Supabase insert error:", err);
     }
 
-    // 2. Save to Local State + LocalStorage
+    // Save to local storage for instant availability across tabs
     const updated = [newItem, ...newsList];
     setNewsList(updated);
     try {
       localStorage.setItem("ge_admin_news", JSON.stringify(updated));
+      localStorage.setItem("ge_public_news", JSON.stringify(updated));
       localStorage.setItem("ge_admin_news_initialized", "true");
-    } catch (err) {
-      console.error("LocalStorage save warning:", err);
-    }
+    } catch {}
 
     setNewsSuccess(lang === "fr" ? "Actualité publiée avec succès !" : "News article published successfully!");
 
@@ -351,32 +344,32 @@ export default function EspaceSecurisePage() {
     setSavingNews(false);
   };
 
-  // Delete an article (guaranteed permanent deletion)
+  // Delete an article
   const handleDeleteNews = async (id: string) => {
     if (!confirm(lang === "fr" ? "Voulez-vous vraiment supprimer cette actualité ?" : "Are you sure you want to delete this news article?")) return;
 
-    // 1. Mark in deleted IDs list permanently
+    // Track deleted IDs in localStorage
     try {
       const deletedIds: string[] = JSON.parse(localStorage.getItem("ge_deleted_news_ids") || "[]");
       if (!deletedIds.includes(id)) {
         deletedIds.push(id);
         localStorage.setItem("ge_deleted_news_ids", JSON.stringify(deletedIds));
       }
-      localStorage.setItem("ge_admin_news_initialized", "true");
     } catch {}
 
-    // 2. Try deleting from Supabase
+    // Attempt Supabase delete
     try {
       await supabase.from("actualites").delete().eq("id", id);
     } catch (e) {
-      console.error("Supabase delete catch:", e);
+      console.error("Supabase delete error:", e);
     }
 
-    // 3. Update local state + localStorage
+    // Update local state
     const updated = newsList.filter((item) => item.id !== id);
     setNewsList(updated);
     try {
       localStorage.setItem("ge_admin_news", JSON.stringify(updated));
+      localStorage.setItem("ge_public_news", JSON.stringify(updated));
     } catch {}
     setNewsSuccess(lang === "fr" ? "Actualité supprimée !" : "News article deleted!");
   };
@@ -385,28 +378,26 @@ export default function EspaceSecurisePage() {
   const handleClearAllNews = async () => {
     if (!confirm(lang === "fr" ? "ATTENTION : Supprimer TOUTES les actualités ?" : "WARNING: Delete ALL news articles?")) return;
 
-    const seedIds = [
-      "7b22d610-8c3c-4638-8376-d93611c665ff",
-      "c034d4de-0563-45eb-a1c8-bbb158742284",
-      "36bfe58e-6e46-4697-a555-b014c980e0da",
-      "4f92327e-2c9a-44b5-bd57-b98dcd4e5c4c",
-    ];
-    const currentIds = newsList.map((n) => n.id);
-    const allIdsToDelete = Array.from(new Set([...seedIds, ...currentIds]));
-
     try {
+      const idsToDelete = newsList.map((n) => n.id);
       const deletedIds: string[] = JSON.parse(localStorage.getItem("ge_deleted_news_ids") || "[]");
-      const combined = Array.from(new Set([...deletedIds, ...allIdsToDelete]));
+      const combined = Array.from(new Set([...deletedIds, ...idsToDelete]));
       localStorage.setItem("ge_deleted_news_ids", JSON.stringify(combined));
-      localStorage.setItem("ge_admin_news_initialized", "true");
     } catch {}
 
+    // Attempt Supabase delete
     try {
-      await supabase.from("actualites").delete().gte("created_at", "1970-01-01T00:00:00Z");
-    } catch {}
+      await supabase.from("actualites").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+    } catch (e) {
+      console.error("Supabase delete all error:", e);
+    }
 
     setNewsList([]);
-    localStorage.setItem("ge_admin_news", JSON.stringify([]));
+    try {
+      localStorage.setItem("ge_admin_news", JSON.stringify([]));
+      localStorage.setItem("ge_public_news", JSON.stringify([]));
+      localStorage.setItem("ge_admin_news_initialized", "true");
+    } catch {}
     setNewsSuccess(lang === "fr" ? "Toutes les actualités ont été supprimées !" : "All news articles deleted!");
   };
 

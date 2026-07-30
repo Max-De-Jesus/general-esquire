@@ -39,7 +39,7 @@ export default function PublicActualitesPage() {
     setActiveImageIndex(0);
   };
 
-  // Charger les actualités depuis Supabase et le stockage local admin
+  // Charger les actualités depuis le stockage local admin et Supabase Cloud
   useEffect(() => {
     const fetchNews = async () => {
       setLoadingNews(true);
@@ -50,19 +50,19 @@ export default function PublicActualitesPage() {
 
       const isExcluded = (id: string) => INITIAL_SEED_IDS.includes(id) || deletedIds.includes(id);
 
-      const isInitialized = typeof window !== "undefined" && localStorage.getItem("ge_admin_news_initialized") === "true";
-      const localNewsStored = typeof window !== "undefined" ? localStorage.getItem("ge_admin_news") : null;
+      // 1. Lire les actualités créées localement
+      let localItems: NewsItem[] = [];
+      const localStored = typeof window !== "undefined"
+        ? localStorage.getItem("ge_public_news") || localStorage.getItem("ge_admin_news")
+        : null;
 
-      if (isInitialized && localNewsStored) {
+      if (localStored) {
         try {
-          const parsed: NewsItem[] = JSON.parse(localNewsStored);
-          const filtered = parsed.filter((n) => n.isPublished !== false && !isExcluded(n.id));
-          setNews(filtered);
-          setLoadingNews(false);
-          return;
+          localItems = JSON.parse(localStored).filter((n: NewsItem) => n.isPublished !== false && !isExcluded(n.id));
         } catch {}
       }
 
+      // 2. Tenter la récupération sur Supabase DB
       try {
         const { data, error } = await supabase
           .from("actualites")
@@ -93,25 +93,26 @@ export default function PublicActualitesPage() {
                 isPublished: a.is_published,
               };
             });
-          setNews(mapped);
-          localStorage.setItem("ge_admin_news", JSON.stringify(mapped));
-        } else if (localNewsStored) {
-          const parsed: NewsItem[] = JSON.parse(localNewsStored);
-          setNews(parsed.filter((n) => n.isPublished !== false && !isExcluded(n.id)));
-        } else {
-          setNews([]);
+
+          // Fusionner les articles locaux et distants sans doublons
+          const combinedMap = new Map<string, NewsItem>();
+          localItems.forEach((item) => combinedMap.set(item.id, item));
+          mapped.forEach((item) => {
+            if (!combinedMap.has(item.id)) {
+              combinedMap.set(item.id, item);
+            }
+          });
+
+          setNews(Array.from(combinedMap.values()));
+          setLoadingNews(false);
+          return;
         }
-      } catch {
-        if (localNewsStored) {
-          const parsed: NewsItem[] = JSON.parse(localNewsStored);
-          setNews(parsed.filter((n) => n.isPublished !== false && !isExcluded(n.id)));
-        } else {
-          setNews([]);
-        }
-      } finally {
-        setLoadingNews(false);
-      }
+      } catch {}
+
+      setNews(localItems);
+      setLoadingNews(false);
     };
+
     fetchNews();
   }, []);
 
