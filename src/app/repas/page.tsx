@@ -178,10 +178,11 @@ function Rotating3DFoodCarousel() {
               >
                 {/* Image de la carte */}
                 <Image
-                  src={encodeURI(item.src)}
-                  alt={item.title || "Spécialité Repas"}
+                  src={item.src}
+                  alt=""
                   fill
                   priority={idx < 3}
+                  unoptimized
                   sizes="(max-width: 640px) 240px, 280px"
                   className="object-cover object-center filter brightness-95 contrast-105"
                 />
@@ -265,22 +266,8 @@ function HeroCarousel() {
         className="relative w-full h-[340px] sm:h-[480px] transition-opacity duration-500"
         style={{ opacity: fading ? 0 : 1 }}
       >
-        <Image src={slide.src} alt={slide.title} fill priority sizes="100vw" className="object-cover object-center" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent" />
-      </div>
-
-      <div
-        className="absolute bottom-0 left-0 right-0 p-6 sm:p-10 transition-all duration-500"
-        style={{ opacity: fading ? 0 : 1, transform: fading ? "translateY(8px)" : "translateY(0)" }}
-      >
-        <span className="inline-flex items-center gap-2 px-4 py-1 rounded-full border border-[#C5A059]/50 bg-[#0F3823]/70 backdrop-blur-md text-[#C5A059] font-cinzel text-[10px] tracking-[0.25em] uppercase mb-3">
-          ◆ {slide.tag}
-        </span>
-        <h2 className="font-cinzel text-xl sm:text-3xl font-bold text-white leading-snug mb-2 drop-shadow-lg max-w-2xl">
-          {slide.title}
-        </h2>
-        <p className="font-cormorant text-base sm:text-xl text-[#EDE4CF]/90 max-w-xl leading-relaxed">{slide.desc}</p>
+        <Image src={slide.src} alt="" fill priority unoptimized sizes="100vw" className="object-cover object-center" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
       </div>
 
       <div className="absolute top-5 right-5 font-cinzel text-xs text-[#C5A059] bg-[#131513]/70 backdrop-blur-md px-3 py-1 rounded-full border border-[#C5A059]/30">

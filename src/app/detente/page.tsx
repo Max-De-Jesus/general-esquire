@@ -41,13 +41,8 @@ function HeroCarousel() {
       <div className="relative h-[320px] sm:h-[440px] md:h-[520px] w-full">
         {WELLNESS_SLIDES.map((slide, i) => (
           <div key={i} className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${i === current ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"}`}>
-            <Image src={slide.src} alt={slide.title} fill priority={i === 0} className="object-cover object-center brightness-90 contrast-105 group-hover:scale-105 transition-transform duration-[8000ms]" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#131513] via-[#131513]/40 to-transparent" />
-            <div className="absolute bottom-8 left-8 right-8 sm:bottom-12 sm:left-14 max-w-2xl">
-              <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.25em] uppercase px-4 py-1.5 bg-[#131513]/80 rounded-full border border-[#C5A059]/40 backdrop-blur-md inline-block mb-3 shadow-md">{slide.tag}</span>
-              <h2 className="font-cinzel text-2xl sm:text-4xl font-bold text-white tracking-wide drop-shadow-md mb-2">{slide.title}</h2>
-              <p className="font-cormorant text-lg sm:text-xl text-[#EDE4CF]/90 font-light drop-shadow">{slide.desc}</p>
-            </div>
+            <Image src={slide.src} alt="" fill priority={i === 0} unoptimized className="object-cover object-center brightness-90 contrast-105 group-hover:scale-105 transition-transform duration-[8000ms]" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#131513]/80 via-transparent to-transparent" />
           </div>
         ))}
       </div>
@@ -156,8 +151,9 @@ function RadialGallery3D() {
             >
               <Image
                 src={GALLERY[idx].src}
-                alt={GALLERY[idx].label}
+                alt=""
                 fill
+                unoptimized
                 sizes="300px"
                 className={`object-cover object-center transition-transform duration-700 ${
                   isCenter ? "scale-105 brightness-105" : "brightness-60"

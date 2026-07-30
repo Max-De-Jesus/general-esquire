@@ -201,9 +201,10 @@ function ExecutiveLuxurySlider() {
               >
                 <Image
                   src={slide.src}
-                  alt={slide.title}
+                  alt=""
                   fill
                   priority={isCenter}
+                  unoptimized
                   sizes="(max-width: 768px) 300px, 680px"
                   className={`object-cover object-[center_35%] transition-transform duration-700 ${
                     isCenter ? "scale-105 brightness-105" : "brightness-50"

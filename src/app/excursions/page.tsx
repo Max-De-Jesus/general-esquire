@@ -118,13 +118,13 @@ function HeroCarousel({ slides }: { slides: typeof SLIDES_FR }) {
           <div className="absolute inset-0 z-10 animate-fadeOut pointer-events-none">
             <Image
               src={slides[prev2].src}
-              alt={slides[prev2].title}
+              alt=""
               fill
+              unoptimized
               sizes="100vw"
               className="object-cover object-center"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
           </div>
         )}
 
@@ -132,27 +132,15 @@ function HeroCarousel({ slides }: { slides: typeof SLIDES_FR }) {
         <div className={`absolute inset-0 z-20 ${transitioning ? "animate-fadeIn" : ""}`}>
           <Image
             src={slide.src}
-            alt={slide.title}
+            alt=""
             fill
             priority
+            unoptimized
             sizes="100vw"
             className="object-cover object-center group-hover:scale-105 transition-transform duration-[8000ms] ease-out"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
         </div>
-      </div>
-
-      {/* ── Text overlay */}
-      <div
-        className="absolute bottom-0 left-0 right-0 p-6 sm:p-12 z-30 transition-all duration-500"
-        style={{ opacity: transitioning ? 0 : 1, transform: transitioning ? "translateY(10px)" : "translateY(0)" }}
-      >
-        <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#C5A059]/60 bg-[#0F3823]/80 backdrop-blur-md text-[#C5A059] font-cinzel text-[10px] tracking-[0.25em] uppercase mb-4 shadow-md">
-          ◆ {slide.tag}
-        </span>
-        <h2 className="font-cinzel text-2xl sm:text-4xl font-bold text-white leading-snug mb-3 drop-shadow-lg max-w-2xl">{slide.title}</h2>
-        <p className="font-cormorant text-lg sm:text-xl text-[#EDE4CF]/90 max-w-xl leading-relaxed">{slide.desc}</p>
       </div>
 
       <div className="absolute top-5 right-5 font-cinzel text-xs text-[#C5A059] bg-[#131513]/80 backdrop-blur-md px-3 py-1 rounded-full border border-[#C5A059]/30 z-30">{current + 1} / {slides.length}</div>
@@ -276,8 +264,9 @@ function RadialGallery3D({ items }: { items: typeof GALLERY }) {
             >
               <Image
                 src={items[idx].src}
-                alt={items[idx].label}
+                alt=""
                 fill
+                unoptimized
                 sizes="(max-width: 640px) 190px, 280px"
                 className={`object-cover object-center transition-transform duration-700 ${isCenter ? "scale-105 brightness-105" : "brightness-60"}`}
               />
