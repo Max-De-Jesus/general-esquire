@@ -7,6 +7,7 @@ export interface NewsItem {
   category: "Événement" | "Événements" | "Evenement" | "Conseil Juridique" | "Chrysalides" | "Annonce" | "Annonces";
   date: string;
   imageUrl: string;
+  images?: string[];
   author: string;
   isFeatured?: boolean;
   isPublished?: boolean;

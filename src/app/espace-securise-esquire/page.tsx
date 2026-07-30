@@ -9,6 +9,48 @@ import { supabase } from "@/lib/supabase";
 import type { Actualite } from "@/lib/supabase";
 import { NewsItem } from "@/data/adminStore";
 
+// Helper client-side image compressor (max 1200px width/height, quality 0.82 ~100-150KB)
+const compressImageFile = (file: File, maxDimension = 1200, quality = 0.82): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new window.Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxDimension || height > maxDimension) {
+          if (width > height) {
+            height = Math.round((height * maxDimension) / width);
+            width = maxDimension;
+          } else {
+            width = Math.round((width * maxDimension) / height);
+            height = maxDimension;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          resolve(event.target?.result as string);
+          return;
+        }
+
+        ctx.drawImage(img, 0, 0, width, height);
+        const compressedDataUrl = canvas.toDataURL("image/jpeg", quality);
+        resolve(compressedDataUrl);
+      };
+      img.onerror = (err) => reject(err);
+      img.src = event.target?.result as string;
+    };
+    reader.onerror = (err) => reject(err);
+    reader.readAsDataURL(file);
+  });
+};
+
 export default function EspaceSecurisePage() {
   const { user, isAdmin, signIn, signOut, loading } = useAuth();
   const { lang } = useLanguage();
@@ -39,30 +81,57 @@ export default function EspaceSecurisePage() {
   const [formAuthor, setFormAuthor] = useState("Administration General Esquire");
   const [formSummary, setFormSummary] = useState("");
   const [formContent, setFormContent] = useState("");
-  const [formImageUrl, setFormImageUrl] = useState("");
+  const [formImages, setFormImages] = useState<string[]>([]);
+  const [urlInput, setUrlInput] = useState("");
   const [formIsFeatured, setFormIsFeatured] = useState(false);
   const [formIsPublished, setFormIsPublished] = useState(true);
 
-  // Handle Image File Upload (converted to DataURL / base64 or stored)
-  const handleImageFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        setNewsError(lang === "fr" ? "L'image ne doit pas dépasser 5 Mo." : "Image must be under 5MB.");
-        return;
+  // Handle Multiple Image File Upload (compressed DataURL / base64)
+  const handleMultipleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setNewsError("");
+    const compressedBatch: string[] = [];
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (file.size > 15 * 1024 * 1024) {
+        setNewsError(lang === "fr" ? "Certaines images dépassent 15 Mo." : "Some images exceed 15MB.");
+        continue;
       }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormImageUrl(reader.result as string);
-        setNewsError("");
-      };
-      reader.readAsDataURL(file);
+      try {
+        const compressed = await compressImageFile(file);
+        compressedBatch.push(compressed);
+      } catch (err) {
+        console.error("Error compressing image file:", err);
+      }
     }
+
+    if (compressedBatch.length > 0) {
+      setFormImages((prev) => [...prev, ...compressedBatch]);
+    }
+    e.target.value = "";
+  };
+
+  const handleAddUrlImage = () => {
+    if (!urlInput.trim()) return;
+    setFormImages((prev) => [...prev, urlInput.trim()]);
+    setUrlInput("");
+  };
+
+  const handleRemoveFormImage = (index: number) => {
+    setFormImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   // Fetch News from Supabase & LocalStorage
   const fetchNewsList = async () => {
     setLoadingNews(true);
+    let deletedIds: string[] = [];
+    try {
+      deletedIds = JSON.parse(localStorage.getItem("ge_deleted_news_ids") || "[]");
+    } catch {}
+
     try {
       const { data, error } = await supabase
         .from("actualites")
@@ -70,30 +139,37 @@ export default function EspaceSecurisePage() {
         .order("created_at", { ascending: false });
 
       if (!error && data) {
-        const mapped: NewsItem[] = data.map((a: Actualite) => ({
-          id: a.id,
-          title: a.title,
-          subtitle: a.subtitle ?? undefined,
-          summary: a.summary,
-          content: a.content,
-          category: a.category as NewsItem["category"],
-          date: a.date,
-          imageUrl: a.image_url,
-          author: a.author,
-          isFeatured: a.is_featured,
-          isPublished: a.is_published,
-        }));
+        const mapped: NewsItem[] = data
+          .filter((a: Actualite) => !deletedIds.includes(a.id))
+          .map((a: Actualite) => ({
+            id: a.id,
+            title: a.title,
+            subtitle: a.subtitle ?? undefined,
+            summary: a.summary,
+            content: a.content,
+            category: a.category as NewsItem["category"],
+            date: a.date,
+            imageUrl: a.image_url,
+            images: Array.isArray((a as any).images) && (a as any).images.length > 0 ? (a as any).images : [a.image_url],
+            author: a.author,
+            isFeatured: a.is_featured,
+            isPublished: a.is_published,
+          }));
         setNewsList(mapped);
         localStorage.setItem("ge_admin_news", JSON.stringify(mapped));
       } else {
         const local = localStorage.getItem("ge_admin_news");
-        if (local) setNewsList(JSON.parse(local));
-        else setNewsList([]);
+        if (local) {
+          const parsed: NewsItem[] = JSON.parse(local);
+          setNewsList(parsed.filter((n) => !deletedIds.includes(n.id)));
+        } else setNewsList([]);
       }
     } catch {
       const local = localStorage.getItem("ge_admin_news");
-      if (local) setNewsList(JSON.parse(local));
-      else setNewsList([]);
+      if (local) {
+        const parsed: NewsItem[] = JSON.parse(local);
+        setNewsList(parsed.filter((n) => !deletedIds.includes(n.id)));
+      } else setNewsList([]);
     } finally {
       setLoadingNews(false);
     }
@@ -199,8 +275,10 @@ export default function EspaceSecurisePage() {
     }
 
     setSavingNews(true);
-    const newId = "news-" + Date.now();
-    const finalImage = formImageUrl || "/images/chant.avif";
+    // Standard UUID v4 format to satisfy Supabase Postgres UUID column constraint
+    const newId = typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `10000000-1000-4000-8000-${Date.now().toString().padStart(12, "0").slice(-12)}`;
+    const finalImagesList = formImages.length > 0 ? formImages : ["/images/chant.avif"];
+    const mainImage = finalImagesList[0];
 
     const newItem: NewsItem = {
       id: newId,
@@ -210,7 +288,8 @@ export default function EspaceSecurisePage() {
       content: formContent,
       category: formCategory,
       date: formDate,
-      imageUrl: finalImage,
+      imageUrl: mainImage,
+      images: finalImagesList,
       author: formAuthor || "Administration General Esquire",
       isFeatured: formIsFeatured,
       isPublished: formIsPublished,
@@ -227,20 +306,25 @@ export default function EspaceSecurisePage() {
           content: formContent,
           category: formCategory,
           date: formDate,
-          image_url: finalImage,
+          image_url: mainImage,
+          images: finalImagesList,
           author: formAuthor || "Administration General Esquire",
           is_featured: formIsFeatured,
           is_published: formIsPublished,
         },
       ]);
-    } catch {
-      // Fallback
+    } catch (err) {
+      console.error("Supabase insert warning:", err);
     }
 
     // 2. Save to Local State + LocalStorage
     const updated = [newItem, ...newsList];
     setNewsList(updated);
-    localStorage.setItem("ge_admin_news", JSON.stringify(updated));
+    try {
+      localStorage.setItem("ge_admin_news", JSON.stringify(updated));
+    } catch (err) {
+      console.error("LocalStorage save warning:", err);
+    }
 
     setNewsSuccess(lang === "fr" ? "Actualité publiée avec succès !" : "News article published successfully!");
 
@@ -249,26 +333,41 @@ export default function EspaceSecurisePage() {
     setFormSubtitle("");
     setFormSummary("");
     setFormContent("");
-    setFormImageUrl("");
+    setFormImages([]);
+    setUrlInput("");
     setFormIsFeatured(false);
     setSavingNews(false);
   };
 
-  // Delete an article
+  // Delete an article (with full Supabase + LocalStorage sync)
   const handleDeleteNews = async (id: string) => {
     if (!confirm(lang === "fr" ? "Voulez-vous vraiment supprimer cette actualité ?" : "Are you sure you want to delete this news article?")) return;
 
-    // 1. Delete from Supabase
+    // 1. Delete or un-publish from Supabase
     try {
-      await supabase.from("actualites").delete().eq("id", id);
-    } catch {
-      // Ignore
+      const { error } = await supabase.from("actualites").delete().eq("id", id);
+      if (error) {
+        await supabase.from("actualites").update({ is_published: false }).eq("id", id);
+      }
+    } catch (e) {
+      console.error("Supabase delete catch:", e);
     }
 
-    // 2. Delete from Local State + LocalStorage
+    // 2. Track in deleted IDs list so it never resurfaces
+    try {
+      const deletedIds: string[] = JSON.parse(localStorage.getItem("ge_deleted_news_ids") || "[]");
+      if (!deletedIds.includes(id)) {
+        deletedIds.push(id);
+        localStorage.setItem("ge_deleted_news_ids", JSON.stringify(deletedIds));
+      }
+    } catch {}
+
+    // 3. Delete from Local State + LocalStorage
     const updated = newsList.filter((item) => item.id !== id);
     setNewsList(updated);
-    localStorage.setItem("ge_admin_news", JSON.stringify(updated));
+    try {
+      localStorage.setItem("ge_admin_news", JSON.stringify(updated));
+    } catch {}
     setNewsSuccess(lang === "fr" ? "Actualité supprimée !" : "News article deleted!");
   };
 
@@ -276,15 +375,19 @@ export default function EspaceSecurisePage() {
   const handleClearAllNews = async () => {
     if (!confirm(lang === "fr" ? "ATTENTION : Supprimer TOUTES les actualités ?" : "WARNING: Delete ALL news articles?")) return;
 
+    const allIds = newsList.map((n) => n.id);
     try {
-      await supabase.from("actualites").delete().filter("id", "neq", "00000000-0000-0000-0000-000000000000");
-    } catch {
-      // Ignore
-    }
+      await supabase.from("actualites").delete().gte("created_at", "1970-01-01T00:00:00Z");
+    } catch {}
+
+    try {
+      const deletedIds: string[] = JSON.parse(localStorage.getItem("ge_deleted_news_ids") || "[]");
+      const combined = Array.from(new Set([...deletedIds, ...allIds]));
+      localStorage.setItem("ge_deleted_news_ids", JSON.stringify(combined));
+    } catch {}
 
     setNewsList([]);
     localStorage.setItem("ge_admin_news", JSON.stringify([]));
-    localStorage.removeItem("ge_admin_news");
     setNewsSuccess(lang === "fr" ? "Toutes les actualités ont été supprimées !" : "All news articles deleted!");
   };
 
@@ -365,7 +468,7 @@ export default function EspaceSecurisePage() {
               <input
                 type="email"
                 required
-                placeholder="contact@generalesquire.com"
+                placeholder="generalesquire@proton.me"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-2.5 bg-[#131513] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-sm focus:outline-none focus:border-[#E9D18F]"
@@ -509,10 +612,10 @@ export default function EspaceSecurisePage() {
                 <div>
                   <h3 className="font-cinzel text-2xl font-bold text-[#E9D18F] flex items-center gap-2">
                     <span>📝</span>
-                    <span>Publier une Nouvelle Actualité</span>
+                    <span>Publier une Nouvelle Actualité (Multi-Photos)</span>
                   </h3>
                   <p className="text-sm font-cormorant text-[#cabfa6]">
-                    Uploadez une image et ajoutez vos informations pour publier immédiatement un article.
+                    Uploadez une ou plusieurs photos et ajoutez vos informations pour publier immédiatement un article.
                   </p>
                 </div>
                 {newsList.length > 0 && (
@@ -631,23 +734,30 @@ export default function EspaceSecurisePage() {
                   </div>
                 </div>
 
-                {/* IMAGE UPLOAD & PREVIEW SECTION */}
-                <div className="p-6 bg-[#131513] border border-[#C5A059]/30 rounded-2xl space-y-4">
-                  <label className="block text-xs font-cinzel font-semibold text-[#E9D18F] uppercase tracking-wider">
-                    🖼️ Image de l'Actualité (Uploader ou URL)
-                  </label>
+                {/* MULTI-PHOTO UPLOAD & PREVIEW SECTION */}
+                <div className="p-6 bg-[#131513] border border-[#C5A059]/30 rounded-2xl space-y-5">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-cinzel font-semibold text-[#E9D18F] uppercase tracking-wider">
+                      🖼️ Galerie Photo ({formImages.length} photo{formImages.length > 1 ? "s" : ""})
+                    </label>
+                    <span className="text-xs text-[#C5A059] font-cormorant">
+                      Vous pouvez sélectionner plusieurs photos à la fois
+                    </span>
+                  </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                    <div className="space-y-3">
+                    <div className="space-y-4">
+                      {/* File Upload Input */}
                       <div>
-                        <span className="text-xs text-[#cabfa6] block mb-1.5 font-cormorant">
-                          1. Choisir un fichier image depuis votre ordinateur :
+                        <span className="text-xs text-[#cabfa6] block mb-1.5 font-cormorant font-bold">
+                          1. Sélectionner une ou plusieurs photos depuis votre appareil :
                         </span>
                         <input
                           type="file"
                           accept="image/*"
-                          onChange={handleImageFileUpload}
-                          className="w-full px-3 py-2 bg-[#1a1c1a] border border-[#C5A059]/40 rounded-xl text-xs text-[#EDE4CF] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-cinzel file:font-bold file:bg-[#C5A059] file:text-black hover:file:bg-[#E9D18F] cursor-pointer"
+                          multiple
+                          onChange={handleMultipleImageUpload}
+                          className="w-full px-3 py-2.5 bg-[#1a1c1a] border border-[#C5A059]/40 rounded-xl text-xs text-[#EDE4CF] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-cinzel file:font-bold file:bg-[#C5A059] file:text-black hover:file:bg-[#E9D18F] cursor-pointer"
                         />
                       </div>
 
@@ -655,42 +765,67 @@ export default function EspaceSecurisePage() {
                         — OU —
                       </div>
 
+                      {/* URL Add Input */}
                       <div>
-                        <span className="text-xs text-[#cabfa6] block mb-1.5 font-cormorant">
-                          2. Saisir l'URL ou le chemin d'une image existante :
+                        <span className="text-xs text-[#cabfa6] block mb-1.5 font-cormorant font-bold">
+                          2. Ajouter l'URL d'une image web :
                         </span>
-                        <input
-                          type="text"
-                          placeholder="/images/chant.avif ou https://..."
-                          value={formImageUrl}
-                          onChange={(e) => setFormImageUrl(e.target.value)}
-                          className="w-full px-4 py-2.5 bg-[#1a1c1a] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-xs focus:outline-none focus:border-[#E9D18F]"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Aperçu de l'image */}
-                    <div className="flex flex-col items-center justify-center p-4 bg-[#1a1c1a] border border-[#C5A059]/20 rounded-xl min-h-[160px]">
-                      {formImageUrl ? (
-                        <div className="relative w-full h-40 rounded-lg overflow-hidden border border-[#C5A059]/40">
-                          <Image
-                            src={formImageUrl}
-                            alt="Aperçu actualité"
-                            fill
-                            className="object-cover object-center"
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            placeholder="/images/chant.avif ou https://..."
+                            value={urlInput}
+                            onChange={(e) => setUrlInput(e.target.value)}
+                            className="flex-1 px-4 py-2 bg-[#1a1c1a] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-xs focus:outline-none focus:border-[#E9D18F]"
                           />
                           <button
                             type="button"
-                            onClick={() => setFormImageUrl("")}
-                            className="absolute top-2 right-2 px-2 py-1 bg-rose-950/80 text-rose-200 text-[10px] font-cinzel rounded-md border border-rose-500/40"
+                            onClick={handleAddUrlImage}
+                            className="px-4 py-2 bg-[#C5A059] hover:bg-[#E9D18F] text-black font-cinzel font-bold text-xs rounded-xl transition-colors"
                           >
-                            Supprimer l'image
+                            + Ajouter
                           </button>
                         </div>
+                      </div>
+                    </div>
+
+                    {/* Preview Gallery Grid */}
+                    <div className="p-4 bg-[#1a1c1a] border border-[#C5A059]/20 rounded-xl min-h-[160px]">
+                      {formImages.length > 0 ? (
+                        <div className="space-y-3">
+                          <span className="text-[11px] font-cinzel text-[#C5A059] uppercase tracking-wider block">
+                            Aperçu des photos importées :
+                          </span>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-56 overflow-y-auto pr-1">
+                            {formImages.map((imgUrl, idx) => (
+                              <div key={idx} className="relative group rounded-xl overflow-hidden border border-[#C5A059]/40 h-24 bg-black">
+                                <Image
+                                  src={imgUrl}
+                                  alt={`Photo ${idx + 1}`}
+                                  fill
+                                  className="object-cover"
+                                />
+                                {idx === 0 && (
+                                  <span className="absolute top-1 left-1 bg-[#C5A059] text-black font-cinzel text-[8px] font-extrabold px-1.5 py-0.5 rounded shadow">
+                                    ⭐ Couverture
+                                  </span>
+                                )}
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveFormImage(idx)}
+                                  className="absolute top-1 right-1 bg-rose-950/90 text-rose-200 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold hover:bg-rose-600 transition-colors shadow"
+                                  title="Supprimer cette photo"
+                                >
+                                  ✕
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
                       ) : (
-                        <div className="text-center text-xs text-[#cabfa6]/70 py-6 font-cormorant">
-                          <span className="text-3xl block mb-1">🖼️</span>
-                          Aucune image sélectionnée. L'image par défaut (/images/chant.avif) sera utilisée.
+                        <div className="text-center text-xs text-[#cabfa6]/70 py-8 font-cormorant">
+                          <span className="text-3xl block mb-2">🖼️</span>
+                          Aucune photo sélectionnée pour cet article. L'image par défaut (/images/chant.avif) sera utilisée.
                         </div>
                       )}
                     </div>
@@ -787,20 +922,25 @@ export default function EspaceSecurisePage() {
                       <div className="flex items-center gap-4">
                         <div className="relative w-20 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-[#1a1c1a] border border-[#C5A059]/30">
                           <Image
-                            src={item.imageUrl || "/images/chant.avif"}
+                            src={item.imageUrl || (item.images && item.images[0]) || "/images/chant.avif"}
                             alt={item.title}
                             fill
                             className="object-cover"
                           />
                         </div>
                         <div>
-                          <div className="flex items-center gap-2 mb-1">
+                          <div className="flex items-center gap-2 mb-1 flex-wrap">
                             <span className="px-2 py-0.5 bg-[#C5A059]/20 text-[#E9D18F] text-[10px] font-cinzel font-bold rounded-full border border-[#C5A059]/40 uppercase">
                               {item.category}
                             </span>
                             <span className="text-xs text-[#cabfa6]">{item.date}</span>
                             {item.isFeatured && (
                               <span className="text-amber-400 text-xs">⭐ À la une</span>
+                            )}
+                            {item.images && item.images.length > 1 && (
+                              <span className="text-[10px] bg-[#C5A059]/15 text-[#E9D18F] px-2 py-0.5 rounded-md font-mono">
+                                🖼️ {item.images.length} photos
+                              </span>
                             )}
                           </div>
                           <h4 className="font-cinzel text-base font-bold text-[#EDE4CF] leading-snug">
@@ -815,9 +955,9 @@ export default function EspaceSecurisePage() {
                       <div className="flex items-center gap-3 w-full md:w-auto justify-end">
                         <button
                           onClick={() => handleDeleteNews(item.id)}
-                          className="px-3 py-1.5 rounded-xl bg-rose-950/70 border border-rose-500/50 text-rose-300 font-cinzel text-xs font-bold hover:bg-rose-900 transition-colors cursor-pointer"
+                          className="px-4 py-2 rounded-xl bg-rose-950/80 border border-rose-500/60 text-rose-200 font-cinzel text-xs font-bold hover:bg-rose-900 transition-colors cursor-pointer shadow-md"
                         >
-                          🗑️ Supprimer
+                          🗑️ Supprimer l'Article
                         </button>
                       </div>
                     </div>

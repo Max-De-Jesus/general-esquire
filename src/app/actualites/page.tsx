@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 import { supabase } from "@/lib/supabase";
@@ -16,6 +15,7 @@ export default function PublicActualitesPage() {
 
   const [selectedCategory, setSelectedCategory] = useState("Tous");
   const [activeArticle, setActiveArticle] = useState<NewsItem | null>(null);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   const categories = ["Tous", "Conseil Juridique", "Chrysalides", "Événements", "Annonces"];
 
@@ -25,30 +25,51 @@ export default function PublicActualitesPage() {
     return cat;
   };
 
+  // Reset active image index when opening an article
+  const handleOpenArticle = (item: NewsItem) => {
+    setActiveArticle(item);
+    setActiveImageIndex(0);
+  };
+
   // Charger les actualités depuis Supabase et le stockage local admin
   useEffect(() => {
     const fetchNews = async () => {
       setLoadingNews(true);
+      let deletedIds: string[] = [];
+      try {
+        deletedIds = JSON.parse(localStorage.getItem("ge_deleted_news_ids") || "[]");
+      } catch {}
+
       try {
         const { data, error } = await supabase
           .from("actualites")
           .select("*")
           .eq("is_published", true)
-          .order("date", { ascending: false });
+          .order("created_at", { ascending: false });
 
         if (!error && data) {
-          const mapped: NewsItem[] = data.map((a: Actualite) => ({
-            id: a.id,
-            title: a.title,
-            subtitle: a.subtitle ?? undefined,
-            summary: a.summary,
-            content: a.content,
-            category: a.category as NewsItem["category"],
-            date: a.date,
-            imageUrl: a.image_url,
-            author: a.author,
-            isFeatured: a.is_featured,
-          }));
+          const mapped: NewsItem[] = data
+            .filter((a: Actualite) => !deletedIds.includes(a.id))
+            .map((a: Actualite) => {
+              const allImgs: string[] = Array.isArray((a as any).images) && (a as any).images.length > 0
+                ? (a as any).images
+                : a.image_url ? [a.image_url] : ["/images/chant.avif"];
+
+              return {
+                id: a.id,
+                title: a.title,
+                subtitle: a.subtitle ?? undefined,
+                summary: a.summary,
+                content: a.content,
+                category: a.category as NewsItem["category"],
+                date: a.date,
+                imageUrl: allImgs[0],
+                images: allImgs,
+                author: a.author,
+                isFeatured: a.is_featured,
+                isPublished: a.is_published,
+              };
+            });
           setNews(mapped);
           localStorage.setItem("ge_admin_news", JSON.stringify(mapped));
         } else {
@@ -56,7 +77,7 @@ export default function PublicActualitesPage() {
           const localStored = localStorage.getItem("ge_admin_news");
           if (localStored) {
             const parsed: NewsItem[] = JSON.parse(localStored);
-            setNews(parsed.filter((n) => n.isPublished !== false));
+            setNews(parsed.filter((n) => n.isPublished !== false && !deletedIds.includes(n.id)));
           } else {
             setNews([]);
           }
@@ -65,7 +86,7 @@ export default function PublicActualitesPage() {
         const localStored = localStorage.getItem("ge_admin_news");
         if (localStored) {
           const parsed: NewsItem[] = JSON.parse(localStored);
-          setNews(parsed.filter((n) => n.isPublished !== false));
+          setNews(parsed.filter((n) => n.isPublished !== false && !deletedIds.includes(n.id)));
         } else {
           setNews([]);
         }
@@ -149,65 +170,75 @@ export default function PublicActualitesPage() {
           </div>
         ) : filteredNews.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredNews.map((item) => (
-              <div
-                key={item.id}
-                onClick={() => setActiveArticle(item)}
-                className="group bg-[#131513] border border-[#C5A059]/25 rounded-3xl overflow-hidden shadow-xl hover:shadow-[0_0_30px_rgba(197,160,89,0.3)] hover:border-[#E9D18F] transition-all duration-500 cursor-pointer flex flex-col h-full"
-              >
-                {/* Image */}
-                <div className="relative h-60 w-full overflow-hidden bg-[#1a1c1a]">
-                  <Image
-                    src={item.imageUrl || "/images/chant.avif"}
-                    alt={item.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 400px"
-                    className="object-cover object-center group-hover:scale-108 transition-transform duration-700 brightness-95"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
-                  
-                  {/* Badge de catégorie */}
-                  <div className="absolute top-4 left-4">
-                    <span className="bg-[#131513]/90 backdrop-blur-md border border-[#C5A059]/50 text-[#E9D18F] font-cinzel text-[10px] font-bold tracking-widest uppercase px-3.5 py-1 rounded-full shadow-md">
-                      ✦ {getCategoryLabel(item.category)}
-                    </span>
-                  </div>
+            {filteredNews.map((item) => {
+              const displayImage = item.imageUrl || (item.images && item.images[0]) || "/images/chant.avif";
+              const photoCount = item.images ? item.images.length : 1;
 
-                  {item.isFeatured && (
-                    <div className="absolute top-4 right-4">
-                      <span className="bg-gradient-to-r from-[#C5A059] to-[#E9D18F] text-black font-cinzel text-[9px] font-extrabold tracking-widest uppercase px-3 py-1 rounded-full shadow-md">
-                        À la une
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => handleOpenArticle(item)}
+                  className="group bg-[#131513] border border-[#C5A059]/25 rounded-3xl overflow-hidden shadow-xl hover:shadow-[0_0_30px_rgba(197,160,89,0.3)] hover:border-[#E9D18F] transition-all duration-500 cursor-pointer flex flex-col h-full"
+                >
+                  {/* Image */}
+                  <div className="relative h-60 w-full overflow-hidden bg-[#1a1c1a]">
+                    <Image
+                      src={displayImage}
+                      alt={item.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 400px"
+                      className="object-cover object-center group-hover:scale-108 transition-transform duration-700 brightness-95"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                    
+                    {/* Badge de catégorie */}
+                    <div className="absolute top-4 left-4 flex items-center gap-2">
+                      <span className="bg-[#131513]/90 backdrop-blur-md border border-[#C5A059]/50 text-[#E9D18F] font-cinzel text-[10px] font-bold tracking-widest uppercase px-3.5 py-1 rounded-full shadow-md">
+                        ✦ {getCategoryLabel(item.category)}
                       </span>
                     </div>
-                  )}
-                </div>
 
-                {/* Contenu */}
-                <div className="p-6 flex-grow flex flex-col">
-                  <div className="font-cormorant text-[#C5A059] text-sm mb-2 font-semibold tracking-wide flex items-center justify-between">
-                    <span>{item.date}</span>
-                    <span className="text-xs text-[#cabfa6]/70">Par {item.author || "Administration"}</span>
+                    <div className="absolute top-4 right-4 flex items-center gap-2">
+                      {photoCount > 1 && (
+                        <span className="bg-black/80 backdrop-blur-md border border-[#C5A059]/60 text-[#E9D18F] font-cinzel text-[9px] font-bold tracking-widest uppercase px-2.5 py-1 rounded-full shadow-md">
+                          🖼️ {photoCount} photos
+                        </span>
+                      )}
+                      {item.isFeatured && (
+                        <span className="bg-gradient-to-r from-[#C5A059] to-[#E9D18F] text-black font-cinzel text-[9px] font-extrabold tracking-widest uppercase px-3 py-1 rounded-full shadow-md">
+                          À la une
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  
-                  <h3 className="font-cinzel text-lg text-[#EDE4CF] font-bold mb-3 line-clamp-2 group-hover:text-[#E9D18F] transition-colors leading-snug">
-                    {item.title}
-                  </h3>
-                  
-                  <p className="font-cormorant text-[#cabfa6] text-base leading-relaxed line-clamp-3 mb-6 flex-grow">
-                    {item.summary}
-                  </p>
 
-                  <div className="mt-auto flex items-center justify-between pt-4 border-t border-[#C5A059]/20">
-                    <span className="font-cinzel text-xs text-[#E9D18F] uppercase tracking-widest group-hover:tracking-[0.2em] transition-all duration-300">
-                      {lang === "fr" ? "Lire l'Article" : "Read Article"}
-                    </span>
-                    <span className="text-[#C5A059] text-xl group-hover:translate-x-2 transition-transform duration-300">
-                      →
-                    </span>
+                  {/* Contenu */}
+                  <div className="p-6 flex-grow flex flex-col">
+                    <div className="font-cormorant text-[#C5A059] text-sm mb-2 font-semibold tracking-wide flex items-center justify-between">
+                      <span>{item.date}</span>
+                      <span className="text-xs text-[#cabfa6]/70">Par {item.author || "Administration"}</span>
+                    </div>
+                    
+                    <h3 className="font-cinzel text-lg text-[#EDE4CF] font-bold mb-3 line-clamp-2 group-hover:text-[#E9D18F] transition-colors leading-snug">
+                      {item.title}
+                    </h3>
+                    
+                    <p className="font-cormorant text-[#cabfa6] text-base leading-relaxed line-clamp-3 mb-6 flex-grow">
+                      {item.summary}
+                    </p>
+
+                    <div className="mt-auto flex items-center justify-between pt-4 border-t border-[#C5A059]/20">
+                      <span className="font-cinzel text-xs text-[#E9D18F] uppercase tracking-widest group-hover:tracking-[0.2em] transition-all duration-300">
+                        {lang === "fr" ? "Lire l'Article" : "Read Article"}
+                      </span>
+                      <span className="text-[#C5A059] text-xl group-hover:translate-x-2 transition-transform duration-300">
+                        →
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className="text-center py-24 bg-[#131513]/60 border border-[#C5A059]/20 rounded-3xl p-12 max-w-xl mx-auto">
@@ -224,19 +255,19 @@ export default function PublicActualitesPage() {
         )}
       </div>
 
-      {/* Modal Article Complète */}
+      {/* Modal Article Complète avec Carrousel Multi-Photos */}
       {activeArticle && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
           <div className="relative w-full max-w-3xl max-h-[90vh] bg-[#1a1c1a] border-2 border-[#C5A059] rounded-3xl overflow-y-auto p-6 sm:p-10 shadow-[0_0_50px_rgba(197,160,89,0.3)]">
             <button
               onClick={() => setActiveArticle(null)}
-              className="absolute top-5 right-5 w-10 h-10 rounded-full bg-[#131513] border border-[#C5A059]/50 text-[#E9D18F] hover:bg-[#C5A059] hover:text-black transition-all flex items-center justify-center text-xl font-bold cursor-pointer"
+              className="absolute top-5 right-5 w-10 h-10 rounded-full bg-[#131513] border border-[#C5A059]/50 text-[#E9D18F] hover:bg-[#C5A059] hover:text-black transition-all flex items-center justify-center text-xl font-bold cursor-pointer z-10"
             >
               ✕
             </button>
 
             <span className="inline-block font-cinzel text-xs text-[#C5A059] tracking-[0.25em] uppercase border border-[#C5A059]/40 px-3.5 py-1 rounded-full bg-[#131513] mb-4">
-              ✦ {activeArticle.category}
+              ✦ {getCategoryLabel(activeArticle.category)}
             </span>
 
             <h2 className="font-cinzel text-2xl sm:text-3xl font-bold text-[#E9D18F] mb-3 leading-snug">
@@ -254,16 +285,70 @@ export default function PublicActualitesPage() {
               <span>✍️ Par {activeArticle.author}</span>
             </div>
 
-            {activeArticle.imageUrl && (
-              <div className="relative h-64 sm:h-96 w-full rounded-2xl overflow-hidden mb-6 border border-[#C5A059]/30">
-                <Image
-                  src={activeArticle.imageUrl}
-                  alt={activeArticle.title}
-                  fill
-                  className="object-cover object-center"
-                />
-              </div>
-            )}
+            {/* Photo Gallery Carousel */}
+            {(() => {
+              const gallery = activeArticle.images && activeArticle.images.length > 0
+                ? activeArticle.images
+                : [activeArticle.imageUrl || "/images/chant.avif"];
+
+              return (
+                <div className="mb-8 space-y-3">
+                  <div className="relative h-64 sm:h-96 w-full rounded-2xl overflow-hidden border border-[#C5A059]/40 bg-black">
+                    <Image
+                      src={gallery[activeImageIndex] || gallery[0]}
+                      alt={`${activeArticle.title} - Photo ${activeImageIndex + 1}`}
+                      fill
+                      className="object-cover object-center transition-all duration-300"
+                    />
+
+                    {/* Left/Right Arrows if multiple photos */}
+                    {gallery.length > 1 && (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => setActiveImageIndex((prev) => (prev > 0 ? prev - 1 : gallery.length - 1))}
+                          className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/70 border border-[#C5A059]/60 text-[#E9D18F] hover:bg-[#C5A059] hover:text-black transition-all flex items-center justify-center text-lg font-bold shadow-lg"
+                        >
+                          ‹
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setActiveImageIndex((prev) => (prev < gallery.length - 1 ? prev + 1 : 0))}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/70 border border-[#C5A059]/60 text-[#E9D18F] hover:bg-[#C5A059] hover:text-black transition-all flex items-center justify-center text-lg font-bold shadow-lg"
+                        >
+                          ›
+                        </button>
+
+                        {/* Image Counter Badge */}
+                        <div className="absolute bottom-3 right-3 bg-black/80 backdrop-blur-md px-3 py-1 rounded-full border border-[#C5A059]/50 text-[#E9D18F] font-mono text-xs">
+                          {activeImageIndex + 1} / {gallery.length}
+                        </div>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Thumbnail Strip if multiple photos */}
+                  {gallery.length > 1 && (
+                    <div className="flex items-center gap-2.5 overflow-x-auto pb-2 pt-1">
+                      {gallery.map((img, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => setActiveImageIndex(idx)}
+                          className={`relative w-20 h-16 rounded-xl overflow-hidden flex-shrink-0 border-2 transition-all cursor-pointer ${
+                            activeImageIndex === idx
+                              ? "border-[#E9D18F] scale-105 shadow-[0_0_12px_rgba(233,209,143,0.5)]"
+                              : "border-[#C5A059]/30 opacity-60 hover:opacity-100"
+                          }`}
+                        >
+                          <Image src={img} alt={`Vignette ${idx + 1}`} fill className="object-cover" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
             <div className="font-cormorant text-xl text-[#EDE4CF]/90 leading-relaxed whitespace-pre-line space-y-4">
               {activeArticle.content}

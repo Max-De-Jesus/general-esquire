@@ -20,6 +20,7 @@ export interface Actualite {
   category: "Evenement" | "Événement" | "Événements" | "Conseil Juridique" | "Chrysalides" | "Annonce" | "Annonces";
   date: string;
   image_url: string;
+  images?: string[] | null;
   author: string;
   is_featured: boolean;
   is_published: boolean;
