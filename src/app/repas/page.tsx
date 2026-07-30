@@ -369,7 +369,7 @@ export default function RepasPage() {
       </header>
 
       {/* ─── 2. BANDE DÉROULANTE (TICKER ALL-WIDTH SOUS LA BANNIÈRE) ───────────────── */}
-      <TickerBanner items={["GENERAL ESQUIRE", "GASTRONOMIE", "CUISINE BÉNINOISE & INTERNATIONALE", "CHRYSALIDES", "EXCELLENCE"]} className="mb-8" />
+      <TickerBanner items={["GENERAL ESQUIRE", "CHRYSALIDES", "EXCELLENCE"]} className="mb-8" />
 
       <div className="max-w-5xl mx-auto px-6">
         {/* Breadcrumb */}
