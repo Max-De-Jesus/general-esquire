@@ -17,7 +17,7 @@ export interface Actualite {
   subtitle?: string | null;
   summary: string;
   content: string;
-  category: "Evenement" | "Conseil Juridique" | "Chrysalides" | "Annonce";
+  category: "Evenement" | "Événement" | "Événements" | "Conseil Juridique" | "Chrysalides" | "Annonce" | "Annonces";
   date: string;
   image_url: string;
   author: string;

@@ -582,8 +582,8 @@ export default function AdminPage() {
                     >
                       <option value="Conseil Juridique">Conseil Juridique</option>
                       <option value="Chrysalides">Chrysalides</option>
-                      <option value="Événement">Événement</option>
-                      <option value="Annonce">Annonce</option>
+                      <option value="Événements">Événements</option>
+                      <option value="Annonces">Annonces</option>
                     </select>
                   </div>
 

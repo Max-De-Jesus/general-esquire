@@ -17,7 +17,13 @@ export default function PublicActualitesPage() {
   const [selectedCategory, setSelectedCategory] = useState("Tous");
   const [activeArticle, setActiveArticle] = useState<NewsItem | null>(null);
 
-  const categories = ["Tous", "Conseil Juridique", "Chrysalides", "Événement", "Annonce"];
+  const categories = ["Tous", "Conseil Juridique", "Chrysalides", "Événements", "Annonces"];
+
+  const getCategoryLabel = (cat: string) => {
+    if (cat === "Événement" || cat === "Evenement") return "Événements";
+    if (cat === "Annonce") return "Annonces";
+    return cat;
+  };
 
   // Charger les actualités depuis Supabase et le stockage local admin
   useEffect(() => {
@@ -72,7 +78,11 @@ export default function PublicActualitesPage() {
 
   const filteredNews = selectedCategory === "Tous"
     ? news
-    : news.filter((item) => item.category === selectedCategory);
+    : news.filter((item) => {
+        if (selectedCategory === "Événements") return item.category === "Événement" || item.category === "Événements" || item.category === "Evenement";
+        if (selectedCategory === "Annonces") return item.category === "Annonce" || item.category === "Annonces";
+        return item.category === selectedCategory;
+      });
 
   return (
     <div className="min-h-screen bg-[#0d0e0d] text-[#EDE4CF] relative overflow-x-hidden">
@@ -159,7 +169,7 @@ export default function PublicActualitesPage() {
                   {/* Badge de catégorie */}
                   <div className="absolute top-4 left-4">
                     <span className="bg-[#131513]/90 backdrop-blur-md border border-[#C5A059]/50 text-[#E9D18F] font-cinzel text-[10px] font-bold tracking-widest uppercase px-3.5 py-1 rounded-full shadow-md">
-                      ✦ {item.category}
+                      ✦ {getCategoryLabel(item.category)}
                     </span>
                   </div>
 
