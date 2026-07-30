@@ -40,6 +40,19 @@ export default function PublicActualitesPage() {
         deletedIds = JSON.parse(localStorage.getItem("ge_deleted_news_ids") || "[]");
       } catch {}
 
+      const isInitialized = typeof window !== "undefined" && localStorage.getItem("ge_admin_news_initialized") === "true";
+      const localNewsStored = typeof window !== "undefined" ? localStorage.getItem("ge_admin_news") : null;
+
+      if (isInitialized && localNewsStored) {
+        try {
+          const parsed: NewsItem[] = JSON.parse(localNewsStored);
+          const filtered = parsed.filter((n) => n.isPublished !== false && !deletedIds.includes(n.id));
+          setNews(filtered);
+          setLoadingNews(false);
+          return;
+        } catch {}
+      }
+
       try {
         const { data, error } = await supabase
           .from("actualites")
@@ -72,20 +85,15 @@ export default function PublicActualitesPage() {
             });
           setNews(mapped);
           localStorage.setItem("ge_admin_news", JSON.stringify(mapped));
+        } else if (localNewsStored) {
+          const parsed: NewsItem[] = JSON.parse(localNewsStored);
+          setNews(parsed.filter((n) => n.isPublished !== false && !deletedIds.includes(n.id)));
         } else {
-          // Fallback sur le stockage local admin si présent
-          const localStored = localStorage.getItem("ge_admin_news");
-          if (localStored) {
-            const parsed: NewsItem[] = JSON.parse(localStored);
-            setNews(parsed.filter((n) => n.isPublished !== false && !deletedIds.includes(n.id)));
-          } else {
-            setNews([]);
-          }
+          setNews([]);
         }
       } catch {
-        const localStored = localStorage.getItem("ge_admin_news");
-        if (localStored) {
-          const parsed: NewsItem[] = JSON.parse(localStored);
+        if (localNewsStored) {
+          const parsed: NewsItem[] = JSON.parse(localNewsStored);
           setNews(parsed.filter((n) => n.isPublished !== false && !deletedIds.includes(n.id)));
         } else {
           setNews([]);
