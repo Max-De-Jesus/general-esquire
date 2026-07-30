@@ -28,7 +28,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     user?.app_metadata?.role === "admin" ||
     user?.user_metadata?.role === "admin" ||
     user?.email?.toLowerCase().includes("admin@generalesquire.com") ||
-    user?.email?.toLowerCase() === "admin@generalesquire.com"
+    user?.email?.toLowerCase() === "admin@generalesquire.com" ||
+    user?.email?.toLowerCase() === "generalesquire@proton.me" ||
+    user?.email?.toLowerCase() === "contact@generalesquire.com"
   );
 
   const fetchClientProfile = async (email: string) => {
