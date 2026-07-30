@@ -85,8 +85,8 @@ const FOOD_GALLERY = [
   { src: "/images/car repas/Tchooh18 - Copie.png", title: "", tag: "" },
 ];
 
-// ─── CARROUSEL ROTATIF 3D EN CERCLE (COVER FLOW CYLINDER 3D) ──────────────────
-const CAROUSEL_3D_ITEMS = FOOD_GALLERY;
+// ─── CARROUSEL ROTATIF 3D EN CERCLE (COVER FLOW CYLINDER 3D — 12 CARTES VEDETTES) ──
+const CAROUSEL_3D_ITEMS = FOOD_GALLERY.filter((item) => item.title !== "").slice(0, 12);
 
 function Rotating3DFoodCarousel() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -94,7 +94,7 @@ function Rotating3DFoodCarousel() {
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
   const totalCards = CAROUSEL_3D_ITEMS.length;
-  const angleStep = 360 / totalCards; // 45° par carte pour 8 cartes
+  const angleStep = 360 / totalCards; // 30° par carte pour 12 cartes
 
   const nextCard = useCallback(() => {
     setActiveIndex((prev) => (prev + 1) % totalCards);
@@ -155,10 +155,6 @@ function Rotating3DFoodCarousel() {
         >
           {CAROUSEL_3D_ITEMS.map((item, idx) => {
             const cardAngle = idx * angleStep;
-            
-            // Calcul de la distance angulaire relative par rapport à la carte active (0 à Math.PI)
-            const rawDiff = (idx - activeIndex + totalCards) % totalCards;
-            const diff = rawDiff > totalCards / 2 ? totalCards - rawDiff : rawDiff;
             const isCenter = idx === activeIndex;
 
             return (
@@ -172,8 +168,8 @@ function Rotating3DFoodCarousel() {
                 }`}
                 style={{
                   transformStyle: "preserve-3d",
-                  // Placement circulaire 3D autour de l'axe Y (350px de rayon desktop, 230px mobile)
-                  transform: `rotateY(${cardAngle}deg) translateZ(calc(min(350px, 58vw))) ${
+                  // Placement circulaire 3D autour de l'axe Y
+                  transform: `rotateY(${cardAngle}deg) translateZ(calc(min(380px, 60vw))) ${
                     isCenter ? "scale(1.08)" : "scale(0.92)"
                   }`,
                   WebkitBoxReflect:
@@ -182,8 +178,8 @@ function Rotating3DFoodCarousel() {
               >
                 {/* Image de la carte */}
                 <Image
-                  src={item.src}
-                  alt={item.title}
+                  src={encodeURI(item.src)}
+                  alt={item.title || "Spécialité Repas"}
                   fill
                   priority={idx < 3}
                   sizes="(max-width: 640px) 240px, 280px"
@@ -199,9 +195,9 @@ function Rotating3DFoodCarousel() {
                   }`}
                 />
 
-                {/* Texte et Badge d'information */}
-                {(item.tag || item.title) && (
-                  <div className="absolute bottom-0 left-0 right-0 p-5 text-left z-20">
+                {/* Texte et Badge d'information — Uniquement au centre */}
+                {isCenter && (item.tag || item.title) && (
+                  <div className="absolute bottom-0 left-0 right-0 p-5 text-left z-20 transition-opacity duration-300">
                     {item.tag && (
                       <span className="inline-block font-cinzel text-[9px] sm:text-[10px] text-[#C5A059] tracking-widest uppercase bg-[#131513]/90 border border-[#C5A059]/40 px-3 py-1 rounded-full backdrop-blur-md mb-2 shadow-md">
                         ✦ {item.tag}
@@ -353,8 +349,8 @@ function SmoothScrollCard({ item, index }: { item: typeof FOOD_GALLERY[0]; index
     >
       <div className="relative h-64 sm:h-72 w-full overflow-hidden">
         <Image
-          src={item.src}
-          alt={item.title}
+          src={encodeURI(item.src)}
+          alt={item.title || "Gastronomie Repas"}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className="object-cover object-center group-hover:scale-110 transition-transform duration-700 ease-out"
