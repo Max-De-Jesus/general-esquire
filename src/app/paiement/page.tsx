@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 /* ══════════════════════════════════════════════════════════════════
    SERVICE PRESETS — Tarifs & prestations par profil client
@@ -90,17 +91,23 @@ export default function PaymentPage() {
   const [transactionRef, setTransactionRef] = useState("");
   const [calculatedAmount, setCalculatedAmount] = useState(100);
 
-  /* ── Card mock state ── */
+  /* ── Card state ── */
   const [cardNumber, setCardNumber] = useState("");
   const [cardExpiry, setCardExpiry] = useState("");
   const [cardCvv, setCardCvv] = useState("");
   const [cardName, setCardName] = useState("");
 
-  /* ── PayPal modal ── */
+  /* ── PayPal modal simulation ── */
   const [showPaypalModal, setShowPaypalModal] = useState(false);
   const [paypalEmail, setPaypalEmail] = useState("");
   const [paypalPassword, setPaypalPassword] = useState("");
   const [paypalProcessing, setPaypalProcessing] = useState(false);
+
+  /* ── Environment Payment Keys ── */
+  const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
+  const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "";
+  const isStripeLiveReady = stripePublishableKey.startsWith("pk_live_") || stripePublishableKey.startsWith("pk_test_");
+  const isPaypalLiveReady = paypalClientId.length > 10 && !paypalClientId.includes("votre_client_id");
 
   /* ── Auto-fill from auth ── */
   useEffect(() => {
@@ -185,7 +192,7 @@ export default function PaymentPage() {
   };
 
   /* ══════════════════════════════════════════════════════════════════
-     SUPABASE TRANSACTION HANDLER (preserved from original)
+     SUPABASE TRANSACTION HANDLER
      ══════════════════════════════════════════════════════════════════ */
   const submitTransaction = async (method: string, extraStatus = "Payé") => {
     if (!user) {
@@ -253,7 +260,7 @@ export default function PaymentPage() {
     }
   };
 
-  /* ── Card handler ── */
+  /* ── Card handler (Stripe / Simulation) ── */
   const handleCardPayment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!cardNumber || !cardExpiry || !cardCvv) {
@@ -261,9 +268,38 @@ export default function PaymentPage() {
       return;
     }
     setIsProcessing(true);
-    setTimeout(async () => {
-      await submitTransaction("Carte Bancaire");
-    }, 2000);
+
+    if (isStripeLiveReady) {
+      try {
+        const res = await fetch("/api/create-payment-intent", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amount: calculatedAmount,
+            currency: "eur",
+            serviceName: getSelectedServiceText(),
+            clientEmail: email,
+          }),
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Erreur lors de la création du paiement Stripe.");
+        }
+
+        // Transaction réelle confirmée via Stripe API
+        await submitTransaction("Carte Bancaire (Stripe Réel)");
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : "Erreur lors de la transaction Stripe.";
+        setPaymentError(message);
+        setIsProcessing(false);
+      }
+    } else {
+      // Mode simulation si les clés Stripe ne sont pas remplies dans .env.local
+      setTimeout(async () => {
+        await submitTransaction("Carte Bancaire (Simulation)");
+      }, 2000);
+    }
   };
 
   /* ── PayPal handler ── */
@@ -829,7 +865,20 @@ export default function PaymentPage() {
                     ))}
                   </div>
 
-                  {/* ── Card Form ── */}
+                  {/* Status Banner for Live vs Test/Simulation Keys */}
+                  {paymentMethod === "card" && !isStripeLiveReady && (
+                    <div className="bg-[#C5A059]/10 border border-[#C5A059]/30 rounded-2xl p-4 text-xs font-cormorant text-[#E9D18F] flex items-center justify-between gap-3">
+                      <span>💡 <strong>Prêt pour Stripe Réel :</strong> Ajoutez vos clés Stripe (`NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` et `STRIPE_SECRET_KEY`) dans <code>.env.local</code> pour traiter de vraies cartes bancaires.</span>
+                    </div>
+                  )}
+
+                  {paymentMethod === "paypal" && !isPaypalLiveReady && (
+                    <div className="bg-[#C5A059]/10 border border-[#C5A059]/30 rounded-2xl p-4 text-xs font-cormorant text-[#E9D18F] flex items-center justify-between gap-3">
+                      <span>💡 <strong>Prêt pour PayPal Réel :</strong> Renseignez votre Client ID (`NEXT_PUBLIC_PAYPAL_CLIENT_ID`) dans <code>.env.local</code> pour charger le SDK officiel PayPal.</span>
+                    </div>
+                  )}
+
+                  {/* ── Card Form (Stripe / Simulation) ── */}
                   {paymentMethod === "card" && (
                     <form onSubmit={handleCardPayment} className="space-y-4 animate-fadeIn">
                       <div>
@@ -893,22 +942,58 @@ export default function PaymentPage() {
                     </form>
                   )}
 
-                  {/* ── PayPal ── */}
+                  {/* ── PayPal (SDK Officiel / Modal Simulation) ── */}
                   {paymentMethod === "paypal" && (
                     <div className="space-y-4 text-center animate-fadeIn">
-                      <p className="font-cormorant text-sm text-[#cabfa6] italic">
-                        {lang === "fr"
-                          ? "Règlement sécurisé et rapide via votre compte PayPal ou par Carte via la passerelle PayPal."
-                          : "Fast and secure checkout using your PayPal balance or direct credit card via PayPal gateway."}
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => setShowPaypalModal(true)}
-                        className="w-full py-4 rounded-xl bg-[#f2c94c] hover:bg-[#e2b93c] text-black font-cinzel text-xs font-extrabold tracking-widest uppercase flex items-center justify-center gap-2 cursor-pointer shadow-lg"
-                      >
-                        <span>PayPal</span>
-                        <span>Checkout</span>
-                      </button>
+                      {isPaypalLiveReady ? (
+                        <PayPalScriptProvider options={{ clientId: paypalClientId, currency: "EUR" }}>
+                          <div className="py-2">
+                            <PayPalButtons
+                              style={{ layout: "vertical", color: "gold", shape: "rect", label: "pay" }}
+                              createOrder={(data, actions) => {
+                                return actions.order.create({
+                                  intent: "CAPTURE",
+                                  purchase_units: [
+                                    {
+                                      description: getSelectedServiceText(),
+                                      amount: {
+                                        currency_code: "EUR",
+                                        value: calculatedAmount.toString(),
+                                      },
+                                    },
+                                  ],
+                                });
+                              }}
+                              onApprove={async (data, actions) => {
+                                if (actions.order) {
+                                  await actions.order.capture();
+                                  await submitTransaction(`PayPal Réel (ID: ${data.orderID})`);
+                                }
+                              }}
+                              onError={(err) => {
+                                console.error("PayPal Error:", err);
+                                setPaymentError("Une erreur est survenue avec PayPal.");
+                              }}
+                            />
+                          </div>
+                        </PayPalScriptProvider>
+                      ) : (
+                        <>
+                          <p className="font-cormorant text-sm text-[#cabfa6] italic">
+                            {lang === "fr"
+                              ? "Règlement sécurisé et rapide via votre compte PayPal ou par Carte via la passerelle PayPal."
+                              : "Fast and secure checkout using your PayPal balance or direct credit card via PayPal gateway."}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => setShowPaypalModal(true)}
+                            className="w-full py-4 rounded-xl bg-[#f2c94c] hover:bg-[#e2b93c] text-black font-cinzel text-xs font-extrabold tracking-widest uppercase flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+                          >
+                            <span>PayPal</span>
+                            <span>Checkout</span>
+                          </button>
+                        </>
+                      )}
                     </div>
                   )}
 
