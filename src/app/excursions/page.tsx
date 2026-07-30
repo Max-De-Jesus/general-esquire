@@ -287,13 +287,7 @@ function RadialGallery3D({ items }: { items: typeof GALLERY }) {
                   ? "bg-gradient-to-t from-black/80 via-black/10 to-transparent"
                   : `bg-black/${Math.min(85, 55 + absOffset * 10)}`
               }`} />
-              {isCenter && (
-                <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
-                  <span className="inline-block font-cinzel text-[9px] text-[#C5A059] tracking-widest uppercase bg-[#131513]/90 border border-[#C5A059]/50 px-3 py-1 rounded-full backdrop-blur-md mb-2">
-                    ✦ {items[idx].label}
-                  </span>
-                </div>
-              )}
+
               {/* Shimmer on center */}
               {isCenter && (
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent translate-x-[-200%] animate-[shimmer_3s_ease-in-out_infinite] pointer-events-none" />
@@ -503,12 +497,7 @@ export default function ExcursionsPage() {
                       className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
                     />
                     <div className={`absolute inset-0 ${isEven ? "bg-gradient-to-r from-transparent to-[#0F3823]/60" : "bg-gradient-to-l from-transparent to-[#0F3823]/60"}`} />
-                    {/* Image label */}
-                    <div className="absolute bottom-4 left-4">
-                      <span className="font-cinzel text-[9px] text-[#E9D18F] tracking-widest uppercase bg-[#131513]/80 border border-[#C5A059]/40 px-3 py-1 rounded-full backdrop-blur-md">
-                        {panel.emoji} {panel.imageAlt}
-                      </span>
-                    </div>
+
                   </div>
 
                   {/* Text side */}

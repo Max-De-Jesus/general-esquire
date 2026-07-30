@@ -171,14 +171,7 @@ function RadialGallery3D() {
                     : "rgba(0,0,0,0.45)",
                 }}
               />
-              {isCenter && (
-                <div className="absolute bottom-0 left-0 right-0 p-5 z-20">
-                  <span className="font-cinzel text-[9px] text-[#C5A059] tracking-widest uppercase bg-[#131513]/90 border border-[#C5A059]/50 px-3 py-1 rounded-full backdrop-blur-sm inline-block mb-2">
-                    ✦ {GALLERY[idx].cat}
-                  </span>
-                  <h3 className="font-cinzel text-sm sm:text-base font-bold text-white drop-shadow-lg">{GALLERY[idx].label}</h3>
-                </div>
-              )}
+
             </div>
           );
         })}

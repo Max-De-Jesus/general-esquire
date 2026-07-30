@@ -195,21 +195,7 @@ function Rotating3DFoodCarousel() {
                   }`}
                 />
 
-                {/* Texte et Badge d'information — Uniquement au centre */}
-                {isCenter && (item.tag || item.title) && (
-                  <div className="absolute bottom-0 left-0 right-0 p-5 text-left z-20 transition-opacity duration-300">
-                    {item.tag && (
-                      <span className="inline-block font-cinzel text-[9px] sm:text-[10px] text-[#C5A059] tracking-widest uppercase bg-[#131513]/90 border border-[#C5A059]/40 px-3 py-1 rounded-full backdrop-blur-md mb-2 shadow-md">
-                        ✦ {item.tag}
-                      </span>
-                    )}
-                    {item.title && (
-                      <h3 className="font-cinzel text-sm sm:text-base font-extrabold text-white leading-snug drop-shadow-md">
-                        {item.title}
-                      </h3>
-                    )}
-                  </div>
-                )}
+
               </div>
             );
           })}
@@ -358,20 +344,7 @@ function SmoothScrollCard({ item, index }: { item: typeof FOOD_GALLERY[0]; index
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent opacity-80 group-hover:opacity-95 transition-opacity duration-300" />
       </div>
 
-      {(item.tag || item.title) && (
-        <div className="absolute bottom-0 left-0 right-0 p-5 transform group-hover:-translate-y-1 transition-transform duration-300">
-          {item.tag && (
-            <span className="font-cinzel text-[10px] text-[#C5A059] tracking-widest uppercase bg-[#0F3823]/80 border border-[#C5A059]/30 px-3 py-1 rounded-full backdrop-blur-md inline-block mb-2">
-              ◆ {item.tag}
-            </span>
-          )}
-          {item.title && (
-            <h3 className="font-cinzel text-base sm:text-lg font-bold text-white leading-snug drop-shadow-md">
-              {item.title}
-            </h3>
-          )}
-        </div>
-      )}
+
     </div>
   );
 }
@@ -481,9 +454,6 @@ export default function RepasPage() {
                   className="object-cover object-center group-hover:scale-110 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                <span className="absolute bottom-4 left-4 font-cinzel text-[10px] text-[#E9D18F] tracking-widest uppercase bg-[#131513]/80 border border-[#C5A059]/40 px-3 py-1 rounded-full backdrop-blur-md">
-                  ✦ Pension Complète
-                </span>
               </div>
             </div>
           </div>
@@ -500,9 +470,6 @@ export default function RepasPage() {
                   className="object-cover object-center group-hover:scale-110 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                <span className="absolute bottom-4 left-4 font-cinzel text-[10px] text-[#E9D18F] tracking-widest uppercase bg-[#131513]/80 border border-[#C5A059]/40 px-3 py-1 rounded-full backdrop-blur-md">
-                  ✦ Spécialités Locales
-                </span>
               </div>
 
               <div className="lg:col-span-7 order-1 lg:order-2 space-y-4">
@@ -574,9 +541,6 @@ export default function RepasPage() {
                   className="object-cover object-center group-hover:scale-110 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                <span className="absolute bottom-4 left-4 font-cinzel text-[10px] text-[#E9D18F] tracking-widest uppercase bg-[#131513]/80 border border-[#C5A059]/40 px-3 py-1 rounded-full backdrop-blur-md">
-                  ✦ Beignet Yovodoko
-                </span>
               </div>
             </div>
           </div>
