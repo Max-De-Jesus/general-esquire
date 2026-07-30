@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { supabase } from "@/lib/supabase";
 import { NewsItem } from "@/data/adminStore";
+import { getCloudNews, updateCloudNews } from "@/lib/cloudNewsStore";
 
 // Helper client-side image compressor (max 1200px width/height, quality 0.82 ~100-150KB)
 const compressImageFile = (file: File, maxDimension = 1200, quality = 0.82): Promise<string> => {
@@ -123,61 +124,15 @@ export default function EspaceSecurisePage() {
     setFormImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // Fetch News from Supabase & LocalStorage
+  // Fetch News from Cloud Store & LocalStorage
   const fetchNewsList = async () => {
     setLoadingNews(true);
-    let deletedIds: string[] = [];
+    const cloudItems = await getCloudNews();
+    setNewsList(cloudItems);
     try {
-      deletedIds = JSON.parse(localStorage.getItem("ge_deleted_news_ids") || "[]");
+      localStorage.setItem("ge_admin_news", JSON.stringify(cloudItems));
     } catch {}
-
-    const localStored = typeof window !== "undefined" ? localStorage.getItem("ge_admin_news") : null;
-    let localItems: NewsItem[] = [];
-    if (localStored) {
-      try {
-        localItems = JSON.parse(localStored).filter((n: NewsItem) => !deletedIds.includes(n.id));
-      } catch {}
-    }
-
-    try {
-      const { data, error } = await supabase
-        .from("actualites")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (!error && data) {
-        const mapped: NewsItem[] = data
-          .filter((a: any) => !deletedIds.includes(a.id))
-          .map((a: any) => ({
-            id: a.id,
-            title: a.title,
-            subtitle: a.subtitle ?? undefined,
-            summary: a.summary,
-            content: a.content,
-            category: a.category as NewsItem["category"],
-            date: a.date,
-            imageUrl: (a.images && a.images[0]) || a.image_url || "/images/chant.avif",
-            images: a.images || (a.image_url ? [a.image_url] : ["/images/chant.avif"]),
-            author: a.author,
-            isFeatured: a.is_featured,
-            isPublished: a.is_published,
-          }));
-
-        // Merge mapped with local items avoiding duplicate IDs
-        const existingIds = new Set(mapped.map((m) => m.id));
-        const extraLocal = localItems.filter((item) => !existingIds.has(item.id));
-        const merged = [...extraLocal, ...mapped];
-
-        setNewsList(merged);
-        localStorage.setItem("ge_admin_news", JSON.stringify(merged));
-      } else {
-        setNewsList(localItems);
-      }
-    } catch {
-      setNewsList(localItems);
-    } finally {
-      setLoadingNews(false);
-    }
+    setLoadingNews(false);
   };
 
   // Demandes Clients State
@@ -268,7 +223,7 @@ export default function EspaceSecurisePage() {
     }
   };
 
-  // Create / Publish New Article (syncs with Supabase DB & LocalStorage)
+  // Create / Publish New Article (syncs with Cloud Store)
   const handleCreateNews = async (e: React.FormEvent) => {
     e.preventDefault();
     setNewsSuccess("");
@@ -302,34 +257,14 @@ export default function EspaceSecurisePage() {
       isPublished: formIsPublished,
     };
 
-    // Attempt Supabase insert
-    try {
-      await supabase.from("actualites").insert([{
-        id: newId,
-        title: formTitle,
-        subtitle: formSubtitle || null,
-        summary: formSummary,
-        content: formContent,
-        category: formCategory,
-        date: formDate,
-        author: formAuthor || "Administration General Esquire",
-        image_url: mainImage,
-        images: finalImagesList,
-        is_featured: formIsFeatured,
-        is_published: formIsPublished,
-      }]);
-    } catch (err) {
-      console.error("Supabase insert error:", err);
-    }
-
-    // Save to local storage for instant availability across tabs
     const updated = [newItem, ...newsList];
     setNewsList(updated);
     try {
       localStorage.setItem("ge_admin_news", JSON.stringify(updated));
-      localStorage.setItem("ge_public_news", JSON.stringify(updated));
-      localStorage.setItem("ge_admin_news_initialized", "true");
     } catch {}
+
+    // Synchronize to Global Cloud Store
+    await updateCloudNews(updated);
 
     setNewsSuccess(lang === "fr" ? "Actualité publiée avec succès !" : "News article published successfully!");
 
@@ -348,29 +283,14 @@ export default function EspaceSecurisePage() {
   const handleDeleteNews = async (id: string) => {
     if (!confirm(lang === "fr" ? "Voulez-vous vraiment supprimer cette actualité ?" : "Are you sure you want to delete this news article?")) return;
 
-    // Track deleted IDs in localStorage
-    try {
-      const deletedIds: string[] = JSON.parse(localStorage.getItem("ge_deleted_news_ids") || "[]");
-      if (!deletedIds.includes(id)) {
-        deletedIds.push(id);
-        localStorage.setItem("ge_deleted_news_ids", JSON.stringify(deletedIds));
-      }
-    } catch {}
-
-    // Attempt Supabase delete
-    try {
-      await supabase.from("actualites").delete().eq("id", id);
-    } catch (e) {
-      console.error("Supabase delete error:", e);
-    }
-
-    // Update local state
     const updated = newsList.filter((item) => item.id !== id);
     setNewsList(updated);
     try {
       localStorage.setItem("ge_admin_news", JSON.stringify(updated));
-      localStorage.setItem("ge_public_news", JSON.stringify(updated));
     } catch {}
+
+    // Synchronize to Global Cloud Store
+    await updateCloudNews(updated);
     setNewsSuccess(lang === "fr" ? "Actualité supprimée !" : "News article deleted!");
   };
 
@@ -378,26 +298,13 @@ export default function EspaceSecurisePage() {
   const handleClearAllNews = async () => {
     if (!confirm(lang === "fr" ? "ATTENTION : Supprimer TOUTES les actualités ?" : "WARNING: Delete ALL news articles?")) return;
 
-    try {
-      const idsToDelete = newsList.map((n) => n.id);
-      const deletedIds: string[] = JSON.parse(localStorage.getItem("ge_deleted_news_ids") || "[]");
-      const combined = Array.from(new Set([...deletedIds, ...idsToDelete]));
-      localStorage.setItem("ge_deleted_news_ids", JSON.stringify(combined));
-    } catch {}
-
-    // Attempt Supabase delete
-    try {
-      await supabase.from("actualites").delete().neq("id", "00000000-0000-0000-0000-000000000000");
-    } catch (e) {
-      console.error("Supabase delete all error:", e);
-    }
-
     setNewsList([]);
     try {
       localStorage.setItem("ge_admin_news", JSON.stringify([]));
-      localStorage.setItem("ge_public_news", JSON.stringify([]));
-      localStorage.setItem("ge_admin_news_initialized", "true");
     } catch {}
+
+    // Synchronize to Global Cloud Store
+    await updateCloudNews([]);
     setNewsSuccess(lang === "fr" ? "Toutes les actualités ont été supprimées !" : "All news articles deleted!");
   };
 
@@ -992,7 +899,7 @@ export default function EspaceSecurisePage() {
             <div className="p-6 bg-[#1a1c1a] border border-[#C5A059]/30 rounded-2xl space-y-2">
               <span className="text-xs text-[#C5A059] font-cinzel font-bold uppercase tracking-wider block">Statut Système</span>
               <div className="text-2xl font-bold text-emerald-400">Opérationnel</div>
-              <p className="text-xs text-[#cabfa6]">Supabase Realtime & Auth configurés</p>
+              <p className="text-xs text-[#cabfa6]">Cloud News Sync & Auth configurés</p>
             </div>
             <div className="p-6 bg-[#1a1c1a] border border-[#C5A059]/30 rounded-2xl space-y-2">
               <span className="text-xs text-[#C5A059] font-cinzel font-bold uppercase tracking-wider block">Accès Habilité</span>
@@ -1110,7 +1017,7 @@ export default function EspaceSecurisePage() {
                         </div>
                         <div>
                           <span className="text-[#C5A059] font-cinzel block mb-1">Sujet :</span>
-                          <p className="font-semibold text-[#E9D18F]">{d.subject || "Demande de contact"}</p>
+                          <p className="font-[#E9D18F] font-semibold">{d.subject || "Demande de contact"}</p>
                         </div>
                       </div>
 

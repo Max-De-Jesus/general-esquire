@@ -3,18 +3,9 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
-import { supabase } from "@/lib/supabase";
-import type { Actualite } from "@/lib/supabase";
 import { NewsItem } from "@/data/adminStore";
 import TickerBanner from "@/components/TickerBanner";
-
-// Initial seed article IDs created before admin deployment (to be hidden on public view when deleted)
-const INITIAL_SEED_IDS = [
-  "7b22d610-8c3c-4638-8376-d93611c665ff",
-  "c034d4de-0563-45eb-a1c8-bbb158742284",
-  "36bfe58e-6e46-4697-a555-b014c980e0da",
-  "4f92327e-2c9a-44b5-bd57-b98dcd4e5c4c",
-];
+import { getCloudNews } from "@/lib/cloudNewsStore";
 
 export default function PublicActualitesPage() {
   const { lang } = useLanguage();
@@ -39,77 +30,26 @@ export default function PublicActualitesPage() {
     setActiveImageIndex(0);
   };
 
-  // Charger les actualités depuis le stockage local admin et Supabase Cloud
+  // Charger les actualités depuis le Cloud News Store en temps réel
   useEffect(() => {
     const fetchNews = async () => {
       setLoadingNews(true);
-      let deletedIds: string[] = [];
-      try {
-        deletedIds = JSON.parse(localStorage.getItem("ge_deleted_news_ids") || "[]");
-      } catch {}
-
-      const isExcluded = (id: string) => INITIAL_SEED_IDS.includes(id) || deletedIds.includes(id);
-
-      // 1. Lire les actualités créées localement
-      let localItems: NewsItem[] = [];
-      const localStored = typeof window !== "undefined"
-        ? localStorage.getItem("ge_public_news") || localStorage.getItem("ge_admin_news")
-        : null;
-
-      if (localStored) {
+      const cloudItems = await getCloudNews();
+      if (cloudItems && cloudItems.length > 0) {
+        setNews(cloudItems.filter((n: NewsItem) => n.isPublished !== false));
+      } else {
+        // Fallback stockage local si indisponible
         try {
-          localItems = JSON.parse(localStored).filter((n: NewsItem) => n.isPublished !== false && !isExcluded(n.id));
-        } catch {}
-      }
-
-      // 2. Tenter la récupération sur Supabase DB
-      try {
-        const { data, error } = await supabase
-          .from("actualites")
-          .select("*")
-          .eq("is_published", true)
-          .order("created_at", { ascending: false });
-
-        if (!error && data) {
-          const mapped: NewsItem[] = data
-            .filter((a: Actualite) => !isExcluded(a.id))
-            .map((a: Actualite) => {
-              const allImgs: string[] = Array.isArray((a as any).images) && (a as any).images.length > 0
-                ? (a as any).images
-                : a.image_url ? [a.image_url] : ["/images/chant.avif"];
-
-              return {
-                id: a.id,
-                title: a.title,
-                subtitle: a.subtitle ?? undefined,
-                summary: a.summary,
-                content: a.content,
-                category: a.category as NewsItem["category"],
-                date: a.date,
-                imageUrl: allImgs[0],
-                images: allImgs,
-                author: a.author,
-                isFeatured: a.is_featured,
-                isPublished: a.is_published,
-              };
-            });
-
-          // Fusionner les articles locaux et distants sans doublons
-          const combinedMap = new Map<string, NewsItem>();
-          localItems.forEach((item) => combinedMap.set(item.id, item));
-          mapped.forEach((item) => {
-            if (!combinedMap.has(item.id)) {
-              combinedMap.set(item.id, item);
-            }
-          });
-
-          setNews(Array.from(combinedMap.values()));
-          setLoadingNews(false);
-          return;
+          const localStored = localStorage.getItem("ge_admin_news");
+          if (localStored) {
+            setNews(JSON.parse(localStored).filter((n: NewsItem) => n.isPublished !== false));
+          } else {
+            setNews([]);
+          }
+        } catch {
+          setNews([]);
         }
-      } catch {}
-
-      setNews(localItems);
+      }
       setLoadingNews(false);
     };
 
