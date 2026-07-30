@@ -10,79 +10,79 @@ import { UtensilsIcon, FlameIcon, CoffeeIcon } from "@/components/Icons";
 // ─── Hero Carousel Slides ─────────────────────────────────────────────────────
 const SLIDES = [
   {
-    src: "/images/car repas/Food.jpg",
+    src: "/images/Food.jpg",
     tag: "Chrysalides — Gastronomie",
     title: "Bienvenue dans un monde de saveurs",
     desc: "Trois repas par jour préparés avec soin, plus des collations lors des excursions.",
   },
   {
-    src: "/images/car repas/Bouillie.jpg",
+    src: "/images/Bouillie.jpg",
     tag: "Petit-Déjeuner Traditionnel",
     title: "Bouillie & Yovodoko",
     desc: "Découvrez la bouillie de maïs, mil ou sorgho et les fameux beignets yovodoko.",
   },
   {
-    src: "/images/car repas/food3.jpg",
+    src: "/images/food3.jpg",
     tag: "Cuisine Roborative",
     title: "Mets locaux & Plats généreux",
     desc: "Viandes, poissons, crabes et sauces savoureuses à apprécier avec les doigts.",
   },
   {
-    src: "/images/car repas/Tchooh14 - Copie.jpg",
+    src: "/images/Tchooh14.jpg",
     tag: "Spécialités Béninoises",
     title: "Gari Délayé & Arachide",
     desc: "Dégustez le gari glacé accompagné des galettes d'arachide croquantes.",
   },
   {
-    src: "/images/car repas/food14.jpg",
+    src: "/images/food14.jpg",
     tag: "Options Sur-Mesure",
     title: "Petit-déjeuner occidental aussi disponible",
     desc: "Nous nous adaptons avec plaisir à vos préférences et régimes alimentaires.",
   },
 ];
 
-// ─── Complete Food Gallery (Toutes les 40 images du dossier CAR REPAS) ───────
+// ─── Complete Food Gallery ────────────────────────────────────────────────────
 const FOOD_GALLERY = [
-  { src: "/images/car repas/Food.jpg", title: "Pain Artisanal & Baguette", tag: "Petit-Déjeuner" },
-  { src: "/images/car repas/Bouillie.jpg", title: "Bouillie de Maïs & Mil", tag: "Petit-Déjeuner Local" },
-  { src: "/images/car repas/food2.jpg", title: "Bol de Légumes & Riz", tag: "Plat Équilibré" },
-  { src: "/images/car repas/food3.jpg", title: "Dîner Convivial & Vin", tag: "Repas du Soir" },
-  { src: "/images/car repas/food4.jpg", title: "Gateaux aux Fraises", tag: "Dessert & Douceurs" },
-  { src: "/images/car repas/food5.jpg", title: "Jus de Fruits & Toast", tag: "Petit-Déjeuner" },
-  { src: "/images/car repas/food6.jpg", title: "Œuf au Plat à la Poêle", tag: "Petit-Déjeuner Chaud" },
-  { src: "/images/car repas/food8.jpg", title: "Salade & Pâtes Gourmandes", tag: "Entrée Fraîche" },
-  { src: "/images/car repas/food9.jpg", title: "Burger Gourmet & Frites", tag: "Snack & Repas" },
-  { src: "/images/car repas/food10.jpg", title: "Soupe Maison & Légumes", tag: "Potage Warm" },
-  { src: "/images/car repas/food11.jpg", title: "Sauté Asiatique & Nouilles", tag: "Cuisine du Monde" },
-  { src: "/images/car repas/food12.jpg", title: "Cocotte d'Œufs & Herbes", tag: "Brunch" },
-  { src: "/images/car repas/food13.jpg", title: "Muesli Gourmand aux Fruits", tag: "Petit-Déjeuner" },
-  { src: "/images/car repas/food14.jpg", title: "Assiette Équilibrée & Avocat", tag: "Repas Léger" },
-  { src: "/images/car repas/food15.jpg", title: "Riz Frit & Cocktails", tag: "Cuisine Épicée" },
-  { src: "/images/car repas/food16.jpg", title: "Pains Rustiques & Bols", tag: "Buffet" },
-  { src: "/images/car repas/sandwich.jpg", title: "Sandwichs Garnis", tag: "Collation Excursion" },
-  { src: "/images/car repas/Spaghetti.jpg", title: "Spaghetti & Saint-Jacques", tag: "Plat International" },
-  { src: "/images/car repas/steak - Copie.jpg", title: "Grillade de Bœuf", tag: "Viandes" },
-  { src: "/images/car repas/salmon.jpg", title: "Pavé de Saumon", tag: "Poissons" },
-  { src: "/images/car repas/Tchooh12 - Copie.jpeg", title: "Beignet Yovodoko", tag: "Douceurs Béninoises" },
-  { src: "/images/car repas/Tchooh14 - Copie.jpg", title: "Gari Délayé & Arachide", tag: "Goûter Béninois" },
-  { src: "/images/car repas/Tchooh15 - Copie.jpg", title: "Tapioca & Bouillie Blanche", tag: "Saveurs du Bénin" },
-  { src: "/images/car repas/Excursion26.jpg", title: "", tag: "" },
-  { src: "/images/car repas/tchooh - Copie.webp", title: "", tag: "" },
-  { src: "/images/car repas/Tchooh2 - Copie.jpeg", title: "", tag: "" },
-  { src: "/images/car repas/Tchooh3 - Copie.jpg", title: "", tag: "" },
-  { src: "/images/car repas/tTchooh4 - Copie.webp", title: "", tag: "" },
-  { src: "/images/car repas/Tchooh5 - Copie.png", title: "", tag: "" },
-  { src: "/images/car repas/Tchooh6 - Copie.jpeg", title: "", tag: "" },
-  { src: "/images/car repas/Tchooh6 - Copie.png", title: "", tag: "" },
-  { src: "/images/car repas/Tchooh7 - Copie.jpg", title: "", tag: "" },
-  { src: "/images/car repas/Tchooh7 - Copie.webp", title: "", tag: "" },
-  { src: "/images/car repas/Tchooh8 - Copie.jpg", title: "", tag: "" },
-  { src: "/images/car repas/Tchooh9 - Copie.jpg", title: "", tag: "" },
-  { src: "/images/car repas/Tchooh10 - Copie.webp", title: "", tag: "" },
-  { src: "/images/car repas/Tchooh11 - Copie.webp", title: "", tag: "" },
-  { src: "/images/car repas/Tchooh16 - Copie.jpg", title: "", tag: "" },
-  { src: "/images/car repas/Tchooh17 - Copie.jpg", title: "", tag: "" },
-  { src: "/images/car repas/Tchooh18 - Copie.png", title: "", tag: "" },
+  { src: "/images/Food.jpg", title: "Pain Artisanal & Baguette", tag: "Petit-Déjeuner" },
+  { src: "/images/Bouillie.jpg", title: "Bouillie de Maïs & Mil", tag: "Petit-Déjeuner Local" },
+  { src: "/images/food2.jpg", title: "Bol de Légumes & Riz", tag: "Plat Équilibré" },
+  { src: "/images/food3.jpg", title: "Dîner Convivial & Vin", tag: "Repas du Soir" },
+  { src: "/images/food4.jpg", title: "Gateaux aux Fraises", tag: "Dessert & Douceurs" },
+  { src: "/images/food5.jpg", title: "Jus de Fruits & Toast", tag: "Petit-Déjeuner" },
+  { src: "/images/food6.jpg", title: "Œuf au Plat à la Poêle", tag: "Petit-Déjeuner Chaud" },
+  { src: "/images/food8.jpg", title: "Salade & Pâtes Gourmandes", tag: "Entrée Fraîche" },
+  { src: "/images/food9.jpg", title: "Burger Gourmet & Frites", tag: "Snack & Repas" },
+  { src: "/images/food10.jpg", title: "Soupe Maison & Légumes", tag: "Potage Warm" },
+  { src: "/images/food11.jpg", title: "Sauté Asiatique & Nouilles", tag: "Cuisine du Monde" },
+  { src: "/images/food12.jpg", title: "Cocotte d'Œufs & Herbes", tag: "Brunch" },
+  { src: "/images/food13.jpg", title: "Muesli Gourmand aux Fruits", tag: "Petit-Déjeuner" },
+  { src: "/images/food14.jpg", title: "Assiette Équilibrée & Avocat", tag: "Repas Léger" },
+  { src: "/images/food15.jpg", title: "Riz Frit & Cocktails", tag: "Cuisine Épicée" },
+  { src: "/images/food16.jpg", title: "Pains Rustiques & Bols", tag: "Buffet" },
+  { src: "/images/sandwich.jpg", title: "Sandwichs Garnis", tag: "Collation Excursion" },
+  { src: "/images/Spaghetti.jpg", title: "Spaghetti & Saint-Jacques", tag: "Plat International" },
+  { src: "/images/steak.jpg", title: "Grillade de Bœuf", tag: "Viandes" },
+  { src: "/images/salmon.jpg", title: "Pavé de Saumon", tag: "Poissons" },
+  { src: "/images/Tchooh12.webp", title: "Beignet Yovodoko", tag: "Douceurs Béninoises" },
+  { src: "/images/Tchooh14.jpg", title: "Gari Délayé & Arachide", tag: "Goûter Béninois" },
+  { src: "/images/Tchooh15.jpg", title: "Tapioca & Bouillie Blanche", tag: "Saveurs du Bénin" },
+  { src: "/images/Excursion26.jpg", title: "", tag: "" },
+  { src: "/images/tchooh.webp", title: "", tag: "" },
+  { src: "/images/Tchooh2.jpeg", title: "", tag: "" },
+  { src: "/images/Tchooh3.jpg", title: "", tag: "" },
+  { src: "/images/Tchooh4.webp", title: "", tag: "" },
+  { src: "/images/Tchooh5.png", title: "", tag: "" },
+  { src: "/images/Tchooh6.jpeg", title: "", tag: "" },
+  { src: "/images/Tchooh6.png", title: "", tag: "" },
+  { src: "/images/Tchooh7.jpg", title: "", tag: "" },
+  { src: "/images/Tchooh7.webp", title: "", tag: "" },
+  { src: "/images/Tchooh8.jpg", title: "", tag: "" },
+  { src: "/images/Tchooh9.jpg", title: "", tag: "" },
+  { src: "/images/Tchooh10.webp", title: "", tag: "" },
+  { src: "/images/Tchooh11.webp", title: "", tag: "" },
+  { src: "/images/Tchooh16.jpg", title: "", tag: "" },
+  { src: "/images/Tchooh17.jpg", title: "", tag: "" },
+  { src: "/images/Tchooh18.png", title: "", tag: "" },
 ];
 
 // ─── CARROUSEL ROTATIF 3D EN CERCLE (COVER FLOW CYLINDER 3D — 12 CARTES VEDETTES) ──
@@ -597,12 +597,7 @@ export default function RepasPage() {
 
           <Rotating3DFoodCarousel />
 
-          {/* Grille complète des 40 photos du dossier CAR REPAS */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-            {FOOD_GALLERY.map((item, idx) => (
-              <SmoothScrollCard key={idx} item={item} index={idx} />
-            ))}
-          </div>
+
         </section>
 
         {/* ── CTA DE RÉSERVATION & 3 BOUTONS DE CONTACT ANIMÉS ── */}
