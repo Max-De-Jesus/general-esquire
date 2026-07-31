@@ -307,7 +307,7 @@ export default function InstitutionsPubliquesPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             {/* Carte 1 : Forfait Rédaction Principal */}
-            <div className="relative p-8 rounded-3xl bg-gradient-to-b from-[#0F3823]/90 via-[#131513] to-[#0F3823]/90 border-2 border-[#C5A059] shadow-[0_0_40px_rgba(197,160,89,0.25)] hover:shadow-[0_0_65px_rgba(197,160,89,0.45)] hover:scale-[1.03] transition-all duration-500 overflow-hidden group">
+            <div className="relative p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-[#0F3823]/90 via-[#131513] to-[#0F3823]/90 border-2 border-[#C5A059] shadow-[0_0_40px_rgba(197,160,89,0.25)] hover:shadow-[0_0_65px_rgba(197,160,89,0.45)] hover:scale-[1.03] transition-all duration-500 overflow-hidden group">
               <div className="absolute top-0 right-0 px-4 py-1 bg-gradient-to-r from-[#C5A059] to-[#E9D18F] text-black font-cinzel text-[10px] font-bold tracking-widest uppercase rounded-bl-2xl shadow-md">
                 ✦ {lang === "fr" ? "FORFAIT PRINCIPAL" : "MAIN PACKAGE"}
               </div>
@@ -315,7 +315,7 @@ export default function InstitutionsPubliquesPage() {
                 📜
               </div>
               <h3 className="font-cinzel text-base text-[#E9D18F] font-bold uppercase tracking-widest mb-1">{tx.rate1_title}</h3>
-              <p className="font-cinzel text-4xl sm:text-5xl text-white font-extrabold my-3 drop-shadow-md">
+              <p className="font-cinzel text-3xl sm:text-5xl text-white font-extrabold my-3 drop-shadow-md">
                 3 500 € <span className="text-sm font-normal text-[#C5A059] font-cormorant">TTC</span>
               </p>
               <div className="h-[1px] w-full bg-[#C5A059]/30 my-4" />
@@ -336,12 +336,12 @@ export default function InstitutionsPubliquesPage() {
             </div>
 
             {/* Carte 2 : Pages Supplémentaires */}
-            <div className="relative p-8 rounded-3xl bg-[#131513] border border-[#C5A059]/40 shadow-xl hover:border-[#C5A059] hover:shadow-[0_0_40px_rgba(197,160,89,0.2)] hover:scale-[1.02] transition-all duration-500 group">
+            <div className="relative p-6 sm:p-8 rounded-3xl bg-[#131513] border border-[#C5A059]/40 shadow-xl hover:border-[#C5A059] hover:shadow-[0_0_40px_rgba(197,160,89,0.2)] hover:scale-[1.02] transition-all duration-500 group">
               <div className="w-12 h-12 rounded-2xl bg-[#C5A059]/15 border border-[#C5A059]/30 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
                 📑
               </div>
               <h3 className="font-cinzel text-base text-[#E9D18F] font-bold uppercase tracking-widest mb-1">{tx.rate2_title}</h3>
-              <p className="font-cinzel text-4xl text-white font-extrabold my-3">
+              <p className="font-cinzel text-3xl sm:text-4xl text-white font-extrabold my-3">
                 1 000 € <span className="text-sm font-normal text-[#cabfa6] font-cormorant">/ 10 pages</span>
               </p>
               <div className="h-[1px] w-full bg-[#C5A059]/20 my-4" />
@@ -358,7 +358,7 @@ export default function InstitutionsPubliquesPage() {
             </div>
 
             {/* Carte 3 : Consultation Orale Non Écrite */}
-            <div className="relative p-8 rounded-3xl bg-[#131513] border border-[#C5A059]/40 shadow-xl hover:border-[#C5A059] hover:shadow-[0_0_40px_rgba(197,160,89,0.2)] hover:scale-[1.02] transition-all duration-500 group">
+            <div className="relative p-6 sm:p-8 rounded-3xl bg-[#131513] border border-[#C5A059]/40 shadow-xl hover:border-[#C5A059] hover:shadow-[0_0_40px_rgba(197,160,89,0.2)] hover:scale-[1.02] transition-all duration-500 group">
               <div className="w-12 h-12 rounded-2xl bg-[#C5A059]/15 border border-[#C5A059]/30 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
                 🎙️
               </div>
