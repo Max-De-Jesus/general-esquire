@@ -375,42 +375,42 @@ export default function EntrepreneurPage() {
               {
                 icon: <ScaleIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
                 title: "Veille Juridique",
-                text: "une veille juridique sur les textes de loi et la jurisprudence ;",
+                text: "une veille juridique sur les textes de loi et la jurisprudence\u00A0;",
               },
               {
                 icon: <MailIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
                 title: "Domiciliation Temporaire",
-                text: "la domiciliation temporaire de vos courriers en cas d’urgence ;",
+                text: "la domiciliation temporaire de vos courriers en cas d’urgence\u00A0;",
               },
               {
                 icon: <ClipboardIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
                 title: "Assistance Formalités",
-                text: "l’assistance à l’occasion de vos formalités à forte implication juridique ;",
+                text: "l’assistance à l’occasion de vos formalités à forte implication juridique\u00A0;",
               },
               {
                 icon: <ChatIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
                 title: "Conseils Adaptés",
-                text: "des conseils adaptés à vos besoins si nécessaire en présentiel, et par défaut en visioconférence, audioconférence ou par écrit ;",
+                text: "des conseils adaptés à vos besoins si nécessaire en présentiel, et par défaut en visioconférence, audioconférence ou par écrit\u00A0;",
               },
               {
                 icon: <GlobeIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
                 title: "Traduction Juridique",
-                text: "la traduction de tous vos documents à valeur juridique en français, anglais (sans frais), chinois et russe (supplément à prévoir) ;",
+                text: "la traduction de tous vos documents à valeur juridique en français, anglais (sans frais), chinois et russe (supplément à prévoir)\u00A0;",
               },
               {
                 icon: <DocumentTextIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
                 title: "Rédaction d'Actes",
-                text: "la rédaction de contrats, lettres de recrutement, lettres de licenciement, lettres administratives diverses ;",
+                text: "la rédaction de contrats, lettres de recrutement, lettres de licenciement, lettres administratives diverses\u00A0;",
               },
               {
                 icon: <HandshakeIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
                 title: "Négociations Commerciales",
-                text: "l’assistance lors de vos négociations commerciales et professionnelles ;",
+                text: "l’assistance lors de vos négociations commerciales et professionnelles\u00A0;",
               },
               {
                 icon: <CourtIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
                 title: "Procédures Non Obligatoires",
-                text: "l’assistance dans les procédures sans représentation obligatoire ;",
+                text: "l’assistance dans les procédures sans représentation obligatoire\u00A0;",
               },
               {
                 icon: <LinkIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
