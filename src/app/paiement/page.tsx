@@ -101,8 +101,12 @@ export default function PaymentPage() {
   const [paypalProcessing, setPaypalProcessing] = useState(false);
 
   /* ── Environment Payment Keys ── */
-  const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
-  const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "AdaU7YACT2DL7arhwDiRkHrYpPzgfXMaMsAsDLc151AVW8oXF56GJSfSgH4Yg5zyq3RL6PUJSXB-8umj";
+  const stripePublishableKey =
+    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ||
+    "pk_live_51TyzoH1wH2HICAohK79Nl0HGnLMrzHboY9Whtuv5og0DBy6ArR4SZEpGU6i4twMprfBlNgnyUhGNMgzAiu2IthAu00iEFO96Bv";
+  const paypalClientId =
+    process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ||
+    "AdaU7YACT2DL7arhwDiRkHrYpPzgfXMaMsAsDLc151AVW8oXF56GJSfSgH4Yg5zyq3RL6PUJSXB-8umj";
   const isStripeLiveReady = stripePublishableKey.startsWith("pk_live_") || stripePublishableKey.startsWith("pk_test_");
   const isPaypalLiveReady = paypalClientId.length > 10 && !paypalClientId.includes("votre_client_id");
 
