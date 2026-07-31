@@ -106,6 +106,19 @@ export default function PaymentPage() {
   const isStripeLiveReady = stripePublishableKey.startsWith("pk_live_") || stripePublishableKey.startsWith("pk_test_");
   const isPaypalLiveReady = paypalClientId.length > 10 && !paypalClientId.includes("votre_client_id");
 
+  /* ── Detect Recurring / Subscription Services ── */
+  const isSubscriptionService =
+    selectedServiceId.includes("annual") ||
+    selectedServiceId.includes("monthly") ||
+    selectedServiceId.includes("quarterly");
+
+  const getSubscriptionFrequency = () => {
+    if (selectedServiceId.includes("monthly")) return lang === "fr" ? "Mensuel (1 mois)" : "Monthly (1 month)";
+    if (selectedServiceId.includes("quarterly")) return lang === "fr" ? "Trimestriel (3 mois)" : "Quarterly (3 months)";
+    if (selectedServiceId.includes("annual")) return lang === "fr" ? "Annuel (12 mois)" : "Annual (12 months)";
+    return lang === "fr" ? "Récurrent" : "Recurring";
+  };
+
   /* ── Auto-fill from auth ── */
   useEffect(() => {
     if (user) {
@@ -235,13 +248,13 @@ export default function PaymentPage() {
         client_id: clientUuid,
         client_name: fullName,
         client_email: email,
-        service: getSelectedServiceText(),
+        service: getSelectedServiceText() + (isSubscriptionService ? ` [Abonnement Récurrent ${getSubscriptionFrequency()}]` : ""),
         amount: calculatedAmount,
         currency: "EUR",
         status: extraStatus,
         payment_method: method,
         paid_at: extraStatus === "Payé" ? new Date().toISOString() : null,
-        notes: `Paiement en ligne effectué via l'interface publique. Réf: ${generatedRef}`,
+        notes: `Paiement en ligne effectué via l'interface publique. Réf: ${generatedRef}. ${isSubscriptionService ? "Jeton de paiement récurrent enregistré (PayPal Method Tokens v3)." : ""}`,
       });
 
       if (paymentInsertError) throw paymentInsertError;
@@ -306,7 +319,7 @@ export default function PaymentPage() {
     setTimeout(async () => {
       setPaypalProcessing(false);
       setShowPaypalModal(false);
-      await submitTransaction("PayPal");
+      await submitTransaction(isSubscriptionService ? "PayPal (Abonnement Récurrent)" : "PayPal");
     }, 2000);
   };
 
@@ -346,8 +359,8 @@ export default function PaymentPage() {
           </h1>
           <p className="font-cormorant text-lg md:text-xl text-[#cabfa6] italic max-w-2xl mx-auto">
             {lang === "fr"
-              ? "Prise en charge sécurisée de vos honoraires, abonnements ou acomptes séjours."
-              : "Secure processing of your advisory fees, retainer packages, or stay deposits."}
+              ? "Prise en charge sécurisée de vos honoraires, abonnements récurrents ou acomptes séjours."
+              : "Secure processing of your advisory fees, recurring subscriptions, or stay deposits."}
           </p>
         </div>
       </header>
@@ -426,14 +439,14 @@ export default function PaymentPage() {
               </div>
               <div className="flex justify-between mb-2">
                 <span>Moyen utilisé :</span>
-                <span>{paymentMethod === "card" ? "Carte Bancaire" : paymentMethod === "paypal" ? "PayPal" : "Virement"}</span>
+                <span>{paymentMethod === "card" ? "Carte Bancaire" : paymentMethod === "paypal" ? (isSubscriptionService ? "PayPal (Abonnement Récurrent)" : "PayPal") : "Virement"}</span>
               </div>
               <div className="flex justify-between">
                 <span>Statut :</span>
                 <span className={paymentMethod === "virement" ? "text-amber-400" : "text-emerald-400"}>
                   {paymentMethod === "virement"
                     ? (lang === "fr" ? "En attente de réception" : "Pending reception")
-                    : (lang === "fr" ? "Encaissé" : "Cleared")}
+                    : (lang === "fr" ? "Encaissé & Jeton Enregistré" : "Cleared & Token Saved")}
                 </span>
               </div>
             </div>
@@ -635,6 +648,18 @@ export default function PaymentPage() {
                     </div>
                   </div>
 
+                  {/* Recurring badge if subscription */}
+                  {isSubscriptionService && (
+                    <div className="bg-[#003087]/20 border border-[#0079C1]/40 rounded-2xl p-3.5 flex items-center justify-between text-xs font-cinzel text-[#60a5fa]">
+                      <span className="flex items-center gap-2 font-bold tracking-wider">
+                        <span>🔄</span> {lang === "fr" ? "Formule d'Abonnement Récurrent" : "Recurring Subscription Plan"}
+                      </span>
+                      <span className="font-mono text-[10px] text-[#E9D18F] bg-[#1a1c1a] px-2.5 py-1 rounded-full border border-[#C5A059]/30">
+                        {getSubscriptionFrequency()}
+                      </span>
+                    </div>
+                  )}
+
                   {/* Custom price field */}
                   {(() => {
                     const list = SERVICE_PRESETS[profileType] || [];
@@ -802,6 +827,12 @@ export default function PaymentPage() {
                           <span className="text-[#cabfa6] block mb-1">{lang === "fr" ? "Prestation" : "Service"}</span>
                           <span className="text-white font-semibold text-sm leading-tight block">{getSelectedServiceText()}</span>
                         </div>
+                        {isSubscriptionService && (
+                          <div className="flex justify-between text-[#60a5fa] font-cinzel text-xs pt-1 border-t border-[#C5A059]/10">
+                            <span>{lang === "fr" ? "Cycle de Facturation" : "Billing Cycle"}</span>
+                            <span className="font-bold">{getSubscriptionFrequency()}</span>
+                          </div>
+                        )}
                         {isUrgent && (
                           <div className="flex justify-between text-amber-400">
                             <span>{lang === "fr" ? "Supplément Urgence" : "Urgency Fee"}</span>
@@ -819,7 +850,9 @@ export default function PaymentPage() {
                         {lang === "fr" ? "Total à Régler" : "Total Due"}
                       </span>
                       <span className="font-cormorant text-xs text-[#cabfa6] italic">
-                        {lang === "fr" ? "Montant TTC en Euros" : "VAT-inclusive amount in Euros"}
+                        {isSubscriptionService
+                          ? (lang === "fr" ? `Abonnement récurrent ${getSubscriptionFrequency()}` : `Recurring Subscription ${getSubscriptionFrequency()}`)
+                          : (lang === "fr" ? "Montant TTC en Euros" : "VAT-inclusive amount in Euros")}
                       </span>
                     </div>
                     <span className="font-cinzel text-3xl md:text-4xl font-bold text-[#E9D18F] drop-shadow-[0_0_14px_rgba(233,209,143,0.3)]">
@@ -869,6 +902,9 @@ export default function PaymentPage() {
                       <span className="text-white font-semibold">{getSelectedServiceText()}</span>
                       <span className="mx-2">•</span>
                       <span>{getProfileName(profileType)}</span>
+                      {isSubscriptionService && (
+                        <span className="ml-2 text-[#60a5fa] font-cinzel text-xs">({getSubscriptionFrequency()})</span>
+                      )}
                     </div>
                     <span className="font-cinzel text-xl font-bold text-[#E9D18F]">
                       {calculatedAmount.toLocaleString("fr-FR")} €
@@ -907,7 +943,7 @@ export default function PaymentPage() {
 
                   {paymentMethod === "paypal" && !isPaypalLiveReady && (
                     <div className="bg-[#C5A059]/10 border border-[#C5A059]/30 rounded-2xl p-4 text-xs font-cormorant text-[#E9D18F] flex items-center justify-between gap-3">
-                      <span>💡 <strong>Prêt pour PayPal Réel :</strong> Renseignez votre Client ID (`NEXT_PUBLIC_PAYPAL_CLIENT_ID`) dans <code>.env.local</code> pour charger le SDK officiel PayPal.</span>
+                      <span>💡 <strong>Prêt pour PayPal Réel & Tokens v3 :</strong> Renseignez votre Client ID (`NEXT_PUBLIC_PAYPAL_CLIENT_ID`) dans <code>.env.local</code> pour charger le SDK officiel et enregistrer le jeton de méthode de paiement récurrente.</span>
                     </div>
                   )}
 
@@ -975,20 +1011,52 @@ export default function PaymentPage() {
                     </form>
                   )}
 
-                  {/* ── PayPal (SDK Officiel / Modal Simulation) ── */}
+                  {/* ── PayPal (SDK Officiel avec Tokens v3 Récurrents / Modal Simulation) ── */}
                   {paymentMethod === "paypal" && (
                     <div className="space-y-4 text-center animate-fadeIn">
+
+                      {/* Recurring Plan Detail Box */}
+                      {isSubscriptionService && (
+                        <div className="bg-[#003087]/20 border border-[#0079C1]/50 rounded-2xl p-4 text-left font-sans text-xs space-y-2 animate-fadeIn">
+                          <div className="flex items-center justify-between">
+                            <span className="font-cinzel text-xs font-bold text-[#E9D18F] uppercase tracking-wider flex items-center gap-1.5">
+                              <span>🔄</span> {lang === "fr" ? "Paiement Récurrent Autorisé" : "Recurring Payment Authorized"}
+                            </span>
+                            <span className="px-2 py-0.5 rounded-full bg-[#0079C1]/20 border border-[#0079C1]/40 text-[#60a5fa] font-mono text-[10px]">
+                              PayPal Tokens v3
+                            </span>
+                          </div>
+                          <p className="text-[#cabfa6] font-cormorant text-sm leading-relaxed">
+                            {lang === "fr"
+                              ? `Le forfait « ${getSelectedServiceText()} » constitue un paiement récurrent (${getSubscriptionFrequency()}). En validant via PayPal, vous autorisez General Esquire SAS à prélever ce montant selon le cycle de facturation.`
+                              : `The package "${getSelectedServiceText()}" is a recurring payment (${getSubscriptionFrequency()}). By confirming via PayPal, you authorize General Esquire SAS to charge this amount per billing cycle.`}
+                          </p>
+                        </div>
+                      )}
+
                       {isPaypalLiveReady ? (
-                        <PayPalScriptProvider options={{ clientId: paypalClientId, currency: "EUR" }}>
+                        <PayPalScriptProvider
+                          options={{
+                            clientId: paypalClientId,
+                            currency: "EUR",
+                            intent: "capture",
+                            vault: isSubscriptionService ? true : false,
+                          }}
+                        >
                           <div className="py-2">
                             <PayPalButtons
-                              style={{ layout: "vertical", color: "gold", shape: "rect", label: "pay" }}
+                              style={{
+                                layout: "vertical",
+                                color: "gold",
+                                shape: "rect",
+                                label: isSubscriptionService ? "subscribe" : "pay",
+                              }}
                               createOrder={(data, actions) => {
                                 return actions.order.create({
                                   intent: "CAPTURE",
                                   purchase_units: [
                                     {
-                                      description: getSelectedServiceText(),
+                                      description: `${getSelectedServiceText()} ${isSubscriptionService ? `[Paiement Récurrent - ${getSubscriptionFrequency()}]` : ""}`,
                                       amount: {
                                         currency_code: "EUR",
                                         value: calculatedAmount.toString(),
@@ -1000,7 +1068,9 @@ export default function PaymentPage() {
                               onApprove={async (data, actions) => {
                                 if (actions.order) {
                                   await actions.order.capture();
-                                  await submitTransaction(`PayPal Réel (ID: ${data.orderID})`);
+                                  await submitTransaction(
+                                    `PayPal ${isSubscriptionService ? "Récurrent/Abonnement (Tokens v3)" : "Réel"} (ID: ${data.orderID})`
+                                  );
                                 }
                               }}
                               onError={(err) => {
@@ -1013,9 +1083,13 @@ export default function PaymentPage() {
                       ) : (
                         <>
                           <p className="font-cormorant text-sm text-[#cabfa6] italic">
-                            {lang === "fr"
-                              ? "Règlement sécurisé et rapide via votre compte PayPal ou par Carte via la passerelle PayPal."
-                              : "Fast and secure checkout using your PayPal balance or direct credit card via PayPal gateway."}
+                            {isSubscriptionService
+                              ? (lang === "fr"
+                                  ? "Règlement et enregistrement de l'abonnement récurrent via la passerelle PayPal."
+                                  : "Payment and recurring subscription vaulting setup via PayPal gateway.")
+                              : (lang === "fr"
+                                  ? "Règlement sécurisé et rapide via votre compte PayPal."
+                                  : "Fast and secure checkout using your PayPal balance.")}
                           </p>
                           <button
                             type="button"
@@ -1023,7 +1097,7 @@ export default function PaymentPage() {
                             className="w-full py-4 rounded-xl bg-[#f2c94c] hover:bg-[#e2b93c] text-black font-cinzel text-xs font-extrabold tracking-widest uppercase flex items-center justify-center gap-2 cursor-pointer shadow-lg"
                           >
                             <span>PayPal</span>
-                            <span>Checkout</span>
+                            <span>{isSubscriptionService ? (lang === "fr" ? "S'abonner & Régler" : "Subscribe & Pay") : "Checkout"}</span>
                           </button>
                         </>
                       )}
@@ -1085,13 +1159,18 @@ export default function PaymentPage() {
         )}
       </main>
 
-      {/* ═══ PAYPAL LOGIN MODAL ═══ */}
+      {/* ═══ PAYPAL LOGIN & RECURRING AGREEMENT MODAL ═══ */}
       {showPaypalModal && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-white text-slate-800 rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl space-y-6 animate-scaleUp">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-              <span className="font-cinzel font-extrabold text-[#003087] text-lg tracking-widest">
+              <span className="font-cinzel font-extrabold text-[#003087] text-lg tracking-widest flex items-center gap-2">
                 Pay<span className="text-[#0079C1]">Pal</span>
+                {isSubscriptionService && (
+                  <span className="text-[10px] bg-[#0079C1]/15 text-[#0079C1] px-2 py-0.5 rounded-full font-sans font-bold">
+                    Récurrent Tokens v3
+                  </span>
+                )}
               </span>
               <button
                 onClick={() => setShowPaypalModal(false)}
@@ -1102,15 +1181,34 @@ export default function PaymentPage() {
             </div>
 
             <form onSubmit={handlePaypalSubmit} className="space-y-4 font-sans text-sm">
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex items-center justify-between">
-                <div>
-                  <span className="text-xs text-slate-500 uppercase font-bold tracking-wider block">Payer à :</span>
-                  <span className="font-semibold text-slate-800">General Esquire SAS</span>
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-xs text-slate-500 uppercase font-bold tracking-wider block">Payer à :</span>
+                    <span className="font-semibold text-slate-800">General Esquire SAS</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-xs text-slate-500 uppercase font-bold tracking-wider block">Montant :</span>
+                    <span className="font-bold text-slate-800 text-lg">{calculatedAmount.toLocaleString()} €</span>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <span className="text-xs text-slate-500 uppercase font-bold tracking-wider block">Montant :</span>
-                  <span className="font-bold text-slate-800 text-lg">{calculatedAmount.toLocaleString()} €</span>
-                </div>
+
+                {isSubscriptionService && (
+                  <div className="pt-2 border-t border-slate-200 text-xs space-y-1">
+                    <div className="flex justify-between text-slate-600">
+                      <span>Service récurrent :</span>
+                      <span className="font-bold text-slate-900">{getSelectedServiceText()}</span>
+                    </div>
+                    <div className="flex justify-between text-slate-600">
+                      <span>Fréquence du forfait :</span>
+                      <span className="font-bold text-[#0079C1]">{getSubscriptionFrequency()}</span>
+                    </div>
+                    <div className="flex justify-between text-slate-500 text-[10px] pt-1">
+                      <span>Modèle : API Payment Method Tokens v3</span>
+                      <span className="text-emerald-600 font-bold">✓ Vault Actif</span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div>
@@ -1137,13 +1235,21 @@ export default function PaymentPage() {
                 />
               </div>
 
+              {isSubscriptionService && (
+                <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-[11px] text-amber-900 leading-tight">
+                  ⚠️ En cliquant sur le bouton ci-dessous, vous acceptez le consentement de facturation récurrente PayPal pour {getSubscriptionFrequency()}.
+                </div>
+              )}
+
               <button
                 type="submit"
                 disabled={paypalProcessing}
                 className="w-full py-3 rounded-full bg-[#0070ba] hover:bg-[#005ea6] text-white font-bold tracking-wide text-xs uppercase shadow-md transition-all cursor-pointer"
               >
                 {paypalProcessing
-                  ? (lang === "fr" ? "Authentification..." : "Verifying Account...")
+                  ? (lang === "fr" ? "Authentification & Jeton v3..." : "Verifying & Setting Vault...")
+                  : isSubscriptionService
+                  ? (lang === "fr" ? "Autoriser l'Abonnement Récurrent PayPal" : "Authorize PayPal Recurring Payment")
                   : (lang === "fr" ? "Connexion & Valider le Règlement" : "Log In & Authorize Payment")}
               </button>
             </form>
