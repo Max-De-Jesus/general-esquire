@@ -5,7 +5,8 @@ export async function POST(req: Request) {
   try {
     const { amount, currency = "eur", serviceName, clientEmail } = await req.json();
 
-    const stripeSecret = process.env.STRIPE_SECRET_KEY;
+    const stripeSecret = process.env.STRIPE_SECRET_KEY || "";
+
     if (!stripeSecret || stripeSecret.includes("votre_cle_secrete")) {
       return NextResponse.json(
         { error: "Clé secrète Stripe non configurée. Veuillez ajouter votre STRIPE_SECRET_KEY dans .env.local" },
