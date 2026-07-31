@@ -120,13 +120,12 @@ function RadialGallery3D() {
       onTouchEnd={onTouchEnd}
     >
       {/* 3D Stage */}
-      <div className="relative flex items-center justify-center h-[380px] sm:h-[480px]">
+      <div className="relative flex items-center justify-center h-[240px] sm:h-[460px]">
         {slots.map(({ idx, offset }) => {
           const abs     = Math.abs(offset);
-          const tx      = offset * 145; // X displacement to separate side cards cleanly
-          const rotY    = offset * -20; // Gentle curved Y-rotation
-          const tz      = offset === 0 ? 0 : -abs * 110;
-          const scale   = offset === 0 ? 1.15 : Math.max(0.68, 1 - abs * 0.16);
+          const rotY    = offset * -18; // Gentle curved Y-rotation
+          const tz      = offset === 0 ? 0 : -abs * 75;
+          const scale   = offset === 0 ? 1.06 : Math.max(0.7, 1 - abs * 0.15);
           const opacity = offset === 0 ? 1    : Math.max(0.4, 1 - abs * 0.25);
           const isCenter = offset === 0;
 
@@ -136,16 +135,16 @@ function RadialGallery3D() {
               onClick={() => setActiveIdx(idx)}
               style={{
                 position:   "absolute",
-                width:      isCenter ? "clamp(220px,28vw,300px)" : "clamp(150px,18vw,210px)",
-                height:     isCenter ? "clamp(290px,36vw,390px)" : "clamp(190px,24vw,270px)",
-                transform:  `translateX(${tx}px) rotateY(${rotY}deg) translateZ(${tz}px) scale(${scale})`,
+                width:      isCenter ? "clamp(170px, 25vw, 300px)" : "clamp(115px, 17vw, 210px)",
+                height:     isCenter ? "clamp(210px, 33vw, 390px)" : "clamp(145px, 23vw, 270px)",
+                transform:  `translateX(calc(${offset} * min(100px, 28vw))) rotateY(${rotY}deg) translateZ(${tz}px) scale(${scale})`,
                 opacity,
                 zIndex:     isCenter ? 50 : 30 - abs * 10,
                 transition: "all 0.7s cubic-bezier(0.16,1,0.3,1)",
               }}
               className={`rounded-2xl overflow-hidden bg-[#0d0e0c] cursor-pointer border-2 ${
                 isCenter
-                  ? "border-[#E9D18F] shadow-[0_0_55px_rgba(197,160,89,0.65),0_24px_48px_rgba(0,0,0,0.9)]"
+                  ? "border-[#E9D18F] shadow-[0_0_35px_rgba(197,160,89,0.65),0_16px_36px_rgba(0,0,0,0.9)]"
                   : "border-[#C5A059]/25 hover:border-[#C5A059]/60 shadow-xl"
               }`}
             >

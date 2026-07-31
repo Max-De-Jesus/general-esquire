@@ -77,7 +77,7 @@ function HeroCarousel() {
   return (
     <div className="relative w-full rounded-3xl overflow-hidden border-2 border-[#C5A059]/40 shadow-2xl">
       <div
-        className="relative w-full h-[340px] sm:h-[480px] transition-opacity duration-500"
+        className="relative w-full h-[220px] sm:h-[480px] transition-opacity duration-500"
         style={{ opacity: fading ? 0 : 1 }}
       >
         <Image src={slide.src} alt="" fill priority unoptimized className="object-cover object-center" sizes="100vw" />
@@ -390,10 +390,10 @@ export default function HebergementPage() {
         {/* ── CTA ── */}
         <div className="text-center p-10 rounded-3xl bg-gradient-to-r from-[#0F3823]/70 via-[#131513] to-[#0F3823]/70 border border-[#C5A059]/40 shadow-2xl">
           <h3 className="font-cinzel text-xl text-[#E9D18F] font-bold mb-2">
-            Réservez votre place pour janvier
+            Réservez votre place
           </h3>
           <p className="font-cormorant text-lg text-[#cabfa6] mb-6">
-            Inscriptions ouvertes de <strong className="text-[#E9D18F]">février à fin septembre</strong>. Ne tardez pas — les places sont limitées à 10 participants minimum.
+            Inscriptions ouvertes de <strong className="text-[#E9D18F]">février à fin septembre</strong>. Ne tardez pas — Départ garanti à partir de 10 participants minimum..
           </p>
           <Link
             href="/cocooning-touristique#formulaire"

@@ -111,7 +111,7 @@ function HeroCarousel({ slides }: { slides: typeof SLIDES_FR }) {
 
   return (
     <div className="relative w-full rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-2xl group bg-[#131513]">
-      <div className="relative w-full h-[340px] sm:h-[500px]">
+      <div className="relative w-full h-[220px] sm:h-[500px]">
 
         {/* ── Previous slide (fades OUT) */}
         {prev2 !== null && (
@@ -231,12 +231,12 @@ function RadialGallery3D({ items }: { items: typeof GALLERY }) {
       onTouchEnd={handleTouchEnd}
     >
       {/* 3D Stage */}
-      <div className="relative flex items-center justify-center h-[360px] sm:h-[460px]" style={{ transformStyle: "preserve-3d" }}>
+      <div className="relative flex items-center justify-center h-[240px] sm:h-[460px]" style={{ transformStyle: "preserve-3d" }}>
         {visibleCards.map(({ idx, offset }) => {
           const absOffset = Math.abs(offset);
           const rotY = offset * angleStep;
           const tz = offset === 0 ? 0 : -radius * (1 - Math.cos((absOffset * angleStep * Math.PI) / 180));
-          const scale = offset === 0 ? 1.12 : Math.max(0.55, 1 - absOffset * 0.14);
+          const scale = offset === 0 ? 1.06 : Math.max(0.65, 1 - absOffset * 0.14);
           const opacity = offset === 0 ? 1 : Math.max(0.25, 1 - absOffset * 0.22);
           const blur = offset === 0 ? 0 : absOffset * 1.5;
           const isCenter = offset === 0;
@@ -247,12 +247,12 @@ function RadialGallery3D({ items }: { items: typeof GALLERY }) {
               onClick={() => setActiveIdx(idx)}
               className={`absolute cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] rounded-2xl overflow-hidden border-2 bg-[#0d0e0c] ${
                 isCenter
-                  ? "border-[#E9D18F] shadow-[0_0_50px_rgba(197,160,89,0.7),0_25px_50px_rgba(0,0,0,0.8)] z-30"
+                  ? "border-[#E9D18F] shadow-[0_0_35px_rgba(197,160,89,0.7),0_16px_36px_rgba(0,0,0,0.8)] z-30"
                   : "border-[#C5A059]/25 hover:border-[#C5A059]/60 z-10"
               }`}
               style={{
-                width: isCenter ? "clamp(200px, 30vw, 280px)" : "clamp(130px, 18vw, 190px)",
-                height: isCenter ? "clamp(260px, 38vw, 360px)" : "clamp(170px, 25vw, 240px)",
+                width: isCenter ? "clamp(160px, 25vw, 280px)" : "clamp(110px, 17vw, 190px)",
+                height: isCenter ? "clamp(200px, 33vw, 360px)" : "clamp(140px, 23vw, 240px)",
                 transform: `rotateY(${rotY}deg) translateZ(${tz}px) scale(${scale})`,
                 opacity,
                 // No CSS blur — use opacity + dark overlay instead (blur causes ghost bleed)

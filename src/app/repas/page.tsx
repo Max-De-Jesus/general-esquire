@@ -139,9 +139,9 @@ function Rotating3DFoodCarousel() {
     >
       {/* Container avec Perspective 3D */}
       <div
-        className="relative w-full h-[380px] sm:h-[480px] flex items-center justify-center"
+        className="relative w-full h-[250px] sm:h-[420px] flex items-center justify-center"
         style={{
-          perspective: "1200px",
+          perspective: "1000px",
           perspectiveOrigin: "50% 35%",
         }}
       >
@@ -161,19 +161,19 @@ function Rotating3DFoodCarousel() {
               <div
                 key={idx}
                 onClick={() => setActiveIndex(idx)}
-                className={`absolute w-[240px] sm:w-[280px] h-[300px] sm:h-[360px] rounded-3xl overflow-hidden cursor-pointer transition-all duration-700 ease-out select-none border-2 ${
+                className={`absolute w-[160px] sm:w-[260px] h-[210px] sm:h-[330px] rounded-2xl sm:rounded-3xl overflow-hidden cursor-pointer transition-all duration-700 ease-out select-none border-2 ${
                   isCenter
-                    ? "border-[#E9D18F] shadow-[0_0_40px_rgba(197,160,89,0.6)] z-30"
+                    ? "border-[#E9D18F] shadow-[0_0_30px_rgba(197,160,89,0.6)] z-30"
                     : "border-[#C5A059]/40 opacity-70 hover:opacity-90 hover:border-[#C5A059]"
                 }`}
                 style={{
                   transformStyle: "preserve-3d",
                   // Placement circulaire 3D autour de l'axe Y
-                  transform: `rotateY(${cardAngle}deg) translateZ(calc(min(380px, 60vw))) ${
-                    isCenter ? "scale(1.08)" : "scale(0.92)"
+                  transform: `rotateY(${cardAngle}deg) translateZ(calc(min(240px, 40vw))) ${
+                    isCenter ? "scale(1.05)" : "scale(0.85)"
                   }`,
                   WebkitBoxReflect:
-                    "below 12px linear-gradient(transparent, transparent 65%, rgba(0,0,0,0.35))",
+                    "below 8px linear-gradient(transparent, transparent 70%, rgba(0,0,0,0.3))",
                 }}
               >
                 {/* Image de la carte */}
@@ -183,7 +183,7 @@ function Rotating3DFoodCarousel() {
                   fill
                   priority={idx < 3}
                   unoptimized
-                  sizes="(max-width: 640px) 240px, 280px"
+                  sizes="(max-width: 640px) 160px, 260px"
                   className="object-cover object-center filter brightness-95 contrast-105"
                 />
 
@@ -208,29 +208,29 @@ function Rotating3DFoodCarousel() {
         <button
           onClick={prevCard}
           aria-label="Carte précédente"
-          className="pointer-events-auto w-12 h-12 rounded-full bg-[#131513]/80 border-2 border-[#C5A059]/60 text-[#E9D18F] hover:border-[#E9D18F] hover:bg-[#0F3823] hover:text-white transition-all duration-300 flex items-center justify-center text-2xl shadow-[0_0_20px_rgba(197,160,89,0.3)] hover:scale-110 cursor-pointer backdrop-blur-md"
+          className="pointer-events-auto w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#131513]/80 border-2 border-[#C5A059]/60 text-[#E9D18F] hover:border-[#E9D18F] hover:bg-[#0F3823] hover:text-white transition-all duration-300 flex items-center justify-center text-xl sm:text-2xl shadow-[0_0_20px_rgba(197,160,89,0.3)] hover:scale-110 cursor-pointer backdrop-blur-md"
         >
           ‹
         </button>
         <button
           onClick={nextCard}
           aria-label="Carte suivante"
-          className="pointer-events-auto w-12 h-12 rounded-full bg-[#131513]/80 border-2 border-[#C5A059]/60 text-[#E9D18F] hover:border-[#E9D18F] hover:bg-[#0F3823] hover:text-white transition-all duration-300 flex items-center justify-center text-2xl shadow-[0_0_20px_rgba(197,160,89,0.3)] hover:scale-110 cursor-pointer backdrop-blur-md"
+          className="pointer-events-auto w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#131513]/80 border-2 border-[#C5A059]/60 text-[#E9D18F] hover:border-[#E9D18F] hover:bg-[#0F3823] hover:text-white transition-all duration-300 flex items-center justify-center text-xl sm:text-2xl shadow-[0_0_20px_rgba(197,160,89,0.3)] hover:scale-110 cursor-pointer backdrop-blur-md"
         >
           ›
         </button>
       </div>
 
       {/* Puces de Pagination de l'Anneau 3D */}
-      <div className="mt-6 flex items-center justify-center gap-2 relative z-30">
+      <div className="mt-4 sm:mt-6 flex items-center justify-center gap-1.5 sm:gap-2 relative z-30 flex-wrap px-4">
         {CAROUSEL_3D_ITEMS.map((_, idx) => (
           <button
             key={idx}
             onClick={() => setActiveIndex(idx)}
             className={`transition-all duration-500 rounded-full cursor-pointer ${
               idx === activeIndex
-                ? "w-8 h-2.5 bg-[#C5A059] shadow-[0_0_12px_rgba(197,160,89,0.9)]"
-                : "w-2.5 h-2.5 bg-white/20 hover:bg-[#C5A059]/50"
+                ? "w-6 sm:w-8 h-2 sm:h-2.5 bg-[#C5A059] shadow-[0_0_12px_rgba(197,160,89,0.9)]"
+                : "w-2 sm:w-2.5 h-2 sm:h-2.5 bg-white/20 hover:bg-[#C5A059]/50"
             }`}
             aria-label={`Aller à la carte ${idx + 1}`}
           />
@@ -263,7 +263,7 @@ function HeroCarousel() {
   return (
     <div className="relative w-full rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-2xl">
       <div
-        className="relative w-full h-[340px] sm:h-[480px] transition-opacity duration-500"
+        className="relative w-full h-[220px] sm:h-[480px] transition-opacity duration-500"
         style={{ opacity: fading ? 0 : 1 }}
       >
         <Image src={slide.src} alt="" fill priority unoptimized sizes="100vw" className="object-cover object-center" />
@@ -597,7 +597,7 @@ export default function RepasPage() {
           </span>
 
           <h3 className="font-cinzel text-2xl sm:text-4xl text-white font-extrabold tracking-wider uppercase mb-3 drop-shadow-[0_0_20px_rgba(197,160,89,0.4)]">
-            {lang === "fr" ? "PRÊT À RÉGALER VOS PAPILLES ?" : "READY TO DELIGHT YOUR PALATE?"}
+            {lang === "fr" ? "PRÊT(E) À RÉGALER VOS PAPILLES ?" : "READY TO DELIGHT YOUR PALATE?"}
           </h3>
 
           <p className="font-cormorant text-lg sm:text-xl text-[#EDE4CF]/90 max-w-2xl mx-auto mb-8 leading-relaxed">
