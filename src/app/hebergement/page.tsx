@@ -51,7 +51,7 @@ const GALLERY = [
   { src: "/images/Soins3.jpg", label: "Confort" },
   { src: "/images/Soins4.jpg", label: "Sérénité" },
   { src: "/images/Soins5.jpg", label: "Apaisement" },
-  { src: "/images/Soins6.jpg", label: "Tranquillité" },
+  { src: "/images/Soins7.jpg", label: "Tranquillité" },
 ];
 
 // ─── Professional Carousel ────────────────────────────────────────────────────
@@ -115,7 +115,7 @@ export default function HebergementPage() {
       <header className="w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
           <Image
-            src="/apps/frontend/public/images/Welcome.jpg"
+            src="/images/Welcome.jpg"
             alt="Bannière Hébergement — General Esquire"
             fill
             priority
@@ -365,6 +365,7 @@ export default function HebergementPage() {
                     src={item.src}
                     alt={item.label}
                     fill
+                    unoptimized
                     className="object-cover group-hover:scale-110 transition-transform duration-700"
                     sizes="(max-width: 640px) 176px, 224px"
                   />

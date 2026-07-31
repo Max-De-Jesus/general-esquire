@@ -12,10 +12,10 @@ export default function ProfessionnelPage() {
 
   return (
     <div className="min-h-screen bg-[#0d0e0d]/50 text-[#EDE4CF] pb-12 md:pb-20 relative">
-      {/* Background image backpro.png */}
+      {/* Background image BACKRN.png */}
       <div className="fixed inset-0 z-0 opacity-55 pointer-events-none overflow-hidden">
         <Image
-          src="/images/backpro.png"
+          src="/images/BACKRN.png"
           alt="Background Professionnels du Droit"
           fill
           priority
@@ -28,7 +28,7 @@ export default function ProfessionnelPage() {
       <header className="relative z-10 w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
           <Image
-            src="/images/bannerprofessionneldudroit.png"
+            src="/images/BANNERCJ.png"
             alt="Bannière Professionnels du Droit — General Esquire"
             fill
             priority

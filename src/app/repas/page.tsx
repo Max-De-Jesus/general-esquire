@@ -70,7 +70,7 @@ const FOOD_GALLERY = [
   { src: "/images/tchooh.webp", title: "", tag: "" },
   { src: "/images/Tchooh2.jpeg", title: "", tag: "" },
   { src: "/images/Tchooh3.jpg", title: "", tag: "" },
-  { src: "/images/Tchooh4.webp", title: "", tag: "" },
+  { src: "/images/tTchooh4.webp", title: "", tag: "" },
   { src: "/images/Tchooh5.png", title: "", tag: "" },
   { src: "/images/Tchooh6.jpeg", title: "", tag: "" },
   { src: "/images/Tchooh6.png", title: "", tag: "" },
