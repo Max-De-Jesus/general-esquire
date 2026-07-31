@@ -326,11 +326,11 @@ export default function InstitutionsPubliquesPage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-[#C5A059] font-bold">✓</span>
-                  <span>{lang === "fr" ? "Expertise et rigueur du droit français." : "French legal expertise & accuracy."}</span>
+                  <span>{lang === "fr" ? "Expertise et rigueur en droit français." : "French legal expertise & accuracy."}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-[#C5A059] font-bold">✓</span>
-                  <span>{lang === "fr" ? "Version finale devenant votre exclusive propriété." : "Final version becomes your property."}</span>
+                  <span>{lang === "fr" ? "La mouture finale est votre exclusive propriété." : "The final draft becomes your exclusive property."}</span>
                 </li>
               </ul>
             </div>
