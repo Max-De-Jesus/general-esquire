@@ -200,10 +200,10 @@ export default function CocooningTouristiquePage() {
 
 
         {/* Subtitle Quote */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <p className="font-cormorant text-2xl text-[#E9D18F] italic font-light leading-relaxed">
+        <div className="text-center max-w-3xl mx-auto mb-16 px-4 sm:px-0">
+          <p className="font-cormorant text-xl sm:text-2xl md:text-3xl text-[#E9D18F] italic font-light leading-relaxed">
             {lang === "fr"
-              ? "« Venez vous évader avec nous, découvrir d’autres cultures, déguster des mets savoureux, vous faire dorloter, et souffler un peu face aux difficultés de la vie. »"
+              ? "«\u00A0Venez vous évader avec nous, découvrir d’autres cultures, déguster des mets savoureux, vous faire dorloter, et souffler un peu face aux difficultés de\u00A0la\u00A0vie.\u00A0»"
               : "“Come escape with us, discover new cultures, savor delicious food, get pampered, and take a breather from life's challenges.”"}
           </p>
         </div>
@@ -574,7 +574,7 @@ export default function CocooningTouristiquePage() {
 
           <p className="font-cormorant text-lg sm:text-xl text-[#EDE4CF]/90 max-w-2xl mx-auto mb-8 leading-relaxed">
             {lang === "fr"
-              ? "Inscriptions ouvertes de février à fin septembre. Ne tardez pas — Départ garanti à partir de 10 participants minimum.."
+              ? "Inscriptions ouvertes de février à fin septembre. Ne tardez pas — Départ garanti à partir de 10 participants minimum."
               : "Registrations open from February to end of September. Don't wait — spots are limited to a minimum of 10 participants."}
           </p>
 
