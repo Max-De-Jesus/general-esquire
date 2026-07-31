@@ -7,145 +7,98 @@ import { useLanguage } from "@/context/LanguageContext";
 import TickerBanner from "@/components/TickerBanner";
 
 export default function ProfessionnelPage() {
-  const { lang } = useLanguage();
-
+  const { t, lang } = useLanguage();
   const [activeModal, setActiveModal] = useState<"methode" | "tarifs" | null>(null);
 
   return (
-    <div className="min-h-screen bg-[#1A1C1A] text-[#EDE4CF] flex flex-col justify-between overflow-x-hidden">
-      {/* ─── 1. BANNIÈRE EN-TÊTE (vs/1 style exact) ────────────────────── */}
-      <header className="w-full bg-[#131513] overflow-hidden">
+    <div className="min-h-screen bg-[#0d0e0d]/50 text-[#EDE4CF] pb-12 md:pb-20 relative">
+      {/* Background image backpro.png */}
+      <div className="fixed inset-0 z-0 opacity-55 pointer-events-none overflow-hidden">
+        <Image
+          src="/images/backpro.png"
+          alt="Background Professionnels du Droit"
+          fill
+          priority
+          className="object-cover object-center filter brightness-110 contrast-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0d0e0d]/70 via-[#0d0e0d]/40 to-[#0d0e0d]/80" />
+      </div>
+
+      {/* ─── 1. EN-TÊTE : BANNIÈRE SEULE ─────────────────────────────────── */}
+      <header className="relative z-10 w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
           <Image
-            src="/images/bannerchef.png"
+            src="/images/bannerprofessionneldudroit.png"
             alt="Bannière Professionnels du Droit — General Esquire"
             fill
             priority
-            className="object-cover object-[center_32%] filter brightness-95 contrast-105 animate-kenburns"
+            className="object-cover object-[center_40%] filter brightness-95 contrast-105"
           />
         </div>
       </header>
 
-      {/* ─── 2. BANDE DÉROULANTE (TICKER ALL-WIDTH SOUS LA BANNIÈRE) ───────────────── */}
-      <TickerBanner className="mb-8" />
+      {/* ─── 2. BANDE DÉROULANTE (TICKER ALL-WIDTH SOUS LA BANNIÈRE) ───────── */}
+      <TickerBanner items={["GENERAL ESQUIRE", "PROFESSIONNELS DU DROIT", "RÉDACTION D'ACTES", "MEMOIRES & CONCLUSIONS", "COLLABORATION JURIDIQUE", "EXCELLENCE"]} className="mb-8" />
 
-      {/* ─── 3. CONTENU PRINCIPAL PROFESSIONNELS DU DROIT ──────────────── */}
-      <main className="max-w-[840px] mx-auto px-4 sm:px-8 py-10 sm:py-16 flex-grow text-left">
-        {/* Badge Titre (Pilule Dorée VS/1) */}
-        <div className="text-center mb-10">
-          <span className="inline-block font-cinzel text-xs sm:text-sm uppercase tracking-[0.13em] text-[#1a1c1a] font-semibold bg-gradient-to-r from-[#e8c97a] via-[#c5a059] to-[#e8c97a] border-2 border-[#e9d18f]/60 rounded-full px-8 py-3 shadow-[0_0_18px_rgba(197,160,89,0.45)]">
-            {lang === "fr" ? "Vous êtes un professionnel du droit" : "You are a Legal Professional"}
+      <div className="relative z-10 max-w-5xl mx-auto px-6">
+
+        {/* Breadcrumb Navigation */}
+        <div className="flex items-center gap-2 font-cinzel text-xs text-[#C5A059] mb-8 uppercase tracking-widest">
+          <Link href="/" className="hover:text-[#E9D18F] transition-colors">{t("nav_home")}</Link>
+          <span>/</span>
+          <span className="text-[#EDE4CF]">{lang === "fr" ? "Vous êtes un professionnel du droit" : "Legal Professional"}</span>
+        </div>
+
+        {/* Hero Header */}
+        <div className="text-center mb-12">
+          <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase block mb-3">
+            {lang === "fr" ? "Collaboration & Sous-traitance" : "Collaboration & Outsourcing"}
           </span>
-        </div>
-
-        {/* Intro Deux Colonnes */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 font-cormorant text-lg sm:text-xl text-[#EDE4CF]/90 leading-[1.9] font-light mb-10">
-          <p className="text-justify">
-            {lang === "fr" ? (
-              <>
-                Que leur activité soit ou non réglementée, les professionnels du droit <em className="text-[#EDE4CF]/70 italic">lato sensu</em>, tels les magistrats, notaires, commissaires de justice, mandataires, commissaires divers, consultants, juristes, etc., sont notoirement soumis à deux contraintes : celle du temps qui passe et qui ne revient plus, et celle de l'information exacte, fiable et qui percute.
-              </>
-            ) : (
-              <>
-                Whether regulated or not, legal professionals <em className="text-[#EDE4CF]/70 italic">lato sensu</em>—such as magistrates, notaries, judicial officers, trustees, consultants, and legal counsel—are constrained by passing time and the urgent need for precise, impactful legal intelligence.
-              </>
-            )}
-          </p>
-          <p className="text-justify">
-            {lang === "fr" ? (
-              <>
-                Il s'agit pour eux, d'une part, d'être réactifs au moment opportun et en tout cas sans retard, sur les actes par rapport auxquels une certaine action est attendue de leur part ; et d'autre part, de disposer à l'occasion de cette action, de l'information juridique la plus actualisée et la plus pertinente qui puisse servir la cause qui les occupe.
-              </>
-            ) : (
-              <>
-                They must act with unyielding responsiveness at the right moment without delay, while accessing up-to-the-minute legal precedents and doctrine to serve their clients effectively.
-              </>
-            )}
-          </p>
-        </div>
-
-        {/* Phrase Pivot Centrée avec Ligne Dorée (Style Exact Captures) */}
-        <div className="py-6 my-6 border-y border-[#C5A059]/25 text-center">
-          <p className="font-cormorant text-lg sm:text-xl text-[#EDE4CF]/90 italic leading-relaxed">
-            {lang === "fr" ? (
-              <>
-                Parmi ces professionnels, il y en a qui, plus que tous les autres, sont en première ligne :
-                <br />
-                <strong className="not-italic font-semibold text-[#E9D18F] text-2xl sm:text-3xl mt-2 block">ce sont les avocats.</strong>
-              </>
-            ) : (
-              <>
-                Among these professionals, one group stands at the absolute forefront:
-                <br />
-                <strong className="not-italic font-semibold text-[#E9D18F] text-2xl sm:text-3xl mt-2 block">lawyers &amp; advocates.</strong>
-              </>
-            )}
-          </p>
-        </div>
-
-        {/* Première Photo Avocate (Contour Asymétrique Arrondi vs/1) */}
-        <figure className="relative w-full max-w-[520px] mx-auto h-72 sm:h-[380px] my-10 group">
-          <div className="relative w-full h-full rounded-[12px_60px_12px_60px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.45),0_0_0_3px_rgba(197,160,89,0.25)] border border-[#C5A059]/30">
-            <Image
-              src="/images/avocate.png"
-              alt="Avocate en robe — General Esquire"
-              fill
-              priority
-              className="object-cover object-center group-hover:scale-105 transition-transform duration-700 filter brightness-95 contrast-105"
-            />
+          <h1 className="font-cinzel text-3xl sm:text-5xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] mb-4">
+            {lang === "fr" ? "Vous êtes un professionnel du droit" : "You Are a Legal Professional"}
+          </h1>
+          <div className="flex items-center justify-center gap-3">
+            <div className="h-[1px] w-24 bg-gradient-to-r from-transparent to-[#C5A059]" />
+            <span className="text-[#C5A059]">◆</span>
+            <div className="h-[1px] w-24 bg-gradient-to-l from-transparent to-[#C5A059]" />
           </div>
-        </figure>
+        </div>
 
-        {/* Bloc Développement : Texte s'enroulant autour de l'image flottante à droite */}
-        <div className="relative my-12 font-cormorant text-lg sm:text-xl text-[#EDE4CF]/90 leading-[1.9] font-light text-justify">
-          {/* Photo Avocate Enceinte Flottante à Droite (Cadre Doré) */}
-          <div className="float-none sm:float-right sm:ml-7 sm:mb-4 sm:mt-1 w-full sm:w-[320px] md:w-[380px] relative p-2 my-6 sm:my-0">
-            <div className="absolute -inset-2 border-2 border-[#C5A059]/45 rounded-xl pointer-events-none"></div>
-            <div className="relative w-full h-80 sm:h-[360px] rounded-lg overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.5),0_0_0_1px_rgba(197,160,89,0.2)]">
-              <Image
-                src="/images/Avocate enceinte.jpg"
-                alt="Avocate enceinte — General Esquire"
-                fill
-                className="object-cover object-center filter brightness-95 contrast-105"
-              />
-            </div>
+        {/* ─── CARROUSEL SLIDER DES IMAGES ─────────────────────────────── */}
+        <div className="mb-14 rounded-3xl overflow-hidden border border-[#C5A059]/40 bg-[#131513] p-4 shadow-2xl">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              "/images/Professionnel du droit 2.jpg",
+              "/images/Professionnel du droit 3.jpg",
+              "/images/Professionnel du droit 4.jpg",
+              "/images/Professionnel du droit.jpg"
+            ].map((imgSrc, idx) => (
+              <div key={idx} className="relative h-64 sm:h-72 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-md group">
+                <Image
+                  src={imgSrc}
+                  alt={`Professionnel du droit ${idx + 1}`}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+            ))}
           </div>
+        </div>
 
-          {/* Texte Continu qui s'enroule autour et s'étend sous l'image */}
-          <p className="mb-4">
+        {/* ─── TEXTE INTRODUCTIF PRINCIPAL ────────────────────────────────────── */}
+        <div className="bg-[#131513]/90 border border-[#C5A059]/30 rounded-3xl p-8 sm:p-12 shadow-2xl mb-12 space-y-6">
+          <p className="font-cormorant text-lg sm:text-xl text-[#EDE4CF] leading-[1.85] text-justify">
             {lang === "fr" ? (
               <>
-                Justement, pour peu qu'ils soient de la vieille école et peu ou prou familiarisés aux nouvelles technologies de l'information, ne maîtrisent pas tel langage en particulier, aient une activité, politque, sociale, plaidante chronophage, des ennuis ponctuels de santé, un heureux évènement en route, des charges si élevées que le recrutement d'un collaborateur est inenvisageable dans l'immédiat, ou pour tout autre motif d'empêchement prévisible ou non, le risque est grand, soit qu'ils ne tiennent pas leurs délais et s'exposent à une forclusion, soit qu'ils n'adoptent pas la meilleure stratégie dans la défense des intérêts qui leur tiennent à cœur, ce qui les exposerait à une action en responsabilité.
+                Si vous êtes un professionnel du droit — avocat, notaire, huissier de justice, juriste d'entreprise — votre temps est compté. La rédaction d'actes juridiques, de conclusions ou de mémoires exige une rigueur absolue et des recherches approfondies.
               </>
             ) : (
               <>
-                Whether adapting to modern IT tools, overcoming language barriers, managing heavy court schedules, health leaves, or high overheads restricting hiring, attorneys face immense risks of missing critical deadlines or compromising legal strategies.
+                If you are a legal professional—attorney, notary, judicial officer, corporate counsel—your time is scarce. Drafting legal instruments, briefs, and pleadings demands absolute rigor and exhaustive research.
               </>
             )}
           </p>
-          <p>
-            {lang === "fr" ? (
-              <>
-                Face à ces multiples exigences juridiques et déontologiques, l'intervention ponctuelle d'un confrère dédié permet de sécuriser l'ensemble de vos actes tout en garantissant un accompagnement sur mesure pour vos clients.
-              </>
-            ) : (
-              <>
-                Faced with these daily legal challenges, dedicated external associate support ensures full compliance with deadlines and rigorous protection of client interests.
-              </>
-            )}
-          </p>
-          <div className="clear-both" />
-        </div>
-
-        {/* PHRASE ANIMÉE "PAS DE PANIQUE : GENERAL ESQUIRE EST LÀ." (Exact Screenshot 2 Glow) */}
-        <div className="text-center py-10 my-8">
-          <p className="font-cormorant italic text-3xl sm:text-4xl md:text-5xl font-semibold tracking-wide animate-panic-text text-[#FF5522]">
-            Pas de panique : General Esquire est là.
-          </p>
-        </div>
-
-        {/* Offre (Conteneur Émeraude Translucide avec Contour Doré VS/1) */}
-        <div className="my-10 p-7 sm:p-9 rounded-xl bg-[#0F3823]/25 border border-[#C5A059]/35 shadow-xl space-y-4">
           <p className="font-cormorant text-lg sm:text-xl text-[#EDE4CF] leading-[1.85] text-justify">
             {lang === "fr" ? (
               <>
@@ -197,11 +150,10 @@ export default function ProfessionnelPage() {
                 </h2>
                 <button
                   onClick={() => setActiveModal(null)}
-                  className="px-4 py-2 rounded-full bg-[#0a0b0a] border border-[#C5A059]/50 text-[#C5A059] hover:text-[#E9D18F] hover:bg-[#C5A059]/25 hover:border-[#E9D18F] flex items-center gap-2 font-cinzel text-xs sm:text-sm font-semibold tracking-widest uppercase transition-all duration-200 cursor-pointer flex-shrink-0 shadow-md"
-                  aria-label="Fermer la fenêtre"
+                  className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#0a0b0a] border border-[#C5A059]/60 text-[#C5A059] hover:text-[#E9D18F] hover:bg-[#C5A059]/25 hover:border-[#E9D18F] hover:rotate-90 hover:scale-110 active:scale-95 flex items-center justify-center transition-all duration-500 cursor-pointer flex-shrink-0 shadow-md"
+                  aria-label={lang === "fr" ? "Fermer la fenêtre" : "Close window"}
                 >
-                  <span>{lang === "fr" ? "FERMER" : "CLOSE"}</span>
-                  <span className="text-base leading-none font-bold">&times;</span>
+                  <span className="font-cinzel text-xl sm:text-2xl leading-none font-bold select-none">&times;</span>
                 </button>
               </div>
 
@@ -323,11 +275,10 @@ export default function ProfessionnelPage() {
                 </h2>
                 <button
                   onClick={() => setActiveModal(null)}
-                  className="px-4 py-2 rounded-full bg-[#0a0b0a] border border-[#C5A059]/50 text-[#C5A059] hover:text-[#E9D18F] hover:bg-[#C5A059]/25 hover:border-[#E9D18F] flex items-center gap-2 font-cinzel text-xs sm:text-sm font-semibold tracking-widest uppercase transition-all duration-200 cursor-pointer flex-shrink-0 shadow-md"
-                  aria-label="Fermer la fenêtre"
+                  className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#0a0b0a] border border-[#C5A059]/60 text-[#C5A059] hover:text-[#E9D18F] hover:bg-[#C5A059]/25 hover:border-[#E9D18F] hover:rotate-90 hover:scale-110 active:scale-95 flex items-center justify-center transition-all duration-500 cursor-pointer flex-shrink-0 shadow-md"
+                  aria-label={lang === "fr" ? "Fermer la fenêtre" : "Close window"}
                 >
-                  <span>{lang === "fr" ? "FERMER" : "CLOSE"}</span>
-                  <span className="text-base leading-none font-bold">&times;</span>
+                  <span className="font-cinzel text-xl sm:text-2xl leading-none font-bold select-none">&times;</span>
                 </button>
               </div>
 
@@ -336,11 +287,16 @@ export default function ProfessionnelPage() {
                 {/* Tarif 1 : Abonnement annuel annuel */}
                 <div className="p-6 rounded-2xl bg-gradient-to-br from-[#0F3823]/80 to-[#131513] border-2 border-[#C5A059]/60 shadow-xl">
                   <div className="flex items-start justify-between flex-wrap gap-3 mb-3">
-                    <h3 className="font-cinzel text-sm sm:text-base text-[#E9D18F] uppercase tracking-wider font-bold">
+                    <h3 className="font-cinzel text-sm sm:text-base text-[#E9D18F] uppercase tracking-wider font-bold max-w-[65%] sm:max-w-none">
                       1. Abonnement annuel — facturation annuelle
                     </h3>
-                    <div className="font-cinzel text-3xl text-[#E9D18F] font-extrabold whitespace-nowrap">
-                      15 000 € TTC <span className="text-xs text-[#cabfa6] font-normal font-cormorant">par an</span>
+                    <div className="flex flex-col items-start sm:items-end flex-shrink-0">
+                      <span className="font-cinzel text-xl sm:text-3xl text-[#E9D18F] font-extrabold whitespace-nowrap">
+                        15 000 € <span className="text-xs sm:text-sm font-normal text-[#C5A059] font-cormorant">TTC</span>
+                      </span>
+                      <span className="text-xs text-[#cabfa6] font-normal font-cormorant italic -mt-0.5 sm:mt-0">
+                        par an
+                      </span>
                     </div>
                   </div>
                   <div className="space-y-3 font-cormorant text-base text-[#EDE4CF]/85 leading-relaxed">
@@ -360,11 +316,16 @@ export default function ProfessionnelPage() {
                 {/* Tarif 2 : Abonnement annuel trimestriel */}
                 <div className="p-6 rounded-2xl bg-[#131513] border border-[#C5A059]/40 shadow-lg">
                   <div className="flex items-start justify-between flex-wrap gap-3 mb-3">
-                    <h3 className="font-cinzel text-sm sm:text-base text-[#E9D18F] uppercase tracking-wider font-bold">
+                    <h3 className="font-cinzel text-sm sm:text-base text-[#E9D18F] uppercase tracking-wider font-bold max-w-[65%] sm:max-w-none">
                       2. Abonnement annuel — facturation trimestrielle
                     </h3>
-                    <div className="font-cinzel text-3xl text-[#E9D18F] font-extrabold whitespace-nowrap">
-                      3 500 € TTC <span className="text-xs text-[#cabfa6] font-normal font-cormorant">par trimestre</span>
+                    <div className="flex flex-col items-start sm:items-end flex-shrink-0">
+                      <span className="font-cinzel text-xl sm:text-3xl text-[#E9D18F] font-extrabold whitespace-nowrap">
+                        3 500 € <span className="text-xs sm:text-sm font-normal text-[#C5A059] font-cormorant">TTC</span>
+                      </span>
+                      <span className="text-xs text-[#cabfa6] font-normal font-cormorant italic -mt-0.5 sm:mt-0">
+                        par trimestre
+                      </span>
                     </div>
                   </div>
                   <div className="space-y-3 font-cormorant text-base text-[#EDE4CF]/85 leading-relaxed">
@@ -401,7 +362,14 @@ export default function ProfessionnelPage() {
                     <div className="p-4 rounded-xl bg-[#0F3823]/40 border border-[#C5A059]/30">
                       <div className="flex items-center justify-between flex-wrap gap-2 mb-2">
                         <span className="font-cinzel text-xs text-[#C5A059] uppercase tracking-wider">Le forfait fixe de rédaction</span>
-                        <span className="font-cinzel text-2xl text-[#E9D18F] font-bold">500 € TTC <span className="text-xs font-normal text-[#cabfa6] font-cormorant">par acte</span></span>
+                        <div className="flex flex-col items-start sm:items-end flex-shrink-0">
+                          <span className="font-cinzel text-xl sm:text-2xl text-[#E9D18F] font-bold whitespace-nowrap">
+                            500 € <span className="text-xs font-normal text-[#C5A059] font-cormorant">TTC</span>
+                          </span>
+                          <span className="text-xs text-[#cabfa6] font-normal font-cormorant italic">
+                            par acte
+                          </span>
+                        </div>
                       </div>
                       <p className="text-sm text-[#cabfa6]">Qu'il s'agisse de requête, d'assignation, de conclusions ou de mémoire, voire d'une question prioritaire de constitutionnalité devant un tribunal, une cour d'appel ou même la Cour de cassation, en demande, défense ou intervention, notre forfait de rédaction est de 500 € TTC, indifféremment du nombre de parties, du nombre de pages rédigées, de la complexité ou de la technicité de l'affaire.</p>
                     </div>
@@ -436,8 +404,8 @@ export default function ProfessionnelPage() {
                     <h3 className="font-cinzel text-sm sm:text-base text-[#FF5522] uppercase tracking-wider font-bold">
                       5. Prestation en urgence — facturation majorée
                     </h3>
-                    <div className="font-cinzel text-3xl text-[#FF5522] font-extrabold whitespace-nowrap">
-                      1 500 € TTC
+                    <div className="font-cinzel text-2xl sm:text-3xl text-[#FF5522] font-extrabold whitespace-nowrap">
+                      1 500 € <span className="text-xs sm:text-sm font-normal text-[#FF7755] font-cormorant">TTC</span>
                     </div>
                   </div>
                   <p className="font-cormorant text-base text-[#EDE4CF]/80 leading-relaxed">
@@ -450,17 +418,7 @@ export default function ProfessionnelPage() {
           </div>
         )}
 
-        {/* Retour au conseil juridique */}
-        <div className="pt-8">
-          <Link
-            href="/conseil-juridique"
-            className="font-cinzel text-xs text-[#C5A059] hover:text-[#E9D18F] uppercase tracking-widest transition-colors inline-flex items-center gap-2 border-b border-transparent hover:border-[#E9D18F]"
-          >
-            ← {lang === "fr" ? "Retour au Conseil juridique" : "Back to Legal Advisory"}
-          </Link>
-        </div>
-      </main>
-
+      </div>
     </div>
   );
 }
