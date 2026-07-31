@@ -309,9 +309,22 @@ export default function EntrepreneurPage() {
           <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase border border-[#C5A059]/40 px-5 py-1.5 rounded-full bg-[#131513]/80 backdrop-blur-md shadow-md">
             {lang === "fr" ? "Accompagnement & Conseil Juridique" : "Legal Counsel & Advisory"}
           </span>
-          <h1 className="font-cinzel text-3xl sm:text-5xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] mt-4 mb-4">
+          <h1 className="font-cinzel text-3xl sm:text-5xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] mt-4 mb-3">
             {lang === "fr" ? "Vous êtes un chef d'entreprise" : "You Are a Business Executive"}
           </h1>
+
+          {/* Badge Hauts-de-France */}
+          <div className="flex items-center justify-center gap-3 my-3">
+            <div className="relative w-44 h-20 sm:w-56 sm:h-24 transition-transform duration-300 hover:scale-105">
+              <Image
+                src="/images/Badge Hauts de France.png"
+                alt="Badge Région Hauts-de-France — Chef d'entreprise"
+                fill
+                className="object-contain filter drop-shadow-[0_4px_16px_rgba(197,160,89,0.35)]"
+              />
+            </div>
+          </div>
+
           <div className="flex items-center justify-center gap-3 mb-2">
             <div className="h-[1px] w-24 bg-gradient-to-r from-transparent to-[#C5A059]" />
             <span className="text-[#C5A059]">◆</span>

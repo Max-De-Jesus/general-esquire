@@ -592,7 +592,7 @@ export default function PaymentPage() {
                       type="button"
                       disabled={!canGoToStep2}
                       onClick={goNext}
-                      className="group px-8 py-3.5 rounded-xl font-cinzel text-xs font-bold tracking-widest text-black bg-gradient-to-r from-[#C5A059] to-[#E9D18F] hover:shadow-[0_0_20px_rgba(197,160,89,0.4)] disabled:opacity-30 disabled:cursor-not-allowed transition-all uppercase flex items-center gap-2 cursor-pointer"
+                      className="w-full sm:w-auto group px-6 sm:px-8 py-3.5 rounded-xl font-cinzel text-xs font-bold tracking-widest text-black bg-gradient-to-r from-[#C5A059] to-[#E9D18F] hover:shadow-[0_0_20px_rgba(197,160,89,0.4)] disabled:opacity-30 disabled:cursor-not-allowed transition-all uppercase flex items-center justify-center gap-2 cursor-pointer"
                     >
                       {lang === "fr" ? "Choix du Service" : "Choose Service"}
                       <span className="group-hover:translate-x-1 transition-transform">→</span>
@@ -731,21 +731,21 @@ export default function PaymentPage() {
                   </div>
 
                   {/* Live price preview */}
-                  <div className="bg-[#0d0e0d]/60 border border-[#C5A059]/20 rounded-2xl p-5 flex items-center justify-between">
+                  <div className="bg-[#0d0e0d]/60 border border-[#C5A059]/20 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                     <span className="font-cinzel text-xs text-[#C5A059] tracking-widest uppercase font-semibold">
                       {lang === "fr" ? "Montant estimé" : "Estimated Amount"}
                     </span>
-                    <span className="font-cinzel text-2xl md:text-3xl font-bold text-[#E9D18F] drop-shadow-[0_0_10px_rgba(233,209,143,0.2)]">
-                      {calculatedAmount.toLocaleString("fr-FR")} €
+                    <span className="font-cinzel text-xl sm:text-2xl md:text-3xl font-bold text-[#E9D18F] drop-shadow-[0_0_10px_rgba(233,209,143,0.2)] whitespace-nowrap flex-shrink-0">
+                      {calculatedAmount.toLocaleString("fr-FR")}&nbsp;€
                     </span>
                   </div>
 
                   {/* Navigation */}
-                  <div className="flex justify-between pt-4">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4">
                     <button
                       type="button"
                       onClick={goBack}
-                      className="px-6 py-3 rounded-xl font-cinzel text-xs font-bold tracking-widest text-[#cabfa6] border border-[#C5A059]/30 hover:text-[#E9D18F] hover:border-[#C5A059] transition-all uppercase flex items-center gap-2 cursor-pointer"
+                      className="w-full sm:w-auto px-6 py-3 rounded-xl font-cinzel text-xs font-bold tracking-widest text-[#cabfa6] border border-[#C5A059]/30 hover:text-[#E9D18F] hover:border-[#C5A059] transition-all uppercase flex items-center justify-center gap-2 cursor-pointer"
                     >
                       <span>←</span> {lang === "fr" ? "Retour" : "Back"}
                     </button>
@@ -753,7 +753,7 @@ export default function PaymentPage() {
                       type="button"
                       disabled={!canGoToStep3}
                       onClick={goNext}
-                      className="group px-8 py-3.5 rounded-xl font-cinzel text-xs font-bold tracking-widest text-black bg-gradient-to-r from-[#C5A059] to-[#E9D18F] hover:shadow-[0_0_20px_rgba(197,160,89,0.4)] disabled:opacity-30 disabled:cursor-not-allowed transition-all uppercase flex items-center gap-2 cursor-pointer"
+                      className="w-full sm:w-auto group px-6 sm:px-8 py-3.5 rounded-xl font-cinzel text-xs font-bold tracking-widest text-black bg-gradient-to-r from-[#C5A059] to-[#E9D18F] hover:shadow-[0_0_20px_rgba(197,160,89,0.4)] disabled:opacity-30 disabled:cursor-not-allowed transition-all uppercase flex items-center justify-center gap-2 cursor-pointer"
                     >
                       {lang === "fr" ? "Récapitulatif" : "Summary"}
                       <span className="group-hover:translate-x-1 transition-transform">→</span>
@@ -844,7 +844,7 @@ export default function PaymentPage() {
                   </div>
 
                   {/* Total */}
-                  <div className="bg-gradient-to-r from-[#C5A059]/[0.06] to-transparent border border-[#C5A059]/25 rounded-2xl p-6 flex items-center justify-between">
+                  <div className="bg-gradient-to-r from-[#C5A059]/[0.06] to-transparent border border-[#C5A059]/25 rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                     <div>
                       <span className="font-cinzel text-xs text-[#C5A059] tracking-widest uppercase font-bold block">
                         {lang === "fr" ? "Total à Régler" : "Total Due"}
@@ -855,24 +855,24 @@ export default function PaymentPage() {
                           : (lang === "fr" ? "Montant TTC en Euros" : "VAT-inclusive amount in Euros")}
                       </span>
                     </div>
-                    <span className="font-cinzel text-3xl md:text-4xl font-bold text-[#E9D18F] drop-shadow-[0_0_14px_rgba(233,209,143,0.3)]">
-                      {calculatedAmount.toLocaleString("fr-FR")} €
+                    <span className="font-cinzel text-2xl sm:text-3xl md:text-4xl font-bold text-[#E9D18F] drop-shadow-[0_0_14px_rgba(233,209,143,0.3)] whitespace-nowrap flex-shrink-0">
+                      {calculatedAmount.toLocaleString("fr-FR")}&nbsp;€
                     </span>
                   </div>
 
                   {/* Navigation */}
-                  <div className="flex justify-between pt-4">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4">
                     <button
                       type="button"
                       onClick={goBack}
-                      className="px-6 py-3 rounded-xl font-cinzel text-xs font-bold tracking-widest text-[#cabfa6] border border-[#C5A059]/30 hover:text-[#E9D18F] hover:border-[#C5A059] transition-all uppercase flex items-center gap-2 cursor-pointer"
+                      className="w-full sm:w-auto px-6 py-3 rounded-xl font-cinzel text-xs font-bold tracking-widest text-[#cabfa6] border border-[#C5A059]/30 hover:text-[#E9D18F] hover:border-[#C5A059] transition-all uppercase flex items-center justify-center gap-2 cursor-pointer"
                     >
                       <span>←</span> {lang === "fr" ? "Modifier" : "Edit"}
                     </button>
                     <button
                       type="button"
                       onClick={goNext}
-                      className="group px-8 py-3.5 rounded-xl font-cinzel text-xs font-bold tracking-widest text-black bg-gradient-to-r from-[#C5A059] to-[#E9D18F] hover:shadow-[0_0_20px_rgba(197,160,89,0.4)] transition-all uppercase flex items-center gap-2 cursor-pointer"
+                      className="w-full sm:w-auto group px-6 sm:px-8 py-3.5 rounded-xl font-cinzel text-xs font-bold tracking-widest text-black bg-gradient-to-r from-[#C5A059] to-[#E9D18F] hover:shadow-[0_0_20px_rgba(197,160,89,0.4)] transition-all uppercase flex items-center justify-center gap-2 cursor-pointer"
                     >
                       {lang === "fr" ? "Procéder au Règlement" : "Proceed to Payment"}
                       <span className="group-hover:translate-x-1 transition-transform">→</span>
@@ -897,7 +897,7 @@ export default function PaymentPage() {
                   </div>
 
                   {/* Mini summary bar */}
-                  <div className="bg-black/30 border border-[#C5A059]/15 rounded-2xl p-4 flex items-center justify-between">
+                  <div className="bg-black/30 border border-[#C5A059]/15 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                     <div className="font-cormorant text-sm text-[#cabfa6]">
                       <span className="text-white font-semibold">{getSelectedServiceText()}</span>
                       <span className="mx-2">•</span>
@@ -906,8 +906,8 @@ export default function PaymentPage() {
                         <span className="ml-2 text-[#60a5fa] font-cinzel text-xs">({getSubscriptionFrequency()})</span>
                       )}
                     </div>
-                    <span className="font-cinzel text-xl font-bold text-[#E9D18F]">
-                      {calculatedAmount.toLocaleString("fr-FR")} €
+                    <span className="font-cinzel text-lg sm:text-xl font-bold text-[#E9D18F] whitespace-nowrap flex-shrink-0">
+                      {calculatedAmount.toLocaleString("fr-FR")}&nbsp;€
                     </span>
                   </div>
 
