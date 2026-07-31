@@ -57,15 +57,14 @@ export default function ServicesModal({ isOpen, onClose }: ServicesModalProps) {
         aria-modal="true"
         aria-label="Menu des services"
       >
-        {/* Bouton fermer (menu-panel__close) */}
+        {/* Bouton fermer (Croix dorée tournante sans texte) */}
         <button
           type="button"
           onClick={handleClose}
-          className="absolute top-6 right-6 sm:top-8 sm:right-8 px-4 py-2 rounded-full bg-[#0a0b0a] border border-[#C5A059]/45 text-[#C5A059] hover:text-[#E9D18F] hover:bg-[#C5A059]/20 hover:border-[#E9D18F] flex items-center gap-2 font-cinzel text-xs sm:text-sm font-semibold tracking-widest uppercase transition-all duration-300 cursor-pointer z-20 shadow-md"
-          aria-label="Fermer le menu"
+          className="absolute top-6 right-6 sm:top-8 sm:right-8 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#0a0b0a] border border-[#C5A059]/60 text-[#C5A059] hover:text-[#E9D18F] hover:bg-[#C5A059]/20 hover:border-[#E9D18F] hover:rotate-90 hover:scale-110 active:scale-95 flex items-center justify-center transition-all duration-500 cursor-pointer z-20 shadow-[0_0_15px_rgba(197,160,89,0.2)]"
+          aria-label={lang === "fr" ? "Fermer le menu" : "Close menu"}
         >
-          <span>{lang === "fr" ? "FERMER" : "CLOSE"}</span>
-          <span className="font-cinzel text-lg leading-none font-bold">&times;</span>
+          <span className="font-cinzel text-2xl sm:text-3xl leading-none font-bold select-none">&times;</span>
         </button>
 
         {/* Logo Cheval Ailé (menu-panel__logo avec revealUp) */}
