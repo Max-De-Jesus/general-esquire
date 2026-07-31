@@ -80,9 +80,6 @@ export default function PaymentPage() {
   const [translationPages, setTranslationPages] = useState<number>(1);
   const [isUrgent, setIsUrgent] = useState(false);
 
-  /* ── Auth requirement modal ── */
-  const [showAuthModal, setShowAuthModal] = useState(false);
-
   /* ── Payment UI state ── */
   const [paymentMethod, setPaymentMethod] = useState<"card" | "paypal" | "virement">("card");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -196,7 +193,7 @@ export default function PaymentPage() {
      ══════════════════════════════════════════════════════════════════ */
   const submitTransaction = async (method: string, extraStatus = "Payé") => {
     if (!user) {
-      setShowAuthModal(true);
+      setPaymentError(lang === "fr" ? "Veuillez vous connecter pour valider le règlement." : "Please sign in to complete payment.");
       return;
     }
 
@@ -358,7 +355,43 @@ export default function PaymentPage() {
       {/* ─── MAIN CONTENT ─── */}
       <main className="max-w-5xl w-full mx-auto px-4 sm:px-6 py-10 md:py-14 flex-grow">
 
-        {paymentSuccess ? (
+        {/* ═══ REQUIREMENT CHECK: USER MUST BE LOGGED IN TO ACCESS PAYMENT ═══ */}
+        {!user ? (
+          <div className="bg-[#131513] border border-[#C5A059]/60 rounded-3xl p-8 md:p-14 text-center max-w-xl mx-auto shadow-[0_20px_60px_rgba(0,0,0,0.8)] relative overflow-hidden">
+            <div className="w-20 h-20 bg-[#C5A059]/10 border-2 border-[#C5A059] rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_25px_rgba(197,160,89,0.3)]">
+              <span className="text-3xl">🔒</span>
+            </div>
+
+            <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.25em] uppercase border border-[#C5A059]/40 px-4 py-1.5 rounded-full bg-[#1a1c1a] inline-block mb-4">
+              {lang === "fr" ? "Accès Sécurisé Client" : "Client Secure Access"}
+            </span>
+
+            <h2 className="font-cinzel text-2xl md:text-3xl font-bold text-[#E9D18F] mb-4 tracking-wider uppercase">
+              {lang === "fr" ? "Connexion Obligatoire" : "Authentication Required"}
+            </h2>
+
+            <p className="font-cormorant text-lg text-[#cabfa6] leading-relaxed mb-8">
+              {lang === "fr"
+                ? "Pour garantir la confidentialité, l'attribution légale et le suivi sécurisé de vos prestations juridiques et séjours Chrysalides, vous devez obligatoirement être connecté à votre compte client avant d'effectuer un règlement."
+                : "To guarantee confidentiality, legal attribution, and secure tracking of your legal services and Chrysalides stays, you must be logged into your client account to proceed with payment."}
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                href="/connexion?redirect=/paiement"
+                className="w-full sm:w-auto px-8 py-4 rounded-full font-cinzel text-xs font-bold tracking-widest text-black bg-gradient-to-r from-[#C5A059] to-[#E9D18F] hover:brightness-110 shadow-[0_0_20px_rgba(197,160,89,0.4)] transition-all uppercase cursor-pointer"
+              >
+                🔑 {lang === "fr" ? "Se Connecter / S'inscrire" : "Log In / Register"}
+              </Link>
+              <Link
+                href="/"
+                className="w-full sm:w-auto px-8 py-4 rounded-full font-cinzel text-xs font-bold tracking-widest text-[#cabfa6] border border-[#C5A059]/30 hover:text-white hover:border-[#C5A059] transition-all uppercase cursor-pointer"
+              >
+                {lang === "fr" ? "Retour à l'accueil" : "Back to Home"}
+              </Link>
+            </div>
+          </div>
+        ) : paymentSuccess ? (
           /* ═══ SUCCESS CONFIRMATION ═══ */
           <div className="bg-[#131513] border border-[#C5A059] rounded-3xl p-8 md:p-12 text-center max-w-2xl mx-auto shadow-2xl relative overflow-hidden animate-fadeIn">
             <div className="absolute inset-0 bg-[#C5A059]/[0.02] pointer-events-none" />
@@ -1114,51 +1147,6 @@ export default function PaymentPage() {
                   : (lang === "fr" ? "Connexion & Valider le Règlement" : "Log In & Authorize Payment")}
               </button>
             </form>
-          </div>
-        </div>
-      )}
-
-      {/* ═══ AUTH REQUIRED MODAL ═══ */}
-      {showAuthModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-          <div className="relative w-full max-w-md bg-[#1a1c1a] border border-[#C5A059]/60 rounded-3xl p-8 shadow-[0_20px_50px_rgba(0,0,0,0.9)] text-center space-y-6">
-            <button
-              onClick={() => setShowAuthModal(false)}
-              className="absolute top-4 right-4 text-[#cabfa6] hover:text-[#E9D18F] text-lg cursor-pointer"
-            >
-              ✕
-            </button>
-
-            <div className="w-16 h-16 mx-auto rounded-full bg-[#C5A059]/10 border border-[#C5A059]/40 flex items-center justify-center text-2xl text-[#E9D18F]">
-              🔒
-            </div>
-
-            <div>
-              <h3 className="font-cinzel text-xl font-bold text-[#E9D18F]">
-                {lang === "fr" ? "Connexion Requise" : "Authentication Required"}
-              </h3>
-              <p className="mt-2 text-sm text-[#cabfa6]">
-                {lang === "fr"
-                  ? "Afin de sécuriser vos transactions et l'attribution de vos services juridiques, vous devez être connecté à votre compte client avant de procéder au règlement."
-                  : "To secure your transactions and legal services, you must be logged into your account before making a payment."}
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-3 pt-2">
-              <Link
-                href="/connexion?redirect=/paiement"
-                className="w-full py-3 rounded-full bg-gradient-to-r from-[#C5A059] to-[#E9D18F] text-black font-cinzel font-bold text-sm uppercase tracking-wider shadow-lg hover:brightness-110 transition-all text-center"
-              >
-                {lang === "fr" ? "Se Connecter / S'inscrire" : "Sign In / Register"}
-              </Link>
-              <button
-                type="button"
-                onClick={() => setShowAuthModal(false)}
-                className="w-full py-2 text-xs font-cinzel text-[#cabfa6] hover:text-[#EDE4CF] cursor-pointer"
-              >
-                {lang === "fr" ? "Annuler" : "Cancel"}
-              </button>
-            </div>
           </div>
         </div>
       )}
