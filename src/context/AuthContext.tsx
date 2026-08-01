@@ -124,6 +124,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             const existing = JSON.parse(localStorage.getItem("ge_admin_clients") || "[]");
             const filtered = existing.filter((c: any) => c.email !== clientRecord.email);
             localStorage.setItem("ge_admin_clients", JSON.stringify([clientRecord, ...filtered]));
+            window.dispatchEvent(new CustomEvent("ge_client_registered", { detail: clientRecord }));
           }
         } catch (lsErr) {
           console.warn("LocalStorage client save error:", lsErr);

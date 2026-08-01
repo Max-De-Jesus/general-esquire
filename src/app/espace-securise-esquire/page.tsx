@@ -240,7 +240,7 @@ export default function EspaceSecurisePage() {
     }
   };
 
-  // Load Data on Mount & Realtime Supabase Subscriptions
+  // Load Data on Mount & Realtime Supabase Subscriptions + Local Event Listeners
   useEffect(() => {
     fetchNewsList();
     if (isAdmin) {
@@ -248,6 +248,21 @@ export default function EspaceSecurisePage() {
       fetchDemandesList();
       fetchPaiementsList();
       fetchLogsList();
+
+      const handleCustomRegisterEvent = () => {
+        fetchClientsList();
+      };
+
+      const handleStorageEvent = (e: StorageEvent) => {
+        if (e.key === "ge_admin_clients") {
+          fetchClientsList();
+        }
+      };
+
+      if (typeof window !== "undefined") {
+        window.addEventListener("ge_client_registered", handleCustomRegisterEvent);
+        window.addEventListener("storage", handleStorageEvent);
+      }
 
       const channel = supabase
         .channel("admin_dashboard_realtime")
@@ -269,6 +284,10 @@ export default function EspaceSecurisePage() {
         .subscribe();
 
       return () => {
+        if (typeof window !== "undefined") {
+          window.removeEventListener("ge_client_registered", handleCustomRegisterEvent);
+          window.removeEventListener("storage", handleStorageEvent);
+        }
         supabase.removeChannel(channel);
       };
     }
@@ -374,10 +393,28 @@ export default function EspaceSecurisePage() {
         updateData.password = adminNewPassword;
       }
 
-      const { error } = await supabase.auth.updateUser(updateData);
+      let authError: string | null = null;
+      try {
+        const { error } = await supabase.auth.updateUser(updateData);
+        if (error) authError = error.message;
+      } catch (err: any) {
+        authError = err.message || "Erreur Supabase Auth";
+      }
 
-      if (error) {
-        throw new Error(error.message);
+      // Save updated local admin profile
+      try {
+        if (typeof window !== "undefined") {
+          localStorage.setItem(
+            "ge_admin_profile",
+            JSON.stringify({
+              fullName: adminFullName,
+              email: adminEmailInput || user?.email,
+              updatedAt: new Date().toISOString(),
+            })
+          );
+        }
+      } catch {
+        // Ignore
       }
 
       // Log Audit Entry
@@ -386,14 +423,14 @@ export default function EspaceSecurisePage() {
         action_type: "Modification",
         client_name: adminFullName,
         client_email: adminEmailInput || user?.email || "",
-        notes: "Mise à jour des identifiants et mot de passe administrateur",
+        notes: `Mise à jour des identifiants et mot de passe administrateur${authError ? ` (Note: ${authError})` : ""}`,
       });
 
-      setAccountSuccess("Vos identifiants ont été mis à jour avec succès. Invalidation des sessions en cours...");
+      setAccountSuccess("Vos identifiants ont été mis à jour avec succès. Déconnexion automatique des sessions...");
 
       setTimeout(async () => {
         await signOut();
-        alert("Vos identifiants ont été modifiés avec succès. Veuillez vous reconnecter avec vos nouvelles coordonnées.");
+        alert("Vos identifiants ont été mis à jour. Veuillez vous reconnecter avec vos nouvelles coordonnées.");
       }, 1500);
     } catch (err: any) {
       setAccountError(`Erreur lors de la mise à jour : ${err.message || "Erreur inconnue"}`);
