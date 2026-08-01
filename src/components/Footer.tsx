@@ -25,7 +25,7 @@ export default function Footer() {
             {lang === "fr" ? "Immatriculée au RCS de Paris" : "Registered with the Paris RCS"}
           </p>
           <p className="font-cormorant text-xs sm:text-sm text-[#E9D18F] font-semibold pt-0.5">
-            61 rue de Lyon, 75012 PARIS
+            N° SIRET : 10494555500019
           </p>
         </div>
 
@@ -60,7 +60,11 @@ export default function Footer() {
             Contact
           </p>
           <div className="space-y-2 font-cormorant text-sm">
-            {/* 1. Téléphone fixe */}
+            {/* 1. Adresse physique à droite */}
+            <p className="text-[#E9D18F] font-semibold text-xs sm:text-sm pb-1 flex items-center justify-center md:justify-end gap-1.5">
+              <span>📍</span> 61 rue de Lyon, 75012 PARIS
+            </p>
+            {/* 2. Téléphone fixe */}
             <p className="flex items-center justify-center md:justify-end gap-1.5">
               <a
                 href="tel:+33159581725"
@@ -73,7 +77,7 @@ export default function Footer() {
                 <span className="group-hover:text-[#25D366] transition-colors duration-300">+33 (0)1 59 58 17 25</span>
               </a>
             </p>
-            {/* 3. WhatsApp (icône uniquement, pas de mot (WhatsApp)) */}
+            {/* 3. WhatsApp */}
             <p className="flex items-center justify-center md:justify-end gap-1.5">
               <a
                 href="https://wa.me/33758264254"
@@ -88,7 +92,7 @@ export default function Footer() {
                 <span className="hover:text-[#E9D18F] transition-colors">+33 758 264 254</span>
               </a>
             </p>
-            {/* 4. Email officiel (affichage contact@generalesquire.com) */}
+            {/* 4. Email officiel */}
             <p>
               <a
                 href="mailto:contact@generalesquire.com"

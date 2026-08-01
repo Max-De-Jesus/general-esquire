@@ -476,8 +476,8 @@ export default function EntrepreneurPage() {
                 <h3 className="font-cinzel text-lg text-[#E9D18F] font-bold uppercase tracking-widest mb-1">
                   Abonnement Annuel
                 </h3>
-                <p className="font-cinzel text-4xl sm:text-5xl text-white font-extrabold my-3 drop-shadow-md">
-                  10 000 € <span className="text-sm font-normal text-[#C5A059] font-cormorant">/ an</span>
+                <p className="font-cinzel text-4xl sm:text-5xl text-white font-extrabold my-3 drop-shadow-md flex items-baseline gap-1">
+                  10 000 € <span className="text-xl sm:text-2xl font-bold text-[#E9D18F] font-cinzel tracking-wider uppercase ml-1">/ an</span>
                 </p>
                 <div className="h-[1px] w-full bg-[#C5A059]/30 my-4" />
                 <div className="space-y-4 font-cormorant text-lg text-[#EDE4CF]/90 leading-relaxed">
@@ -498,7 +498,7 @@ export default function EntrepreneurPage() {
             </div>
 
             {/* 2. Abonnement Mensuel */}
-            <div className="relative p-8 rounded-3xl bg-[#131513] border border-[#C5A059]/40 shadow-xl hover:border-[#C5A059] hover:shadow-[0_0_40px_rgba(197,160,89,0.2)] hover:scale-[1.02] transition-all duration-500 flex flex-col justify-between group">
+            <div className="relative p-8 rounded-3xl bg-[#131513] border border-[#C5A059]/40 shadow-xl hover:border-[#C5A059] hover:shadow-[0_0_40px_rgba(197,160,89,0.2)] transition-all duration-500 flex flex-col h-full justify-between group">
               <div>
                 <div className="w-12 h-12 rounded-2xl bg-[#C5A059]/15 border border-[#C5A059]/30 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
                   📅
@@ -506,8 +506,8 @@ export default function EntrepreneurPage() {
                 <h3 className="font-cinzel text-lg text-[#E9D18F] font-bold uppercase tracking-widest mb-1">
                   Abonnement Mensuel
                 </h3>
-                <p className="font-cinzel text-4xl text-white font-extrabold my-3">
-                  1 000 € <span className="text-sm font-normal text-[#cabfa6] font-cormorant">/ mois</span>
+                <p className="font-cinzel text-4xl text-white font-extrabold my-3 flex items-baseline gap-1">
+                  1 000 € <span className="text-xl sm:text-2xl font-bold text-[#E9D18F] font-cinzel tracking-wider uppercase ml-1">/ mois</span>
                 </p>
                 <div className="h-[1px] w-full bg-[#C5A059]/20 my-4" />
                 <div className="space-y-4 font-cormorant text-lg text-[#EDE4CF]/90 leading-relaxed">
@@ -520,8 +520,8 @@ export default function EntrepreneurPage() {
                 </div>
               </div>
 
-              {/* Image Case 1 */}
-              <div className="relative w-full h-48 sm:h-56 mt-6 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg group-hover:scale-105 transition-transform duration-500">
+              {/* Image Case 1 pleine hauteur */}
+              <div className="relative w-full flex-1 min-h-[260px] sm:min-h-[300px] mt-6 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg group-hover:scale-[1.02] transition-transform duration-500">
                 <Image
                   src="/images/case1.png"
                   alt="General Esquire — Abonnement Mensuel (Case 1)"
@@ -534,7 +534,7 @@ export default function EntrepreneurPage() {
             </div>
 
             {/* 3. Prestation Ponctuelle */}
-            <div className="relative p-8 rounded-3xl bg-[#131513] border border-[#C5A059]/40 shadow-xl hover:border-[#C5A059] hover:shadow-[0_0_40px_rgba(197,160,89,0.2)] hover:scale-[1.02] transition-all duration-500 flex flex-col justify-between group">
+            <div className="relative p-8 rounded-3xl bg-[#131513] border border-[#C5A059]/40 shadow-xl hover:border-[#C5A059] hover:shadow-[0_0_40px_rgba(197,160,89,0.2)] transition-all duration-500 flex flex-col h-full justify-between group">
               <div>
                 <div className="w-12 h-12 rounded-2xl bg-[#C5A059]/15 border border-[#C5A059]/30 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
                   🤝
@@ -542,8 +542,8 @@ export default function EntrepreneurPage() {
                 <h3 className="font-cinzel text-lg text-[#E9D18F] font-bold uppercase tracking-widest mb-1">
                   Prestation Ponctuelle
                 </h3>
-                <p className="font-cinzel text-3xl text-white font-bold my-3">
-                  Gré à gré
+                <p className="font-cinzel text-3xl sm:text-4xl text-white font-bold my-3 flex items-baseline gap-2">
+                  Gré à gré <span className="text-sm font-semibold text-[#E9D18F] font-cinzel tracking-wider uppercase">(Sur Devis)</span>
                 </p>
                 <div className="h-[1px] w-full bg-[#C5A059]/20 my-4" />
                 <div className="space-y-4 font-cormorant text-lg text-[#EDE4CF]/90 leading-relaxed">
@@ -556,8 +556,8 @@ export default function EntrepreneurPage() {
                 </div>
               </div>
 
-              {/* Image Case 2 */}
-              <div className="relative w-full h-48 sm:h-56 mt-6 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg group-hover:scale-105 transition-transform duration-500">
+              {/* Image Case 2 pleine hauteur */}
+              <div className="relative w-full flex-1 min-h-[260px] sm:min-h-[300px] mt-6 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg group-hover:scale-[1.02] transition-transform duration-500">
                 <Image
                   src="/images/case2.png"
                   alt="General Esquire — Prestation Ponctuelle (Case 2)"
