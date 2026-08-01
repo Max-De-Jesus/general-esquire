@@ -81,7 +81,7 @@ export default function PaymentPage() {
   const [isUrgent, setIsUrgent] = useState(false);
 
   /* ── Payment UI state ── */
-  const [paymentMethod, setPaymentMethod] = useState<"card" | "paypal" | "virement" | "wero">("card");
+  const [paymentMethod, setPaymentMethod] = useState<"card" | "paypal" | "virement" | "wero">("paypal");
   const [weroRef, setWeroRef] = useState("");
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -1024,29 +1024,22 @@ export default function PaymentPage() {
                     </span>
                   </div>
 
-                  {/* Payment method tabs */}
-                  <div className="grid grid-cols-3 gap-3">
-                    {([
-                      { key: "card" as const, icon: "💳", labelFr: "Carte", labelEn: "Card" },
-                      { key: "paypal" as const, icon: "P", labelFr: "PayPal", labelEn: "PayPal" },
-                      { key: "virement" as const, icon: "🏛️", labelFr: "Virement", labelEn: "Transfer" },
-                    ]).map((tab) => (
-                      <button
-                        key={tab.key}
-                        type="button"
-                        onClick={() => setPaymentMethod(tab.key)}
-                        className={`py-4 rounded-xl border font-cinzel text-[10px] uppercase font-bold tracking-wider transition-all cursor-pointer flex flex-col items-center justify-center gap-1.5 ${
-                          paymentMethod === tab.key
-                            ? "bg-[#C5A059]/10 border-[#C5A059] text-[#E9D18F] shadow-[0_0_12px_rgba(197,160,89,0.15)]"
-                            : "border-[#C5A059]/20 text-[#EDE4CF]/60 hover:text-white hover:border-[#C5A059]/40"
-                        }`}
-                      >
-                        <span className={tab.key === "paypal" ? "text-[#f2c94c] font-bold text-base" : "text-base"}>
-                          {tab.icon}
+                  {/* Payment method tab - PayPal unique */}
+                  <div className="p-4 rounded-2xl border border-[#C5A059] bg-[#C5A059]/10 text-[#E9D18F] shadow-[0_0_15px_rgba(197,160,89,0.2)] flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <span className="text-3xl font-extrabold text-[#f2c94c] font-cinzel">P</span>
+                      <div>
+                        <span className="font-cinzel text-xs font-bold uppercase tracking-wider block text-[#E9D18F]">
+                          {lang === "fr" ? "Paiement Officiel par PayPal" : "Official PayPal Payment"}
                         </span>
-                        <span>{lang === "fr" ? tab.labelFr : tab.labelEn}</span>
-                      </button>
-                    ))}
+                        <span className="text-[11px] font-cormorant text-[#EDE4CF]/80">
+                          {lang === "fr" ? "Règlement sécurisé (Compte PayPal ou Carte via PayPal)" : "Secure checkout (PayPal Account or Card via PayPal)"}
+                        </span>
+                      </div>
+                    </div>
+                    <span className="px-3 py-1 rounded-full bg-[#0079C1]/20 border border-[#0079C1]/50 text-[#60a5fa] font-cinzel text-[10px] font-bold uppercase tracking-wider">
+                      Seul Moyen Inclus
+                    </span>
                   </div>
 
                   {/* Status Banner for Live vs Test/Simulation Keys */}

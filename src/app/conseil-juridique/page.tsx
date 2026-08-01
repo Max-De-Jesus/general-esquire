@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 import TickerBanner from "@/components/TickerBanner";
 import { supabase } from "@/lib/supabase";
+import { generateFormPDF } from "@/utils/generateFormPDF";
 
 export default function ConseilJuridiquePage() {
   const { lang } = useLanguage();
@@ -326,9 +327,25 @@ export default function ConseilJuridiquePage() {
       `Date : ${new Date().toLocaleString("fr-FR")}`
     );
 
+    // 5. Génération automatique du formulaire en version PDF pour le client et l'administrateur
     try {
-      window.location.href = `mailto:generalesquire@proton.me?subject=${mailSubject}&body=${mailBody}`;
-    } catch {}
+      generateFormPDF({
+        title: "Formulaire Conseil Juridique — General Esquire",
+        clientEmail: formData.courriel,
+        fields: [
+          { label: "Nom complet", value: fullName },
+          { label: "Adresse Email", value: formData.courriel },
+          { label: "Numéro de Téléphone", value: phone },
+          { label: "Structure / Organisation", value: formData.structure || "Non renseigné" },
+          { label: "Adresse physique", value: `${formData.adresse}, ${formData.codePostal} ${formData.ville}` },
+          { label: "Pays d'origine", value: formData.pays },
+          { label: "Demande urgente (sous 48h)", value: formData.urgent === "oui" ? "OUI (Traitement prioritaire)" : "NON" },
+          { label: "Exposé du problème / Besoin juridique", value: formData.probleme },
+        ],
+      });
+    } catch (pdfErr) {
+      console.warn("Erreur génération PDF:", pdfErr);
+    }
 
     setFormSubmitted(true);
   };
@@ -560,9 +577,36 @@ export default function ConseilJuridiquePage() {
                     ? "General Esquire vous remercie pour votre message. Une confirmation de réception vous parviendra dans votre boîte mail."
                     : "General Esquire thanks you for your message. A confirmation will be sent to your email inbox."}
                 </p>
+                <div className="pt-2 pb-1 flex flex-col sm:flex-row items-center justify-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const clientFullName = `${formData.prenoms} ${formData.nom}`.trim() || "Client";
+                      const clientPhone = formData.telephone || "Non renseigné";
+                      generateFormPDF({
+                        title: "Formulaire Conseil Juridique — General Esquire",
+                        clientEmail: formData.courriel,
+                        fields: [
+                          { label: "Nom complet", value: clientFullName },
+                          { label: "Adresse Email", value: formData.courriel },
+                          { label: "Numéro de Téléphone", value: clientPhone },
+                          { label: "Structure / Organisation", value: formData.structure || "Non renseigné" },
+                          { label: "Adresse physique", value: `${formData.adresse}, ${formData.codePostal} ${formData.ville}` },
+                          { label: "Pays d'origine", value: formData.pays },
+                          { label: "Demande urgente (sous 48h)", value: formData.urgent === "oui" ? "OUI" : "NON" },
+                          { label: "Exposé du problème / Besoin juridique", value: formData.probleme },
+                        ],
+                      });
+                    }}
+                    className="px-5 py-3 rounded-xl bg-[#C5A059] text-black font-cinzel font-bold text-xs uppercase tracking-wider hover:bg-[#E9D18F] transition-all shadow-md flex items-center gap-2 cursor-pointer"
+                  >
+                    <span>📥</span>
+                    <span>{lang === "fr" ? "Télécharger la version PDF du formulaire" : "Download PDF Form Version"}</span>
+                  </button>
+                </div>
                 <button
                   onClick={() => setFormSubmitted(false)}
-                  className="font-cinzel text-xs text-[#C5A059] underline hover:text-[#E9D18F]"
+                  className="font-cinzel text-xs text-[#C5A059] underline hover:text-[#E9D18F] block mx-auto pt-2"
                 >
                   {lang === "fr" ? "Envoyer un autre message" : "Send another message"}
                 </button>

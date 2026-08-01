@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 import TickerBanner from "@/components/TickerBanner";
 import { supabase } from "@/lib/supabase";
+import { generateFormPDF } from "@/utils/generateFormPDF";
 
 export default function CocooningTouristiquePage() {
   const { lang } = useLanguage();
@@ -100,9 +101,26 @@ export default function CocooningTouristiquePage() {
       `Date : ${new Date().toLocaleString("fr-FR")}`
     );
 
+    // 5. Génération automatique du formulaire en version PDF
     try {
-      window.location.href = `mailto:generalesquire@proton.me?subject=${mailSubject}&body=${mailBody}`;
-    } catch {}
+      generateFormPDF({
+        title: "Formulaire Cocooning Touristique — General Esquire",
+        clientEmail: formData.courriel,
+        fields: [
+          { label: "Nom complet", value: fullName },
+          { label: "Adresse Email", value: formData.courriel },
+          { label: "Téléphone / WhatsApp", value: phone },
+          { label: "Genre", value: formData.genre },
+          { label: "Profession", value: formData.profession },
+          { label: "Nationalité", value: formData.nationalite },
+          { label: "Adresse résidente", value: formData.adresse },
+          { label: "Préférences alimentaires", value: formData.preferencesAlimentaires.join(", ") || "Aucune restriction particulière" },
+          { label: "Présentation & Motivations", value: formData.presentationLibre },
+        ],
+      });
+    } catch (pdfErr) {
+      console.warn("Erreur génération PDF:", pdfErr);
+    }
 
     setFormSubmitted(true);
   };
@@ -665,10 +683,38 @@ export default function CocooningTouristiquePage() {
                     ? "General Esquire vous remercie pour votre inscription. Nos équipes étudieront votre dossier et prendront contact avec vous très rapidement."
                     : "General Esquire thanks you for your application. Our teams will review your file and contact you very shortly."}
                 </p>
+                <div className="pt-2 pb-1 flex flex-col sm:flex-row items-center justify-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const clientFullName = `${formData.prenoms} ${formData.nom}`.trim() || "Client";
+                      const clientPhone = formData.telephone || "Non renseigné";
+                      generateFormPDF({
+                        title: "Formulaire Cocooning Touristique — General Esquire",
+                        clientEmail: formData.courriel,
+                        fields: [
+                          { label: "Nom complet", value: clientFullName },
+                          { label: "Adresse Email", value: formData.courriel },
+                          { label: "Téléphone / WhatsApp", value: clientPhone },
+                          { label: "Genre", value: formData.genre },
+                          { label: "Profession", value: formData.profession },
+                          { label: "Nationalité", value: formData.nationalite },
+                          { label: "Adresse résidente", value: formData.adresse },
+                          { label: "Préférences alimentaires", value: formData.preferencesAlimentaires.join(", ") || "Aucune restriction particulière" },
+                          { label: "Présentation & Motivations", value: formData.presentationLibre },
+                        ],
+                      });
+                    }}
+                    className="px-5 py-3 rounded-xl bg-[#C5A059] text-black font-cinzel font-bold text-xs uppercase tracking-wider hover:bg-[#E9D18F] transition-all shadow-md flex items-center gap-2 cursor-pointer"
+                  >
+                    <span>📥</span>
+                    <span>{lang === "fr" ? "Télécharger la version PDF du formulaire" : "Download PDF Form Version"}</span>
+                  </button>
+                </div>
                 <button
                   type="button"
                   onClick={() => setFormSubmitted(false)}
-                  className="font-cinzel text-xs text-[#C5A059] underline hover:text-[#E9D18F] uppercase tracking-wider"
+                  className="font-cinzel text-xs text-[#C5A059] underline hover:text-[#E9D18F] uppercase tracking-wider block mx-auto pt-2"
                 >
                   {lang === "fr" ? "Transmettre une autre demande" : "Submit another request"}
                 </button>
