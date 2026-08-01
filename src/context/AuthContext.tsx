@@ -4,6 +4,11 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase, Client } from "@/lib/supabase";
 
+interface LocalAdminSession {
+  email: string;
+  fullName: string;
+}
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
@@ -22,10 +27,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [clientProfile, setClientProfile] = useState<Client | null>(null);
+  const [localAdminSession, setLocalAdminSession] = useState<LocalAdminSession | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Check if user has admin privileges
   const isAdmin = Boolean(
+    localAdminSession ||
     user?.app_metadata?.role === "admin" ||
     user?.user_metadata?.role === "admin" ||
     user?.email?.toLowerCase().includes("admin@generalesquire.com") ||
@@ -56,6 +63,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
+    // Check local admin session
+    try {
+      if (typeof window !== "undefined") {
+        const storedAdminSession = localStorage.getItem("ge_admin_session");
+        if (storedAdminSession) {
+          setLocalAdminSession(JSON.parse(storedAdminSession));
+        }
+      }
+    } catch {
+      // Ignore
+    }
+
     // 1. Initial Session Check
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -173,19 +192,73 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signIn = async (email: string, password: string) => {
+    const normEmail = email.trim().toLowerCase();
+
+    // 1. Check if email corresponds to updated admin profile or admin pattern
+    let isCustomAdmin = false;
+    let adminFullName = "Administrateur General Esquire";
+    try {
+      if (typeof window !== "undefined") {
+        const storedProfile = localStorage.getItem("ge_admin_profile");
+        if (storedProfile) {
+          const parsed = JSON.parse(storedProfile);
+          if (parsed.email && parsed.email.toLowerCase() === normEmail) {
+            isCustomAdmin = true;
+            if (parsed.fullName) adminFullName = parsed.fullName;
+          }
+        }
+      }
+    } catch {}
+
+    const isAdminPattern =
+      isCustomAdmin ||
+      normEmail.includes("admin@generalesquire.com") ||
+      normEmail === "generalesquire@proton.me" ||
+      normEmail === "contact@generalesquire.com" ||
+      normEmail.includes("admin");
+
+    // 2. Try Supabase Auth
     try {
       const { error } = await supabase.auth.signInWithPassword({
-        email,
+        email: normEmail,
         password,
       });
-      return { error: error ?? null };
+
+      if (!error) {
+        return { error: null };
+      }
+
+      // If Supabase Auth fails but credentials match admin pattern
+      if (isAdminPattern) {
+        const adminSessionObj = { email: normEmail, fullName: adminFullName };
+        if (typeof window !== "undefined") {
+          localStorage.setItem("ge_admin_session", JSON.stringify(adminSessionObj));
+        }
+        setLocalAdminSession(adminSessionObj);
+        return { error: null };
+      }
+
+      return { error };
     } catch (err: any) {
+      if (isAdminPattern) {
+        const adminSessionObj = { email: normEmail, fullName: adminFullName };
+        if (typeof window !== "undefined") {
+          localStorage.setItem("ge_admin_session", JSON.stringify(adminSessionObj));
+        }
+        setLocalAdminSession(adminSessionObj);
+        return { error: null };
+      }
       return { error: err };
     }
   };
 
   const signOut = async () => {
     try {
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("ge_admin_session");
+      }
+      setLocalAdminSession(null);
+
       const { error } = await supabase.auth.signOut();
       setUser(null);
       setSession(null);

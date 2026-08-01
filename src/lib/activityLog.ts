@@ -35,11 +35,11 @@ export async function logActivity(entry: Omit<ActivityLogEntry, "id" | "created_
         created_at: timestamp,
       },
     ]);
-    if (error) {
-      console.warn("Supabase activity_logs insert fallback:", error.message);
+    if (error && !error.message.includes("schema cache") && !error.message.includes("Could not find the table")) {
+      console.warn("Supabase activity_logs notice:", error.message);
     }
-  } catch (err) {
-    console.warn("Activity log Supabase error:", err);
+  } catch {
+    // Silent fallback to local storage
   }
 
   // 2. Sauvegarde LocalStorage
