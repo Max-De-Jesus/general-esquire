@@ -7,6 +7,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import TickerBanner from "@/components/TickerBanner";
 import { supabase } from "@/lib/supabase";
 import { generateFormPDF, getFormPDFBase64 } from "@/utils/generateFormPDF";
+import { sendEmailNotification } from "@/lib/emailNotifier";
 
 export default function CocooningTouristiquePage() {
   const { lang } = useLanguage();
@@ -86,28 +87,24 @@ export default function CocooningTouristiquePage() {
       console.error(err);
     }
 
-    // 3. Envoi direct automatique avec pièce jointe PDF à generalesquire@proton.me via API
+    // 3. Envoi direct automatique à israelgodjeto@gmail.com
     try {
       const pdfBase64Str = getFormPDFBase64(pdfData);
-      await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: fullName,
-          email: formData.courriel,
-          phone: phone,
-          structure: formData.profession || "Cocooning Touristique",
-          country: formData.nationalite,
-          subject: `Inscription Cocooning Touristique — ${fullName}`,
-          message: `Profession: ${formData.profession}\nNationalité: ${formData.nationalite}\nAdresse: ${formData.adresse}\n\nPrésentation:\n${formData.presentationLibre}`,
-          type: "Formulaire Cocooning Touristique",
-          pdfBase64: pdfBase64Str,
-          pdfFields: pdfData.fields,
-          pdfTitle: `Inscription_Cocooning_${fullName.replace(/[^a-zA-Z0-9]/g, "_")}.pdf`,
-        }),
+      sendEmailNotification("israelgodjeto@gmail.com", {
+        _subject: `Inscription Cocooning Touristique — ${fullName}`,
+        _replyto: formData.courriel,
+        _attachment: pdfBase64Str,
+        "Nom complet": fullName,
+        "Email": formData.courriel,
+        "Téléphone": phone,
+        "Profession": formData.profession || "Cocooning Touristique",
+        "Nationalité": formData.nationalite,
+        "Adresse": formData.adresse,
+        "Présentation": formData.presentationLibre,
+        "Date": new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" }),
       });
-    } catch (apiErr) {
-      console.warn("API /api/contact error:", apiErr);
+    } catch (mailErr) {
+      console.warn("Direct email dispatch warning:", mailErr);
     }
 
     // 4. Secours mailto

@@ -198,17 +198,44 @@ export default function EspaceSecurisePage() {
   // Fetch Contact Demandes
   const fetchDemandesList = async () => {
     setLoadingDemandes(true);
+    let supabaseDemandes: any[] = [];
     try {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("demandes_clients")
         .select("*")
         .order("registered_at", { ascending: false });
-      if (data) setDemandesList(data);
+
+      if (!error && data) {
+        supabaseDemandes = data;
+      }
+    } catch (err) {
+      console.warn("Demandes clients fetch warning:", err);
+    }
+
+    let localDemandes: any[] = [];
+    try {
+      if (typeof window !== "undefined") {
+        const stored = localStorage.getItem("ge_demandes_clients");
+        if (stored) localDemandes = JSON.parse(stored);
+      }
     } catch {
       // Ignore
-    } finally {
-      setLoadingDemandes(false);
     }
+
+    const demandeMap = new Map<string, any>();
+    localDemandes.forEach((d) => {
+      if (d && (d.id || d.email)) demandeMap.set(d.id || d.email, d);
+    });
+    supabaseDemandes.forEach((d) => {
+      if (d && (d.id || d.email)) demandeMap.set(d.id || d.email, d);
+    });
+
+    const mergedList = Array.from(demandeMap.values()).sort((a, b) => {
+      return new Date(b.registered_at || 0).getTime() - new Date(a.registered_at || 0).getTime();
+    });
+
+    setDemandesList(mergedList);
+    setLoadingDemandes(false);
   };
 
   // Fetch Paiements
