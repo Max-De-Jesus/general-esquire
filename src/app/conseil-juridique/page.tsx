@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 import TickerBanner from "@/components/TickerBanner";
 import { supabase } from "@/lib/supabase";
-import { generateFormPDF } from "@/utils/generateFormPDF";
+import { generateFormPDF, getFormPDFBase64 } from "@/utils/generateFormPDF";
 
 export default function ConseilJuridiquePage() {
   const { lang } = useLanguage();
@@ -263,6 +263,24 @@ export default function ConseilJuridiquePage() {
 
     const fullName = `${formData.prenoms} ${formData.nom}`.trim() || "Client Anonyme";
     const phone = formData.telephone.trim();
+    const ref = `REF-CJ-${Math.floor(100000 + Math.random() * 900000)}`;
+
+    const pdfData = {
+      title: "Formulaire Conseil Juridique — General Esquire",
+      reference: ref,
+      clientEmail: formData.courriel,
+      fields: [
+        { label: "Nom complet", value: fullName },
+        { label: "Adresse Email", value: formData.courriel },
+        { label: "Numéro de Téléphone", value: phone },
+        { label: "Structure / Organisation", value: formData.structure || "Non renseigné" },
+        { label: "Adresse physique", value: `${formData.adresse}, ${formData.codePostal} ${formData.ville}` },
+        { label: "Pays d'origine", value: formData.pays },
+        { label: "Demande urgente (sous 48h)", value: formData.urgent === "oui" ? "OUI (Traitement prioritaire)" : "NON" },
+        { label: "Exposé du besoin juridique", value: formData.probleme },
+      ],
+    };
+
     const newDemande = {
       id: "dem_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
       full_name: fullName,
@@ -292,8 +310,9 @@ export default function ConseilJuridiquePage() {
       console.error(err);
     }
 
-    // 3. Envoi d'email direct automatique à generalesquire@proton.me via API
+    // 3. Envoi d'email direct automatique avec pièce jointe PDF à generalesquire@proton.me via API
     try {
+      const pdfBase64Str = getFormPDFBase64(pdfData);
       await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -306,6 +325,9 @@ export default function ConseilJuridiquePage() {
           subject: `Nouvelle demande Conseil Juridique — ${fullName}`,
           message: `Ville / Code Postal : ${formData.ville} (${formData.codePostal})\nUrgent : ${formData.urgent === 'oui' ? 'OUI' : 'NON'}\n\nDescription du besoin :\n${formData.probleme}`,
           type: "Formulaire Conseil Juridique",
+          pdfBase64: pdfBase64Str,
+          pdfFields: pdfData.fields,
+          pdfTitle: `Conseil_Juridique_${fullName.replace(/[^a-zA-Z0-9]/g, "_")}.pdf`,
         }),
       });
     } catch (apiErr) {
@@ -329,20 +351,7 @@ export default function ConseilJuridiquePage() {
 
     // 5. Génération automatique du formulaire en version PDF pour le client et l'administrateur
     try {
-      generateFormPDF({
-        title: "Formulaire Conseil Juridique — General Esquire",
-        clientEmail: formData.courriel,
-        fields: [
-          { label: "Nom complet", value: fullName },
-          { label: "Adresse Email", value: formData.courriel },
-          { label: "Numéro de Téléphone", value: phone },
-          { label: "Structure / Organisation", value: formData.structure || "Non renseigné" },
-          { label: "Adresse physique", value: `${formData.adresse}, ${formData.codePostal} ${formData.ville}` },
-          { label: "Pays d'origine", value: formData.pays },
-          { label: "Demande urgente (sous 48h)", value: formData.urgent === "oui" ? "OUI (Traitement prioritaire)" : "NON" },
-          { label: "Exposé du problème / Besoin juridique", value: formData.probleme },
-        ],
-      });
+      generateFormPDF(pdfData);
     } catch (pdfErr) {
       console.warn("Erreur génération PDF:", pdfErr);
     }

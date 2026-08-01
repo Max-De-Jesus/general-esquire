@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 import TickerBanner from "@/components/TickerBanner";
 import { supabase } from "@/lib/supabase";
-import { generateFormPDF } from "@/utils/generateFormPDF";
+import { generateFormPDF, getFormPDFBase64 } from "@/utils/generateFormPDF";
 
 export default function CocooningTouristiquePage() {
   const { lang } = useLanguage();
@@ -40,6 +40,25 @@ export default function CocooningTouristiquePage() {
     e.preventDefault();
     const fullName = `${formData.prenoms} ${formData.nom}`.trim() || "Participant Anonyme";
     const phone = formData.telephone.trim();
+    const ref = `REF-COC-${Math.floor(100000 + Math.random() * 900000)}`;
+
+    const pdfData = {
+      title: "Formulaire Cocooning Touristique — General Esquire",
+      reference: ref,
+      clientEmail: formData.courriel,
+      fields: [
+        { label: "Nom complet", value: fullName },
+        { label: "Adresse Email", value: formData.courriel },
+        { label: "Téléphone / WhatsApp", value: phone },
+        { label: "Genre", value: formData.genre },
+        { label: "Profession", value: formData.profession },
+        { label: "Nationalité", value: formData.nationalite },
+        { label: "Adresse résidente", value: formData.adresse },
+        { label: "Préférences alimentaires", value: formData.preferencesAlimentaires.join(", ") || "Aucune restriction particulière" },
+        { label: "Présentation & Motivations", value: formData.presentationLibre },
+      ],
+    };
+
     const newDemande = {
       id: "dem_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
       full_name: fullName,
@@ -67,8 +86,9 @@ export default function CocooningTouristiquePage() {
       console.error(err);
     }
 
-    // 3. Envoi direct automatique à generalesquire@proton.me via API
+    // 3. Envoi direct automatique avec pièce jointe PDF à generalesquire@proton.me via API
     try {
+      const pdfBase64Str = getFormPDFBase64(pdfData);
       await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -81,6 +101,9 @@ export default function CocooningTouristiquePage() {
           subject: `Inscription Cocooning Touristique — ${fullName}`,
           message: `Profession: ${formData.profession}\nNationalité: ${formData.nationalite}\nAdresse: ${formData.adresse}\n\nPrésentation:\n${formData.presentationLibre}`,
           type: "Formulaire Cocooning Touristique",
+          pdfBase64: pdfBase64Str,
+          pdfFields: pdfData.fields,
+          pdfTitle: `Inscription_Cocooning_${fullName.replace(/[^a-zA-Z0-9]/g, "_")}.pdf`,
         }),
       });
     } catch (apiErr) {
@@ -101,23 +124,9 @@ export default function CocooningTouristiquePage() {
       `Date : ${new Date().toLocaleString("fr-FR")}`
     );
 
-    // 5. Génération automatique du formulaire en version PDF
+    // 5. Génération automatique du formulaire en version PDF pour le client et téléchargement
     try {
-      generateFormPDF({
-        title: "Formulaire Cocooning Touristique — General Esquire",
-        clientEmail: formData.courriel,
-        fields: [
-          { label: "Nom complet", value: fullName },
-          { label: "Adresse Email", value: formData.courriel },
-          { label: "Téléphone / WhatsApp", value: phone },
-          { label: "Genre", value: formData.genre },
-          { label: "Profession", value: formData.profession },
-          { label: "Nationalité", value: formData.nationalite },
-          { label: "Adresse résidente", value: formData.adresse },
-          { label: "Préférences alimentaires", value: formData.preferencesAlimentaires.join(", ") || "Aucune restriction particulière" },
-          { label: "Présentation & Motivations", value: formData.presentationLibre },
-        ],
-      });
+      generateFormPDF(pdfData);
     } catch (pdfErr) {
       console.warn("Erreur génération PDF:", pdfErr);
     }
