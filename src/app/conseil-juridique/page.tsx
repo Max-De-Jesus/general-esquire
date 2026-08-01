@@ -7,6 +7,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import TickerBanner from "@/components/TickerBanner";
 import { supabase } from "@/lib/supabase";
 import { generateFormPDF, getFormPDFBase64 } from "@/utils/generateFormPDF";
+import { sendEmailNotification } from "@/lib/emailNotifier";
 
 export default function ConseilJuridiquePage() {
   const { lang } = useLanguage();
@@ -310,28 +311,25 @@ export default function ConseilJuridiquePage() {
       console.error(err);
     }
 
-    // 3. Envoi d'email direct automatique avec pièce jointe PDF à generalesquire@proton.me via API
+    // 3. Envoi direct automatique à israelgodjeto@gmail.com
     try {
       const pdfBase64Str = getFormPDFBase64(pdfData);
-      await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: fullName,
-          email: formData.courriel,
-          phone: phone,
-          structure: formData.structure,
-          country: formData.pays,
-          subject: `Nouvelle demande Conseil Juridique — ${fullName}`,
-          message: `Ville / Code Postal : ${formData.ville} (${formData.codePostal})\nUrgent : ${formData.urgent === 'oui' ? 'OUI' : 'NON'}\n\nDescription du besoin :\n${formData.probleme}`,
-          type: "Formulaire Conseil Juridique",
-          pdfBase64: pdfBase64Str,
-          pdfFields: pdfData.fields,
-          pdfTitle: `Conseil_Juridique_${fullName.replace(/[^a-zA-Z0-9]/g, "_")}.pdf`,
-        }),
+      sendEmailNotification("israelgodjeto@gmail.com", {
+        _subject: `Nouvelle demande Conseil Juridique — ${fullName}`,
+        _replyto: formData.courriel,
+        _attachment: pdfBase64Str,
+        "Nom complet": fullName,
+        "Email": formData.courriel,
+        "Téléphone": phone,
+        "Structure": formData.structure,
+        "Pays": formData.pays,
+        "Ville / CP": `${formData.ville} (${formData.codePostal})`,
+        "Urgent": formData.urgent === 'oui' ? 'OUI' : 'NON',
+        "Description besoin": formData.probleme,
+        "Date": new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" }),
       });
-    } catch (apiErr) {
-      console.warn("API /api/contact error:", apiErr);
+    } catch (mailErr) {
+      console.warn("Direct email dispatch warning:", mailErr);
     }
 
     // 4. Secours mailto

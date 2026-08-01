@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase, Client } from "@/lib/supabase";
+import { sendEmailNotification } from "@/lib/emailNotifier";
 
 interface LocalAdminSession {
   email: string;
@@ -116,7 +117,64 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         },
       });
 
-      if (error) return { error };
+      if (error) {
+        // Si l'utilisateur existe déjà dans Supabase Auth (ex: inscription précédente), tenter la connexion et réparer l'entrée clients
+        if (
+          error.message.includes("User already registered") ||
+          error.message.includes("already registered") ||
+          error.message.includes("already exists")
+        ) {
+          const { data: signInData, error: signInErr } = await supabase.auth.signInWithPassword({ email, password });
+          if (!signInErr && signInData?.user) {
+            const clientRecord = {
+              email: email.toLowerCase(),
+              full_name: fullName || signInData.user.user_metadata?.full_name || email.split("@")[0],
+              phone: phone || signInData.user.user_metadata?.phone || null,
+              profile_type: (profileType || signInData.user.user_metadata?.profile_type || "Particulier") as any,
+              requested_service: "Inscription Compte Client",
+              status: "En attente de validation" as const,
+              registered_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            };
+
+            try {
+              const { error: upsertErr } = await supabase
+                .from("clients")
+                .upsert(clientRecord, { onConflict: "email" });
+              if (upsertErr) {
+                await supabase.from("clients").insert([clientRecord]);
+              }
+            } catch {}
+
+            try {
+              if (typeof window !== "undefined") {
+                const existing = JSON.parse(localStorage.getItem("ge_admin_clients") || "[]");
+                const filtered = existing.filter((c: any) => c.email !== clientRecord.email);
+                localStorage.setItem("ge_admin_clients", JSON.stringify([clientRecord, ...filtered]));
+                window.dispatchEvent(new CustomEvent("ge_client_registered", { detail: clientRecord }));
+              }
+            } catch {}
+
+            // Notification d'alerte immédiate à israelgodjeto@gmail.com
+            try {
+              sendEmailNotification("israelgodjeto@gmail.com", {
+                _subject: `NOUVELLE INSCRIPTION CLIENT À VALIDER — ${fullName || email}`,
+                _replyto: email,
+                "Nom complet": fullName || email.split("@")[0],
+                "Email": email,
+                "Téléphone": phone || "Non renseigné",
+                "Profil / Statut": profileType,
+                "Statut actuel": "En attente de validation",
+                "Lien Administration": "https://www.generalesquire.com/espace-securise-esquire",
+                "Date": new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" }),
+              });
+            } catch {}
+
+            return { error: null };
+          }
+        }
+        return { error };
+      }
 
       // Ensure client entry exists in clients table with status 'En attente de validation'
       if (data.user) {
@@ -132,9 +190,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         };
 
         try {
-          await supabase.from("clients").upsert(clientRecord, { onConflict: "email" });
+          const { error: upsertErr } = await supabase
+            .from("clients")
+            .upsert(clientRecord, { onConflict: "email" });
+
+          if (upsertErr) {
+            console.warn("Supabase clients upsert warning, trying insert fallback:", upsertErr.message);
+            const { error: insertErr } = await supabase.from("clients").insert([clientRecord]);
+            if (insertErr) {
+              console.error("Supabase clients insert error:", insertErr.message);
+            }
+          }
         } catch (dbErr) {
-          console.warn("Supabase clients upsert warning:", dbErr);
+          console.warn("Supabase clients exception:", dbErr);
         }
 
         // Save to shared localStorage for instant visibility in admin dashboard
@@ -149,31 +217,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           console.warn("LocalStorage client save error:", lsErr);
         }
 
-        // Envoi automatique de la notification mail d'alerte admin à generalesquire@proton.me
+        // Envoi automatique de la notification mail d'alerte admin à israelgodjeto@gmail.com
         try {
-          await fetch("/api/contact", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              name: fullName,
-              email: email,
-              phone: phone || "Non renseigné",
-              structure: profileType,
-              subject: `NOUVELLE INSCRIPTION CLIENT À VALIDER — ${fullName}`,
-              message:
-                `Un nouvel utilisateur vient de s’inscrire sur votre plateforme.\n\n` +
-                `INFORMATIONS DU CLIENT :\n` +
-                `- Nom complet : ${fullName}\n` +
-                `- Email : ${email}\n` +
-                `- Téléphone : ${phone || 'Non renseigné'}\n` +
-                `- Profil / Statut : ${profileType}\n` +
-                `- Date & Heure : ${new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" })}\n` +
-                `- Statut actuel : En attente de validation\n\n` +
-                `ACTION REQUISE :\n` +
-                `Veuillez examiner la demande et décider d'Accepter, Refuser ou Mettre en attente le compte afin de débloquer ou maintenir l'accès au paiement.\n\n` +
-                `👉 Lien direct d'administration : https://www.generalesquire.com/espace-securise-esquire`,
-              type: "Nouvelle Inscription Client",
-            }),
+          sendEmailNotification("israelgodjeto@gmail.com", {
+            _subject: `NOUVELLE INSCRIPTION CLIENT À VALIDER — ${fullName}`,
+            _replyto: email,
+            "Nom complet": fullName,
+            "Email": email,
+            "Téléphone": phone || "Non renseigné",
+            "Profil / Statut": profileType,
+            "Statut actuel": "En attente de validation",
+            "Lien Administration": "https://www.generalesquire.com/espace-securise-esquire",
+            "Date": new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" }),
           });
         } catch (mailErr) {
           console.warn("Notification mail dispatch error:", mailErr);

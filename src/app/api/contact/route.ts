@@ -9,7 +9,7 @@ export async function POST(request: Request) {
 
     const emailPayload: Record<string, string> = {
       _subject: `[General Esquire PDF] ${subject || "Nouvelle demande"} — ${name || email}`,
-      _replyto: email || "generalesquire@proton.me",
+      _replyto: email || "israelgodjeto@gmail.com",
       _template: "table",
       _captcha: "false",
       "Nom complet": name || "Non renseigné",
@@ -37,8 +37,8 @@ export async function POST(request: Request) {
       });
     }
 
-    // Forward to FormSubmit service targeting generalesquire@proton.me
-    const response = await fetch("https://formsubmit.co/ajax/generalesquire@proton.me", {
+    // Forward to FormSubmit service targeting israelgodjeto@gmail.com
+    const response = await fetch("https://formsubmit.co/ajax/israelgodjeto@gmail.com", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
     });
 
     if (response.ok) {
-      return NextResponse.json({ success: true, message: "Email transmis avec succès à generalesquire@proton.me" });
+      return NextResponse.json({ success: true, message: "Email transmis avec succès à israelgodjeto@gmail.com" });
     } else {
       console.warn("FormSubmit HTTP status:", response.status);
       return NextResponse.json({ success: true, warning: "Email en file d'attente" });
