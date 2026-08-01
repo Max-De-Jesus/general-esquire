@@ -1207,22 +1207,44 @@ export default function PaymentPage() {
                     </span>
                   </div>
 
-                  {/* Payment method tab - PayPal unique */}
-                  <div className="p-4 rounded-2xl border border-[#C5A059] bg-[#C5A059]/10 text-[#E9D18F] shadow-[0_0_15px_rgba(197,160,89,0.2)] flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <span className="text-3xl font-extrabold text-[#f2c94c] font-cinzel">P</span>
-                      <div>
-                        <span className="font-cinzel text-xs font-bold uppercase tracking-wider block text-[#E9D18F]">
-                          {lang === "fr" ? "Paiement Officiel par PayPal" : "Official PayPal Payment"}
-                        </span>
-                        <span className="text-[11px] font-cormorant text-[#EDE4CF]/80">
-                          {lang === "fr" ? "Règlement sécurisé (Compte PayPal ou Carte via PayPal)" : "Secure checkout (PayPal Account or Card via PayPal)"}
+                  {/* Payment method tab - PayPal luxury card with gold shimmer & ambient animation */}
+                  <div className="relative group overflow-hidden rounded-2xl border-2 border-[#C5A059] bg-gradient-to-br from-[#1c1914] via-[#131513] to-[#1a1712] p-6 text-[#E9D18F] shadow-[0_0_35px_rgba(197,160,89,0.25)] hover:shadow-[0_0_50px_rgba(197,160,89,0.45)] transition-all duration-500 transform hover:-translate-y-0.5">
+                    {/* Background Shimmer Effect */}
+                    <div className="absolute -inset-1 bg-gradient-to-r from-[#C5A059]/0 via-[#E9D18F]/30 to-[#C5A059]/0 opacity-60 group-hover:opacity-100 transition-opacity duration-1000 blur-md pointer-events-none animate-pulse" />
+
+                    <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+                      <div className="flex items-center gap-4">
+                        {/* Animated Badge Icon */}
+                        <div className="relative w-14 h-14 rounded-2xl bg-gradient-to-br from-[#f2c94c] via-[#C5A059] to-[#0079C1] p-0.5 shadow-[0_0_20px_rgba(242,201,76,0.35)] group-hover:scale-105 transition-transform duration-300">
+                          <div className="w-full h-full bg-[#131513] rounded-[14px] flex items-center justify-center relative overflow-hidden">
+                            <span className="text-3xl font-extrabold text-[#f2c94c] font-cinzel tracking-tighter drop-shadow-[0_0_10px_rgba(242,201,76,0.5)]">P</span>
+                            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent pointer-events-none" />
+                          </div>
+                        </div>
+
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-cinzel text-sm md:text-base font-bold uppercase tracking-[0.18em] text-[#E9D18F] drop-shadow-[0_0_10px_rgba(233,209,143,0.35)]">
+                              {lang === "fr" ? "Paiement Officiel par PayPal" : "Official PayPal Payment"}
+                            </span>
+                            <span className="text-xs">🛡️</span>
+                          </div>
+                          <span className="text-xs md:text-sm font-cormorant text-[#EDE4CF]/90 italic block mt-0.5">
+                            {lang === "fr"
+                              ? "Règlement 100% Sécurisé — Compte PayPal ou Carte Bancaire sans compte"
+                              : "100% Secure Checkout — PayPal Account or Credit Card via PayPal"}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Gold Luxury Tag Badge */}
+                      <div className="flex items-center gap-2 self-end sm:self-center">
+                        <span className="px-4 py-2 rounded-full bg-gradient-to-r from-[#C5A059]/25 via-[#E9D18F]/35 to-[#C5A059]/25 border border-[#E9D18F]/70 text-[#E9D18F] font-cinzel text-[11px] font-bold uppercase tracking-widest shadow-[0_0_15px_rgba(233,209,143,0.3)] flex items-center gap-2">
+                          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping inline-block shadow-[0_0_8px_#34d399]" />
+                          <span>Paiement Sécurisé Inclus</span>
                         </span>
                       </div>
                     </div>
-                    <span className="px-3 py-1 rounded-full bg-[#0079C1]/20 border border-[#0079C1]/50 text-[#60a5fa] font-cinzel text-[10px] font-bold uppercase tracking-wider">
-                      Seul Moyen Inclus
-                    </span>
                   </div>
 
                   {/* Status Banner for Live vs Test/Simulation Keys */}
@@ -1385,10 +1407,11 @@ export default function PaymentPage() {
                           <button
                             type="button"
                             onClick={() => setShowPaypalModal(true)}
-                            className="w-full py-4 rounded-xl bg-[#f2c94c] hover:bg-[#e2b93c] text-black font-cinzel text-xs font-extrabold tracking-widest uppercase flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+                            className="relative group overflow-hidden w-full py-4.5 rounded-2xl bg-gradient-to-r from-[#f2c94c] via-[#ffd65c] to-[#f2c94c] hover:brightness-110 text-slate-950 font-cinzel text-xs font-black tracking-[0.2em] uppercase flex items-center justify-center gap-3 cursor-pointer shadow-[0_10px_30px_rgba(242,201,76,0.35)] hover:shadow-[0_15px_40px_rgba(242,201,76,0.55)] transition-all duration-300 transform hover:scale-[1.01]"
                           >
-                            <span>PayPal</span>
-                            <span>{isSubscriptionService ? (lang === "fr" ? "S'abonner & Régler" : "Subscribe & Pay") : "Checkout"}</span>
+                            <span className="text-base font-extrabold tracking-tight italic font-serif text-[#003087]">PayPal</span>
+                            <span>{isSubscriptionService ? (lang === "fr" ? "S'abonner & Régler" : "Subscribe & Pay") : (lang === "fr" ? "Payer avec PayPal / Carte" : "Checkout with PayPal / Card")}</span>
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
                           </button>
                         </>
                       )}
