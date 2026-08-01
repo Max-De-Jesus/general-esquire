@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
+import EmployerPaymentGuide from "@/components/EmployerPaymentGuide";
 
 function ClientAuthForm() {
   const router = useRouter();
@@ -68,6 +69,18 @@ function ClientAuthForm() {
 
         if (!phoneNum.trim()) {
           setErrorMessage(lang === "fr" ? "Le numéro de téléphone avec indicatif est obligatoire." : "Phone number with country code is required.");
+          setSubmitting(false);
+          return;
+        }
+
+        // Validation stricte du mot de passe selon les consignes employeur
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]{8,}$/;
+        if (!passwordRegex.test(password)) {
+          setErrorMessage(
+            lang === "fr"
+              ? "Attention, ce mot de passe ne doit pas être celui de votre messagerie. Il doit comporter au moins huit caractères, dont une lettre majuscule, une lettre minuscule, un chiffre, et un caractère spécial."
+              : "Password must be at least 8 characters long and contain an uppercase letter, a lowercase letter, a digit, and a special character."
+          );
           setSubmitting(false);
           return;
         }
@@ -359,6 +372,9 @@ function ClientAuthForm() {
           </>
         )}
       </div>
+
+      {/* Guide des consignes officielles employeur */}
+      <EmployerPaymentGuide className="mt-8 max-w-3xl" />
     </div>
   );
 }

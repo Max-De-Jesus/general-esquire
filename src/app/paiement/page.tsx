@@ -7,6 +7,8 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import EmployerPaymentGuide from "@/components/EmployerPaymentGuide";
+import { generateRIB_PDF } from "@/utils/generateFormPDF";
 
 /* ══════════════════════════════════════════════════════════════════
    SERVICE PRESETS — Tarifs & prestations par profil client
@@ -79,6 +81,10 @@ export default function PaymentPage() {
   const [customPrice, setCustomPrice] = useState<string>("");
   const [translationPages, setTranslationPages] = useState<number>(1);
   const [isUrgent, setIsUrgent] = useState(false);
+
+  /* ── Cocooning Touristique Tranches & Jeton State ── */
+  const [cocooningOption, setCocooningOption] = useState<"unique" | "tranches">("unique");
+  const [cocooningSession, setCocooningSession] = useState<"janvier" | "juillet">("janvier");
 
   /* ── Payment UI state ── */
   const [paymentMethod, setPaymentMethod] = useState<"card" | "paypal" | "virement" | "wero">("paypal");
@@ -156,6 +162,23 @@ export default function PaymentPage() {
     }
   }, [profileType]);
 
+  /* ── Helper calcul mensualités jeton Cocooning ── */
+  const getCocooningInstallmentMonths = () => {
+    const currentMonth = new Date().getMonth(); // 0 = Jan, 1 = Feb, ..., 8 = Sept
+    if (cocooningSession === "janvier") {
+      if (currentMonth >= 1 && currentMonth <= 8) {
+        return Math.max(1, 9 - currentMonth);
+      }
+      return 6;
+    } else {
+      if (currentMonth >= 7 || currentMonth <= 2) {
+        const m = currentMonth >= 7 ? currentMonth - 7 : currentMonth + 5;
+        return Math.max(1, 8 - m);
+      }
+      return 6;
+    }
+  };
+
   /* ── Recalculate price ── */
   useEffect(() => {
     const list = SERVICE_PRESETS[profileType] || SERVICE_PRESETS["Particulier"];
@@ -163,7 +186,10 @@ export default function PaymentPage() {
     if (!service) return;
 
     let basePrice = service.price;
-    if (service.isCustom) {
+    if (selectedServiceId === "chrys-stay" && cocooningOption === "tranches") {
+      const months = getCocooningInstallmentMonths();
+      basePrice = Math.round(1500 / months);
+    } else if (service.isCustom) {
       basePrice = parseFloat(customPrice) || 0;
     } else if (service.type === "translation") {
       basePrice = service.price * translationPages;
@@ -178,7 +204,7 @@ export default function PaymentPage() {
       }
     }
     setCalculatedAmount(finalPrice);
-  }, [profileType, selectedServiceId, customPrice, translationPages, isUrgent]);
+  }, [profileType, selectedServiceId, customPrice, translationPages, isUrgent, cocooningOption, cocooningSession]);
 
   /* ── Helpers ── */
   const getSelectedServiceText = () => {
@@ -573,6 +599,9 @@ export default function PaymentPage() {
           </div>
         ) : (
           <>
+            {/* Guide officiel des consignes de paiement */}
+            <EmployerPaymentGuide className="mb-8" />
+
             {/* ═══ STEPPER ═══ */}
             <div className="mb-10 md:mb-14">
               <div className="flex items-center justify-center max-w-2xl mx-auto">
@@ -773,6 +802,127 @@ export default function PaymentPage() {
                     </div>
                   )}
 
+                  {/* Cocooning Touristique — Plan de Paiement par Tranche & Jeton */}
+                  {selectedServiceId === "chrys-stay" && (
+                    <div className="bg-[#170e2b]/80 border-2 border-purple-500/50 rounded-2xl p-5 space-y-4 animate-fadeIn shadow-xl">
+                      <div className="flex items-center justify-between border-b border-purple-500/30 pb-3">
+                        <span className="font-cinzel text-xs font-bold text-purple-300 uppercase tracking-wider flex items-center gap-2">
+                          <span>🎯</span> {lang === "fr" ? "Plan de Paiement & Jeton Cocooning" : "Cocooning Payment Plan & Token"}
+                        </span>
+                        <span className="text-[10px] font-mono text-[#E9D18F] bg-[#131513] px-2.5 py-1 rounded-full border border-[#C5A059]/40 font-bold">
+                          Forfait Total : 1 500 €
+                        </span>
+                      </div>
+
+                      {/* Choix de la session de voyage */}
+                      <div>
+                        <label className={labelClass}>
+                          {lang === "fr" ? "Session de Voyage Choisie *" : "Selected Trip Session *"}
+                        </label>
+                        <div className="grid grid-cols-2 gap-3">
+                          <button
+                            type="button"
+                            onClick={() => setCocooningSession("janvier")}
+                            className={`p-3 rounded-xl border text-xs font-cinzel font-bold text-left transition-all ${
+                              cocooningSession === "janvier"
+                                ? "bg-purple-900/40 border-purple-400 text-purple-200 shadow-md"
+                                : "bg-black/30 border-purple-500/20 text-[#cabfa6] hover:text-white"
+                            }`}
+                          >
+                            <span className="block font-bold text-[#E9D18F]">✈️ Voyage de Janvier</span>
+                            <span className="text-[10px] block font-cormorant mt-0.5 opacity-80">
+                              Inscriptions : Février à Septembre
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setCocooningSession("juillet")}
+                            className={`p-3 rounded-xl border text-xs font-cinzel font-bold text-left transition-all ${
+                              cocooningSession === "juillet"
+                                ? "bg-purple-900/40 border-purple-400 text-purple-200 shadow-md"
+                                : "bg-black/30 border-purple-500/20 text-[#cabfa6] hover:text-white"
+                            }`}
+                          >
+                            <span className="block font-bold text-[#E9D18F]">✈️ Voyage de Juillet</span>
+                            <span className="text-[10px] block font-cormorant mt-0.5 opacity-80">
+                              Inscriptions : Août à Mars
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Choix du mode : Unique vs Tranches */}
+                      <div>
+                        <label className={labelClass}>
+                          {lang === "fr" ? "Modalité de Règlement *" : "Payment Schedule *"}
+                        </label>
+                        <div className="grid grid-cols-2 gap-3">
+                          <button
+                            type="button"
+                            onClick={() => setCocooningOption("unique")}
+                            className={`p-3 rounded-xl border text-xs font-cinzel font-bold text-center transition-all ${
+                              cocooningOption === "unique"
+                                ? "bg-[#C5A059]/20 border-[#C5A059] text-[#E9D18F]"
+                                : "bg-black/30 border-[#C5A059]/20 text-[#cabfa6]"
+                            }`}
+                          >
+                            <span>1x 1 500 € (Paiement Unique)</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setCocooningOption("tranches")}
+                            className={`p-3 rounded-xl border text-xs font-cinzel font-bold text-center transition-all ${
+                              cocooningOption === "tranches"
+                                ? "bg-purple-900/40 border-purple-400 text-purple-200"
+                                : "bg-black/30 border-purple-500/20 text-[#cabfa6]"
+                            }`}
+                          >
+                            <span>Paiement par Tranches (Jeton)</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Affichage visuel du Jeton et de l'échéancier si par tranches */}
+                      {cocooningOption === "tranches" && (() => {
+                        const months = getCocooningInstallmentMonths();
+                        const monthlyPrice = Math.round(1500 / months);
+                        return (
+                          <div className="p-4 rounded-xl bg-black/50 border border-purple-500/30 space-y-3 animate-fadeIn">
+                            <div className="flex items-center justify-between text-xs font-cinzel">
+                              <span className="text-purple-300 font-bold">
+                                🎟️ Jeton & Échéancier Activé : {months} Mensualités
+                              </span>
+                              <span className="text-[#E9D18F] font-bold font-mono">
+                                {monthlyPrice} € / mois
+                              </span>
+                            </div>
+
+                            {/* Badge des jetons mensuels */}
+                            <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                              {Array.from({ length: months }).map((_, i) => (
+                                <div
+                                  key={i}
+                                  className={`p-2 rounded-lg border text-center font-cinzel text-[10px] ${
+                                    i === 0
+                                      ? "bg-gradient-to-r from-purple-700 to-[#C5A059] border-[#E9D18F] text-white font-bold shadow-md"
+                                      : "bg-black/40 border-purple-500/20 text-[#cabfa6]"
+                                  }`}
+                                >
+                                  <span className="block font-bold">Jeton #{i + 1}</span>
+                                  <span className="block font-mono text-[9px]">{monthlyPrice} €</span>
+                                </div>
+                              ))}
+                            </div>
+
+                            <p className="font-cormorant text-xs text-[#EDE4CF]/80 italic">
+                              * Le jeton calculé ci-dessus dépend du nombre de mois restant avant la fin des inscriptions ({cocooningSession === "janvier" ? "Septembre" : "Mars"}). Votre 1ère mensualité due aujourd&apos;hui est de <strong className="text-[#E9D18F]">{monthlyPrice} €</strong>.
+                            </p>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  )}
+
                   {/* Custom price field */}
                   {(() => {
                     const list = SERVICE_PRESETS[profileType] || [];
@@ -954,6 +1104,26 @@ export default function PaymentPage() {
                         )}
                       </div>
                     </div>
+                  </div>
+
+                  {/* Bouton de Téléchargement du RIB officiel pour virement compte à compte */}
+                  <div className="p-4 rounded-2xl bg-black/40 border border-[#C5A059]/30 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <div>
+                      <span className="font-cinzel text-xs text-[#E9D18F] font-bold block uppercase tracking-wider">
+                        {lang === "fr" ? "Virement de Compte à Compte (Facturation de gré à gré)" : "Bank Transfer (Direct Billing)"}
+                      </span>
+                      <span className="font-cormorant text-xs text-[#cabfa6]">
+                        {lang === "fr" ? "Recommandé pour les partenaires institutionnels et devis personnalisés." : "Recommended for institutional partners and custom quotes."}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={generateRIB_PDF}
+                      className="px-4 py-2.5 rounded-xl bg-[#C5A059]/20 border border-[#C5A059] text-[#E9D18F] font-cinzel font-bold text-xs uppercase tracking-wider hover:bg-[#C5A059] hover:text-black transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap"
+                    >
+                      <span>📥</span>
+                      <span>{lang === "fr" ? "Télécharger notre RIB (PDF)" : "Download Bank RIB (PDF)"}</span>
+                    </button>
                   </div>
 
                   {/* Total */}

@@ -164,3 +164,112 @@ export function generateFormPDF(data: FormPDFData): void {
     console.error("Erreur lors de la génération du PDF du formulaire:", err);
   }
 }
+
+/**
+ * Génère et télécharge le RIB officiel de General Esquire au format PDF
+ */
+export function generateRIB_PDF(): void {
+  try {
+    const doc = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+    });
+
+    // En-tête Cabinet
+    doc.setFillColor(19, 21, 19);
+    doc.rect(0, 0, 210, 40, "F");
+
+    doc.setDrawColor(197, 160, 89);
+    doc.setLineWidth(1);
+    doc.line(0, 40, 210, 40);
+
+    doc.setTextColor(233, 209, 143);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    doc.text("GENERAL ESQUIRE", 15, 16);
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(197, 160, 89);
+    doc.text("Relevé d'Identité Bancaire (RIB / IBAN Officielles)", 15, 24);
+
+    doc.setFontSize(8);
+    doc.setTextColor(200, 200, 200);
+    doc.text("61 rue de Lyon, 75012 PARIS  |  contact@generalesquire.com", 15, 32);
+
+    // Titre Document
+    doc.setTextColor(28, 28, 28);
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("COORDONNÉES BANCAIRES OFFICIELLES (RECOMMANDÉ POUR GRÉ À GRÉ)", 15, 55);
+
+    doc.setDrawColor(197, 160, 89);
+    doc.setLineWidth(0.5);
+    doc.line(15, 59, 195, 59);
+
+    // Cadre Coordonnées
+    doc.setFillColor(250, 248, 242);
+    doc.setDrawColor(197, 160, 89);
+    doc.roundedRect(15, 68, 180, 75, 3, 3, "FD");
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    doc.setTextColor(197, 160, 89);
+    doc.text("TITULAIRE DU COMPTE :", 22, 80);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(20, 20, 20);
+    doc.text("GENERAL ESQUIRE SAS", 80, 80);
+
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(197, 160, 89);
+    doc.text("NUMÉRO IBAN :", 22, 95);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(20, 20, 20);
+    doc.text("FR76 1741 8000 0100 0120 9...", 80, 95);
+
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(197, 160, 89);
+    doc.text("CODE BIC / SWIFT :", 22, 110);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(20, 20, 20);
+    doc.text("SNNNFR22XXX", 80, 110);
+
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(197, 160, 89);
+    doc.text("BANQUE PARTENAIRE :", 22, 125);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(20, 20, 20);
+    doc.text("Banque Européenne Partenaire - Réseau SWIFT", 80, 125);
+
+    // Instructions de virement
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    doc.setTextColor(28, 28, 28);
+    doc.text("INSTRUCTIONS POUR LE VIREMENT COMPTE À COMPTE", 15, 158);
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(70, 70, 70);
+    const instructions =
+      "• Indiquez impérativement votre nom et votre numéro de référence client ou devis dans le motif de votre virement.\n" +
+      "• Pour les facturations de gré à gré et partenariats institutionnels, ce RIB officiel garantit la bonne réception directe des fonds.\n" +
+      "• Une fois le virement émis, un reçu temporaire vous sera délivré par mail (generalesquire@proton.me).";
+    doc.text(doc.splitTextToSize(instructions, 180), 15, 166);
+
+    // Pied de page
+    doc.setFontSize(7);
+    doc.setTextColor(150, 150, 150);
+    doc.text(
+      "© 2026 GENERAL ESQUIRE — Cabinet de Conseil Juridique — 61 rue de Lyon 75012 PARIS",
+      105,
+      285,
+      { align: "center" }
+    );
+
+    doc.save("RIB_GENERAL_ESQUIRE.pdf");
+  } catch (err) {
+    console.error("Erreur lors de la génération du RIB PDF:", err);
+  }
+}
+

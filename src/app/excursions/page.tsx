@@ -344,7 +344,7 @@ export default function ExcursionsPage() {
     breadcrumb_home: lang === "fr" ? "Accueil" : "Home",
     breadcrumb_page: lang === "fr" ? "Excursions" : "Excursions",
     tag: lang === "fr" ? "Chrysalides — Cocooning Touristique" : "Chrysalides — Tourist Cocooning",
-    title: lang === "fr" ? "Excursions au Bénin" : "Excursions in Benin",
+    title: lang === "fr" ? "Excursions" : "Excursions ",
     subtitle: lang === "fr" ? "« Bienvenue dans un monde d'émerveillement »" : "\"Welcome to a World of Wonder\"",
     guide_title: lang === "fr" ? "Votre Guide Personnel" : "Your Personal Guide",
     guide_p1: lang === "fr"
