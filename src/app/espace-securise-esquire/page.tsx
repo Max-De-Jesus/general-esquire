@@ -76,7 +76,7 @@ export default function EspaceSecurisePage() {
   // New Article Form Fields
   const [formTitle, setFormTitle] = useState("");
   const [formSubtitle, setFormSubtitle] = useState("");
-  const [formCategory, setFormCategory] = useState<NewsItem["category"]>("Annonces");
+  const [formCategory, setFormCategory] = useState<NewsItem["category"]>("Veille Juridique");
   const [formDate, setFormDate] = useState(new Date().toISOString().split("T")[0]);
   const [formAuthor, setFormAuthor] = useState("Administration General Esquire");
   const [formSummary, setFormSummary] = useState("");
@@ -486,7 +486,7 @@ export default function EspaceSecurisePage() {
                 : "text-[#cabfa6] hover:text-[#E9D18F] hover:bg-[#1a1c1a]"
             }`}
           >
-            📢 Gestion des Actualités (Uploader)
+            📢 Gestion des Actualités & Annonces (Uploader)
           </button>
           <button
             onClick={() => setActiveTab("overview")}
@@ -600,10 +600,10 @@ export default function EspaceSecurisePage() {
                       onChange={(e) => setFormCategory(e.target.value as NewsItem["category"])}
                       className="w-full px-4 py-3 bg-[#131513] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-sm focus:outline-none focus:border-[#E9D18F]"
                     >
-                      <option value="Conseil Juridique">Conseil Juridique</option>
-                      <option value="Chrysalides">Chrysalides</option>
-                      <option value="Événements">Événements</option>
-                      <option value="Annonces">Annonces</option>
+                      <option value="Veille Juridique">Veille Juridique</option>
+                      <option value="Espace Activités">Espace Activités</option>
+                      <option value="Événementiels">Événementiels</option>
+                      <option value="Communiqués">Communiqués</option>
                     </select>
                   </div>
 

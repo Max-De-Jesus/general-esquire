@@ -161,19 +161,19 @@ function Rotating3DFoodCarousel() {
               <div
                 key={idx}
                 onClick={() => setActiveIndex(idx)}
-                className={`absolute w-[160px] sm:w-[260px] h-[210px] sm:h-[330px] rounded-2xl sm:rounded-3xl overflow-hidden cursor-pointer transition-all duration-700 ease-out select-none border-2 ${
+                className={`absolute w-[180px] h-[180px] sm:w-[310px] sm:h-[310px] rounded-full overflow-hidden cursor-pointer transition-all duration-700 ease-out select-none border-2 ${
                   isCenter
-                    ? "border-[#E9D18F] shadow-[0_0_30px_rgba(197,160,89,0.6)] z-30"
+                    ? "border-[#E9D18F] shadow-[0_0_35px_rgba(197,160,89,0.7)] z-30"
                     : "border-[#C5A059]/40 opacity-70 hover:opacity-90 hover:border-[#C5A059]"
                 }`}
                 style={{
                   transformStyle: "preserve-3d",
                   // Placement circulaire 3D autour de l'axe Y
-                  transform: `rotateY(${cardAngle}deg) translateZ(calc(min(240px, 40vw))) ${
+                  transform: `rotateY(${cardAngle}deg) translateZ(calc(min(260px, 42vw))) ${
                     isCenter ? "scale(1.05)" : "scale(0.85)"
                   }`,
                   WebkitBoxReflect:
-                    "below 8px linear-gradient(transparent, transparent 70%, rgba(0,0,0,0.3))",
+                    "below 10px linear-gradient(transparent, transparent 65%, rgba(0,0,0,0.35))",
                 }}
               >
                 {/* Image de la carte */}

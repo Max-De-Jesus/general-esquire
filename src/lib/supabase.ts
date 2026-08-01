@@ -36,7 +36,7 @@ export interface Client {
   profile_type: "Particulier" | "Chef d'Entreprise" | "Institution" | "Professionnel du Droit";
   requested_service: string;
   message?: string | null;
-  status: "Nouveau" | "En cours" | "Termine" | "Archive";
+  status: "Nouveau" | "En cours" | "Termine" | "Terminé" | "Archive" | "En attente" | "Confirmé" | "Validé" | "Approuvé";
   nationality?: string | null;
   country?: string | null;
   registered_at: string;

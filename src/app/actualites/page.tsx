@@ -16,11 +16,13 @@ export default function PublicActualitesPage() {
   const [activeArticle, setActiveArticle] = useState<NewsItem | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
-  const categories = ["Tous", "Conseil Juridique", "Chrysalides", "Événements", "Annonces"];
+  const categories = ["Tous", "Veille Juridique", "Espace Activités", "Événementiels", "Communiqués"];
 
   const getCategoryLabel = (cat: string) => {
-    if (cat === "Événement" || cat === "Evenement") return "Événements";
-    if (cat === "Annonce") return "Annonces";
+    if (cat === "Conseil Juridique" || cat === "Veille Juridique") return "Veille Juridique";
+    if (cat === "Chrysalides" || cat === "Espace Activités") return "Espace Activités";
+    if (cat === "Événement" || cat === "Evenement" || cat === "Événements" || cat === "Événementiels") return "Événementiels";
+    if (cat === "Annonce" || cat === "Annonces" || cat === "Communiqués" || cat === "Communiqué") return "Communiqués";
     return cat;
   };
 
@@ -59,8 +61,10 @@ export default function PublicActualitesPage() {
   const filteredNews = selectedCategory === "Tous"
     ? news
     : news.filter((item) => {
-        if (selectedCategory === "Événements") return item.category === "Événement" || item.category === "Événements" || item.category === "Evenement";
-        if (selectedCategory === "Annonces") return item.category === "Annonce" || item.category === "Annonces";
+        if (selectedCategory === "Veille Juridique") return item.category === "Veille Juridique" || item.category === "Conseil Juridique";
+        if (selectedCategory === "Espace Activités") return item.category === "Espace Activités" || item.category === "Chrysalides";
+        if (selectedCategory === "Événementiels") return item.category === "Événementiels" || item.category === "Événement" || item.category === "Événements" || item.category === "Evenement";
+        if (selectedCategory === "Communiqués") return item.category === "Communiqués" || item.category === "Communiqué" || item.category === "Annonce" || item.category === "Annonces";
         return item.category === selectedCategory;
       });
 
@@ -80,7 +84,7 @@ export default function PublicActualitesPage() {
       </header>
 
       {/* ─── 2. BANDE DÉROULANTE (TICKER) ────────────────────────────────── */}
-      <TickerBanner items={["GENERAL ESQUIRE", "ACTUALITÉS", "COMMUNIQUÉS OFFICIELS", "CHRYSALIDES", "ÉVÉNEMENTS", "EXCELLENCE"]} className="mb-8" />
+      <TickerBanner items={["GENERAL ESQUIRE", "ACTUALITÉS & ANNONCES", "COMMUNIQUÉS", "ESPACE ACTIVITÉS", "ÉVÉNEMENTIELS", "VEILLE JURIDIQUE"]} className="mb-8" />
 
       {/* ─── CONTENU PRINCIPAL ────────────────────────────── */}
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-8 py-8 md:py-16">
@@ -91,12 +95,12 @@ export default function PublicActualitesPage() {
             General Esquire — Chrysalides
           </span>
           <h1 className="font-cinzel text-3xl sm:text-5xl font-bold text-[#E9D18F] mb-4 uppercase tracking-widest drop-shadow-md">
-            {lang === "fr" ? "Actualités & Communiqués" : "News & Announcements"}
+            {lang === "fr" ? "Actualités & Annonces" : "News & Announcements"}
           </h1>
           <p className="font-cormorant text-xl text-[#cabfa6] leading-relaxed max-w-2xl mx-auto">
             {lang === "fr"
-              ? "Retrouvez l'ensemble des communiqués officiels, des événements Chrysalides et des annonces récents de notre cabinet."
-              : "Find all official announcements, Chrysalides events, and recent updates from our firm."}
+              ? "Retrouvez l'ensemble des actualités, des annonces récentes, des événements et des communiqués de notre cabinet."
+              : "Find all official news, announcements, events, and updates from our firm."}
           </p>
           <div className="flex items-center justify-center gap-3 mt-4">
             <div className="h-[1px] w-20 bg-gradient-to-r from-transparent to-[#C5A059]" />

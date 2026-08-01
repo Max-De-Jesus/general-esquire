@@ -185,15 +185,15 @@ function ExecutiveLuxurySlider() {
                 onClick={() => setActiveIdx(i)}
                 style={{
                   position: "absolute",
-                  width: "clamp(260px, 64vw, 680px)",
-                  height: "clamp(180px, 38vw, 360px)",
+                  width: isCenter ? "clamp(220px, 45vw, 380px)" : "clamp(170px, 32vw, 290px)",
+                  height: isCenter ? "clamp(220px, 45vw, 380px)" : "clamp(170px, 32vw, 290px)",
                   transform,
                   opacity,
                   zIndex,
                   transition: "all 0.75s cubic-bezier(0.16, 1, 0.3, 1)",
                   transformStyle: "preserve-3d",
                 }}
-                className={`rounded-3xl overflow-hidden cursor-pointer border-2 transition-all duration-700 bg-[#131513] ${
+                className={`rounded-full overflow-hidden cursor-pointer border-2 transition-all duration-700 bg-[#131513] ${
                   isCenter
                     ? "border-[#E9D18F] shadow-[0_0_55px_rgba(197,160,89,0.55),0_20px_45px_rgba(0,0,0,0.95)]"
                     : "border-[#C5A059]/30 hover:border-[#C5A059]/60 shadow-xl"

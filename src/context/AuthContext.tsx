@@ -10,7 +10,8 @@ interface AuthContextType {
   clientProfile: Client | null;
   loading: boolean;
   isAdmin: boolean;
-  signUp: (email: string, password: string, fullName: string, profileType?: string) => Promise<{ error: Error | null }>;
+  isApproved: boolean;
+  signUp: (email: string, password: string, fullName: string, profileType?: string, phone?: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<{ error: Error | null }>;
 }
@@ -23,7 +24,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [clientProfile, setClientProfile] = useState<Client | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Check if user has admin privileges (meta role or email rule)
+  // Check if user has admin privileges
   const isAdmin = Boolean(
     user?.app_metadata?.role === "admin" ||
     user?.user_metadata?.role === "admin" ||
@@ -31,6 +32,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     user?.email?.toLowerCase() === "admin@generalesquire.com" ||
     user?.email?.toLowerCase() === "generalesquire@proton.me" ||
     user?.email?.toLowerCase() === "contact@generalesquire.com"
+  );
+
+  // Check if client account has been confirmed / approved by admin
+  const isApproved = Boolean(
+    isAdmin ||
+    (clientProfile?.status && ["Confirmé", "Terminé", "Termine", "Validé", "Valide", "Approuvé"].includes(clientProfile.status))
   );
 
   const fetchClientProfile = async (email: string) => {
@@ -76,7 +83,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, []);
 
-  const signUp = async (email: string, password: string, fullName: string, profileType = "Particulier") => {
+  const signUp = async (email: string, password: string, fullName: string, profileType = "Particulier", phone = "") => {
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -85,28 +92,49 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           data: {
             full_name: fullName,
             profile_type: profileType,
+            phone: phone,
           },
         },
       });
 
       if (error) return { error };
 
-      // Ensure client entry exists in clients table
+      // Ensure client entry exists in clients table with status 'En attente'
       if (data.user) {
         await supabase.from("clients").upsert(
           {
             email: email.toLowerCase(),
             full_name: fullName,
+            phone: phone || null,
             profile_type: profileType as any,
             requested_service: "Inscription Compte Client",
-            status: "Nouveau",
+            status: "En attente",
             registered_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           },
           { onConflict: "email" }
         );
 
-        // Auto sign-in immediately to authenticate user without email verification wait
+        // Envoi automatique de la notification mail confidentielle à generalesquire@proton.me
+        try {
+          await fetch("/api/contact", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name: fullName,
+              email: email,
+              phone: phone || "Non renseigné",
+              structure: profileType,
+              subject: `NOUVELLE INSCRIPTION CLIENT — À VALIDER (${fullName})`,
+              message: `Un nouveau compte client a été créé sur la plateforme.\n\nDétails complets :\n- Nom complet : ${fullName}\n- Email : ${email}\n- Téléphone (avec indicatif) : ${phone || 'Non spécifié'}\n- Profil : ${profileType}\n- Date d'inscription : ${new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" })}\n- Statut actuel : En attente de confirmation administrateur.\n\nNote d'administration : Veuillez vous connecter au portail d'administration pour valider le compte afin que le client puisse accéder à la page de paiement.`,
+              type: "Nouvelle Inscription Client",
+            }),
+          });
+        } catch (mailErr) {
+          console.warn("Notification mail dispatch error:", mailErr);
+        }
+
+        // Auto sign-in immediately
         if (!data.session) {
           await supabase.auth.signInWithPassword({ email, password });
         }
@@ -150,6 +178,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         clientProfile,
         loading,
         isAdmin,
+        isApproved,
         signUp,
         signIn,
         signOut,

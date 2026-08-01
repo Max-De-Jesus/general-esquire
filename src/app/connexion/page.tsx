@@ -22,7 +22,30 @@ function ClientAuthForm() {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [profileType, setProfileType] = useState("Particulier");
+  const [countryCode, setCountryCode] = useState("+33");
+  const [phoneNum, setPhoneNum] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  const COUNTRY_CODES = [
+    { code: "+33", flag: "🇫🇷", name: "France (+33)" },
+    { code: "+229", flag: "🇧🇯", name: "Bénin (+229)" },
+    { code: "+225", flag: "🇨🇮", name: "Côte d'Ivoire (+225)" },
+    { code: "+221", flag: "🇸🇳", name: "Sénégal (+221)" },
+    { code: "+237", flag: "🇨🇲", name: "Cameroun (+237)" },
+    { code: "+228", flag: "🇹🇬", name: "Togo (+228)" },
+    { code: "+226", flag: "🇧🇫", name: "Burkina Faso (+226)" },
+    { code: "+241", flag: "🇬🇦", name: "Gabon (+241)" },
+    { code: "+242", flag: "🇨🇬", name: "Congo (+242)" },
+    { code: "+243", flag: "🇨🇩", name: "Congo (RDC) (+243)" },
+    { code: "+212", flag: "🇲🇦", name: "Maroc (+212)" },
+    { code: "+213", flag: "🇩🇿", name: "Algérie (+213)" },
+    { code: "+216", flag: "🇹🇳", name: "Tunisie (+216)" },
+    { code: "+1", flag: "🇺🇸/🇨🇦", name: "USA / Canada (+1)" },
+    { code: "+44", flag: "🇬🇧", name: "Royaume-Uni (+44)" },
+    { code: "+32", flag: "🇧🇪", name: "Belgique (+32)" },
+    { code: "+41", flag: "🇨🇭", name: "Suisse (+41)" },
+    { code: "+49", flag: "🇩🇪", name: "Allemagne (+49)" },
+  ];
 
   // Status State
   const [submitting, setSubmitting] = useState(false);
@@ -43,18 +66,26 @@ function ClientAuthForm() {
           return;
         }
 
-        const { error } = await signUp(email, password, fullName, profileType);
+        if (!phoneNum.trim()) {
+          setErrorMessage(lang === "fr" ? "Le numéro de téléphone avec indicatif est obligatoire." : "Phone number with country code is required.");
+          setSubmitting(false);
+          return;
+        }
+
+        const fullPhone = `${countryCode} ${phoneNum.trim()}`;
+
+        const { error } = await signUp(email, password, fullName, profileType, fullPhone);
         if (error) {
           setErrorMessage(error.message || (lang === "fr" ? "Erreur lors de l'inscription." : "Registration failed."));
         } else {
           setSuccessMessage(
             lang === "fr"
-              ? "Compte créé avec succès ! Un e-mail de confirmation peut vous avoir été envoyé."
-              : "Account created successfully! A confirmation email may have been sent."
+              ? "Compte créé avec succès ! Vos informations ont été transmises à l'administration (generalesquire@proton.me). Votre compte doit être confirmé par l'administrateur avant d'accéder au paiement."
+              : "Account created successfully! Admin notification sent. Your account must be confirmed by an administrator before accessing payment."
           );
           setTimeout(() => {
             router.push(redirectPath);
-          }, 1500);
+          }, 2500);
         }
       } else {
         const { error } = await signIn(email, password);
@@ -239,6 +270,36 @@ function ClientAuthForm() {
                     <option value="Institution">Institution Publique</option>
                     <option value="Professionnel du Droit">Professionnel du Droit</option>
                   </select>
+                </div>
+              )}
+
+              {/* Phone Number with Country Code for Registration (Obligatoire) */}
+              {mode === "register" && (
+                <div>
+                  <label className="block text-xs font-cinzel font-semibold text-[#C5A059] uppercase tracking-wider mb-1">
+                    {lang === "fr" ? "Numéro de Téléphone avec Indicatif *" : "Phone Number with Country Code *"}
+                  </label>
+                  <div className="flex gap-2">
+                    <select
+                      value={countryCode}
+                      onChange={(e) => setCountryCode(e.target.value)}
+                      className="w-1/3 px-2 py-2.5 bg-[#131513] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-xs sm:text-sm focus:outline-none focus:border-[#E9D18F] cursor-pointer"
+                    >
+                      {COUNTRY_CODES.map((c) => (
+                        <option key={c.code} value={c.code}>
+                          {c.flag} {c.code}
+                        </option>
+                      ))}
+                    </select>
+                    <input
+                      type="tel"
+                      required
+                      placeholder="6 12 34 56 78"
+                      value={phoneNum}
+                      onChange={(e) => setPhoneNum(e.target.value)}
+                      className="w-2/3 px-4 py-2.5 bg-[#131513] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-sm focus:outline-none focus:border-[#E9D18F]"
+                    />
+                  </div>
                 </div>
               )}
 

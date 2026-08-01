@@ -24,6 +24,9 @@ export default function Footer() {
           <p className="font-cormorant text-xs sm:text-sm text-[#EDE4CF]/80">
             {lang === "fr" ? "Immatriculée au RCS de Paris" : "Registered with the Paris RCS"}
           </p>
+          <p className="font-cormorant text-xs sm:text-sm text-[#E9D18F] font-semibold pt-0.5">
+            61 rue de Lyon, 75012 PARIS
+          </p>
         </div>
 
         {/* Séparateur vertical 1 (Desktop) */}
@@ -56,8 +59,13 @@ export default function Footer() {
           <p className="font-cinzel text-[0.68rem] tracking-[0.24em] uppercase text-[#C5A059] mb-3.5 pb-2 border-b border-[#C5A059]/25 font-semibold">
             Contact
           </p>
-          <div className="space-y-1.5 font-cormorant text-sm">
-            {/* 1. Téléphone fixe */}
+          <div className="space-y-2 font-cormorant text-sm">
+            {/* 1. Adresse */}
+            <p className="flex items-center justify-center md:justify-end gap-1.5 text-[#E9D18F] font-semibold">
+              <span className="text-[#C5A059]">📍</span>
+              <span>61 rue de Lyon, 75012 PARIS</span>
+            </p>
+            {/* 2. Téléphone fixe */}
             <p className="flex items-center justify-center md:justify-end gap-1.5">
               <a
                 href="tel:+33159581725"
@@ -70,7 +78,7 @@ export default function Footer() {
                 <span className="group-hover:text-[#25D366] transition-colors duration-300">+33 (0)1 59 58 17 25</span>
               </a>
             </p>
-            {/* 2. WhatsApp (icône uniquement, pas de mot (WhatsApp)) */}
+            {/* 3. WhatsApp (icône uniquement, pas de mot (WhatsApp)) */}
             <p className="flex items-center justify-center md:justify-end gap-1.5">
               <a
                 href="https://wa.me/33758264254"
@@ -85,13 +93,24 @@ export default function Footer() {
                 <span className="hover:text-[#E9D18F] transition-colors">+33 758 264 254</span>
               </a>
             </p>
-            {/* 3. Email (après les deux numéros) */}
+            {/* 4. Email officiel (affichage contact@generalesquire.com) */}
             <p>
               <a
-                href="mailto:generalesquire@proton.me"
-                className="hover:text-[#3B82F6] transition-colors duration-300"
+                href="mailto:contact@generalesquire.com"
+                className="hover:text-[#3B82F6] transition-colors duration-300 font-semibold text-[#EDE4CF]"
               >
-                generalesquire@proton.me
+                contact@generalesquire.com
+              </a>
+            </p>
+            {/* 5. Site officiel */}
+            <p className="pt-0.5">
+              <a
+                href="https://www.generalesquire.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#C5A059] hover:text-[#E9D18F] transition-colors font-cinzel text-xs font-bold tracking-wider"
+              >
+                www.generalesquire.com
               </a>
             </p>
           </div>

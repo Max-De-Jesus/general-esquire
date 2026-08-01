@@ -69,31 +69,32 @@ export default function Navbar() {
           <div className="flex items-center gap-1.5 sm:gap-2.5 md:gap-4 flex-shrink-0">
             <LanguageToggle />
 
-            {/* Auth Button / User Profile — Visible ONLY on the Payment Page (/paiement) */}
-            {isPaymentPage && (
-              user ? (
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                  <Link
-                    href="/connexion"
-                    className="flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full bg-[#1A1C1A] border border-[#C5A059]/40 text-[#E9D18F] text-[10px] sm:text-xs font-cinzel font-bold hover:border-[#E9D18F] transition-all"
-                    title={user.email || ""}
-                  >
-                    <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#C5A059] text-black flex items-center justify-center text-[10px] sm:text-xs font-bold uppercase">
-                      {(clientProfile?.full_name || user.email || "U")[0]}
-                    </span>
-                    <span className="hidden md:inline truncate max-w-[80px] sm:max-w-[100px]">
-                      {clientProfile?.full_name?.split(" ")[0] || user.email?.split("@")[0]}
-                    </span>
-                  </Link>
-                  <button
-                    onClick={() => signOut()}
-                    className="px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-full bg-rose-950/40 border border-rose-500/40 text-rose-300 text-[10px] sm:text-xs font-cinzel font-bold hover:bg-rose-900/60 transition-all cursor-pointer"
-                    title={lang === "fr" ? "Se Déconnecter" : "Sign Out"}
-                  >
-                    🚪
-                  </button>
-                </div>
-              ) : (
+            {/* Auth Button / User Profile — Displayed on ALL pages when logged in, or on /paiement when logged out */}
+            {user ? (
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <Link
+                  href="/connexion"
+                  className="flex items-center gap-1.5 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-[#1A1C1A] border border-[#C5A059]/40 text-[#E9D18F] text-[10px] sm:text-xs font-cinzel font-bold hover:border-[#E9D18F] transition-all shadow-md"
+                  title={user.email || ""}
+                >
+                  <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#C5A059] text-black flex items-center justify-center text-[10px] sm:text-xs font-bold uppercase flex-shrink-0">
+                    {(clientProfile?.full_name || user.email || "U")[0]}
+                  </span>
+                  <span className="hidden sm:inline truncate max-w-[80px] sm:max-w-[110px]">
+                    {clientProfile?.full_name?.split(" ")[0] || user.email?.split("@")[0]}
+                  </span>
+                </Link>
+                <button
+                  onClick={() => signOut()}
+                  className="flex items-center gap-1 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full bg-rose-950/60 border border-rose-500/50 text-rose-300 text-[10px] sm:text-xs font-cinzel font-bold hover:bg-rose-900/80 hover:text-white transition-all cursor-pointer shadow-md"
+                  title={lang === "fr" ? "Se Déconnecter" : "Sign Out"}
+                >
+                  <span>🚪</span>
+                  <span className="hidden md:inline">{lang === "fr" ? "Déconnexion" : "Sign Out"}</span>
+                </button>
+              </div>
+            ) : (
+              isPaymentPage && (
                 <Link
                   href="/connexion?redirect=/paiement"
                   className="px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-full font-cinzel text-[10px] sm:text-xs md:text-sm font-bold tracking-wider text-black bg-gradient-to-r from-[#C5A059] to-[#E9D18F] hover:brightness-110 transition-all shadow-[0_0_12px_rgba(197,160,89,0.3)] cursor-pointer whitespace-nowrap"

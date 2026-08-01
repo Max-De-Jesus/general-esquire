@@ -245,14 +245,14 @@ function RadialGallery3D({ items }: { items: typeof GALLERY }) {
             <div
               key={idx}
               onClick={() => setActiveIdx(idx)}
-              className={`absolute cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] rounded-2xl overflow-hidden border-2 bg-[#0d0e0c] ${
+              className={`absolute cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] rounded-full overflow-hidden border-2 bg-[#0d0e0c] ${
                 isCenter
                   ? "border-[#E9D18F] shadow-[0_0_35px_rgba(197,160,89,0.7),0_16px_36px_rgba(0,0,0,0.8)] z-30"
                   : "border-[#C5A059]/25 hover:border-[#C5A059]/60 z-10"
               }`}
               style={{
-                width: isCenter ? "clamp(160px, 25vw, 280px)" : "clamp(110px, 17vw, 190px)",
-                height: isCenter ? "clamp(200px, 33vw, 360px)" : "clamp(140px, 23vw, 240px)",
+                width: isCenter ? "clamp(180px, 28vw, 320px)" : "clamp(130px, 20vw, 220px)",
+                height: isCenter ? "clamp(180px, 28vw, 320px)" : "clamp(130px, 20vw, 220px)",
                 transform: `rotateY(${rotY}deg) translateZ(${tz}px) scale(${scale})`,
                 opacity,
                 // No CSS blur — use opacity + dark overlay instead (blur causes ghost bleed)
@@ -376,7 +376,7 @@ export default function ExcursionsPage() {
       : "Our goal is to entertain you, help you enjoy wonderful moments, and offer a form of psychological support beyond the hardships of daily life.",
     gallery_tag: lang === "fr" ? "Découvrez la variété" : "Discover the Variety",
     gallery_title: lang === "fr" ? "Galerie des Excursions" : "Excursions Gallery",
-    cta_title: lang === "fr" ? "Prêt pour l'aventure béninoise ?" : "Ready for the Beninese Adventure?",
+    cta_title: lang === "fr" ? "Prêt(e) pour l'aventure béninoise ?" : "Ready for the Beninese Adventure?",
     cta_sub: lang === "fr" ? "Inscriptions ouvertes de février à fin septembre pour le séjour de janvier." : "Registrations open from February to end of September for the January stay.",
     cta_btn: lang === "fr" ? "Inscrivez-vous au Séjour →" : "Book Your Stay →",
     back: lang === "fr" ? "← RETOUR À L'ACCUEIL" : "← BACK TO HOME",

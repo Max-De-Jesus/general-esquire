@@ -378,16 +378,20 @@ export default function ConseilJuridiquePage() {
           </p>
         </div>
 
-        {/* Photo Bureau (Bureau modifié.jpg) */}
-        <figure className="relative w-full h-64 sm:h-96 rounded-2xl overflow-hidden border-2 border-[#C5A059]/40 shadow-2xl mb-10 group">
-          <Image
-            src="/images/Bureau modifié.jpg"
-            alt="Bureau du cabinet General Esquire — Chrysalides"
-            fill
-            priority
-            className="object-cover object-center group-hover:scale-105 transition-transform duration-700 filter brightness-95 contrast-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#1A1C1A]/60 via-transparent to-transparent opacity-60"></div>
+        {/* Badge Hauts-de-France (Mise en valeur grand format) */}
+        <figure className="relative w-full py-8 sm:py-12 px-4 rounded-2xl bg-[#0e100e]/90 border-2 border-[#C5A059]/40 shadow-2xl mb-10 flex items-center justify-center overflow-hidden group">
+          {/* Halo lumineux doré en arrière-plan */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(197,160,89,0.18)_0%,transparent_70%)] pointer-events-none" />
+          
+          <div className="relative w-full max-w-[480px] h-64 sm:h-96 transition-transform duration-500 group-hover:scale-105">
+            <Image
+              src="/images/Badge Hauts de France.png"
+              alt="Badge Région Hauts-de-France — General Esquire"
+              fill
+              priority
+              className="object-contain filter drop-shadow-[0_8px_32px_rgba(197,160,89,0.45)]"
+            />
+          </div>
         </figure>
 
         {/* Corps du texte */}

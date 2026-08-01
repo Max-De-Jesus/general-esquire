@@ -135,14 +135,14 @@ function RadialGallery3D() {
               onClick={() => setActiveIdx(idx)}
               style={{
                 position:   "absolute",
-                width:      isCenter ? "clamp(170px, 25vw, 300px)" : "clamp(115px, 17vw, 210px)",
-                height:     isCenter ? "clamp(210px, 33vw, 390px)" : "clamp(145px, 23vw, 270px)",
+                width:      isCenter ? "clamp(190px, 30vw, 330px)" : "clamp(135px, 21vw, 230px)",
+                height:     isCenter ? "clamp(190px, 30vw, 330px)" : "clamp(135px, 21vw, 230px)",
                 transform:  `translateX(calc(${offset} * min(100px, 28vw))) rotateY(${rotY}deg) translateZ(${tz}px) scale(${scale})`,
                 opacity,
                 zIndex:     isCenter ? 50 : 30 - abs * 10,
                 transition: "all 0.7s cubic-bezier(0.16,1,0.3,1)",
               }}
-              className={`rounded-2xl overflow-hidden bg-[#0d0e0c] cursor-pointer border-2 ${
+              className={`rounded-full overflow-hidden bg-[#0d0e0c] cursor-pointer border-2 ${
                 isCenter
                   ? "border-[#E9D18F] shadow-[0_0_35px_rgba(197,160,89,0.65),0_16px_36px_rgba(0,0,0,0.9)]"
                   : "border-[#C5A059]/25 hover:border-[#C5A059]/60 shadow-xl"

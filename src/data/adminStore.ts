@@ -4,7 +4,7 @@ export interface NewsItem {
   subtitle?: string;
   summary: string;
   content: string;
-  category: "Événement" | "Événements" | "Evenement" | "Conseil Juridique" | "Chrysalides" | "Annonce" | "Annonces";
+  category: "Veille Juridique" | "Espace Activités" | "Événementiels" | "Communiqués" | "Communiqué" | "Événement" | "Événements" | "Evenement" | "Conseil Juridique" | "Chrysalides" | "Annonce" | "Annonces";
   date: string;
   imageUrl: string;
   images?: string[];
