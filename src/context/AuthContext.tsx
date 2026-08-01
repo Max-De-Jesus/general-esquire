@@ -101,19 +101,33 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       // Ensure client entry exists in clients table with status 'En attente de validation'
       if (data.user) {
-        await supabase.from("clients").upsert(
-          {
-            email: email.toLowerCase(),
-            full_name: fullName,
-            phone: phone || null,
-            profile_type: profileType as any,
-            requested_service: "Inscription Compte Client",
-            status: "En attente de validation",
-            registered_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          },
-          { onConflict: "email" }
-        );
+        const clientRecord = {
+          email: email.toLowerCase(),
+          full_name: fullName,
+          phone: phone || null,
+          profile_type: profileType as any,
+          requested_service: "Inscription Compte Client",
+          status: "En attente de validation" as const,
+          registered_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+
+        try {
+          await supabase.from("clients").upsert(clientRecord, { onConflict: "email" });
+        } catch (dbErr) {
+          console.warn("Supabase clients upsert warning:", dbErr);
+        }
+
+        // Save to shared localStorage for instant visibility in admin dashboard
+        try {
+          if (typeof window !== "undefined") {
+            const existing = JSON.parse(localStorage.getItem("ge_admin_clients") || "[]");
+            const filtered = existing.filter((c: any) => c.email !== clientRecord.email);
+            localStorage.setItem("ge_admin_clients", JSON.stringify([clientRecord, ...filtered]));
+          }
+        } catch (lsErr) {
+          console.warn("LocalStorage client save error:", lsErr);
+        }
 
         // Envoi automatique de la notification mail d'alerte admin à generalesquire@proton.me
         try {

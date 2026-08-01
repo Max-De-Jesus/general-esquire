@@ -65,7 +65,7 @@ export default function EspaceSecurisePage() {
   const [successMessage, setSuccessMessage] = useState("");
 
   // Dashboard State
-  const [activeTab, setActiveTab] = useState<"news" | "clients" | "requests" | "payments" | "logs">("clients");
+  const [activeTab, setActiveTab] = useState<"clients" | "news" | "requests" | "payments" | "logs" | "account">("clients");
 
   // News Manager State
   const [newsList, setNewsList] = useState<NewsItem[]>([]);
@@ -83,6 +83,7 @@ export default function EspaceSecurisePage() {
   const [formSummary, setFormSummary] = useState("");
   const [formContent, setFormContent] = useState("");
   const [formImages, setFormImages] = useState<string[]>([]);
+  const [primaryImageIndex, setPrimaryImageIndex] = useState<number>(0);
   const [urlInput, setUrlInput] = useState("");
   const [formIsFeatured, setFormIsFeatured] = useState(false);
   const [formIsPublished, setFormIsPublished] = useState(true);
@@ -111,6 +112,15 @@ export default function EspaceSecurisePage() {
   const [logsList, setLogsList] = useState<ActivityLogEntry[]>([]);
   const [loadingLogs, setLoadingLogs] = useState(false);
 
+  // Admin Account Settings Form State
+  const [adminFullName, setAdminFullName] = useState("");
+  const [adminEmailInput, setAdminEmailInput] = useState("");
+  const [adminNewPassword, setAdminNewPassword] = useState("");
+  const [adminConfirmPassword, setAdminConfirmPassword] = useState("");
+  const [updatingAccount, setUpdatingAccount] = useState(false);
+  const [accountSuccess, setAccountSuccess] = useState("");
+  const [accountError, setAccountError] = useState("");
+
   // Notification Toast State
   const [toastMessage, setToastMessage] = useState<{ type: "success" | "error" | "info"; text: string } | null>(null);
 
@@ -118,6 +128,14 @@ export default function EspaceSecurisePage() {
     setToastMessage({ type, text });
     setTimeout(() => setToastMessage(null), 4500);
   };
+
+  // Pre-fill Admin Account Fields when user changes
+  useEffect(() => {
+    if (user) {
+      setAdminEmailInput(user.email || "");
+      setAdminFullName(user.user_metadata?.full_name || "Administrateur General Esquire");
+    }
+  }, [user]);
 
   // Fetch News Articles
   const fetchNewsList = async () => {
@@ -132,9 +150,10 @@ export default function EspaceSecurisePage() {
     }
   };
 
-  // Fetch Clients from Supabase
+  // Fetch Clients with Dual Sync (Supabase DB + ge_admin_clients Local Storage)
   const fetchClientsList = async () => {
     setLoadingClients(true);
+    let supabaseClients: Client[] = [];
     try {
       const { data, error } = await supabase
         .from("clients")
@@ -142,13 +161,38 @@ export default function EspaceSecurisePage() {
         .order("registered_at", { ascending: false });
 
       if (!error && data) {
-        setClientsList(data as Client[]);
+        supabaseClients = data as Client[];
       }
     } catch (err) {
       console.warn("Clients fetch warning:", err);
-    } finally {
-      setLoadingClients(false);
     }
+
+    // Merge with Local Storage ge_admin_clients
+    let localClients: Client[] = [];
+    try {
+      if (typeof window !== "undefined") {
+        const stored = localStorage.getItem("ge_admin_clients");
+        if (stored) localClients = JSON.parse(stored);
+      }
+    } catch {
+      // Ignore
+    }
+
+    // Combine Supabase and Local Storage uniquely by email
+    const clientMap = new Map<string, Client>();
+    localClients.forEach((c) => {
+      if (c && c.email) clientMap.set(c.email.toLowerCase(), c);
+    });
+    supabaseClients.forEach((c) => {
+      if (c && c.email) clientMap.set(c.email.toLowerCase(), c);
+    });
+
+    const mergedList = Array.from(clientMap.values()).sort((a, b) => {
+      return new Date(b.registered_at || 0).getTime() - new Date(a.registered_at || 0).getTime();
+    });
+
+    setClientsList(mergedList);
+    setLoadingClients(false);
   };
 
   // Fetch Contact Demandes
@@ -205,7 +249,6 @@ export default function EspaceSecurisePage() {
       fetchPaiementsList();
       fetchLogsList();
 
-      // Realtime Subscriptions setup & teardown
       const channel = supabase
         .channel("admin_dashboard_realtime")
         .on("postgres_changes", { event: "*", schema: "public", table: "clients" }, (payload) => {
@@ -248,12 +291,24 @@ export default function EspaceSecurisePage() {
         .eq("email", targetClient.email);
 
       if (error) {
-        throw new Error(error.message);
+        console.warn("Supabase client status update warning:", error.message);
+      }
+
+      // Update in localClients ge_admin_clients
+      const updatedClientRecord = { ...targetClient, status: newStatus, updated_at: new Date().toISOString() };
+      try {
+        if (typeof window !== "undefined") {
+          const existing = JSON.parse(localStorage.getItem("ge_admin_clients") || "[]");
+          const filtered = existing.filter((c: any) => c.email !== targetClient.email);
+          localStorage.setItem("ge_admin_clients", JSON.stringify([updatedClientRecord, ...filtered]));
+        }
+      } catch {
+        // Ignore
       }
 
       // Local state update for instant UI feedback
       setClientsList((prev) =>
-        prev.map((c) => (c.email === targetClient.email ? { ...c, status: newStatus } : c))
+        prev.map((c) => (c.email === targetClient.email ? updatedClientRecord : c))
       );
 
       // 2. Audit Log Entry
@@ -289,7 +344,65 @@ export default function EspaceSecurisePage() {
     }
   };
 
-  // Multiple Image File Upload (compressed DataURL / base64)
+  // Admin Account Update Handler
+  const handleUpdateAdminAccount = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAccountSuccess("");
+    setAccountError("");
+
+    if (adminNewPassword && adminNewPassword !== adminConfirmPassword) {
+      setAccountError("Le nouveau mot de passe et sa confirmation ne correspondent pas.");
+      return;
+    }
+
+    if (adminNewPassword && adminNewPassword.length < 8) {
+      setAccountError("Le mot de passe doit comporter au moins 8 caractères.");
+      return;
+    }
+
+    setUpdatingAccount(true);
+    try {
+      const updateData: { email?: string; password?: string; data?: { full_name: string } } = {
+        data: { full_name: adminFullName },
+      };
+
+      if (adminEmailInput && adminEmailInput !== user?.email) {
+        updateData.email = adminEmailInput.trim().toLowerCase();
+      }
+
+      if (adminNewPassword) {
+        updateData.password = adminNewPassword;
+      }
+
+      const { error } = await supabase.auth.updateUser(updateData);
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      // Log Audit Entry
+      await logActivity({
+        admin_email: user?.email || "generalesquire@proton.me",
+        action_type: "Modification",
+        client_name: adminFullName,
+        client_email: adminEmailInput || user?.email || "",
+        notes: "Mise à jour des identifiants et mot de passe administrateur",
+      });
+
+      setAccountSuccess("Vos identifiants ont été mis à jour avec succès. Invalidation des sessions en cours...");
+
+      setTimeout(async () => {
+        await signOut();
+        alert("Vos identifiants ont été modifiés avec succès. Veuillez vous reconnecter avec vos nouvelles coordonnées.");
+      }, 1500);
+    } catch (err: any) {
+      setAccountError(`Erreur lors de la mise à jour : ${err.message || "Erreur inconnue"}`);
+    } finally {
+      setUpdatingAccount(false);
+    }
+  };
+
+  // Multiple Image File Upload
   const handleMultipleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
@@ -325,9 +438,12 @@ export default function EspaceSecurisePage() {
 
   const handleRemoveImage = (index: number) => {
     setFormImages((prev) => prev.filter((_, i) => i !== index));
+    if (primaryImageIndex >= index && primaryImageIndex > 0) {
+      setPrimaryImageIndex((prev) => prev - 1);
+    }
   };
 
-  // Login handler
+  // Admin Login handler
   const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
@@ -354,7 +470,7 @@ export default function EspaceSecurisePage() {
     }
   };
 
-  // Create / Publish New Article
+  // Create / Publish New Article with Admin Primary Cover Choice
   const handleCreateNews = async (e: React.FormEvent) => {
     e.preventDefault();
     setNewsSuccess("");
@@ -371,7 +487,7 @@ export default function EspaceSecurisePage() {
       : "10000000-0000-4000-8000-" + Date.now().toString().padStart(12, "0");
 
     const finalImagesList = formImages.length > 0 ? formImages : ["/images/chant.avif"];
-    const mainImage = finalImagesList[0];
+    const mainImage = formImages[primaryImageIndex] || finalImagesList[0];
 
     const newItem: NewsItem = {
       id: newId,
@@ -402,6 +518,7 @@ export default function EspaceSecurisePage() {
     setFormSummary("");
     setFormContent("");
     setFormImages([]);
+    setPrimaryImageIndex(0);
     setUrlInput("");
     setFormIsFeatured(false);
     setSavingNews(false);
@@ -553,7 +670,6 @@ export default function EspaceSecurisePage() {
 
   // Filter clients for tab table
   const filteredClients = clientsList.filter((c) => {
-    // 1. Status Filter
     if (clientStatusFilter === "En attente de validation") {
       if (c.status !== "En attente de validation" && c.status !== "En attente" && c.status) return false;
     } else if (clientStatusFilter === "Accepté") {
@@ -562,7 +678,6 @@ export default function EspaceSecurisePage() {
       if (c.status !== "Refusé") return false;
     }
 
-    // 2. Search Query Filter
     if (!clientSearchQuery.trim()) return true;
     const q = clientSearchQuery.toLowerCase();
     return (
@@ -689,7 +804,7 @@ export default function EspaceSecurisePage() {
                 : "bg-[#1a1c1a] text-[#cabfa6] hover:text-[#E9D18F] hover:bg-[#242724]"
             }`}
           >
-            📰 Actualités & Publications ({newsList.length})
+            📰 Actualités ({newsList.length})
           </button>
 
           <button
@@ -711,7 +826,7 @@ export default function EspaceSecurisePage() {
                 : "bg-[#1a1c1a] text-[#cabfa6] hover:text-[#E9D18F] hover:bg-[#242724]"
             }`}
           >
-            💳 Paiements Reçus ({paiementsList.length})
+            💳 Paiements ({paiementsList.length})
           </button>
 
           <button
@@ -724,12 +839,22 @@ export default function EspaceSecurisePage() {
           >
             📜 Journal d'Activité ({logsList.length})
           </button>
+
+          <button
+            onClick={() => setActiveTab("account")}
+            className={`px-5 py-3 rounded-2xl transition-all cursor-pointer ${
+              activeTab === "account"
+                ? "bg-gradient-to-r from-[#C5A059] to-[#E9D18F] text-black shadow-lg scale-105"
+                : "bg-[#1a1c1a] text-[#cabfa6] hover:text-[#E9D18F] hover:bg-[#242724]"
+            }`}
+          >
+            ⚙️ Mon Compte / Paramètres
+          </button>
         </div>
 
         {/* ===== TAB 1: GESTION DES COMPTES CLIENTS ===== */}
         {activeTab === "clients" && (
           <div className="space-y-6">
-            {/* Search & Filter Header Bar */}
             <div className="p-6 bg-[#1a1c1a] border border-[#C5A059]/40 rounded-3xl space-y-4 shadow-xl">
               <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                 <div>
@@ -746,12 +871,11 @@ export default function EspaceSecurisePage() {
                   onClick={fetchClientsList}
                   className="px-4 py-2 rounded-xl bg-[#C5A059]/20 hover:bg-[#C5A059]/30 text-[#E9D18F] text-xs font-cinzel font-bold border border-[#C5A059]/40 transition-colors flex items-center gap-2 cursor-pointer"
                 >
-                  🔄 <span>Actualiser en Temps Réel</span>
+                  🔄 <span>Actualiser la Liste</span>
                 </button>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
-                {/* Text Search Box */}
                 <div className="md:col-span-2">
                   <input
                     type="text"
@@ -762,7 +886,6 @@ export default function EspaceSecurisePage() {
                   />
                 </div>
 
-                {/* Status Filter Buttons */}
                 <div className="md:col-span-2 flex flex-wrap gap-2">
                   {(["Tous", "En attente de validation", "Accepté", "Refusé"] as const).map((st) => (
                     <button
@@ -784,7 +907,6 @@ export default function EspaceSecurisePage() {
               </div>
             </div>
 
-            {/* Clients Table / Cards List */}
             {loadingClients ? (
               <div className="p-12 text-center text-[#C5A059] font-cinzel text-sm animate-pulse">
                 Chargement des comptes clients...
@@ -843,7 +965,6 @@ export default function EspaceSecurisePage() {
                           </div>
                         </div>
 
-                        {/* Action Buttons: Accepter / Refuser / En attente */}
                         <div className="flex items-center gap-2 flex-wrap w-full lg:w-auto justify-end">
                           <button
                             onClick={() => setSelectedClientModal(c)}
@@ -891,16 +1012,15 @@ export default function EspaceSecurisePage() {
         {/* ===== TAB 2: ACTUALITÉS & PUBLICATIONS ===== */}
         {activeTab === "news" && (
           <div className="space-y-10">
-            {/* Formulaire de Publication d'Actualités */}
             <div className="p-8 bg-[#1a1c1a] border border-[#C5A059]/40 rounded-3xl shadow-2xl space-y-6">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#C5A059]/30 pb-4">
                 <div>
                   <h3 className="font-cinzel text-2xl font-bold text-[#E9D18F] flex items-center gap-2">
                     <span>📝</span>
-                    <span>Publier une Nouvelle Actualité (Multi-Photos)</span>
+                    <span>Publier une Nouvelle Actualité (Choix de la Couverture Principale)</span>
                   </h3>
                   <p className="text-sm font-cormorant text-[#cabfa6]">
-                    Uploadez une ou plusieurs photos et ajoutez vos informations pour publier immédiatement un article.
+                    Sélectionnez vos images. Cliquez sur n'importe quelle photo pour la définir comme image de couverture principale sur la page publique.
                   </p>
                 </div>
               </div>
@@ -978,6 +1098,79 @@ export default function EspaceSecurisePage() {
                   </div>
                 </div>
 
+                {/* Multiple Image Selector with Cover Image Designation */}
+                <div className="p-6 bg-[#131513] border border-[#C5A059]/30 rounded-2xl space-y-4">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-cinzel font-semibold text-[#E9D18F] uppercase tracking-wider">
+                      🖼️ Téléverser des Images ({formImages.length} photo{formImages.length > 1 ? "s" : ""})
+                    </label>
+                    <span className="text-xs text-[#C5A059] font-cormorant">
+                      Cliquez sur la vignette de votre choix pour définir l'image de couverture principale
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={handleMultipleImageUpload}
+                        className="w-full px-3 py-2.5 bg-[#1a1c1a] border border-[#C5A059]/40 rounded-xl text-xs text-[#EDE4CF] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-cinzel file:font-bold file:bg-[#C5A059] file:text-black cursor-pointer"
+                      />
+                    </div>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        placeholder="Ou coller une URL d'image..."
+                        value={urlInput}
+                        onChange={(e) => setUrlInput(e.target.value)}
+                        className="flex-1 px-4 py-2 bg-[#1a1c1a] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-xs focus:outline-none focus:border-[#E9D18F]"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleAddUrlImage}
+                        className="px-4 py-2 bg-[#C5A059] text-black font-cinzel font-bold text-xs rounded-xl"
+                      >
+                        Ajouter
+                      </button>
+                    </div>
+                  </div>
+
+                  {formImages.length > 0 && (
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3">
+                      {formImages.map((img, idx) => (
+                        <div
+                          key={idx}
+                          onClick={() => setPrimaryImageIndex(idx)}
+                          className={`relative h-28 rounded-xl overflow-hidden border-2 cursor-pointer transition-all ${
+                            primaryImageIndex === idx
+                              ? "border-[#E9D18F] shadow-[0_0_15px_rgba(233,209,143,0.6)] scale-105"
+                              : "border-gray-700 opacity-70 hover:opacity-100"
+                          }`}
+                        >
+                          <Image src={img} alt={`Aperçu ${idx}`} fill className="object-cover" />
+                          {primaryImageIndex === idx && (
+                            <div className="absolute top-1 left-1 px-2 py-0.5 bg-[#C5A059] text-black text-[9px] font-cinzel font-bold uppercase rounded-md shadow">
+                              ⭐ Couverture
+                            </div>
+                          )}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRemoveImage(idx);
+                            }}
+                            className="absolute top-1 right-1 w-6 h-6 bg-red-900/90 text-white rounded-full flex items-center justify-center text-xs font-bold"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
                 <div>
                   <label className="block text-xs font-cinzel font-semibold text-[#C5A059] uppercase tracking-wider mb-2">
                     Résumé / Accroche *
@@ -1026,10 +1219,20 @@ export default function EspaceSecurisePage() {
               </h3>
 
               {newsList.map((item) => (
-                <div key={item.id} className="p-5 bg-[#131513] border border-[#C5A059]/30 rounded-2xl flex items-center justify-between">
-                  <div>
-                    <h4 className="font-cinzel text-base font-bold text-[#EDE4CF]">{item.title}</h4>
-                    <p className="text-xs text-[#cabfa6]">{item.date} — {item.category}</p>
+                <div key={item.id} className="p-5 bg-[#131513] border border-[#C5A059]/30 rounded-2xl flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="relative w-20 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-[#1a1c1a] border border-[#C5A059]/30">
+                      <Image
+                        src={item.imageUrl || (item.images && item.images[0]) || "/images/chant.avif"}
+                        alt={item.title}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <div>
+                      <h4 className="font-cinzel text-base font-bold text-[#EDE4CF]">{item.title}</h4>
+                      <p className="text-xs text-[#cabfa6]">{item.date} — {item.category}</p>
+                    </div>
                   </div>
                   <button
                     onClick={() => handleDeleteNews(item.id)}
@@ -1147,6 +1350,107 @@ export default function EspaceSecurisePage() {
                 ))}
               </div>
             )}
+          </div>
+        )}
+
+        {/* ===== TAB 6: MON COMPTE / PARAMÈTRES ADMIN ===== */}
+        {activeTab === "account" && (
+          <div className="max-w-2xl mx-auto space-y-6">
+            <div className="p-8 bg-[#1a1c1a] border border-[#C5A059]/40 rounded-3xl shadow-2xl space-y-6">
+              <div className="border-b border-[#C5A059]/30 pb-4">
+                <h3 className="font-cinzel text-2xl font-bold text-[#E9D18F] flex items-center gap-2">
+                  <span>⚙️</span>
+                  <span>Paramètres du Compte Administrateur</span>
+                </h3>
+                <p className="text-xs text-[#cabfa6] font-cormorant mt-1">
+                  Modifiez vos coordonnées d'administration et votre mot de passe. Après validation, toutes les sessions seront déconnectées pour sécurité.
+                </p>
+              </div>
+
+              {accountSuccess && (
+                <div className="p-4 bg-emerald-950/70 border border-emerald-500/60 rounded-2xl text-emerald-200 text-xs font-cinzel flex items-center gap-3">
+                  <span>✅</span>
+                  <span>{accountSuccess}</span>
+                </div>
+              )}
+
+              {accountError && (
+                <div className="p-4 bg-rose-950/70 border border-rose-500/60 rounded-2xl text-rose-200 text-xs font-cinzel flex items-center gap-3">
+                  <span>⚠️</span>
+                  <span>{accountError}</span>
+                </div>
+              )}
+
+              <form onSubmit={handleUpdateAdminAccount} className="space-y-5">
+                <div>
+                  <label className="block text-xs font-cinzel font-semibold text-[#C5A059] uppercase tracking-wider mb-2">
+                    Nom d'Administration Complexe *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={adminFullName}
+                    onChange={(e) => setAdminFullName(e.target.value)}
+                    className="w-full px-4 py-3 bg-[#131513] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-sm focus:outline-none focus:border-[#E9D18F]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-cinzel font-semibold text-[#C5A059] uppercase tracking-wider mb-2">
+                    Nouvelle Adresse Email de Connexion *
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={adminEmailInput}
+                    onChange={(e) => setAdminEmailInput(e.target.value)}
+                    className="w-full px-4 py-3 bg-[#131513] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-sm focus:outline-none focus:border-[#E9D18F]"
+                  />
+                </div>
+
+                <div className="pt-4 border-t border-[#C5A059]/20 space-y-4">
+                  <h4 className="font-cinzel text-xs font-bold text-[#E9D18F] uppercase tracking-wider">
+                    🔒 Modification du Mot de Passe
+                  </h4>
+
+                  <div>
+                    <label className="block text-xs font-cinzel font-semibold text-[#C5A059] uppercase tracking-wider mb-2">
+                      Nouveau Mot de Passe (Au moins 8 caractères)
+                    </label>
+                    <input
+                      type="password"
+                      placeholder="Laissez vide pour conserver le mot de passe actuel..."
+                      value={adminNewPassword}
+                      onChange={(e) => setAdminNewPassword(e.target.value)}
+                      className="w-full px-4 py-3 bg-[#131513] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-sm focus:outline-none focus:border-[#E9D18F]"
+                    />
+                  </div>
+
+                  {adminNewPassword && (
+                    <div>
+                      <label className="block text-xs font-cinzel font-semibold text-[#C5A059] uppercase tracking-wider mb-2">
+                        Confirmer le Nouveau Mot de Passe
+                      </label>
+                      <input
+                        type="password"
+                        placeholder="Répétez le nouveau mot de passe..."
+                        value={adminConfirmPassword}
+                        onChange={(e) => setAdminConfirmPassword(e.target.value)}
+                        className="w-full px-4 py-3 bg-[#131513] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-sm focus:outline-none focus:border-[#E9D18F]"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={updatingAccount}
+                  className="w-full py-4 rounded-xl bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] text-black font-cinzel font-bold text-xs uppercase tracking-widest shadow-xl hover:brightness-110 transition-all cursor-pointer disabled:opacity-50 mt-4"
+                >
+                  {updatingAccount ? "Mise à jour et déconnexion..." : "💾 Enregistrer & Déconnecter les Sessions"}
+                </button>
+              </form>
+            </div>
           </div>
         )}
       </div>
