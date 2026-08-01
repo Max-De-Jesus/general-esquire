@@ -401,7 +401,7 @@ export default function ConseilJuridiquePage() {
         {/* Image du bureau (PREPARE.png) ramenée à sa place */}
         <figure className="relative w-full h-64 sm:h-96 md:h-[440px] rounded-2xl overflow-hidden border border-[#C5A059]/35 shadow-2xl mb-10 group">
           <Image
-            src="/images/PREPARE.png"
+            src="/images/Bureau modifié.jpg"
             alt="Bureau Conseil Juridique — General Esquire"
             fill
             priority

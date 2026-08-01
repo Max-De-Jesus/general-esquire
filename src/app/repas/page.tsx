@@ -161,10 +161,10 @@ function Rotating3DFoodCarousel() {
               <div
                 key={idx}
                 onClick={() => setActiveIndex(idx)}
-                className={`absolute w-[180px] h-[180px] sm:w-[310px] sm:h-[310px] rounded-full overflow-hidden cursor-pointer transition-all duration-700 ease-out select-none border-2 ${
+                className={`absolute w-[180px] h-[180px] sm:w-[310px] sm:h-[310px] rounded-full overflow-hidden cursor-pointer transition-all duration-700 ease-out select-none ${
                   isCenter
-                    ? "border-[#E9D18F] shadow-[0_0_35px_rgba(197,160,89,0.7)] z-30"
-                    : "border-[#C5A059]/40 opacity-70 hover:opacity-90 hover:border-[#C5A059]"
+                    ? "border-2 border-[#E9D18F] shadow-[0_0_35px_rgba(197,160,89,0.7)] z-30"
+                    : "border-0 border-transparent opacity-70 hover:opacity-90"
                 }`}
                 style={{
                   transformStyle: "preserve-3d",

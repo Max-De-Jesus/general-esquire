@@ -1326,7 +1326,7 @@ export default function PaymentPage() {
                     <div className="space-y-5 animate-fadeIn">
                       <div className="bg-[#131513] border border-[#C5A059]/30 rounded-2xl p-5 md:p-6 space-y-4 shadow-xl">
                         <h4 className="font-cinzel text-xs text-[#E9D18F] font-bold uppercase tracking-widest border-b border-[#C5A059]/20 pb-2 flex items-center justify-between">
-                          <span>Coordonnées Bancaires Officieuses</span>
+                          <span>Coordonnées Bancaires Officielles</span>
                           <span className="text-[10px] text-[#C5A059] bg-[#C5A059]/10 px-2 py-0.5 rounded-full border border-[#C5A059]/30">RIB / IBAN</span>
                         </h4>
 

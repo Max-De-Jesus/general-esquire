@@ -60,12 +60,7 @@ export default function Footer() {
             Contact
           </p>
           <div className="space-y-2 font-cormorant text-sm">
-            {/* 1. Adresse */}
-            <p className="flex items-center justify-center md:justify-end gap-1.5 text-[#E9D18F] font-semibold">
-              <span className="text-[#C5A059]">📍</span>
-              <span>61 rue de Lyon, 75012 PARIS</span>
-            </p>
-            {/* 2. Téléphone fixe */}
+            {/* 1. Téléphone fixe */}
             <p className="flex items-center justify-center md:justify-end gap-1.5">
               <a
                 href="tel:+33159581725"
