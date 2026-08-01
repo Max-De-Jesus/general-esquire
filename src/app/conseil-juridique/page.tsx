@@ -365,7 +365,7 @@ export default function ConseilJuridiquePage() {
         </div>
 
         {/* Accroche Box */}
-        <div className="p-6 sm:p-8 rounded-2xl bg-[#0e100e]/90 border border-[#C5A059]/35 shadow-xl mb-10 text-center">
+        <div className="p-6 sm:p-8 rounded-2xl bg-[#0e100e]/90 border border-[#C5A059]/35 shadow-xl text-center relative z-10">
           <p className="font-cormorant text-xl sm:text-2xl text-[#EDE4CF] font-light leading-relaxed mb-3">
             {lang === "fr" ? (
               <>Avez-vous besoin d'un avis, d'un conseil,<br />ou d'accompagnement juridique ?</>
@@ -378,20 +378,36 @@ export default function ConseilJuridiquePage() {
           </p>
         </div>
 
-        {/* Badge Hauts-de-France (Mise en valeur grand format) */}
-        <figure className="relative w-full py-8 sm:py-12 px-4 rounded-2xl bg-[#0e100e]/90 border-2 border-[#C5A059]/40 shadow-2xl mb-10 flex items-center justify-center overflow-hidden group">
-          {/* Halo lumineux doré en arrière-plan */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(197,160,89,0.18)_0%,transparent_70%)] pointer-events-none" />
-          
-          <div className="relative w-full max-w-[480px] h-64 sm:h-96 transition-transform duration-500 group-hover:scale-105">
-            <Image
-              src="/images/Badge Hauts de France.png"
-              alt="Badge Région Hauts-de-France — General Esquire"
-              fill
-              priority
-              className="object-contain filter drop-shadow-[0_8px_32px_rgba(197,160,89,0.45)]"
-            />
+        {/* Badge Hauts-de-France Animé (Positionné ENTRE les 2 cases) */}
+        <div className="my-6 sm:my-8 flex justify-center items-center relative z-20">
+          <div className="relative group">
+            {/* Halo lumineux d'arrière-plan avec pulsation */}
+            <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-[#C5A059]/40 via-[#E9D18F]/30 to-[#C5A059]/40 blur-xl opacity-80 animate-pulse group-hover:opacity-100 transition-opacity" />
+            
+            {/* Badge circulaire avec animation de rotation douce */}
+            <div className="relative w-36 h-36 sm:w-44 sm:h-44 rounded-full bg-[#0e100e] border-2 border-[#C5A059] p-3 shadow-[0_0_30px_rgba(197,160,89,0.5)] flex items-center justify-center overflow-hidden">
+              <Image
+                src="/images/Badge Hauts de France.png"
+                alt="Badge Région Hauts-de-France — General Esquire"
+                width={170}
+                height={170}
+                priority
+                className="object-contain filter drop-shadow-[0_4px_16px_rgba(197,160,89,0.6)] animate-[spin_25s_linear_infinite] hover:[animation-play-state:paused] transition-transform duration-500 hover:scale-110"
+              />
+            </div>
           </div>
+        </div>
+
+        {/* Image du bureau (PREPARE.png) ramenée à sa place */}
+        <figure className="relative w-full h-64 sm:h-96 md:h-[440px] rounded-2xl overflow-hidden border border-[#C5A059]/35 shadow-2xl mb-10 group">
+          <Image
+            src="/images/PREPARE.png"
+            alt="Bureau Conseil Juridique — General Esquire"
+            fill
+            priority
+            className="object-cover object-center filter brightness-95 contrast-105 group-hover:scale-105 transition-transform duration-700"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         </figure>
 
         {/* Corps du texte */}
