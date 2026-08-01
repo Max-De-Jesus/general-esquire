@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Check if client account has been confirmed / approved by admin
   const isApproved = Boolean(
     isAdmin ||
-    (clientProfile?.status && ["Confirmé", "Terminé", "Termine", "Validé", "Valide", "Approuvé"].includes(clientProfile.status))
+    (clientProfile?.status && ["Accepté", "Accepte", "Confirmé", "Validé", "Approuvé"].includes(clientProfile.status))
   );
 
   const fetchClientProfile = async (email: string) => {
@@ -99,7 +99,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (error) return { error };
 
-      // Ensure client entry exists in clients table with status 'En attente'
+      // Ensure client entry exists in clients table with status 'En attente de validation'
       if (data.user) {
         await supabase.from("clients").upsert(
           {
@@ -108,14 +108,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             phone: phone || null,
             profile_type: profileType as any,
             requested_service: "Inscription Compte Client",
-            status: "En attente",
+            status: "En attente de validation",
             registered_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           },
           { onConflict: "email" }
         );
 
-        // Envoi automatique de la notification mail confidentielle à generalesquire@proton.me
+        // Envoi automatique de la notification mail d'alerte admin à generalesquire@proton.me
         try {
           await fetch("/api/contact", {
             method: "POST",
@@ -125,8 +125,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               email: email,
               phone: phone || "Non renseigné",
               structure: profileType,
-              subject: `NOUVELLE INSCRIPTION CLIENT — À VALIDER (${fullName})`,
-              message: `Un nouveau compte client a été créé sur la plateforme.\n\nDétails complets :\n- Nom complet : ${fullName}\n- Email : ${email}\n- Téléphone (avec indicatif) : ${phone || 'Non spécifié'}\n- Profil : ${profileType}\n- Date d'inscription : ${new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" })}\n- Statut actuel : En attente de confirmation administrateur.\n\nNote d'administration : Veuillez vous connecter au portail d'administration pour valider le compte afin que le client puisse accéder à la page de paiement.`,
+              subject: `NOUVELLE INSCRIPTION CLIENT À VALIDER — ${fullName}`,
+              message:
+                `Un nouvel utilisateur vient de s’inscrire sur votre plateforme.\n\n` +
+                `INFORMATIONS DU CLIENT :\n` +
+                `- Nom complet : ${fullName}\n` +
+                `- Email : ${email}\n` +
+                `- Téléphone : ${phone || 'Non renseigné'}\n` +
+                `- Profil / Statut : ${profileType}\n` +
+                `- Date & Heure : ${new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" })}\n` +
+                `- Statut actuel : En attente de validation\n\n` +
+                `ACTION REQUISE :\n` +
+                `Veuillez examiner la demande et décider d'Accepter, Refuser ou Mettre en attente le compte afin de débloquer ou maintenir l'accès au paiement.\n\n` +
+                `👉 Lien direct d'administration : https://www.generalesquire.com/espace-securise-esquire`,
               type: "Nouvelle Inscription Client",
             }),
           });

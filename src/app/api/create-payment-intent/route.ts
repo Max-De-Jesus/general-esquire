@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
+import { supabase } from "@/lib/supabase";
 
 export const dynamic = "force-static";
 
@@ -11,6 +12,36 @@ export async function POST(req: Request) {
   try {
     const body = await req.json().catch(() => ({}));
     const { amount, currency = "eur", serviceName, clientEmail } = body;
+
+    // 🔒 1. Vérification Serveur : Le client doit exister et posséder le statut 'Accepté'
+    if (clientEmail) {
+      const emailClean = String(clientEmail).trim().toLowerCase();
+      const isAdminEmail =
+        emailClean.includes("admin@generalesquire.com") ||
+        emailClean === "generalesquire@proton.me" ||
+        emailClean === "contact@generalesquire.com";
+
+      if (!isAdminEmail) {
+        const { data: clientRecord } = await supabase
+          .from("clients")
+          .select("status")
+          .eq("email", emailClean)
+          .maybeSingle();
+
+        const status = clientRecord?.status || "";
+        const isApproved = ["Accepté", "Accepte", "Confirmé", "Validé", "Approuvé"].includes(status);
+
+        if (!isApproved) {
+          return NextResponse.json(
+            {
+              error: "Paiement non autorisé : Votre compte n'a pas encore été validé par l'administration de General Esquire.",
+              status: "pending_approval",
+            },
+            { status: 403 }
+          );
+        }
+      }
+    }
 
     const stripeSecret = process.env.STRIPE_SECRET_KEY || "";
 

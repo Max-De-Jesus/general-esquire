@@ -1,5 +1,5 @@
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 
-export default function DisabledAdminPage() {
-  notFound();
+export default function AdminPage() {
+  redirect("/espace-securise-esquire");
 }

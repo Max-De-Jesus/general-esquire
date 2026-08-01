@@ -492,38 +492,51 @@ export default function PaymentPage() {
             </div>
           </div>
         ) : !isApproved && !isAdmin ? (
-          /* ═══ PENDING ACCOUNT APPROVAL BY ADMIN ═══ */
+          /* ═══ PENDING / REFUSED ACCOUNT APPROVAL BY ADMIN ═══ */
           <div className="bg-[#131513] border-2 border-[#C5A059]/60 rounded-3xl p-8 md:p-12 text-center max-w-2xl mx-auto shadow-2xl relative overflow-hidden animate-fadeIn space-y-6">
             <div className="absolute inset-0 bg-[#C5A059]/[0.03] pointer-events-none" />
             <div className="w-20 h-20 bg-[#C5A059]/15 border-2 border-[#C5A059] rounded-full flex items-center justify-center mx-auto shadow-[0_0_25px_rgba(197,160,89,0.3)]">
-              <span className="text-3xl">⏳</span>
+              <span className="text-3xl">{clientProfile?.status === "Refusé" ? "🛑" : "⏳"}</span>
             </div>
 
             <div className="inline-block px-4 py-1.5 rounded-full bg-[#C5A059]/10 border border-[#C5A059]/30 text-[#C5A059] font-cinzel text-xs font-semibold tracking-widest uppercase mb-2">
-              {lang === "fr" ? "Validation de Compte Requise" : "Account Approval Required"}
+              {clientProfile?.status === "Refusé"
+                ? (lang === "fr" ? "Demande Non Retenue" : "Registration Refused")
+                : (lang === "fr" ? "Validation de Compte Requise" : "Account Approval Required")}
             </div>
 
             <h2 className="font-cinzel text-2xl md:text-3xl font-bold text-[#E9D18F] tracking-wider uppercase">
-              {lang === "fr" ? "Compte en attente de confirmation" : "Account Pending Confirmation"}
+              {clientProfile?.status === "Refusé"
+                ? (lang === "fr" ? "Compte Non Validé" : "Account Not Approved")
+                : (lang === "fr" ? "Compte en attente de validation" : "Account Pending Validation")}
             </h2>
 
             <p className="font-cormorant text-lg text-[#EDE4CF]/90 leading-relaxed">
-              {lang === "fr"
-                ? "Vos informations d'inscription ont bien été transmises à l'administration. Conformément à la politique de sécurité de General Esquire, votre compte doit être confirmé par l'administrateur avant que vous puissiez accéder à la page de paiement."
-                : "Your registration details have been sent to administration. As per General Esquire security policies, your account must be approved by an administrator before accessing payment services."}
+              {clientProfile?.status === "Refusé"
+                ? (lang === "fr"
+                    ? "Votre demande d'inscription n'a pas été validée par l'administration de General Esquire. L'accès aux services de paiement reste suspendu pour ce compte. Si vous estimez qu'il s'agit d'une erreur, veuillez contacter notre secrétariat."
+                    : "Your registration request was not approved by administration. Access to payment remains disabled.")
+                : (lang === "fr"
+                    ? "Vos informations d'inscription ont bien été transmises à l'administration. Conformément aux procédures de sécurité de General Esquire, votre compte doit être validé par un administrateur avant de pouvoir accéder à la page de paiement."
+                    : "Your registration details have been sent to administration. As per General Esquire security policies, your account must be approved by an administrator before accessing payment services.")}
             </p>
 
-            <div className="p-4 bg-black/40 border border-[#C5A059]/20 rounded-2xl max-w-md mx-auto font-cormorant text-sm text-[#cabfa6] space-y-1 text-left">
+            <div className="p-4 bg-black/40 border border-[#C5A059]/20 rounded-2xl max-w-md mx-auto font-cormorant text-sm text-[#cabfa6] space-y-1.5 text-left">
               <div><strong className="text-[#C5A059]">Client :</strong> {clientProfile?.full_name || user.email}</div>
               <div><strong className="text-[#C5A059]">Email :</strong> {user.email}</div>
               {clientProfile?.phone && <div><strong className="text-[#C5A059]">Téléphone :</strong> {clientProfile.phone}</div>}
-              <div><strong className="text-[#C5A059]">Statut actuel :</strong> <span className="text-amber-400 font-bold">En attente de confirmation par l'administrateur</span></div>
+              <div>
+                <strong className="text-[#C5A059]">Statut actuel :</strong>{" "}
+                <span className={`font-bold ${clientProfile?.status === "Refusé" ? "text-red-400" : "text-amber-400"}`}>
+                  {clientProfile?.status || "En attente de validation"}
+                </span>
+              </div>
             </div>
 
             <p className="font-cormorant text-sm text-[#C5A059] italic">
               {lang === "fr"
-                ? "L'administrateur a été notifié par message électronique à generalesquire@proton.me. Vous aurez immédiatement accès au paiement dès la validation."
-                : "The administrator has been notified at generalesquire@proton.me. You will be able to complete payment as soon as confirmed."}
+                ? "Une notification par message électronique à generalesquire@proton.me a été émise. Dès validation par nos équipes, vous recevrez un email et l'accès au paiement sera débloqué immédiatement."
+                : "An email notification has been dispatched to administration. You will be able to complete payment as soon as confirmed."}
             </p>
 
             <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
