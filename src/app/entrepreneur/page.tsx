@@ -519,6 +519,18 @@ export default function EntrepreneurPage() {
                   </p>
                 </div>
               </div>
+
+              {/* Image Case 1 */}
+              <div className="relative w-full h-48 sm:h-56 mt-6 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg group-hover:scale-105 transition-transform duration-500">
+                <Image
+                  src="/images/case1.png"
+                  alt="General Esquire — Abonnement Mensuel (Case 1)"
+                  fill
+                  priority
+                  className="object-cover object-center filter brightness-95 contrast-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              </div>
             </div>
 
             {/* 3. Prestation Ponctuelle */}
@@ -542,6 +554,18 @@ export default function EntrepreneurPage() {
                     Dans cette hypothèse, la facturation fait l’objet d’une convention de gré à gré, qui prend en considération les données propres à la préoccupation que vous nous soumettez, ainsi que notre disponibilité.
                   </p>
                 </div>
+              </div>
+
+              {/* Image Case 2 */}
+              <div className="relative w-full h-48 sm:h-56 mt-6 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg group-hover:scale-105 transition-transform duration-500">
+                <Image
+                  src="/images/case2.png"
+                  alt="General Esquire — Prestation Ponctuelle (Case 2)"
+                  fill
+                  priority
+                  className="object-cover object-center filter brightness-95 contrast-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
               </div>
             </div>
           </div>
