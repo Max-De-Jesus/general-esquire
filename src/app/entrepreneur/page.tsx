@@ -467,17 +467,14 @@ export default function EntrepreneurPage() {
             {/* 1. Abonnement Annuel */}
             <div className="relative p-8 rounded-3xl bg-gradient-to-b from-[#0F3823]/90 via-[#131513] to-[#0F3823]/90 border-2 border-[#C5A059] shadow-[0_0_40px_rgba(197,160,89,0.25)] hover:shadow-[0_0_65px_rgba(197,160,89,0.45)] hover:scale-[1.02] transition-all duration-500 flex flex-col justify-between group">
               <div>
-                <div className="absolute top-0 right-0 px-4 py-1 bg-gradient-to-r from-[#C5A059] to-[#E9D18F] text-black font-cinzel text-[10px] font-bold tracking-widest uppercase rounded-bl-2xl shadow-md">
-                  ✦ RECOMMANDÉ
-                </div>
                 <div className="w-12 h-12 rounded-2xl bg-[#C5A059]/20 border border-[#C5A059]/40 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
                   👑
                 </div>
                 <h3 className="font-cinzel text-lg text-[#E9D18F] font-bold uppercase tracking-widest mb-1">
                   Abonnement Annuel
                 </h3>
-                <p className="font-cinzel text-4xl sm:text-5xl text-white font-extrabold my-3 drop-shadow-md flex items-baseline gap-1">
-                  10 000 € <span className="text-xl sm:text-2xl font-bold text-[#E9D18F] font-cinzel tracking-wider uppercase ml-1">/ an</span>
+                <p className="font-cinzel text-xl sm:text-2xl lg:text-3xl text-white font-extrabold my-3 drop-shadow-md flex items-baseline gap-1.5 whitespace-nowrap">
+                  10 000 € <span className="text-sm sm:text-base lg:text-lg font-bold text-[#E9D18F] font-cinzel tracking-wider uppercase">/ an</span>
                 </p>
                 <div className="h-[1px] w-full bg-[#C5A059]/30 my-4" />
                 <div className="space-y-4 font-cormorant text-lg text-[#EDE4CF]/90 leading-relaxed">
@@ -506,8 +503,8 @@ export default function EntrepreneurPage() {
                 <h3 className="font-cinzel text-lg text-[#E9D18F] font-bold uppercase tracking-widest mb-1">
                   Abonnement Mensuel
                 </h3>
-                <p className="font-cinzel text-4xl text-white font-extrabold my-3 flex items-baseline gap-1">
-                  1 000 € <span className="text-xl sm:text-2xl font-bold text-[#E9D18F] font-cinzel tracking-wider uppercase ml-1">/ mois</span>
+                <p className="font-cinzel text-xl sm:text-2xl lg:text-3xl text-white font-extrabold my-3 flex items-baseline gap-1.5 whitespace-nowrap">
+                  1 000 € <span className="text-sm sm:text-base lg:text-lg font-bold text-[#E9D18F] font-cinzel tracking-wider uppercase">/ mois</span>
                 </p>
                 <div className="h-[1px] w-full bg-[#C5A059]/20 my-4" />
                 <div className="space-y-4 font-cormorant text-lg text-[#EDE4CF]/90 leading-relaxed">
@@ -542,8 +539,8 @@ export default function EntrepreneurPage() {
                 <h3 className="font-cinzel text-lg text-[#E9D18F] font-bold uppercase tracking-widest mb-1">
                   Prestation Ponctuelle
                 </h3>
-                <p className="font-cinzel text-3xl sm:text-4xl text-white font-bold my-3 flex items-baseline gap-2">
-                  Gré à gré <span className="text-sm font-semibold text-[#E9D18F] font-cinzel tracking-wider uppercase">(Sur Devis)</span>
+                <p className="font-cinzel text-lg sm:text-xl lg:text-2xl text-white font-bold my-3 flex items-baseline gap-1.5 whitespace-nowrap">
+                  Gré à gré <span className="text-xs sm:text-sm font-semibold text-[#E9D18F] font-cinzel tracking-wider uppercase">(Sur Devis)</span>
                 </p>
                 <div className="h-[1px] w-full bg-[#C5A059]/20 my-4" />
                 <div className="space-y-4 font-cormorant text-lg text-[#EDE4CF]/90 leading-relaxed">

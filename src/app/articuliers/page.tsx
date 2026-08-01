@@ -435,6 +435,51 @@ export default function ParticuliersPage() {
               </a>
             </div>
           </div>
+
+          {/* ===== GALERIE ANIMÉE DES PHOTOS PARTICULIERS ===== */}
+          <div className="mt-16 pt-12 border-t border-[#C5A059]/30 text-center">
+            <span className="font-cinzel text-xs text-[#C5A059] uppercase tracking-[0.25em] font-semibold block mb-2">
+              ✦ {lang === "fr" ? "Galerie & Ambiance Client" : "Client Gallery & Ambience"}
+            </span>
+            <h3 className="font-cinzel text-xl sm:text-2xl text-[#E9D18F] font-bold mb-3 uppercase tracking-wider">
+              {lang === "fr" ? "Moments & Accompagnements Particuliers" : "Individual Guidance & Moments"}
+            </h3>
+            <p className="font-cormorant text-lg text-[#cabfa6] mb-8 max-w-2xl mx-auto">
+              {lang === "fr"
+                ? "Découvrez en images la proximité et l’engagement de notre cabinet auprès de chaque particulier."
+                : "Discover in images our commitment and close proximity to each individual."}
+            </p>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-5xl mx-auto">
+              {[
+                { src: "/images/photo particulier/Particuliers.jpg", alt: "Accompagnement Client 1" },
+                { src: "/images/photo particulier/Particluiers2.jpg", alt: "Accompagnement Client 2" },
+                { src: "/images/photo particulier/Particluiers3.jpg", alt: "Accompagnement Client 3" },
+                { src: "/images/photo particulier/Particluiers4.jpg", alt: "Accompagnement Client 4" },
+                { src: "/images/photo particulier/Particluiers5.webp", alt: "Accompagnement Client 5" },
+                { src: "/images/photo particulier/Particluiers6.avif", alt: "Accompagnement Client 6" },
+                { src: "/images/photo particulier/Particluiers7.jpg", alt: "Accompagnement Client 7" },
+                { src: "/images/photo particulier/Particluiers8.jpg", alt: "Accompagnement Client 8" },
+              ].map((img, idx) => (
+                <div
+                  key={idx}
+                  className="group relative h-48 sm:h-56 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg hover:border-[#E9D18F] hover:shadow-[0_0_25px_rgba(197,160,89,0.4)] hover:scale-105 transition-all duration-500 bg-[#131513]"
+                >
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    fill
+                    className="object-cover object-center filter brightness-95 group-hover:brightness-110 group-hover:scale-110 transition-all duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+                    <span className="font-cinzel text-[10px] text-[#E9D18F] tracking-widest uppercase font-bold">
+                      General Esquire
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </section>
 
       </div>

@@ -62,7 +62,10 @@ export default function Footer() {
           <div className="space-y-2 font-cormorant text-sm">
             {/* 1. Adresse physique à droite */}
             <p className="text-[#E9D18F] font-semibold text-xs sm:text-sm pb-1 flex items-center justify-center md:justify-end gap-1.5">
-              <span>📍</span> 61 rue de Lyon, 75012 PARIS
+              <svg className="w-4 h-4 text-[#C5A059] flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+              </svg>
+              <span>61 rue de Lyon, 75012 PARIS</span>
             </p>
             {/* 2. Téléphone fixe */}
             <p className="flex items-center justify-center md:justify-end gap-1.5">
