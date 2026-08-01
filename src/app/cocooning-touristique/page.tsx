@@ -43,6 +43,26 @@ export default function CocooningTouristiquePage() {
     const phone = formData.telephone.trim();
     const ref = `REF-COC-${Math.floor(100000 + Math.random() * 900000)}`;
 
+    const uploadedImages: string[] = [];
+    for (const key of Object.keys(files)) {
+      const f = files[key];
+      if (f) {
+        try {
+          const b64 = await new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve((e.target?.result as string) || "");
+            reader.onerror = () => resolve("");
+            reader.readAsDataURL(f);
+          });
+          if (b64) {
+            uploadedImages.push(b64);
+          }
+        } catch (e) {
+          console.warn("File to base64 error:", e);
+        }
+      }
+    }
+
     const pdfData = {
       title: "Formulaire Cocooning Touristique — General Esquire",
       reference: ref,
@@ -58,6 +78,7 @@ export default function CocooningTouristiquePage() {
         { label: "Préférences alimentaires", value: formData.preferencesAlimentaires.join(", ") || "Aucune restriction particulière" },
         { label: "Présentation & Motivations", value: formData.presentationLibre },
       ],
+      images: uploadedImages,
     };
 
     const newDemande = {

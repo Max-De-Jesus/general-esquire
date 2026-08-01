@@ -6,6 +6,7 @@ export interface FormPDFData {
   fields: Array<{ label: string; value: string }>;
   clientEmail?: string;
   dateStr?: string;
+  images?: string[]; // Photos et pièces jointes annexées au formulaire
 }
 
 /**
@@ -127,6 +128,47 @@ export function generateFormPDF(data: FormPDFData): void {
         currentY = 25;
       }
     });
+
+    // 3.5. Intégration des photos & pièces jointes dans le PDF
+    if (data.images && data.images.length > 0) {
+      doc.addPage();
+      let imgY = 20;
+
+      doc.setFillColor(19, 21, 19);
+      doc.rect(0, 0, 210, 25, "F");
+      doc.setTextColor(233, 209, 143);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(13);
+      doc.text("ANNEXES PHOTOGRAPHIQUES & PIÈCES JOINTES", 15, 16);
+
+      doc.setDrawColor(197, 160, 89);
+      doc.setLineWidth(0.5);
+      doc.line(0, 25, 210, 25);
+
+      imgY = 32;
+
+      data.images.forEach((imgData, idx) => {
+        if (!imgData) return;
+        try {
+          if (imgY > 210) {
+            doc.addPage();
+            imgY = 25;
+          }
+
+          doc.setFontSize(9);
+          doc.setTextColor(197, 160, 89);
+          doc.setFont("helvetica", "bold");
+          doc.text(`Photo / Pièce Jointe N°${idx + 1}`, 15, imgY);
+          imgY += 4;
+
+          const format = imgData.includes("data:image/png") ? "PNG" : "JPEG";
+          doc.addImage(imgData, format, 15, imgY, 130, 85);
+          imgY += 95;
+        } catch (imgErr) {
+          console.warn(`Intégration photo ${idx + 1} échouée:`, imgErr);
+        }
+      });
+    }
 
     // 4. Cadre d'Authentification / Validation
     currentY = Math.max(currentY + 10, 230);
@@ -271,6 +313,47 @@ export function getFormPDFBase64(data: FormPDFData): string {
         currentY = 25;
       }
     });
+
+    // Intégration des photos & pièces jointes dans le PDF Base64
+    if (data.images && data.images.length > 0) {
+      doc.addPage();
+      let imgY = 20;
+
+      doc.setFillColor(19, 21, 19);
+      doc.rect(0, 0, 210, 25, "F");
+      doc.setTextColor(233, 209, 143);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(13);
+      doc.text("ANNEXES PHOTOGRAPHIQUES & PIÈCES JOINTES", 15, 16);
+
+      doc.setDrawColor(197, 160, 89);
+      doc.setLineWidth(0.5);
+      doc.line(0, 25, 210, 25);
+
+      imgY = 32;
+
+      data.images.forEach((imgData, idx) => {
+        if (!imgData) return;
+        try {
+          if (imgY > 210) {
+            doc.addPage();
+            imgY = 25;
+          }
+
+          doc.setFontSize(9);
+          doc.setTextColor(197, 160, 89);
+          doc.setFont("helvetica", "bold");
+          doc.text(`Photo / Pièce Jointe N°${idx + 1}`, 15, imgY);
+          imgY += 4;
+
+          const format = imgData.includes("data:image/png") ? "PNG" : "JPEG";
+          doc.addImage(imgData, format, 15, imgY, 130, 85);
+          imgY += 95;
+        } catch (imgErr) {
+          console.warn(`Intégration photo ${idx + 1} Base64 échouée:`, imgErr);
+        }
+      });
+    }
 
     // Cadre d'Authentification
     currentY = Math.max(currentY + 10, 230);
