@@ -9,6 +9,7 @@ import { supabase, Client } from "@/lib/supabase";
 import { NewsItem } from "@/data/adminStore";
 import { getCloudNews, updateCloudNews } from "@/lib/cloudNewsStore";
 import { logActivity, getActivityLogs, ActivityLogEntry } from "@/lib/activityLog";
+import { sendEmailNotification } from "@/lib/emailNotifier";
 
 // Helper client-side image compressor (max 1200px width/height, quality 0.82 ~100-150KB)
 const compressImageFile = (file: File, maxDimension = 1200, quality = 0.82): Promise<string> => {
@@ -367,18 +368,18 @@ export default function EspaceSecurisePage() {
       });
       fetchLogsList();
 
-      // 3. Dispatch Automated Decision Email to Client
+      // 3. Dispatch Automated Decision Email directly to Client
       try {
-        await fetch("/api/admin/notify-client", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            clientEmail: targetClient.email,
-            clientName: targetClient.full_name,
-            action: newStatus,
-            reason: customReason,
-            adminEmail: user?.email || "generalesquire@proton.me",
-          }),
+        await sendEmailNotification(targetClient.email, {
+          _subject: newStatus === "Accepté"
+            ? `[General Esquire] Confirmation de validation de votre compte client`
+            : `[General Esquire] Mise à jour du statut de votre compte client`,
+          _replyto: user?.email || "israelgodjeto@gmail.com",
+          "Notification Client": `Bonjour ${targetClient.full_name || "Cher Client"},\n\nVotre compte client auprès du Cabinet General Esquire a été mis à jour avec le statut : ${newStatus.toUpperCase()}.\n\n${customReason ? `Note de la direction : ${customReason}\n\n` : ""}Vous pouvez désormais vous connecter à votre espace sécurisé sur https://www.generalesquire.com/connexion\n\nCordialement,\nCabinet General Esquire`,
+          "Nom Client": targetClient.full_name || targetClient.email,
+          "Email Client": targetClient.email,
+          "Nouveau Statut": newStatus,
+          "Lien Connexion": "https://www.generalesquire.com/connexion",
         });
       } catch (notifyErr) {
         console.warn("Client email notification error:", notifyErr);
