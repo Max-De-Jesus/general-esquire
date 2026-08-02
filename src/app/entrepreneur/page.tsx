@@ -556,6 +556,57 @@ export default function EntrepreneurPage() {
           </div>
         </section>
 
+        {/* ── GALERIE DE PHOTOS CHEF D'ENTREPRISE ── */}
+        <section className="mb-20">
+          <div className="text-center mb-8">
+            <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase border border-[#C5A059]/40 px-4 py-1.5 rounded-full bg-[#131513]/80 backdrop-blur-md shadow-md">
+              {lang === "fr" ? "Galerie Officielle — Chef d'Entreprise" : "Official Executive Gallery"}
+            </span>
+            <h2 className="font-cinzel text-2xl sm:text-4xl text-[#E9D18F] font-bold mt-4 mb-2 uppercase tracking-wider">
+              {lang === "fr" ? "L'Excellence au Service des Dirigeants" : "Excellence for Business Leaders"}
+            </h2>
+            <p className="font-cormorant text-lg text-[#cabfa6] max-w-2xl mx-auto">
+              {lang === "fr"
+                ? "Découvrez en images la rigueur, l'accompagnement stratégique et l'engagement de notre cabinet auprès des chefs d'entreprise."
+                : "A visual insight into our strategic counsel, governance advisory, and executive protection."}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-w-6xl mx-auto">
+            {[
+              { src: "/images/gal  chef/chef.jpg", title: "Direction & Stratégie" },
+              { src: "/images/gal  chef/Chef d'entreprise16.jpg", title: "Conseil Administrateur" },
+              { src: "/images/gal  chef/Chef d'entreprise11", title: "Négociation & Contrats" },
+              { src: "/images/gal  chef/Chef d'entreprise17", title: "Sécurité Juridique" },
+              { src: "/images/gal  chef/Chef d'entreprise2", title: "Gestion des Litiges" },
+              { src: "/images/gal  chef/Chef d'entreprise5", title: "Gouvernance d'Entreprise" },
+              { src: "/images/gal  chef/Chef d'entreprise10", title: "Audit & Conformation" },
+              { src: "/images/gal  chef/Chef d'entreprise12", title: "Accompagnement Dirigeant" },
+            ].map((item, idx) => (
+              <div
+                key={idx}
+                className="group relative h-48 sm:h-56 md:h-60 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-xl hover:border-[#E9D18F] hover:shadow-[0_0_30px_rgba(197,160,89,0.4)] hover:scale-105 transition-all duration-500 bg-[#131513]"
+              >
+                <Image
+                  src={item.src}
+                  alt={item.title}
+                  fill
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                  className="object-cover object-center filter brightness-95 group-hover:brightness-110 group-hover:scale-110 transition-all duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
+                  <span className="font-cinzel text-[10px] text-[#E9D18F] tracking-widest uppercase font-bold">
+                    {item.title}
+                  </span>
+                  <span className="font-cinzel text-[9px] text-[#C5A059]/80 tracking-wider uppercase">
+                    General Esquire
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* ── CTA : PRISE DE RENDEZ-VOUS ── */}
         <div className="text-center p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-[#0F3823]/80 via-[#131513] to-[#0F3823]/80 border-2 border-[#C5A059]/40 shadow-2xl">
           <h3 className="font-cinzel text-xl sm:text-2xl text-[#E9D18F] font-bold mb-3 uppercase tracking-wider">

@@ -454,10 +454,10 @@ export default function ParticuliersPage() {
               {[
                 { src: "/images/photo particulier/Particuliers.jpg", alt: "Accompagnement Client 1" },
                 { src: "/images/photo particulier/Particluiers2.jpg", alt: "Accompagnement Client 2" },
-                { src: "/images/photo particulier/Particluiers3.jpg", alt: "Accompagnement Client 3" },
+                { src: "/images/photo particulier/Particluiers6.avif", alt: "Accompagnement Client 3" },
                 { src: "/images/photo particulier/Particluiers4.jpg", alt: "Accompagnement Client 4" },
                 { src: "/images/photo particulier/Particluiers5.webp", alt: "Accompagnement Client 5" },
-                { src: "/images/photo particulier/Particluiers6.avif", alt: "Accompagnement Client 6" },
+                { src: "/images/photo particulier/Particluiers3.jpg", alt: "Accompagnement Client 6" },
                 { src: "/images/photo particulier/Particluiers7.jpg", alt: "Accompagnement Client 7" },
                 { src: "/images/photo particulier/Particluiers8.jpg", alt: "Accompagnement Client 8" },
               ].map((img, idx) => (
