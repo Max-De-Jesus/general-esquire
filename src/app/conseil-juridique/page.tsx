@@ -266,6 +266,25 @@ export default function ConseilJuridiquePage() {
     const phone = formData.telephone.trim();
     const ref = `REF-CJ-${Math.floor(100000 + Math.random() * 900000)}`;
 
+    const uploadedImages: string[] = [];
+    for (const f of uploadedFiles) {
+      if (f) {
+        try {
+          const b64 = await new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve((e.target?.result as string) || "");
+            reader.onerror = () => resolve("");
+            reader.readAsDataURL(f);
+          });
+          if (b64) {
+            uploadedImages.push(b64);
+          }
+        } catch (e) {
+          console.warn("File conversion error:", e);
+        }
+      }
+    }
+
     const pdfData = {
       title: "Formulaire Conseil Juridique — General Esquire",
       reference: ref,
@@ -280,6 +299,7 @@ export default function ConseilJuridiquePage() {
         { label: "Demande urgente (sous 48h)", value: formData.urgent === "oui" ? "OUI (Traitement prioritaire)" : "NON" },
         { label: "Exposé du besoin juridique", value: formData.probleme },
       ],
+      images: uploadedImages,
     };
 
     const newDemande = {
