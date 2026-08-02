@@ -353,6 +353,17 @@ export default function DetentePage() {
                 ? "Pendant tout votre séjour, votre guide personnel est à vos côtés pour veiller à ce que vous ne manquiez de rien, ou que rien n'entame vos instants heureux. Il ou elle est bien plus qu'un accompagnateur : un ami dévoué."
                 : "Throughout your entire stay, your personal guide stands by your side to ensure you lack nothing and that nothing diminishes your happy moments. They are far more than a guide — they are a devoted friend."}
             </p>
+            <div className="mt-6 flex justify-center items-center">
+              <div className="relative w-full h-48 sm:h-56 rounded-2xl overflow-hidden border border-[#C5A059]/40 shadow-xl group">
+                <Image
+                  src="/images/Faviconofficielle.jpg"
+                  alt="General Esquire — Sceau Officiel"
+                  fill
+                  className="object-cover object-center brightness-95 contrast-105 group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+              </div>
+            </div>
           </SymmetricCard>
 
           {/* Card 3 — full width */}
