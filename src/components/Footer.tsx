@@ -104,17 +104,6 @@ export default function Footer() {
                 contact@generalesquire.com
               </a>
             </p>
-            {/* 5. Site officiel */}
-            <p className="pt-0.5">
-              <a
-                href="https://www.generalesquire.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#C5A059] hover:text-[#E9D18F] transition-colors font-cinzel text-xs font-bold tracking-wider"
-              >
-                www.generalesquire.com
-              </a>
-            </p>
           </div>
         </div>
       </div>
