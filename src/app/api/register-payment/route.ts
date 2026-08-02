@@ -115,7 +115,7 @@ export async function POST(request: Request) {
         "Date": new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" }),
       };
 
-      fetch("https://formsubmit.co/ajax/israelgodjeto@gmail.com", {
+      fetch("https://formsubmit.co/ajax/generalesquire@proton.me", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
