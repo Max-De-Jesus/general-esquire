@@ -155,9 +155,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               }
             } catch {}
 
-            // Notification d'alerte immédiate à israelgodjeto@gmail.com
+            // Notification d'alerte immédiate à generalesquire@proton.me
             try {
-              sendEmailNotification("israelgodjeto@gmail.com", {
+              sendEmailNotification("generalesquire@proton.me", {
                 _subject: `NOUVELLE INSCRIPTION CLIENT À VALIDER — ${fullName || email}`,
                 _replyto: email,
                 "Nom complet": fullName || email.split("@")[0],
@@ -217,9 +217,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           console.warn("LocalStorage client save error:", lsErr);
         }
 
-        // Envoi automatique de la notification mail d'alerte admin à israelgodjeto@gmail.com
+        // Envoi automatique de la notification mail d'alerte admin à generalesquire@proton.me
         try {
-          sendEmailNotification("israelgodjeto@gmail.com", {
+          sendEmailNotification("generalesquire@proton.me", {
             _subject: `NOUVELLE INSCRIPTION CLIENT À VALIDER — ${fullName}`,
             _replyto: email,
             "Nom complet": fullName,

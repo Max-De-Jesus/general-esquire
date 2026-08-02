@@ -374,7 +374,7 @@ export default function EspaceSecurisePage() {
           _subject: newStatus === "Accepté"
             ? `[General Esquire] Confirmation de validation de votre compte client`
             : `[General Esquire] Mise à jour du statut de votre compte client`,
-          _replyto: user?.email || "israelgodjeto@gmail.com",
+          _replyto: user?.email || "generalesquire@proton.me",
           "Notification Client": `Bonjour ${targetClient.full_name || "Cher Client"},\n\nVotre compte client auprès du Cabinet General Esquire a été mis à jour avec le statut : ${newStatus.toUpperCase()}.\n\n${customReason ? `Note de la direction : ${customReason}\n\n` : ""}Vous pouvez désormais vous connecter à votre espace sécurisé sur https://www.generalesquire.com/connexion\n\nCordialement,\nCabinet General Esquire`,
           "Nom Client": targetClient.full_name || targetClient.email,
           "Email Client": targetClient.email,

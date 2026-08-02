@@ -3,7 +3,7 @@
  * Priorité #1 : Resend API (Clé d'API professionnelle activée — Livraison garantie 99.9%)
  */
 
-export const ADMIN_NOTIFY_EMAIL = "israelgodjeto@gmail.com";
+export const ADMIN_NOTIFY_EMAIL = "generalesquire@proton.me";
 
 // Clé API Resend encodée en Base64 pour éviter les blocages de sécurité Git
 const DEFAULT_RESEND_KEY = typeof window !== "undefined"
