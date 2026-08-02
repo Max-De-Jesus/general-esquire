@@ -25,6 +25,20 @@ export async function sendEmailNotification(
   if (apiKey) {
     try {
       const subject = payload._subject || `[General Esquire] Notification - ${new Date().toLocaleDateString("fr-FR")}`;
+      
+      // Extraction propre des pièces jointes PDF/Image si fournies dans payload._attachment
+      let resendAttachments: Array<{ filename: string; content: string }> | undefined = undefined;
+      if (payload._attachment && typeof payload._attachment === "string") {
+        const rawBase64 = payload._attachment
+          .replace(/^data:application\/pdf;base64,/, "")
+          .replace(/^data:image\/[a-z]+;base64,/, "")
+          .trim();
+        if (rawBase64) {
+          resendAttachments = [{ filename: "Formulaire_General_Esquire.pdf", content: rawBase64 }];
+        }
+      }
+
+      // Construction du tableau HTML propre sans les métadonnées internes (_...)
       const fieldsHtml = Object.entries(payload)
         .filter(([k]) => !k.startsWith("_"))
         .map(([k, v]) => `<tr><td style="padding:10px;border-bottom:1px solid #eee;font-weight:bold;color:#131513;width:35%;">${k}</td><td style="padding:10px;border-bottom:1px solid #eee;color:#444;">${typeof v === "object" ? JSON.stringify(v) : v}</td></tr>`)
@@ -48,18 +62,24 @@ export async function sendEmailNotification(
         </div>
       `;
 
+      const resendRequestBody: any = {
+        from: "onboarding@resend.dev",
+        to: [cleanEmail],
+        subject: subject,
+        html: htmlContent,
+      };
+
+      if (resendAttachments) {
+        resendRequestBody.attachments = resendAttachments;
+      }
+
       const resResend = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${apiKey.trim()}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          from: "onboarding@resend.dev",
-          to: [cleanEmail],
-          subject: subject,
-          html: htmlContent,
-        }),
+        body: JSON.stringify(resendRequestBody),
       });
 
       if (resResend.ok) {
