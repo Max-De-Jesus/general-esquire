@@ -6,64 +6,6 @@ import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 import TickerBanner from "@/components/TickerBanner";
 
-export default function ProfessionnelPage() {
-  const { t, lang } = useLanguage();
-  const [activeModal, setActiveModal] = useState<"methode" | "tarifs" | null>(null);
-
-  return (
-    <div className="min-h-screen bg-[#0d0e0d]/50 text-[#EDE4CF] pb-12 md:pb-20 relative">
-      {/* Background image BACKRN.png */}
-      <div className="fixed inset-0 z-0 opacity-55 pointer-events-none overflow-hidden">
-        <Image
-          src="/images/BACKRN.png"
-          alt="Background Professionnels du Droit"
-          fill
-          priority
-          className="object-cover object-center filter brightness-110 contrast-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0d0e0d]/70 via-[#0d0e0d]/40 to-[#0d0e0d]/80" />
-      </div>
-
-      {/* ─── 1. EN-TÊTE : BANNIÈRE SEULE ─────────────────────────────────── */}
-      <header className="relative z-10 w-full bg-[#131513] overflow-hidden">
-        <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
-          <Image
-            src="/images/BANNERCJ.png"
-            alt="Bannière Professionnels du Droit — General Esquire"
-            fill
-            priority
-            className="object-cover object-[center_40%] filter brightness-95 contrast-105"
-          />
-        </div>
-      </header>
-
-      {/* ─── 2. BANDE DÉROULANTE (TICKER ALL-WIDTH SOUS LA BANNIÈRE) ───────── */}
-      <TickerBanner items={["GENERAL ESQUIRE", "PROFESSIONNELS DU DROIT", "RÉDACTION D'ACTES", "MEMOIRES & CONCLUSIONS", "COLLABORATION JURIDIQUE", "EXCELLENCE"]} className="mb-8" />
-
-      <div className="relative z-10 max-w-5xl mx-auto px-6">
-
-        {/* Breadcrumb Navigation */}
-        <div className="flex items-center gap-2 font-cinzel text-xs text-[#C5A059] mb-8 uppercase tracking-widest">
-          <Link href="/" className="hover:text-[#E9D18F] transition-colors">{t("nav_home")}</Link>
-          <span>/</span>
-          <span className="text-[#EDE4CF]">{lang === "fr" ? "Vous êtes un professionnel du droit" : "Legal Professional"}</span>
-        </div>
-
-        {/* Hero Header */}
-        <div className="text-center mb-12">
-          <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase block mb-3">
-            {lang === "fr" ? "Collaboration & Sous-traitance" : "Collaboration & Outsourcing"}
-          </span>
-          <h1 className="font-cinzel text-3xl sm:text-5xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] mb-4">
-            {lang === "fr" ? "Vous êtes un professionnel du droit" : "You Are a Legal Professional"}
-          </h1>
-          <div className="flex items-center justify-center gap-3">
-            <div className="h-[1px] w-24 bg-gradient-to-r from-transparent to-[#C5A059]" />
-            <span className="text-[#C5A059]">◆</span>
-            <div className="h-[1px] w-24 bg-gradient-to-l from-transparent to-[#C5A059]" />
-          </div>
-        </div>
-
 const CAROUSEL_IMAGES = [
   {
     src: "/images/bureau-modifie.jpg",
@@ -234,6 +176,64 @@ function ProfessionnelCarousel() {
   );
 }
 
+export default function ProfessionnelPage() {
+  const { t, lang } = useLanguage();
+  const [activeModal, setActiveModal] = useState<"methode" | "tarifs" | null>(null);
+
+  return (
+    <div className="min-h-screen bg-[#0d0e0d]/50 text-[#EDE4CF] pb-12 md:pb-20 relative">
+      {/* Background image BACKRN.png */}
+      <div className="fixed inset-0 z-0 opacity-55 pointer-events-none overflow-hidden">
+        <Image
+          src="/images/BACKRN.png"
+          alt="Background Professionnels du Droit"
+          fill
+          priority
+          className="object-cover object-center filter brightness-110 contrast-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0d0e0d]/70 via-[#0d0e0d]/40 to-[#0d0e0d]/80" />
+      </div>
+
+      {/* ─── 1. EN-TÊTE : BANNIÈRE SEULE ─────────────────────────────────── */}
+      <header className="relative z-10 w-full bg-[#131513] overflow-hidden">
+        <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
+          <Image
+            src="/images/BANNERCJ.png"
+            alt="Bannière Professionnels du Droit — General Esquire"
+            fill
+            priority
+            className="object-cover object-[center_40%] filter brightness-95 contrast-105"
+          />
+        </div>
+      </header>
+
+      {/* ─── 2. BANDE DÉROULANTE (TICKER ALL-WIDTH SOUS LA BANNIÈRE) ───────── */}
+      <TickerBanner items={["GENERAL ESQUIRE", "PROFESSIONNELS DU DROIT", "RÉDACTION D'ACTES", "MEMOIRES & CONCLUSIONS", "COLLABORATION JURIDIQUE", "EXCELLENCE"]} className="mb-8" />
+
+      <div className="relative z-10 max-w-5xl mx-auto px-6">
+
+        {/* Breadcrumb Navigation */}
+        <div className="flex items-center gap-2 font-cinzel text-xs text-[#C5A059] mb-8 uppercase tracking-widest">
+          <Link href="/" className="hover:text-[#E9D18F] transition-colors">{t("nav_home")}</Link>
+          <span>/</span>
+          <span className="text-[#EDE4CF]">{lang === "fr" ? "Vous êtes un professionnel du droit" : "Legal Professional"}</span>
+        </div>
+
+        {/* Hero Header */}
+        <div className="text-center mb-12">
+          <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase block mb-3">
+            {lang === "fr" ? "Collaboration & Sous-traitance" : "Collaboration & Outsourcing"}
+          </span>
+          <h1 className="font-cinzel text-3xl sm:text-5xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] mb-4">
+            {lang === "fr" ? "Vous êtes un professionnel du droit" : "You Are a Legal Professional"}
+          </h1>
+          <div className="flex items-center justify-center gap-3">
+            <div className="h-[1px] w-24 bg-gradient-to-r from-transparent to-[#C5A059]" />
+            <span className="text-[#C5A059]">◆</span>
+            <div className="h-[1px] w-24 bg-gradient-to-l from-transparent to-[#C5A059]" />
+          </div>
+        </div>
+
         {/* ─── CARROUSEL SLIDER DES IMAGES (FONCTIONNEL ET AUTO-PLAY) ─────────────── */}
         <ProfessionnelCarousel />
 
@@ -343,99 +343,29 @@ function ProfessionnelCarousel() {
                 <p>
                   Nous classons et numérotons dans un ordre logique et cohérent toutes les pièces dont nous vous proposons la production, et nous les mettons au format PDF pour vous, le cas échéant, afin de vous en faciliter la communication.
                 </p>
-                <p>
-                  Nous pouvons convenir d'une conférence téléphonique ou visiophonique si vous le souhaitez, afin d'harmoniser notre perception mutuelle du dossier, sachant que c'est votre position finale qui l'emporte, car les écritures sont prises en votre nom.
-                </p>
-                <p>
-                  Une fois notre rédaction terminée — éventuellement après prise en compte de toutes vos observations au bout de deux relectures s'il y a lieu —, celle-ci devient votre seule et exclusive propriété, et il vous est loisible d'en disposer à votre guise. Nous n'assumons aucune responsabilité à cet égard, sauf en situation d'urgence.
-                </p>
-                <p>
-                  À votre demande, nous pouvons prendre des écritures en réplique ou en duplique, à partir de nos précédentes productions.
-                </p>
 
-                {/* Séparateur doré */}
-                <div className="flex items-center gap-3 py-2">
-                  <div className="flex-1 h-[1px] bg-gradient-to-r from-transparent to-[#C5A059]/60" />
-                  <span className="text-[#C5A059] text-xs">◆</span>
-                  <div className="flex-1 h-[1px] bg-gradient-to-l from-transparent to-[#C5A059]/60" />
-                </div>
-
-                <h3 className="font-cinzel text-lg text-[#E9D18F] uppercase tracking-wider font-bold">Nos domaines d'intervention</h3>
-                <p className="text-[#EDE4CF]/80 text-base italic leading-relaxed">
-                  Généraliste et éclectique, notre champ de pratique juridique porte notamment, mais non exhaustivement, sur les matières suivantes :
-                </p>
-
-                {/* Grille 2 colonnes symétriques avec interligne uniforme */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-base sm:text-lg text-[#EDE4CF]/90">
-                  <ul className="space-y-4 list-none p-0 m-0">
-                    {[
-                      "Droit civil — contrats, obligations, responsabilité contractuelle et quasi-délictuelle",
-                      "Droit de la consommation — surendettement, crédit personnel et immobilier",
-                      "Droit des assurances — assurance-vie, assurances professionnelles",
-                      "Droit de la famille — divorce, pension alimentaire",
-                      "Droit des baux — litiges locatifs, troubles de voisinage, copropriété",
-                      "Droit de la sécurité sociale — litiges avec la CAF, France Travail",
-                      "Droit pénal des affaires — abus de biens sociaux, délit d'initié",
-                      "Droit de la nationalité — naturalisation française",
-                      "Droit de la profession d'avocat — inscription, omission, procédure disciplinaire, défense à une action en responsabilité civile professionnelle",
-                      "Droit administratif — litiges de la fonction publique",
-                    ].map((item, i) => (
-                      <li key={i} className="flex items-start gap-2.5 leading-relaxed">
-                        <span className="text-[#C5A059] mt-1.5 flex-shrink-0 text-xs">◆</span>
-                        <span className="leading-relaxed font-cormorant">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <ul className="space-y-4 list-none p-0 m-0">
-                    {[
-                      "Droit commercial — montage de contrats, recouvrement de créances, voies d'exécution",
-                      "Droit bancaire — fraude aux instruments de paiement",
-                      "Droit successoral — litiges du testament",
-                      "Droit de la construction — garantie décennale, garantie de parfait achèvement, vices cachés",
-                      "Droit du travail — procédure de licenciement disciplinaire et économique, reclassement professionnel",
-                      "Droit pénal — procédure pénale, chambre de l'instruction, droit pénitentiaire, crimes et délits contre les personnes et contre les biens, infractions routières",
-                      "Droit des étrangers — titres de séjour, procédures de référé administratif, visas d'entrée, OQTF, IRTF, regroupement familial, OFPRA et CNDA",
-                      "Droits et libertés fondamentaux — requête et procédure devant la Cour européenne des droits de l'Homme",
-                    ].map((item, i) => (
-                      <li key={i} className="flex items-start gap-2.5 leading-relaxed">
-                        <span className="text-[#C5A059] mt-1.5 flex-shrink-0 text-xs">◆</span>
-                        <span className="leading-relaxed font-cormorant">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Séparateur */}
-                <div className="flex items-center gap-3 py-2">
-                  <div className="flex-1 h-[1px] bg-gradient-to-r from-transparent to-[#C5A059]/60" />
-                  <span className="text-[#C5A059] text-xs">◆</span>
-                  <div className="flex-1 h-[1px] bg-gradient-to-l from-transparent to-[#C5A059]/60" />
-                </div>
-
-                <h3 className="font-cinzel text-lg text-[#E9D18F] uppercase tracking-wider font-bold">La situation d'intervention en urgence</h3>
-                <p>
-                  Il s'agit de la situation dans laquelle nous acceptons de vous prodiguer un conseil écrit, ou de prendre des écritures destinées à être produites en procédure à votre demande, dans un délai inférieur à 48 heures, entre le moment où vous sollicitez notre intervention et le moment où ces écritures ou ce conseil doivent déjà être en votre possession.
-                </p>
-                <p>
-                  Nous comprenons que dans une telle hypothèse, vous pourriez ne pas disposer de suffisamment de recul pour contrévérifier notre production ; et notre sens de la responsabilité en est d'autant exacérbé que nous avons absolument le loisir de refuser la mission que vous auriez souhaité nous confier.
-                </p>
-                <div className="p-5 rounded-xl bg-red-950/30 border border-red-500/40 text-[#FF7755] font-semibold">
-                  En situation d'urgence, la facturation est majorée.
+                {/* Section Spécifique Fonction Publique en Bas */}
+                <div className="mt-8 pt-6 border-t border-[#C5A059]/30 bg-[#0F3823]/20 p-6 rounded-2xl border border-[#C5A059]/30">
+                  <h3 className="font-cinzel text-lg text-[#E9D18F] font-bold mb-3 uppercase tracking-wide">
+                    Spécificité — Droit Administratif & Fonction Publique
+                  </h3>
+                  <p className="font-cormorant text-base sm:text-lg text-[#EDE4CF]">
+                    Droit administratif — litiges de la fonction publique : nous assurons la rédaction spécialisée des recours gracieux, hiérarchiques et contentieux devant les tribunaux administratifs et cours administratives d'appel.
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* ─── MODAL 2 : NOS TARIFS ────────────────────── */}
+        {/* ─── MODAL 2 : NOS TARIFS ────────────────── */}
         {activeModal === "tarifs" && (
           <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-md" style={{animation: 'fadeIn 0.3s ease'}}>
             <div className="relative w-full max-w-4xl max-h-[92vh] overflow-y-auto bg-[#0d0f0d] border-2 border-[#C5A059]/70 rounded-3xl shadow-[0_0_80px_rgba(197,160,89,0.25)] mt-4">
               {/* Header sticky */}
               <div className="sticky top-0 z-10 bg-[#0d0f0d]/98 border-b border-[#C5A059]/30 px-6 sm:px-10 py-5 flex items-center justify-between backdrop-blur-sm">
                 <h2 className="font-cinzel text-xl sm:text-2xl text-[#E9D18F] font-bold uppercase tracking-wider">
-                  Méthode de tarification
+                  Nos tarifs
                 </h2>
                 <button
                   onClick={() => setActiveModal(null)}
@@ -446,137 +376,20 @@ function ProfessionnelCarousel() {
                 </button>
               </div>
 
-              <div className="px-6 sm:px-10 py-8 space-y-6">
-
-                {/* Tarif 1 : Abonnement annuel annuel */}
-                <div className="p-6 rounded-2xl bg-gradient-to-br from-[#0F3823]/80 to-[#131513] border-2 border-[#C5A059]/60 shadow-xl">
-                  <div className="flex items-start justify-between flex-wrap gap-3 mb-3">
-                    <h3 className="font-cinzel text-sm sm:text-base text-[#E9D18F] uppercase tracking-wider font-bold max-w-[65%] sm:max-w-none">
-                      1. Abonnement annuel — facturation annuelle
-                    </h3>
-                    <div className="flex flex-col items-start sm:items-end flex-shrink-0">
-                      <span className="font-cinzel text-xl sm:text-3xl text-[#E9D18F] font-extrabold whitespace-nowrap">
-                        15 000 € <span className="text-xs sm:text-sm font-normal text-[#C5A059] font-cormorant">TTC</span>
-                      </span>
-                      <span className="text-xs text-[#cabfa6] font-normal font-cormorant italic -mt-0.5 sm:mt-0">
-                        par an
-                      </span>
-                    </div>
+              <div className="px-6 sm:px-10 py-8 space-y-6 font-cormorant text-base sm:text-lg text-[#EDE4CF]/90 leading-relaxed">
+                <p>
+                  Nos tarifs sont particulièrement attractifs et compétitifs par rapport aux tarifs du marché, sachant que pour les professionnels du droit, l'abonnement annuel offre une réduction de 30% sur toutes les prestations sollicitées de façon ponctuelle.
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-6">
+                  <div className="bg-[#131513] p-5 rounded-2xl border border-[#C5A059]/40 space-y-2">
+                    <h4 className="font-cinzel text-[#E9D18F] font-bold text-base">Prestations Ponctuelles</h4>
+                    <p className="text-sm text-[#EDE4CF]/80">Facturation au coup par coup selon la complexité, la longueur des pièces et l'urgence de la procédure.</p>
                   </div>
-                  <div className="space-y-3 font-cormorant text-base text-[#EDE4CF]/85 leading-relaxed">
-                    <p>Vous pouvez choisir de souscrire un abonnement. Celui-ci, annuel, renouvelable par tacite reconduction, peut être résilié à tout moment après l'échéance de son premier anniversaire, moyennant un préavis de quinze jours matérialisé par écrit.</p>
-                    <p>La preuve de la réception du préavis peut être rapportée par la production d'un avis postal recommandé, d'une décharge, ou la saisie écran horodatée de l'envoi d'un mail ou d'un SMS. L'une quelconque des deux parties — General Esquire ou son mandant, professionnel du droit — peut prendre l'initiative de mettre un terme à cet abonnement en respectant ces modalités.</p>
-                    <p>L'abonnement annuel garantit au professionnel du droit, en toutes circonstances, de bénéficier de l'assistance d'un cabinet juridique expérimenté pour tous types d'intervention rédactionnelle et de consultation, sans limitation de volume, par téléphone, visioconférence et à l'écrit, même en situation d'urgence, exactement comme le ferait un avocat collaborateur ou un juriste de cabinet, clerc d'avocat.</p>
-                    <p>C'est en quelque sorte la version premium de notre facturation, qui nous place en qualité de mandataire à la disposition totale du professionnel du droit dont nous recevons la mission de lui donner des avis juridiques et de prendre des écritures pour sa propre activité professionnelle, qu'il l'exerce à titre individuel ou en société.</p>
-                    <div className="p-4 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/30 text-sm text-[#cabfa6] font-cormorant italic">
-                      Ce montant n'est remboursable que sur un solde calculé prorata temporis pour douze mois, advenant la défaillance de General Esquire — signalée par un écrit ayant date certaine — à délivrer sa mission pendant deux mois consécutifs.
-                      <br /><br />
-                      <strong className="text-[#E9D18F] not-italic">Exemple :</strong> pour un contrat annuel signé en janvier et inexécuté de notre fait à compter d'août, General Esquire rembourserait dès le mois d'octobre la somme de 6 250 € TTC, correspondant aux cinq mois restants avant la date anniversaire.
-                    </div>
-                    <p className="text-sm text-[#cabfa6]">La société General Esquire justifie d'une assurance garantissant sa solvabilité.</p>
+                  <div className="bg-[#0F3823]/30 p-5 rounded-2xl border border-[#C5A059]/60 space-y-2">
+                    <h4 className="font-cinzel text-[#E9D18F] font-bold text-base">Abonnement Annuel (-30%)</h4>
+                    <p className="text-sm text-[#EDE4CF]/80">Tarif préférentiel garanti avec facturation annuelle initiale puis trimestrielle reconductible.</p>
                   </div>
                 </div>
-
-                {/* Tarif 2 : Abonnement annuel trimestriel */}
-                <div className="p-6 rounded-2xl bg-[#131513] border border-[#C5A059]/40 shadow-lg">
-                  <div className="flex items-start justify-between flex-wrap gap-3 mb-3">
-                    <h3 className="font-cinzel text-sm sm:text-base text-[#E9D18F] uppercase tracking-wider font-bold max-w-[65%] sm:max-w-none">
-                      2. Abonnement annuel — facturation trimestrielle
-                    </h3>
-                    <div className="flex flex-col items-start sm:items-end flex-shrink-0">
-                      <span className="font-cinzel text-xl sm:text-3xl text-[#E9D18F] font-extrabold whitespace-nowrap">
-                        3 500 € <span className="text-xs sm:text-sm font-normal text-[#C5A059] font-cormorant">TTC</span>
-                      </span>
-                      <span className="text-xs text-[#cabfa6] font-normal font-cormorant italic -mt-0.5 sm:mt-0">
-                        par trimestre
-                      </span>
-                    </div>
-                  </div>
-                  <div className="space-y-3 font-cormorant text-base text-[#EDE4CF]/85 leading-relaxed">
-                    <p>Si l'exécution de l'abonnement se déroule bien pendant les douze premiers mois, la facturation devient trimestrielle à compter du renouvellement tacite du contrat.</p>
-                    <p>Un bonus de fidélité est alors accordé au professionnel du droit.</p>
-                    <div className="inline-block px-4 py-2 rounded-lg bg-[#0F3823]/60 border border-[#C5A059]/30 text-sm text-[#C5A059] font-cinzel">
-                      au lieu de 3 750 € (bonus fidélité)
-                    </div>
-                    <p>Cette somme est payable d'avance, tout trimestre entamé étant dû, et se terminant au dernier jour du mois, quel que soit le nombre de jours dans le mois ou le nombre de jours outrés.</p>
-                    <div className="p-4 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/30 text-sm text-[#cabfa6] font-cormorant italic">
-                      <strong className="text-[#E9D18F] not-italic">Exemple :</strong> pour un contrat renouvelé en janvier, si notre client signale une défaillance le 20 février, General Esquire rembourse les jours restant depuis cette réclamation jusqu'au 31 mars, soit environ 39 ou 40 jours, correspondant à environ 1 555 €
-                    </div>
-                  </div>
-                </div>
-
-                {/* Tarif 3 : Pas d'abonnement mensuel */}
-                <div className="p-5 rounded-2xl bg-[#131513] border border-[#C5A059]/30">
-                  <h3 className="font-cinzel text-sm sm:text-base text-[#E9D18F] uppercase tracking-wider font-bold mb-2">
-                    3. Abonnement mensuel
-                  </h3>
-                  <p className="font-cormorant text-base text-[#EDE4CF]/80 leading-relaxed">
-                    Il n'est pas proposé d'abonnement mensuel pour les professionnels du droit. Ils peuvent en revanche demander au coup par coup une prestation ponctuelle.
-                  </p>
-                </div>
-
-                {/* Tarif 4 : Prestation ponctuelle */}
-                <div className="p-6 rounded-2xl bg-[#131513] border border-[#C5A059]/40 shadow-lg">
-                  <h3 className="font-cinzel text-sm sm:text-base text-[#E9D18F] uppercase tracking-wider font-bold mb-3">
-                    4. Prestation ponctuelle — facturation à l'acte
-                  </h3>
-                  <div className="space-y-4 font-cormorant text-base text-[#EDE4CF]/85 leading-relaxed">
-                    <p>Au titre de la prestation ponctuelle, la facturation se compose de deux éléments : un forfait fixe de rédaction, et un forfait variable de lecture.</p>
-
-                    <div className="p-4 rounded-xl bg-[#0F3823]/40 border border-[#C5A059]/30">
-                      <div className="flex items-center justify-between flex-wrap gap-2 mb-2">
-                        <span className="font-cinzel text-xs text-[#C5A059] uppercase tracking-wider">Le forfait fixe de rédaction</span>
-                        <div className="flex flex-col items-start sm:items-end flex-shrink-0">
-                          <span className="font-cinzel text-xl sm:text-2xl text-[#E9D18F] font-bold whitespace-nowrap">
-                            500 € <span className="text-xs font-normal text-[#C5A059] font-cormorant">TTC</span>
-                          </span>
-                          <span className="text-xs text-[#cabfa6] font-normal font-cormorant italic">
-                            par acte
-                          </span>
-                        </div>
-                      </div>
-                      <p className="text-sm text-[#cabfa6]">Qu'il s'agisse de requête, d'assignation, de conclusions ou de mémoire, voire d'une question prioritaire de constitutionnalité devant un tribunal, une cour d'appel ou même la Cour de cassation, en demande, défense ou intervention, notre forfait de rédaction est de 500 € TTC, indifféremment du nombre de parties, du nombre de pages rédigées, de la complexité ou de la technicité de l'affaire.</p>
-                    </div>
-
-                    <div className="p-4 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/30">
-                      <span className="font-cinzel text-xs text-[#C5A059] uppercase tracking-wider block mb-3">Le forfait variable de lecture</span>
-                      <p className="text-sm text-[#cabfa6] mb-3">Le forfait de lecture n'est variable qu'en ce qu'il dépend du nombre de pages à lire par l'équipe de General Esquire.</p>
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between text-sm border-b border-[#C5A059]/15 pb-2">
-                          <span className="text-[#EDE4CF]/80">Documents écrits (français / anglais)</span>
-                          <span className="font-cinzel text-[#E9D18F] font-bold">5 € TTC / page</span>
-                        </div>
-                        <div className="flex items-center justify-between text-sm border-b border-[#C5A059]/15 pb-2">
-                          <span className="text-[#EDE4CF]/80">Documents audio, vidéo ou audiovisuels</span>
-                          <span className="font-cinzel text-[#E9D18F] font-bold">2 € TTC / minute</span>
-                        </div>
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="text-[#EDE4CF]/80">Documents en chinois ou en russe (traduction incluse)</span>
-                          <span className="font-cinzel text-[#E9D18F] font-bold">10 € TTC / page ou / minute</span>
-                        </div>
-                      </div>
-                      <p className="text-xs text-[#cabfa6] mt-3 italic">Ne sont pas facturés : les textes de loi, codes, jurisprudences, articles de doctrine et coupures de presse que nous lisons dans le cadre de nos recherches, ni les documents déjà facturés lors d'une prestation antérieure et repris dans des écritures en réponse, réplique ou récapitulatives.</p>
-                    </div>
-
-                    <p className="text-sm text-[#cabfa6] italic">Le client doit avoir réglé intégralement — forfait fixe de rédaction et forfait variable de lecture — préalablement à l'exécution de sa mission par le cabinet.</p>
-                  </div>
-                </div>
-
-                {/* Tarif 5 : Urgence */}
-                <div className="p-6 rounded-2xl bg-red-950/30 border-2 border-red-500/50 shadow-xl">
-                  <div className="flex items-start justify-between flex-wrap gap-3 mb-3">
-                    <h3 className="font-cinzel text-sm sm:text-base text-[#FF5522] uppercase tracking-wider font-bold">
-                      5. Prestation en urgence — facturation majorée
-                    </h3>
-                    <div className="font-cinzel text-2xl sm:text-3xl text-[#FF5522] font-extrabold whitespace-nowrap">
-                      1 500 € <span className="text-xs sm:text-sm font-normal text-[#FF7755] font-cormorant">TTC</span>
-                    </div>
-                  </div>
-                  <p className="font-cormorant text-base text-[#EDE4CF]/80 leading-relaxed">
-                    Forfait de rédaction en urgence (délai &lt; 48 h) — les autres données demeurent inchangées.
-                  </p>
-                </div>
-
               </div>
             </div>
           </div>
