@@ -10,6 +10,20 @@ interface ServicesModalProps {
   onClose: () => void;
 }
 
+// Positionnement féérique des étoiles scintillantes sur le panneau de menu
+const MENU_SPARKLES = [
+  { id: 1, top: "8%", left: "10%", delay: "0s", dur: "2.4s", size: "14px" },
+  { id: 2, top: "14%", left: "85%", delay: "0.5s", dur: "3.1s", size: "11px" },
+  { id: 3, top: "25%", left: "15%", delay: "1.2s", dur: "2.8s", size: "16px" },
+  { id: 4, top: "33%", left: "82%", delay: "0.8s", dur: "2.5s", size: "12px" },
+  { id: 5, top: "50%", left: "8%", delay: "1.8s", dur: "3.4s", size: "13px" },
+  { id: 6, top: "62%", left: "88%", delay: "0.3s", dur: "2.2s", size: "15px" },
+  { id: 7, top: "75%", left: "12%", delay: "1.5s", dur: "2.9s", size: "11px" },
+  { id: 8, top: "86%", left: "82%", delay: "0.9s", dur: "3.2s", size: "14px" },
+  { id: 9, top: "44%", left: "90%", delay: "2.1s", dur: "2.7s", size: "12px" },
+  { id: 10, top: "92%", left: "22%", delay: "1.0s", dur: "3.0s", size: "15px" },
+];
+
 export default function ServicesModal({ isOpen, onClose }: ServicesModalProps) {
   const { lang } = useLanguage();
   const [isClosing, setIsClosing] = useState(false);
@@ -50,13 +64,33 @@ export default function ServicesModal({ isOpen, onClose }: ServicesModalProps) {
 
       {/* ===== PANNEAU DE MENU (menu-panel vs/1 CHORÉGRAPHIE OBLIGATOIRE) ===== */}
       <nav
-        className={`menu-panel-vs1 ${
+        className={`menu-panel-vs1 relative overflow-hidden ${
           isClosing ? "is-closing" : isOpen ? "is-open" : ""
         }`}
         role="dialog"
         aria-modal="true"
         aria-label="Menu des services"
       >
+        {/* Étoiles scintillantes féériques sur le panneau de menu */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
+          {MENU_SPARKLES.map((s) => (
+            <span
+              key={s.id}
+              className="sparkle-star"
+              style={{
+                top: s.top,
+                left: s.left,
+                fontSize: s.size,
+                animationDelay: s.delay,
+                animationDuration: s.dur,
+              }}
+              aria-hidden="true"
+            >
+              ✦
+            </span>
+          ))}
+        </div>
+
         {/* Bouton fermer (Croix dorée tournante sans texte) */}
         <button
           type="button"
@@ -68,7 +102,7 @@ export default function ServicesModal({ isOpen, onClose }: ServicesModalProps) {
         </button>
 
         {/* Logo Cheval Ailé (menu-panel__logo avec revealUp) */}
-        <div className="menu-panel__logo flex flex-col items-center mb-2 sm:mb-4">
+        <div className="menu-panel__logo flex flex-col items-center mb-2 sm:mb-4 relative z-20">
           <div className="relative w-36 h-36 sm:w-52 sm:h-52 mb-1 sm:mb-2">
             <Image
               src="/images/cheval-aile.png"
@@ -81,12 +115,12 @@ export default function ServicesModal({ isOpen, onClose }: ServicesModalProps) {
         </div>
 
         {/* Titre (menu-panel__titre : MENU) */}
-        <p className="menu-panel__titre font-cinzel text-base sm:text-xl uppercase tracking-[0.35em] text-[#E9D18F] drop-shadow-[0_0_15px_rgba(233,209,143,0.55)] text-center font-bold mb-4 sm:mb-6">
+        <p className="menu-panel__titre font-cinzel text-base sm:text-xl uppercase tracking-[0.35em] text-[#E9D18F] drop-shadow-[0_0_15px_rgba(233,209,143,0.55)] text-center font-bold mb-4 sm:mb-6 relative z-20">
           MENU
         </p>
 
         {/* Liste des rubriques (menu-liste vs/1 avec revealUp sur chaque li) */}
-        <ul className="menu-liste w-full max-w-[280px] sm:max-w-xs space-y-2.5 sm:space-y-3.5 list-none m-0 p-0 text-center">
+        <ul className="menu-liste w-full max-w-[280px] sm:max-w-xs space-y-2.5 sm:space-y-3.5 list-none m-0 p-0 text-center relative z-20">
           <li>
             <Link
               href="/conseil-juridique"
