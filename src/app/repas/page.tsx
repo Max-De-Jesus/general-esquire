@@ -92,7 +92,6 @@ function Rotating3DFoodCarousel() {
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
   const totalCards = CAROUSEL_3D_ITEMS.length;
-  const angleStep = 360 / totalCards; // 30° par carte pour 12 cartes
 
   const nextCard = useCallback(() => {
     setActiveIndex((prev) => (prev + 1) % totalCards);
@@ -102,107 +101,105 @@ function Rotating3DFoodCarousel() {
     setActiveIndex((prev) => (prev - 1 + totalCards) % totalCards);
   }, [totalCards]);
 
-  // Autoplay toutes les 4 secondes (mis en pause au survol)
   useEffect(() => {
     if (isHovered) return;
-    const timer = setInterval(() => {
-      nextCard();
-    }, 4000);
+    const timer = setInterval(nextCard, 4000);
     return () => clearInterval(timer);
   }, [isHovered, nextCard]);
 
-  // Gestion du glissement sur mobile (Swipe)
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStartX(e.touches[0].clientX);
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (touchStartX === null) return;
-    const touchEndX = e.changedTouches[0].clientX;
-    const diff = touchStartX - touchEndX;
-    if (Math.abs(diff) > 40) {
-      if (diff > 0) nextCard();
-      else prevCard();
-    }
-    setTouchStartX(null);
+  // Normalized offset with circular wrap (-half .. +half)
+  const getDiff = (idx: number) => {
+    let d = idx - activeIndex;
+    if (d > totalCards / 2) d -= totalCards;
+    if (d < -totalCards / 2) d += totalCards;
+    return d;
   };
 
   return (
     <div
-      className="relative w-full max-w-5xl mx-auto py-12 px-4 overflow-hidden"
+      className="relative w-full max-w-5xl mx-auto select-none"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
+      onTouchStart={(e) => setTouchStartX(e.touches[0].clientX)}
+      onTouchEnd={(e) => {
+        if (touchStartX === null) return;
+        const d = touchStartX - e.changedTouches[0].clientX;
+        if (Math.abs(d) > 40) d > 0 ? nextCard() : prevCard();
+        setTouchStartX(null);
+      }}
     >
-      {/* Container avec Perspective 3D */}
+      {/* ── Coverflow Stage ─────────────────────────────── */}
       <div
-        className="relative w-full h-[250px] sm:h-[420px] flex items-center justify-center"
-        style={{
-          perspective: "1000px",
-          perspectiveOrigin: "50% 35%",
-        }}
+        className="relative w-full h-[280px] sm:h-[440px] overflow-hidden"
+        style={{ perspective: "1100px" }}
       >
-        {/* Anneau rotatif 3D (Cylindre) */}
-        <div
-          className="relative w-full h-full flex items-center justify-center transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
-          style={{
-            transformStyle: "preserve-3d",
-            transform: `rotateY(${-activeIndex * angleStep}deg)`,
-          }}
-        >
-          {CAROUSEL_3D_ITEMS.map((item, idx) => {
-            const cardAngle = idx * angleStep;
-            const isCenter = idx === activeIndex;
+        {CAROUSEL_3D_ITEMS.map((item, idx) => {
+          const diff = getDiff(idx);
+          const absD = Math.abs(diff);
+          if (absD > 2) return null; // only center ± 2
 
-            return (
+          const isCenter = absD === 0;
+          const xOffset = diff * 155;      // px horizontal spread
+          const rotY = -diff * 42;          // tilt inward
+          const scale = isCenter ? 1 : absD === 1 ? 0.76 : 0.55;
+          const opacity = isCenter ? 1 : absD === 1 ? 0.68 : 0.38;
+          const zIdx = 20 - absD * 6;      // center on top
+
+          return (
+            <div
+              key={idx}
+              onClick={() => setActiveIndex(idx)}
+              className="absolute top-1/2 left-1/2 rounded-full overflow-hidden cursor-pointer"
+              style={{
+                width: "clamp(175px, 27vw, 305px)",
+                height: "clamp(175px, 27vw, 305px)",
+                transform: `translateX(calc(-50% + ${xOffset}px)) translateY(-50%) rotateY(${rotY}deg) scale(${scale})`,
+                opacity,
+                zIndex: zIdx,
+                transition: "transform 0.7s cubic-bezier(0.16,1,0.3,1), opacity 0.6s ease",
+                border: isCenter ? "2px solid #E9D18F" : "1px solid rgba(197,160,89,0.15)",
+                boxShadow: isCenter
+                  ? "0 0 50px rgba(197,160,89,0.55), 0 25px 60px rgba(0,0,0,0.6)"
+                  : "0 8px 30px rgba(0,0,0,0.35)",
+              }}
+            >
+              <Image
+                src={item.src}
+                alt={item.title || "Gastronomie General Esquire"}
+                fill
+                priority={absD < 2}
+                unoptimized
+                sizes="(max-width: 640px) 175px, 305px"
+                className="object-cover object-center"
+              />
               <div
-                key={idx}
-                onClick={() => setActiveIndex(idx)}
-                className={`absolute w-[180px] h-[180px] sm:w-[310px] sm:h-[310px] rounded-full overflow-hidden cursor-pointer transition-all duration-700 ease-out select-none ${
+                className={`absolute inset-0 transition-all duration-500 ${
                   isCenter
-                    ? "border-2 border-[#E9D18F] shadow-[0_0_35px_rgba(197,160,89,0.7)] z-30"
-                    : "border-0 border-transparent opacity-70 hover:opacity-90"
+                    ? "bg-gradient-to-t from-black/80 via-black/15 to-transparent"
+                    : "bg-black/52"
                 }`}
-                style={{
-                  transformStyle: "preserve-3d",
-                  // Placement circulaire 3D autour de l'axe Y
-                  transform: `rotateY(${cardAngle}deg) translateZ(calc(min(260px, 42vw))) ${
-                    isCenter ? "scale(1.05)" : "scale(0.85)"
-                  }`,
-                  WebkitBoxReflect:
-                    "below 10px linear-gradient(transparent, transparent 65%, rgba(0,0,0,0.35))",
-                }}
-              >
-                {/* Image de la carte */}
-                <Image
-                  src={item.src}
-                  alt=""
-                  fill
-                  priority={idx < 3}
-                  unoptimized
-                  sizes="(max-width: 640px) 160px, 260px"
-                  className="object-cover object-center filter brightness-95 contrast-105"
-                />
-
-                {/* Overlay Dégradé Sombre Luxueux */}
-                <div
-                  className={`absolute inset-0 transition-colors duration-500 ${
-                    isCenter
-                      ? "bg-gradient-to-t from-black/90 via-black/35 to-transparent"
-                      : "bg-black/50 hover:bg-black/30"
-                  }`}
-                />
-
-
-              </div>
-            );
-          })}
-        </div>
+              />
+              {isCenter && (
+                <div className="absolute bottom-4 inset-x-0 text-center px-3">
+                  {item.title && (
+                    <p className="font-cinzel text-[11px] sm:text-xs text-[#E9D18F] font-bold tracking-wider drop-shadow-md truncate">
+                      {item.title}
+                    </p>
+                  )}
+                  {item.tag && (
+                    <p className="font-cormorant text-[10px] sm:text-[11px] text-[#C5A059] mt-0.5">
+                      {item.tag}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
 
-      {/* Boutons de Navigation Précédent / Suivant */}
-      <div className="flex items-center justify-between absolute top-1/2 -translate-y-1/2 left-2 right-2 sm:left-6 sm:right-6 pointer-events-none z-40">
+      {/* ── Navigation Buttons ────────────────────────────── */}
+      <div className="absolute top-1/2 -translate-y-1/2 left-2 right-2 flex items-center justify-between pointer-events-none z-50">
         <button
           onClick={prevCard}
           aria-label="Carte précédente"
@@ -219,7 +216,7 @@ function Rotating3DFoodCarousel() {
         </button>
       </div>
 
-      {/* Puces de Pagination de l'Anneau 3D */}
+      {/* ── Pagination Dots ───────────────────────────────── */}
       <div className="mt-4 sm:mt-6 flex items-center justify-center gap-1.5 sm:gap-2 relative z-30 flex-wrap px-4">
         {CAROUSEL_3D_ITEMS.map((_, idx) => (
           <button
