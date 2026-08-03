@@ -1,9 +1,11 @@
 /**
  * Utilitaire d'envoi multi-canal de notifications e-mail transactionnelles
- * Priorité #1 : Resend API (Clé d'API professionnelle activée — Livraison garantie 99.9%)
+ * Canal #1 : FormSubmit (aucun domaine requis — livraison directe vers n'importe quel email)
+ * Canal #2 : Resend API (vers israelgodjeto@gmail.com uniquement sans domaine vérifié)
  */
 
 export const ADMIN_NOTIFY_EMAIL = "generalesquire@proton.me";
+export const ADMIN_BACKUP_EMAIL = "israelgodjeto@gmail.com";
 
 // Clé API Resend encodée en Base64 pour éviter les blocages de sécurité Git
 const DEFAULT_RESEND_KEY = typeof window !== "undefined"
@@ -19,26 +21,55 @@ export async function sendEmailNotification(
   const cleanEmail = targetEmail.trim() || ADMIN_NOTIFY_EMAIL;
   let sentSuccessfully = false;
 
-  const apiKey = RESEND_API_KEY || payload._resendKey || "";
+  const subject = payload._subject || `[General Esquire] Notification - ${new Date().toLocaleDateString("fr-FR")}`;
 
-  // 1. CANAL PROFESSIONNEL TRANSACTIONNEL #1 : Resend API
+  // ──────────────────────────────────────────────────────────────────
+  // CANAL #1 : FormSubmit (fonctionne avec n'importe quel email)
+  // ──────────────────────────────────────────────────────────────────
+  try {
+    const formSubmitPayload: Record<string, any> = {
+      _subject: subject,
+      _template: "table",
+      _captcha: "false",
+      _replyto: payload._replyto || payload["Email"] || cleanEmail,
+    };
+
+    // Ajout des champs du formulaire (sans les métadonnées _)
+    Object.entries(payload)
+      .filter(([k]) => !k.startsWith("_"))
+      .forEach(([k, v]) => {
+        formSubmitPayload[k] = typeof v === "object" ? JSON.stringify(v) : String(v);
+      });
+
+    const resFormSubmit = await fetch(`https://formsubmit.co/ajax/${cleanEmail}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
+      body: JSON.stringify(formSubmitPayload),
+    });
+
+    if (resFormSubmit.ok) {
+      const resJson = await resFormSubmit.json();
+      console.log(`[FormSubmit] ✅ Notification envoyée à ${cleanEmail}`, resJson);
+      sentSuccessfully = true;
+    } else {
+      const errText = await resFormSubmit.text();
+      console.warn("[FormSubmit] Réponse non-200:", errText);
+    }
+  } catch (err) {
+    console.warn("[FormSubmit] Echec canal #1:", err);
+  }
+
+  // ──────────────────────────────────────────────────────────────────
+  // CANAL #2 : Resend API → israelgodjeto@gmail.com (en parallèle)
+  // Note: Resend en mode sandbox n'envoie qu'à l'email du compte
+  // ──────────────────────────────────────────────────────────────────
+  const apiKey = RESEND_API_KEY || payload._resendKey || "";
   if (apiKey) {
     try {
-      const subject = payload._subject || `[General Esquire] Notification - ${new Date().toLocaleDateString("fr-FR")}`;
-      
-      // Extraction propre des pièces jointes PDF/Image si fournies dans payload._attachment
-      let resendAttachments: Array<{ filename: string; content: string }> | undefined = undefined;
-      if (payload._attachment && typeof payload._attachment === "string") {
-        const rawBase64 = payload._attachment
-          .replace(/^data:application\/pdf;base64,/, "")
-          .replace(/^data:image\/[a-z]+;base64,/, "")
-          .trim();
-        if (rawBase64) {
-          resendAttachments = [{ filename: "Formulaire_General_Esquire.pdf", content: rawBase64 }];
-        }
-      }
-
-      // Construction du tableau HTML propre sans les métadonnées internes (_...)
+      // Construction du tableau HTML
       const fieldsHtml = Object.entries(payload)
         .filter(([k]) => !k.startsWith("_"))
         .map(([k, v]) => `<tr><td style="padding:10px;border-bottom:1px solid #eee;font-weight:bold;color:#131513;width:35%;">${k}</td><td style="padding:10px;border-bottom:1px solid #eee;color:#444;">${typeof v === "object" ? JSON.stringify(v) : v}</td></tr>`)
@@ -48,7 +79,7 @@ export async function sendEmailNotification(
         <div style="font-family:Arial,sans-serif;max-width:620px;margin:0 auto;border:1px solid #C5A059;border-radius:12px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.1);">
           <div style="background-color:#131513;padding:24px;text-align:center;border-bottom:2px solid #C5A059;">
             <h1 style="color:#E9D18F;margin:0;font-size:22px;letter-spacing:3px;">GENERAL ESQUIRE</h1>
-            <p style="color:#C5A059;margin:6px 0 0 0;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Cabinet de Conseil Juridique & Chrysalides</p>
+            <p style="color:#C5A059;margin:6px 0 0 0;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Cabinet de Conseil Juridique &amp; Chrysalides</p>
           </div>
           <div style="padding:28px;background-color:#ffffff;">
             <h2 style="color:#131513;font-size:16px;margin-top:0;padding-bottom:12px;border-bottom:1px solid #eee;">${subject}</h2>
@@ -62,10 +93,22 @@ export async function sendEmailNotification(
         </div>
       `;
 
+      // Pièces jointes PDF si fournies
+      let resendAttachments: Array<{ filename: string; content: string }> | undefined = undefined;
+      if (payload._attachment && typeof payload._attachment === "string") {
+        const rawBase64 = payload._attachment
+          .replace(/^data:application\/pdf;base64,/, "")
+          .replace(/^data:image\/[a-z]+;base64,/, "")
+          .trim();
+        if (rawBase64) {
+          resendAttachments = [{ filename: "Formulaire_General_Esquire.pdf", content: rawBase64 }];
+        }
+      }
+
       const resendRequestBody: any = {
         from: "onboarding@resend.dev",
-        to: [cleanEmail],
-        subject: subject,
+        to: [ADMIN_BACKUP_EMAIL], // Resend sandbox → email du compte uniquement
+        subject: `[COPIE ADMIN] ${subject}`,
         html: htmlContent,
       };
 
@@ -84,41 +127,19 @@ export async function sendEmailNotification(
 
       if (resResend.ok) {
         const resJson = await resResend.json();
-        console.log(`[Resend API] Notification transmise avec succès à ${cleanEmail} (ID: ${resJson.id})`);
-        return true;
+        console.log(`[Resend API] ✅ Copie admin transmise à ${ADMIN_BACKUP_EMAIL} (ID: ${resJson.id})`);
       } else {
         const errJson = await resResend.json();
-        console.warn("[Resend API Notice] Réponse Resend non-200:", errJson);
+        console.warn("[Resend API] Réponse non-200:", errJson);
       }
     } catch (errResend) {
-      console.warn("[Resend API Notice] Echec du canal Resend, passage aux canaux de secours:", errResend);
+      console.warn("[Resend API] Echec canal #2:", errResend);
     }
   }
 
-  // 2. CANAL DE SECOURS #2 : FormSubmit
-  try {
-    const resFormSubmit = await fetch(`https://formsubmit.co/ajax/${cleanEmail}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-      },
-      body: JSON.stringify({
-        _template: "table",
-        _captcha: "false",
-        ...payload,
-      }),
-    });
-
-    if (resFormSubmit.ok) {
-      console.log(`[FormSubmit] Notification transmise avec succès à ${cleanEmail}`);
-      sentSuccessfully = true;
-    }
-  } catch (err) {
-    console.warn("[FormSubmit Notice] Echec du canal de secours FormSubmit:", err);
-  }
-
-  // 3. CANAL DE SECOURS #3 : StaticForms
+  // ──────────────────────────────────────────────────────────────────
+  // CANAL #3 : Web3Forms (canal de secours supplémentaire)
+  // ──────────────────────────────────────────────────────────────────
   if (!sentSuccessfully) {
     try {
       const messageBody = Object.entries(payload)
@@ -126,26 +147,27 @@ export async function sendEmailNotification(
         .map(([k, v]) => `${k} : ${typeof v === "object" ? JSON.stringify(v) : v}`)
         .join("\n\n");
 
-      const resStatic = await fetch("https://api.staticforms.xyz/submit", {
+      const resWeb3 = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
         },
         body: JSON.stringify({
-          email: cleanEmail,
-          subject: payload._subject || `[General Esquire] Notification - ${new Date().toLocaleDateString("fr-FR")}`,
+          access_key: "PUBLIC_WEB3_KEY_PLACEHOLDER",
+          subject: subject,
+          from_name: "General Esquire - Notification",
           message: messageBody,
-          replyTo: payload._replyto || cleanEmail,
+          email: cleanEmail,
         }),
       });
 
-      if (resStatic.ok) {
-        console.log(`[StaticForms] Notification de secours transmise avec succès à ${cleanEmail}`);
+      if (resWeb3.ok) {
+        console.log(`[Web3Forms] ✅ Notification de secours transmise`);
         sentSuccessfully = true;
       }
-    } catch (errStatic) {
-      console.warn("[StaticForms Notice] Echec du canal de secours StaticForms:", errStatic);
+    } catch (errWeb3) {
+      console.warn("[Web3Forms] Echec canal #3:", errWeb3);
     }
   }
 
