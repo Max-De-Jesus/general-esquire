@@ -64,25 +64,189 @@ export default function ProfessionnelPage() {
           </div>
         </div>
 
-        {/* ─── CARROUSEL SLIDER DES IMAGES ─────────────────────────────── */}
-        <div className="mb-14 rounded-3xl overflow-hidden border border-[#C5A059]/40 bg-[#131513] p-4 shadow-2xl">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              "/images/Professionnel du droit 2.jpg",
-              "/images/Professionnel du droit 3.jpg",
-              "/images/Professionnel du droit 4.jpg",
-              "/images/Professionnel du droit.jpg"
-            ].map((imgSrc, idx) => (
-              <div key={idx} className="relative h-64 sm:h-72 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-md group">
-                <Image
-                  src={imgSrc}
-                  alt={`Professionnel du droit ${idx + 1}`}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+const CAROUSEL_IMAGES = [
+  {
+    src: "/images/bureau-modifie.jpg",
+    title: "Cabinet & Expertise Juridique",
+    desc: "Assistance sur-mesure pour avocats, notaires, huissiers et juristes d'entreprise",
+  },
+  {
+    src: "/images/avocate.png",
+    title: "Rédaction d'Actes & Conclusions",
+    desc: "Rigueur absolue, recherches approfondies et écritures prêtes à déposer",
+  },
+  {
+    src: "/images/Avocate enceinte1.jpg",
+    title: "Collaboration & Sous-Traitance",
+    desc: "Un soutien réactif pour faire face à vos échéances et surcroîts d'activité",
+  },
+  {
+    src: "/images/case1.png",
+    title: "Accompagnement Contentieux",
+    desc: "Mémoires en demande et en défense devant toutes juridictions",
+  },
+  {
+    src: "/images/case2.png",
+    title: "Excellence & Confidentialité",
+    desc: "Engagements de déontologie et sécurité juridique garantis",
+  },
+];
+
+function Sparkles({ count = 24 }: { count?: number }) {
+  const stars = React.useMemo(() => {
+    return Array.from({ length: count }, (_, i) => ({
+      id: i,
+      top: Math.random() * 88 + 6,
+      left: Math.random() * 90 + 4,
+      delay: Math.random() * 3,
+      size: 10 + Math.random() * 16,
+      tx: (Math.random() - 0.5) * 50,
+      ty: (Math.random() - 0.5) * 50,
+    }));
+  }, [count]);
+
+  return (
+    <span className="absolute inset-0 pointer-events-none overflow-hidden z-10">
+      {stars.map((s) => (
+        <span
+          key={s.id}
+          className="sparkle-star"
+          style={{
+            top: `${s.top}%`,
+            left: `${s.left}%`,
+            fontSize: `${s.size}px`,
+            animationDelay: `${s.delay}s`,
+            // @ts-ignore
+            "--tx": `${s.tx}px`,
+            "--ty": `${s.ty}px`,
+          }}
+        >
+          ✦
+        </span>
+      ))}
+    </span>
+  );
+}
+
+function ProfessionnelCarousel() {
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+  const [isPaused, setIsPaused] = React.useState(false);
+
+  React.useEffect(() => {
+    if (isPaused) return;
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % CAROUSEL_IMAGES.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, [isPaused]);
+
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev - 1 + CAROUSEL_IMAGES.length) % CAROUSEL_IMAGES.length);
+  };
+
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev + 1) % CAROUSEL_IMAGES.length);
+  };
+
+  return (
+    <div
+      className="mb-14 rounded-3xl overflow-hidden border-2 border-[#C5A059]/50 bg-[#131513] shadow-[0_15px_50px_rgba(0,0,0,0.6)] relative group"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      {/* ─── SLIDER CONTENEUR ─── */}
+      <div className="relative h-[320px] sm:h-[420px] md:h-[480px] w-full overflow-hidden">
+        {CAROUSEL_IMAGES.map((item, idx) => {
+          const isActive = idx === currentIndex;
+          return (
+            <div
+              key={idx}
+              className={`absolute inset-0 transition-all duration-1000 ease-in-out transform ${
+                isActive
+                  ? "opacity-100 scale-100 z-10"
+                  : "opacity-0 scale-105 pointer-events-none z-0"
+              }`}
+            >
+              <Image
+                src={item.src}
+                alt={item.title}
+                fill
+                priority={idx === 0}
+                className="object-cover filter brightness-95 contrast-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0d0e0d] via-black/40 to-transparent" />
+
+              {/* Texte overlay sur le slide actif */}
+              <div className="absolute bottom-6 left-6 right-6 sm:bottom-10 sm:left-10 sm:right-10 z-20">
+                <span className="font-cinzel text-xs text-[#E9D18F] tracking-[0.25em] uppercase block mb-1 drop-shadow-md">
+                  COLLABORATION JURIDIQUE
+                </span>
+                <h3 className="font-cinzel text-xl sm:text-3xl font-bold text-white mb-2 drop-shadow-lg">
+                  {item.title}
+                </h3>
+                <p className="font-cormorant text-sm sm:text-lg text-[#EDE4CF] max-w-2xl drop-shadow-md">
+                  {item.desc}
+                </p>
               </div>
-            ))}
+            </div>
+          );
+        })}
+
+        {/* ─── BOUTONS FLÈCHES GAUCHE & DROITE ─── */}
+        <button
+          onClick={prevSlide}
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-[#131513]/80 border border-[#C5A059]/60 text-[#E9D18F] hover:bg-[#C5A059] hover:text-black transition-all duration-300 flex items-center justify-center cursor-pointer shadow-lg group-hover:scale-105"
+          aria-label="Slide précédent"
+        >
+          ❮
+        </button>
+        <button
+          onClick={nextSlide}
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-[#131513]/80 border border-[#C5A059]/60 text-[#E9D18F] hover:bg-[#C5A059] hover:text-black transition-all duration-300 flex items-center justify-center cursor-pointer shadow-lg group-hover:scale-105"
+          aria-label="Slide suivant"
+        >
+          ❯
+        </button>
+      </div>
+
+      {/* ─── MINIATURES & INDICATEURS EN BAS ─── */}
+      <div className="bg-[#0a0b0a] border-t border-[#C5A059]/30 p-3 sm:p-4 flex items-center justify-between gap-2 overflow-x-auto">
+        <div className="flex items-center gap-2 mx-auto sm:mx-0">
+          {CAROUSEL_IMAGES.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrentIndex(idx)}
+              className={`h-2.5 rounded-full transition-all duration-500 cursor-pointer ${
+                idx === currentIndex
+                  ? "w-8 bg-[#E9D18F] shadow-[0_0_10px_#E9D18F]"
+                  : "w-2.5 bg-[#C5A059]/40 hover:bg-[#C5A059]/80"
+              }`}
+              aria-label={`Aller au slide ${idx + 1}`}
+            />
+          ))}
+        </div>
+
+        <span className="hidden sm:inline-block font-cinzel text-xs text-[#C5A059] uppercase tracking-widest">
+          {currentIndex + 1} / {CAROUSEL_IMAGES.length}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+        {/* ─── CARROUSEL SLIDER DES IMAGES (FONCTIONNEL ET AUTO-PLAY) ─────────────── */}
+        <ProfessionnelCarousel />
+
+        {/* ─── BANNIÈRE PANNEAU DÉROULANT AVEC ÉTOILES SCINTILLANTES (Capture 2) ─── */}
+        <div className="relative mb-12 p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-[#072517] via-[#0D3522] to-[#072517] border-2 border-[#C5A059] shadow-[0_0_50px_rgba(11,34,25,0.8),inset_0_0_30px_rgba(197,160,89,0.15)] overflow-hidden text-center group">
+          <Sparkles count={26} />
+          
+          <div className="relative z-20 max-w-3xl mx-auto space-y-4">
+            <p className="font-cormorant text-2xl sm:text-3xl font-bold leading-relaxed text-[#EDE4CF] drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)] italic">
+              {lang === "fr"
+                ? "« Le risque de la fermeture d’un établissement est en effet réel, et fait aussi mal au portefeuille et à la réputation, que l’emprisonnement du dirigeant, les amendes, ou les dommages et intérêts. »"
+                : "“The risk of business closure is very real, hurting finances and reputation just as severely as executive imprisonment, fines, or damages.”"}
+            </p>
           </div>
         </div>
 
