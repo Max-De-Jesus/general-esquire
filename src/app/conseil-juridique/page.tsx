@@ -409,7 +409,7 @@ export default function ConseilJuridiquePage() {
         </div>
 
         {/* Accroche Box */}
-        <div className="p-6 sm:p-8 rounded-2xl bg-[#0e100e]/90 border border-[#C5A059]/35 shadow-xl text-center relative z-10">
+        <div className="p-6 sm:p-8 rounded-2xl bg-[#0e100e]/90 border border-[#C5A059]/35 shadow-xl text-center relative z-10 mb-10 sm:mb-14">
           <p className="font-cormorant text-xl sm:text-2xl text-[#EDE4CF] font-light leading-relaxed mb-3">
             {lang === "fr" ? (
               <>Avez-vous besoin d'un avis, d'un conseil,<br />ou d'accompagnement juridique ?</>

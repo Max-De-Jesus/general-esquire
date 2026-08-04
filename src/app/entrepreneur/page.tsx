@@ -122,7 +122,7 @@ function ExecutiveLuxurySlider() {
 
   return (
     <div
-      className="relative w-full rounded-3xl overflow-hidden border border-[#C5A059]/40 bg-[#0d0f0c] shadow-2xl select-none group"
+      className="relative w-full rounded-3xl overflow-hidden border border-[#C5A059]/40 bg-[#0d0f0c] shadow-2xl select-none group mb-12 sm:mb-16"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onTouchStart={onTouchStart}
