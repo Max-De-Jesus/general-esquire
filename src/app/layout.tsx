@@ -5,6 +5,7 @@ import { FloatingThemeToggle } from "@/components/ThemeToggle";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { AuthProvider } from "@/context/AuthContext";
 import SecurityProtection from "@/components/SecurityProtection";
+import SupabaseHashRedirect from "@/components/SupabaseHashRedirect";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
@@ -51,6 +52,7 @@ export default function RootLayout({
         <AuthProvider>
           <LanguageProvider>
             <SecurityProtection />
+            <SupabaseHashRedirect />
             <div>
               <Navbar />
 

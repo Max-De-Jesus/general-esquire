@@ -23,23 +23,50 @@ function ResetPasswordForm() {
   const [sessionError, setSessionError] = useState(false);
 
   // Supabase envoie les tokens via le fragment d'URL (#access_token=...&type=recovery)
-  // On les récupère et on établit la session
+  // On les parse manuellement et on établit la session explicitement
   useEffect(() => {
     const handleRecoverySession = async () => {
-      // Supabase JS v2 gère automatiquement le fragment d'URL
-      // On attend la détection de la session de récupération via onAuthStateChange
+      // 1. Vérifier s'il y a un hash dans l'URL avec les tokens
+      const hash = typeof window !== "undefined" ? window.location.hash : "";
+      if (hash && hash.includes("type=recovery")) {
+        try {
+          const hashParams = new URLSearchParams(hash.replace(/^#/, ""));
+          const accessToken = hashParams.get("access_token");
+          const refreshToken = hashParams.get("refresh_token");
+
+          if (accessToken && refreshToken) {
+            // Établir la session Supabase explicitement avec les tokens
+            const { data, error } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            });
+
+            if (!error && data.session) {
+              setSessionReady(true);
+              // Nettoyer le hash de l'URL sans recharger la page
+              if (typeof window !== "undefined") {
+                window.history.replaceState(null, "", window.location.pathname);
+              }
+              return;
+            }
+          }
+        } catch (err) {
+          console.warn("Erreur lors du parsing du token de récupération:", err);
+        }
+      }
+
+      // 2. Écouter l'événement PASSWORD_RECOVERY via onAuthStateChange
       const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
         if (event === "PASSWORD_RECOVERY") {
           setSessionReady(true);
           subscription.unsubscribe();
         } else if (event === "SIGNED_IN" && session) {
-          // Si l'utilisateur est déjà connecté via le lien magique
           setSessionReady(true);
           subscription.unsubscribe();
         }
       });
 
-      // Vérification directe de la session existante
+      // 3. Vérification directe de la session existante
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         setSessionReady(true);
@@ -47,11 +74,11 @@ function ResetPasswordForm() {
         return;
       }
 
-      // Timeout de sécurité : si aucune session après 5s
+      // 4. Timeout de sécurité : si aucune session après 6s
       const timeout = setTimeout(() => {
         setSessionError(true);
         subscription.unsubscribe();
-      }, 5000);
+      }, 6000);
 
       return () => {
         clearTimeout(timeout);
@@ -61,6 +88,7 @@ function ResetPasswordForm() {
 
     handleRecoverySession();
   }, []);
+
 
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]{8,}$/;
 
