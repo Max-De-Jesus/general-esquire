@@ -13,10 +13,10 @@ function ClientAuthForm() {
   const searchParams = useSearchParams();
   const redirectPath = searchParams.get("redirect") || "/";
 
-  const { user, clientProfile, signIn, signUp, signOut } = useAuth();
+  const { user, clientProfile, signIn, signUp, signOut, resetPassword } = useAuth();
   const { lang } = useLanguage();
 
-  const [mode, setMode] = useState<"login" | "register">("login");
+  const [mode, setMode] = useState<"login" | "register" | "forgot">("login");
 
   // Form State
   const [email, setEmail] = useState("");
@@ -59,6 +59,32 @@ function ClientAuthForm() {
     setSuccessMessage("");
     setSubmitting(true);
 
+    // ─── Mode : Mot de passe oublié ─────────────────────────────────
+    if (mode === "forgot") {
+      try {
+        const { error } = await resetPassword(email);
+        if (error) {
+          setErrorMessage(
+            lang === "fr"
+              ? "Aucun compte trouvé avec cet e-mail ou erreur lors de l'envoi. Vérifiez l'adresse saisie."
+              : "No account found with this email or sending error. Please check the address."
+          );
+        } else {
+          setSuccessMessage(
+            lang === "fr"
+              ? "📧 Un lien de réinitialisation a été envoyé à votre adresse e-mail. Vérifiez votre boîte de réception (et vos spams)."
+              : "📧 A password reset link has been sent to your email address. Check your inbox (and spam folder)."
+          );
+        }
+      } catch {
+        setErrorMessage(lang === "fr" ? "Une erreur inattendue est survenue." : "An unexpected error occurred.");
+      } finally {
+        setSubmitting(false);
+      }
+      return;
+    }
+
+    // ─── Modes Inscription / Connexion ───────────────────────────────
     try {
       if (mode === "register") {
         if (!fullName.trim()) {
@@ -154,6 +180,8 @@ function ClientAuthForm() {
               ? (lang === "fr" ? "Votre Compte Client" : "Your Account")
               : mode === "register"
               ? (lang === "fr" ? "Créer un Compte Client" : "Create Client Account")
+              : mode === "forgot"
+              ? (lang === "fr" ? "Réinitialiser le Mot de Passe" : "Reset Your Password")
               : (lang === "fr" ? "Espace Connexion Client" : "Client Portal Login")}
           </h1>
           {redirectPath === "/paiement" && !user && (
@@ -201,13 +229,15 @@ function ClientAuthForm() {
         ) : (
           /* AUTH FORMS (CLIENT LOGIN / REGISTER ONLY) */
           <>
-            {/* Mode Switcher Tabs */}
+            {/* Mode Switcher Tabs — masqués en mode forgot */}
+            {mode !== "forgot" && (
             <div className="grid grid-cols-2 gap-1 bg-[#131513] p-1 rounded-2xl border border-[#C5A059]/20 mb-6 text-xs font-cinzel font-bold">
               <button
                 type="button"
                 onClick={() => {
                   setMode("login");
                   setErrorMessage("");
+                  setSuccessMessage("");
                 }}
                 className={`py-2 rounded-xl transition-all ${
                   mode === "login"
@@ -222,6 +252,7 @@ function ClientAuthForm() {
                 onClick={() => {
                   setMode("register");
                   setErrorMessage("");
+                  setSuccessMessage("");
                 }}
                 className={`py-2 rounded-xl transition-all ${
                   mode === "register"
@@ -232,6 +263,19 @@ function ClientAuthForm() {
                 {lang === "fr" ? "Inscription" : "Register"}
               </button>
             </div>
+            )}
+
+            {/* Bandeau info mode forgot */}
+            {mode === "forgot" && (
+              <div className="mb-5 p-3 bg-[#C5A059]/10 border border-[#C5A059]/30 rounded-xl text-[#E9D18F] text-xs flex items-start gap-2">
+                <span className="mt-0.5">🔑</span>
+                <span>
+                  {lang === "fr"
+                    ? "Saisissez l'adresse e-mail associée à votre compte. Nous vous enverrons un lien sécurisé pour créer un nouveau mot de passe."
+                    : "Enter the email address associated with your account. We'll send you a secure link to create a new password."}
+                </span>
+              </div>
+            )}
 
             {/* Error Notification */}
             {errorMessage && (
@@ -331,7 +375,8 @@ function ClientAuthForm() {
                 />
               </div>
 
-              {/* Password Input */}
+              {/* Password Input — masqué en mode forgot */}
+              {mode !== "forgot" && (
               <div>
                 <label className="block text-xs font-cinzel font-semibold text-[#C5A059] uppercase tracking-wider mb-1">
                   {lang === "fr" ? "Mot de Passe *" : "Password *"}
@@ -339,7 +384,7 @@ function ClientAuthForm() {
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
-                    required
+                    required={mode !== "forgot"}
                     minLength={6}
                     placeholder="••••••••"
                     value={password}
@@ -354,7 +399,24 @@ function ClientAuthForm() {
                     {showPassword ? "🙈" : "👁️"}
                   </button>
                 </div>
+                {/* Lien Mot de passe oublié */}
+                {mode === "login" && (
+                  <div className="mt-2 text-right">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMode("forgot");
+                        setErrorMessage("");
+                        setSuccessMessage("");
+                      }}
+                      className="text-[10px] font-cinzel text-[#C5A059]/80 hover:text-[#E9D18F] transition-colors underline underline-offset-2 cursor-pointer"
+                    >
+                      {lang === "fr" ? "Mot de passe oublié ?" : "Forgot password?"}
+                    </button>
+                  </div>
+                )}
               </div>
+              )}
 
               {/* Submit Button */}
               <button
@@ -364,10 +426,29 @@ function ClientAuthForm() {
               >
                 {submitting
                   ? (lang === "fr" ? "Traitement..." : "Processing...")
+                  : mode === "forgot"
+                  ? (lang === "fr" ? "Envoyer le Lien" : "Send Reset Link")
                   : mode === "register"
                   ? (lang === "fr" ? "Créer Mon Compte" : "Create Account")
                   : (lang === "fr" ? "Se Connecter" : "Sign In")}
               </button>
+
+              {/* Retour à la connexion en mode forgot */}
+              {mode === "forgot" && (
+                <div className="text-center mt-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMode("login");
+                      setErrorMessage("");
+                      setSuccessMessage("");
+                    }}
+                    className="text-xs font-cinzel text-[#cabfa6] hover:text-[#E9D18F] transition-colors cursor-pointer"
+                  >
+                    ← {lang === "fr" ? "Retour à la connexion" : "Back to login"}
+                  </button>
+                </div>
+              )}
             </form>
           </>
         )}
