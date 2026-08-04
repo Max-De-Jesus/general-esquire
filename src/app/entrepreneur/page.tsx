@@ -1,226 +1,170 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import "./entrepreneur-animations.css";
 import { useLanguage } from "@/context/LanguageContext";
 import TickerBanner from "@/components/TickerBanner";
-import {
-  ScaleIcon,
-  MailIcon,
-  ClipboardIcon,
-  ChatIcon,
-  GlobeIcon,
-  DocumentTextIcon,
-  HandshakeIcon,
-  CourtIcon,
-  LinkIcon,
-} from "@/components/Icons";
 
-// ─── Carousel slides — Uniform dimensions & high visual impact ─────────────────
-const SLIDES = [
-  {
-    src: "/images/Chef d'entreprise3.jpg",
-    tag: "Conseil & Stratégie",
-    title: "Protégez votre entreprise dès aujourd'hui",
-    desc: "Une ignorance de la loi peut coûter bien plus qu'une consultation juridique.",
-  },
-  {
-    src: "/images/Chef d'entreprise7.jpg",
-    tag: "Droit du Travail",
-    title: "Le licenciement ne s'improvise pas",
-    desc: "Toute procédure mal conduite expose votre entreprise à des sanctions lourdes.",
-  },
-  {
-    src: "/images/Chef d'entreprise4.jpg",
-    tag: "Fiscalité & Contrôle",
-    title: "Vos déclarations fiscales méritent une expertise",
-    desc: "Un contrôle mal préparé peut engager votre responsabilité civile et pénale.",
-  },
-  {
-    src: "/images/Chef d'entreprise8.jpg",
-    tag: "Accompagnement Sur Mesure",
-    title: "Flexible selon votre budget et vos besoins",
-    desc: "Formule annuelle, mensuelle ou ponctuelle — General Esquire s'adapte.",
-  },
-  {
-    src: "/images/Chef d'entreprise13.jpg",
-    tag: "Réseau & Partenaires",
-    title: "Un réseau de professionnels à votre service",
-    desc: "Droit, finance, comptabilité, fiscalité : nous vous mettons en relation.",
-  },
-  {
-    src: "/images/Chef d'entreprise6.jpg",
-    tag: "Gouvernance & Statuts",
-    title: "Sécurisez vos décisions stratégiques",
-    desc: "La forme juridique conditionne la responsabilité des dirigeants et associés.",
-  },
+// ─── Liste des images avec dimensionnement identique ───────────────────────
+const WHEEL_IMAGES = [
+  { src: "/images/Chef d'entreprise3.jpg", title: "Conseil & Stratégie Juridique" },
+  { src: "/images/Chef d'entreprise7.jpg", title: "Droit du Travail & Licenciements" },
+  { src: "/images/Chef d'entreprise4.jpg", title: "Gestion des Risques & Fisc" },
+  { src: "/images/Chef d'entreprise8.jpg", title: "Gouvernance & Forme Juridique" },
+  { src: "/images/Chef d'entreprise13.jpg", title: "Négociations & Contrats" },
+  { src: "/images/Chef d'entreprise6.jpg", title: "Accompagnement des Dirigeants" },
+  { src: "/images/Chef d'entreprise16.jpg", title: "Réseau de Professionnels Droit & Finance" },
 ];
 
-// ─── Sparkle Stars Component ──────────────────────────────────────────────────
-function Sparkles() {
-  const stars = Array.from({ length: 22 }, (_, i) => ({
-    id: i,
-    top: Math.random() * 90 + 5,
-    left: Math.random() * 90 + 5,
-    delay: Math.random() * 2.5,
-    size: 11 + Math.random() * 15,
-    tx: (Math.random() - 0.5) * 60,
-    ty: (Math.random() - 0.5) * 60,
-  }));
+// ─── Composant Étoiles Scintillantes (Effet Wow) ───────────────────────────
+function SparklingStars() {
+  const stars = [
+    { top: "6%", left: "4%", delay: "0s", size: "1.4rem" },
+    { top: "12%", left: "92%", delay: "0.8s", size: "1.6rem" },
+    { top: "25%", left: "8%", delay: "1.5s", size: "1.2rem" },
+    { top: "38%", left: "88%", delay: "0.4s", size: "1.8rem" },
+    { top: "50%", left: "3%", delay: "1.9s", size: "1.5rem" },
+    { top: "62%", left: "95%", delay: "1.1s", size: "1.3rem" },
+    { top: "78%", left: "6%", delay: "0.3s", size: "1.7rem" },
+    { top: "86%", left: "91%", delay: "1.6s", size: "1.4rem" },
+    { top: "94%", left: "48%", delay: "2.1s", size: "1.5rem" },
+  ];
 
   return (
-    <span className="absolute inset-0 pointer-events-none overflow-hidden">
-      {stars.map((s) => (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-20">
+      {stars.map((s, i) => (
         <span
-          key={s.id}
-          className="sparkle"
+          key={i}
+          className="sparkle-star"
           style={{
-            top: `${s.top}%`,
-            left: `${s.left}%`,
-            fontSize: `${s.size}px`,
-            animationDelay: `${s.delay}s`,
-            // @ts-ignore
-            "--tx": `${s.tx}px`,
-            "--ty": `${s.ty}px`,
+            top: s.top,
+            left: s.left,
+            animationDelay: s.delay,
+            fontSize: s.size,
           }}
         >
           ✦
         </span>
       ))}
-    </span>
+    </div>
   );
 }
 
-// ─── Solid Executive Hero Slider (Imposing Active Slide, Zero Background Bleed) ───
-function ExecutiveLuxurySlider() {
-  const [activeIdx, setActiveIdx] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
-  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+// ─── Roue Rotative 3D en Position Verticale (Ferris Wheel Carousel) ─────────
+function Vertical3DWheelCarousel() {
+  const [rotationAngle, setRotationAngle] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const total = WHEEL_IMAGES.length;
 
-  const total = SLIDES.length;
-
-  const next = useCallback(() => setActiveIdx((p) => (p + 1) % total), [total]);
-  const prev = useCallback(() => setActiveIdx((p) => (p - 1 + total) % total), [total]);
-
-  // Rotation automatique fluide (mise en pause au survol)
+  // Animation continue et lente en boucle sans fin
   useEffect(() => {
-    if (isHovered) return;
-    const timer = setInterval(next, 5200);
-    return () => clearInterval(timer);
-  }, [isHovered, next]);
+    if (isPaused) return;
+    const interval = setInterval(() => {
+      setRotationAngle((prev) => (prev + 0.35) % 360);
+    }, 30);
+    return () => clearInterval(interval);
+  }, [isPaused]);
 
-  // Support swipe tactile
-  const onTouchStart = (e: React.TouchEvent) => setTouchStartX(e.touches[0].clientX);
-  const onTouchEnd = (e: React.TouchEvent) => {
-    if (touchStartX === null) return;
-    const dx = touchStartX - e.changedTouches[0].clientX;
-    if (Math.abs(dx) > 35) dx > 0 ? next() : prev();
-    setTouchStartX(null);
-  };
+  // Rayon vertical de la roue 3D
+  const radiusY = 170; // Rayon vertical
+  const radiusZ = 210; // Rayon en profondeur
 
   return (
-    <div
-      className="relative w-full rounded-3xl overflow-hidden border border-[#C5A059]/40 bg-[#0d0f0c] shadow-2xl select-none group mb-12 sm:mb-16"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
-    >
-      {/* Background Gold Ambient Glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(197,160,89,0.14),transparent_70%)] pointer-events-none" />
-
-      {/* Stage Image Unique - 100% Opacité, Zéro Chevauchement par l'arrière */}
-      <div className="relative w-full h-[300px] sm:h-[440px] md:h-[500px] overflow-hidden">
-        {SLIDES.map((slide, i) => {
-          const isActive = i === activeIdx;
-          return (
-            <div
-              key={i}
-              className={`absolute inset-0 transition-all duration-700 ease-in-out transform ${
-                isActive
-                  ? "opacity-100 scale-100 z-20"
-                  : "opacity-0 scale-105 pointer-events-none z-0"
-              }`}
-            >
-              <Image
-                src={slide.src}
-                alt={slide.title}
-                fill
-                priority={i === 0}
-                unoptimized
-                sizes="100vw"
-                className="object-cover object-[center_35%] filter brightness-95 contrast-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0c0e0c] via-black/40 to-transparent" />
-
-              {/* Text Caption Overlay */}
-              <div className="absolute bottom-6 left-6 right-6 sm:bottom-10 sm:left-10 sm:right-10 z-30 text-center sm:text-left">
-                <span className="inline-block font-cinzel text-xs text-[#E9D18F] font-bold tracking-[0.25em] uppercase bg-[#0F3823]/90 border border-[#C5A059]/60 px-4 py-1.5 rounded-full backdrop-blur-md mb-3 shadow-lg">
-                  ✦ {slide.tag}
-                </span>
-                <h3 className="font-cinzel text-xl sm:text-3xl md:text-4xl font-bold text-white mb-2 drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
-                  {slide.title}
-                </h3>
-                <p className="font-cormorant text-base sm:text-xl text-[#EDE4CF] max-w-2xl drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] leading-relaxed">
-                  {slide.desc}
-                </p>
-              </div>
-            </div>
-          );
-        })}
-
-        {/* Flèches de navigation dorées */}
-        <button
-          onClick={prev}
-          aria-label="Précédent"
-          className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-40 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#131513]/90 border border-[#C5A059]/60 text-[#E9D18F] text-2xl hover:bg-[#0F3823] hover:border-[#E9D18F] hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center shadow-lg backdrop-blur-md cursor-pointer"
-        >
-          ❮
-        </button>
-        <button
-          onClick={next}
-          aria-label="Suivant"
-          className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-40 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#131513]/90 border border-[#C5A059]/60 text-[#E9D18F] text-2xl hover:bg-[#0F3823] hover:border-[#E9D18F] hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center shadow-lg backdrop-blur-md cursor-pointer"
-        >
-          ❯
-        </button>
+    <div className="w-full my-12 sm:my-16 flex flex-col items-center">
+      {/* Titre du carrousel */}
+      <div className="text-center mb-6">
+        <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.25em] uppercase border border-[#C5A059]/40 px-4 py-1.5 rounded-full bg-[#131513]/80 inline-block shadow-md">
+          ✦ Galerie Rotative 3D — Roue Verticale Continu ✦
+        </span>
       </div>
 
-      {/* Dots & Counter Bar */}
-      <div className="bg-[#0a0b0a] border-t border-[#C5A059]/30 p-3 sm:p-4 flex items-center justify-between gap-2 relative z-30">
-        <div className="flex items-center gap-2 mx-auto sm:mx-0">
-          {SLIDES.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setActiveIdx(idx)}
-              className={`h-2.5 rounded-full transition-all duration-500 cursor-pointer ${
-                idx === activeIdx
-                  ? "w-8 bg-[#E9D18F] shadow-[0_0_10px_#E9D18F]"
-                  : "w-2.5 bg-[#C5A059]/40 hover:bg-[#C5A059]/80"
-              }`}
-              aria-label={`Aller au slide ${idx + 1}`}
-            />
-          ))}
+      {/* Conteneur 3D avec Perspective */}
+      <div
+        className="relative w-full max-w-2xl h-[420px] sm:h-[480px] flex items-center justify-center overflow-hidden rounded-3xl border border-[#C5A059]/30 bg-gradient-to-b from-[#0e100e] via-[#131513] to-[#0e100e] shadow-[0_15px_50px_rgba(0,0,0,0.8)] cursor-grab active:cursor-grabbing"
+        style={{ perspective: "1000px" }}
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
+        {/* Halo doré d'arrière-plan */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(197,160,89,0.12),_transparent_70%)] pointer-events-none" />
+
+        {/* Roue d'images 3D */}
+        <div className="relative w-full h-full flex items-center justify-center">
+          {WHEEL_IMAGES.map((img, idx) => {
+            // Calcul de l'angle 3D propre à chaque image dans la roue
+            const stepAngle = 360 / total;
+            const itemAngle = (rotationAngle + idx * stepAngle) % 360;
+            const rad = (itemAngle * Math.PI) / 180;
+
+            // Position en cercle vertical (Y = hauteur, Z = profondeur)
+            const translateY = Math.sin(rad) * radiusY;
+            const translateZ = Math.cos(rad) * radiusZ;
+
+            // Transparence en fondu : 1 au premier plan (devant), 0 en arrière-plan (derrière la roue)
+            const cosVal = Math.cos(rad);
+            // Fondu d'apparition et de disparition fluide (opacité max devant, s'estompe derrière)
+            const opacity = Math.max(0.08, Math.pow((cosVal + 1) / 2, 1.8));
+
+            // Calcul d'échelle et de flou (effet de profondeur de champ)
+            const scale = 0.65 + 0.38 * ((cosVal + 1) / 2);
+            const zIndex = Math.round(100 * cosVal + 100);
+
+            return (
+              <div
+                key={idx}
+                className="absolute transition-all duration-75 ease-linear flex flex-col items-center group"
+                style={{
+                  transform: `translate3d(0, ${translateY}px, ${translateZ}px) scale(${scale})`,
+                  opacity: opacity,
+                  zIndex: zIndex,
+                }}
+              >
+                {/* Image avec dimensionnement strictement uniforme (260px x 260px / mobile: 200px x 200px) */}
+                <div className="relative w-48 h-48 sm:w-64 sm:h-64 rounded-2xl overflow-hidden border-2 border-[#C5A059] shadow-[0_10px_30px_rgba(0,0,0,0.9)] bg-black group-hover:border-[#E9D18F] group-hover:shadow-[0_0_25px_rgba(233,209,143,0.6)] transition-all">
+                  <Image
+                    src={img.src}
+                    alt={img.title}
+                    fill
+                    sizes="(max-width: 640px) 200px, 260px"
+                    className="object-cover object-center filter brightness-105 contrast-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                </div>
+
+                {/* Titre au premier plan */}
+                {cosVal > 0.4 && (
+                  <div className="mt-2 px-3 py-1 bg-[#131513]/90 border border-[#C5A059]/50 rounded-full backdrop-blur-md text-center shadow-lg">
+                    <span className="font-cinzel text-[11px] font-bold text-[#E9D18F] tracking-wider uppercase">
+                      {img.title}
+                    </span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
 
-        <span className="hidden sm:inline-block font-cinzel text-xs text-[#C5A059] uppercase tracking-widest">
-          {activeIdx + 1} / {SLIDES.length}
-        </span>
+        {/* Légende bas de carrousel */}
+        <div className="absolute bottom-3 left-0 right-0 text-center pointer-events-none z-40">
+          <span className="font-cinzel text-[10px] text-[#C5A059]/80 uppercase tracking-widest bg-black/60 px-3 py-1 rounded-full border border-[#C5A059]/30">
+            {isPaused ? "⏸️ Pause (Survolez pour explorer)" : "🔄 Roue rotative 3D continue"}
+          </span>
+        </div>
       </div>
     </div>
   );
 }
 
-// ─── Main Entrepreneur Page Component ───────────────────────────────────────
+// ─── Composant Principal : Page Chef d'Entreprise ───────────────────────────
 export default function EntrepreneurPage() {
   const { lang } = useLanguage();
   const [activeModal, setActiveModal] = useState<"methode" | "tarifs" | null>(null);
 
   return (
     <div className="min-h-screen bg-[#0d0e0d]/50 text-[#EDE4CF] pb-12 md:pb-20 relative">
-      {/* Background image BACKRN.png */}
+      {/* Image de fond BACKRN.png */}
       <div className="fixed inset-0 z-0 opacity-55 pointer-events-none overflow-hidden">
         <Image
           src="/images/BACKRN.png"
@@ -232,7 +176,7 @@ export default function EntrepreneurPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#0d0e0d]/70 via-[#0d0e0d]/40 to-[#0d0e0d]/80" />
       </div>
 
-      {/* ─── 1. EN-TÊTE : BANNIÈRE SEULE (vs/1 style exact) ──────────────── */}
+      {/* ─── 1. EN-TÊTE : BANNIÈRE ────────────────────────────────────────── */}
       <header className="relative z-10 w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
           <Image
@@ -245,11 +189,11 @@ export default function EntrepreneurPage() {
         </div>
       </header>
 
-      {/* ─── 2. BANDE DÉROULANTE (TICKER ALL-WIDTH SOUS LA BANNIÈRE) ───────────────── */}
+      {/* ─── 2. BANDE DÉROULANTE (TICKER) ────────────────────────────────── */}
       <TickerBanner className="mb-8" />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6">
-        {/* Breadcrumb Navigation */}
+        {/* Fil d'Ariane */}
         <div className="flex items-center gap-2 font-cinzel text-xs text-[#C5A059] mb-8 uppercase tracking-widest">
           <Link href="/" className="hover:text-[#E9D18F] transition-colors">
             {lang === "fr" ? "Accueil" : "Home"}
@@ -260,13 +204,13 @@ export default function EntrepreneurPage() {
           </span>
         </div>
 
-        {/* Hero Header */}
+        {/* Titre de la rubrique */}
         <div className="text-center mb-8">
           <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase block mb-3">
-            {lang === "fr" ? "Espace Dirigeants & Sociétés" : "Executive & Corporate Services"}
+            General Esquire — Espace Dirigeants
           </span>
           <h1 className="font-cinzel text-3xl sm:text-5xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] mb-4">
-            {lang === "fr" ? "Vous êtes un chef d'entreprise" : "You Are a Business Owner"}
+            Vous êtes un chef d'entreprise
           </h1>
           <div className="flex items-center justify-center gap-3">
             <div className="h-[1px] w-24 bg-gradient-to-r from-transparent to-[#C5A059]" />
@@ -275,13 +219,11 @@ export default function EntrepreneurPage() {
           </div>
         </div>
 
-        {/* ─── BADGE ROTATIF ANIMÉ HAUTS-DE-FRANCE ─────────────────────── */}
+        {/* ─── BADGE ROTATIF HAUTS-DE-FRANCE ─────────────────────────────── */}
         <div className="my-6 sm:my-8 flex justify-center items-center relative z-20">
           <div className="relative group">
-            {/* Halo lumineux d'arrière-plan avec pulsation */}
             <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-[#C5A059]/40 via-[#E9D18F]/30 to-[#C5A059]/40 blur-xl opacity-80 animate-pulse group-hover:opacity-100 transition-opacity" />
             
-            {/* Badge circulaire avec animation de rotation douce */}
             <div className="relative w-36 h-36 sm:w-44 sm:h-44 rounded-full bg-[#0e100e] border-2 border-[#C5A059] p-3 shadow-[0_0_30px_rgba(197,160,89,0.5)] flex items-center justify-center overflow-hidden">
               <Image
                 src="/images/Badge Hauts de France.png"
@@ -295,36 +237,74 @@ export default function EntrepreneurPage() {
           </div>
         </div>
 
-        {/* ─── CARROUSEL SLIDER VEDETTE ─────────────────────────────── */}
-        <ExecutiveLuxurySlider />
+        {/* ─── CARROUSEL GALERIE ROTATIVE 3D (ROUE VERTICALE CONTINU) ───────── */}
+        <Vertical3DWheelCarousel />
 
-        {/* ─── TEXTE INTRODUCTIF PRINCIPAL ────────────────────────────────────── */}
-        <div className="bg-[#131513]/90 border border-[#C5A059]/30 rounded-3xl p-8 sm:p-12 shadow-2xl mb-12 space-y-6">
-          <p className="font-cormorant text-lg sm:text-xl text-[#EDE4CF] leading-[1.85] text-justify">
-            {lang === "fr" ? (
-              <>
-                Pour les chefs d’entreprise, les entreprises et les personnes morales, notre cabinet agit comme un véritable partenaire juridique stratégique. De la prévention des risques à la défense contentieuse, nous sécurisons vos décisions d’affaires.
-              </>
-            ) : (
-              <>
-                For business leaders and corporate entities, our firm serves as a strategic legal partner, safeguarding your commercial operations and corporate decisions.
-              </>
-            )}
-          </p>
-          <p className="font-cormorant text-lg sm:text-xl text-[#EDE4CF] leading-[1.85] text-justify">
-            {lang === "fr" ? (
-              <>
-                Qu’il s’agisse de litiges commerciaux, de droit du travail, de procédures collectives ou de conseil en gouvernance, nous vous proposons un accompagnement sur mesure, adapté à la taille et aux enjeux de votre entreprise.
-              </>
-            ) : (
-              <>
-                Whether handling commercial litigation, employment law, insolvency procedures, or corporate governance, we deliver tailored guidance aligned with your business scope.
-              </>
-            )}
+        {/* ─── PARAGRAPHE 1 : EFFET SUPER WOW AVEC ÉTOILES SCINTILLANTES ─────── */}
+        <div className="wow-container p-8 sm:p-12 mb-10 text-center relative overflow-hidden">
+          {/* Étoiles brillantes qui scintillent autour du texte */}
+          <SparklingStars />
+
+          <p className="font-cormorant text-xl sm:text-2xl md:text-3xl font-semibold leading-[1.85] text-justify relative z-10">
+            <span className="wow-text-gradient">
+              Nul n’est, plus qu’un chef d’entreprise, exposé à subir les conséquences de l’ignorance de la loi, en ce qu’elle est à la fois injonctive et prohibitive, mais aussi et plus que tout… sanctionnatrice. Le licenciement d’un salarié par exemple, ne se fait pas de façon hasardeuse. Il en est de même pour les déclarations faites auprès du fisc, dans le cadre d’un contrôle. Déjà la forme juridique de la personne morale elle-même influencera fortement la marge de manœuvre de son dirigeant et de ses associés s’il y en a, sachant que le moindre manquement peut entraîner pour l’entreprise comme pour ses représentants légaux, des sanctions de nature pénale, civile ou administrative. Le risque de la fermeture d’un établissement est en effet réel, et fait aussi mal au portefeuille et à la réputation, que l’emprisonnement du dirigeant, les amendes, ou les dommages et intérêts.
+            </span>
           </p>
         </div>
 
-        {/* ─── LES 2 BOUTONS D'ACTION (NOTRE MÉTHODE DE TRAVAIL & NOS TARIFS) ─────── */}
+        {/* ─── PARAGRAPHE 2 ─────────────────────────────────────────────────── */}
+        <div className="bg-[#131513]/90 border border-[#C5A059]/30 rounded-3xl p-8 sm:p-10 shadow-xl mb-10">
+          <p className="font-cormorant text-lg sm:text-xl text-[#EDE4CF] leading-[1.85] text-justify">
+            Que vous soyez un homme ou une femme, seul ou associé, notre offre de service et nos tarifs peuvent s’adapter avec flexibilité, en fonction de votre budget et de vos préoccupations.
+          </p>
+        </div>
+
+        {/* ─── LISTE DES PRESTATIONS PROPOSÉES ──────────────────────────────── */}
+        <div className="bg-[#131513]/90 border border-[#C5A059]/30 rounded-3xl p-8 sm:p-12 shadow-xl mb-12 space-y-6">
+          <h2 className="font-cinzel text-xl sm:text-2xl font-bold text-[#E9D18F] mb-4">
+            Nous vous proposons sur une base annuelle, mensuelle ou ponctuelle :
+          </h2>
+          <ul className="space-y-4 font-cormorant text-base sm:text-lg text-[#EDE4CF] leading-relaxed">
+            <li className="flex items-start gap-3">
+              <span className="text-[#C5A059] font-bold text-xl mt-0.5">•</span>
+              <span>une veille juridique sur les textes de loi et la jurisprudence ;</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-[#C5A059] font-bold text-xl mt-0.5">•</span>
+              <span>la domiciliation temporaire de vos courriers en cas d’urgence ;</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-[#C5A059] font-bold text-xl mt-0.5">•</span>
+              <span>l’assistance à l’occasion de vos formalités à forte implication juridique ;</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-[#C5A059] font-bold text-xl mt-0.5">•</span>
+              <span>des conseils adaptés à vos besoins si nécessaire en présentiel, et par défaut en visioconférence, audioconférence ou par écrit ;</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-[#C5A059] font-bold text-xl mt-0.5">•</span>
+              <span>la traduction de tous vos documents à valeur juridique en français, anglais (sans frais), chinois et russe (supplément à prévoir) ;</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-[#C5A059] font-bold text-xl mt-0.5">•</span>
+              <span>la rédaction de contrats, lettres de recrutement, lettres de licenciement, lettres administratives diverses ;</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-[#C5A059] font-bold text-xl mt-0.5">•</span>
+              <span>l’assistance lors de vos négociations commerciales et professionnelles ;</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-[#C5A059] font-bold text-xl mt-0.5">•</span>
+              <span>l’assistance dans les procédures sans représentation obligatoire ;</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-[#C5A059] font-bold text-xl mt-0.5">•</span>
+              <span>la mise en relation avec d’autres professionnels du droit, de la finance, de la comptabilité ou de la fiscalité en fonction de vos besoins.</span>
+            </li>
+          </ul>
+        </div>
+
+        {/* ─── BOUTONS DE MODALES (MÉTHODE & TARIFS) ────────────────────────── */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-5 my-12">
           <button
             onClick={() => setActiveModal("methode")}
@@ -340,9 +320,9 @@ export default function EntrepreneurPage() {
           </button>
         </div>
 
-        {/* ─── MODAL 1 : NOTRE MÉTHODE DE TRAVAIL ────────────────── */}
+        {/* ─── MODAL 1 : NOTRE MÉTHODE DE TRAVAIL ────────────────────────── */}
         {activeModal === "methode" && (
-          <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-md" style={{animation: 'fadeIn 0.3s ease'}}>
+          <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-md" style={{ animation: "fadeIn 0.3s ease" }}>
             <div className="relative w-full max-w-4xl max-h-[92vh] overflow-y-auto bg-[#0d0f0d] border-2 border-[#C5A059]/70 rounded-3xl shadow-[0_0_80px_rgba(197,160,89,0.25)] mt-4">
               <div className="sticky top-0 z-10 bg-[#0d0f0d]/98 border-b border-[#C5A059]/30 px-6 sm:px-10 py-5 flex items-center justify-between backdrop-blur-sm">
                 <h2 className="font-cinzel text-xl sm:text-2xl text-[#E9D18F] font-bold uppercase tracking-wider">
@@ -369,13 +349,13 @@ export default function EntrepreneurPage() {
           </div>
         )}
 
-        {/* ─── MODAL 2 : NOS TARIFS ────────────────────── */}
+        {/* ─── MODAL 2 : NOS TARIFS (AVEC TOUS LES TEXTES D'ABONNEMENT) ────── */}
         {activeModal === "tarifs" && (
-          <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-md" style={{animation: 'fadeIn 0.3s ease'}}>
+          <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-md" style={{ animation: "fadeIn 0.3s ease" }}>
             <div className="relative w-full max-w-4xl max-h-[92vh] overflow-y-auto bg-[#0d0f0d] border-2 border-[#C5A059]/70 rounded-3xl shadow-[0_0_80px_rgba(197,160,89,0.25)] mt-4">
               <div className="sticky top-0 z-10 bg-[#0d0f0d]/98 border-b border-[#C5A059]/30 px-6 sm:px-10 py-5 flex items-center justify-between backdrop-blur-sm">
                 <h2 className="font-cinzel text-xl sm:text-2xl text-[#E9D18F] font-bold uppercase tracking-wider">
-                  Tarification Chefs d'Entreprise
+                  Offres & Tarification — Chef d'Entreprise
                 </h2>
                 <button
                   onClick={() => setActiveModal(null)}
@@ -386,10 +366,45 @@ export default function EntrepreneurPage() {
                 </button>
               </div>
 
-              <div className="px-6 sm:px-10 py-8 space-y-6 font-cormorant text-base sm:text-lg text-[#EDE4CF]/90">
-                <p>
-                  Nos abonnements et forfaits de rédaction pour les entreprises sont établis de gré à gré en fonction de la taille de l'entreprise, des volumes d'affaires et de la complexité des affaires.
-                </p>
+              <div className="px-6 sm:px-10 py-8 space-y-8 font-cormorant text-base sm:text-lg text-[#EDE4CF]/90">
+                {/* 1. Abonnement annuel */}
+                <div className="bg-[#131513] border border-[#C5A059]/30 p-6 rounded-2xl space-y-3">
+                  <h3 className="font-cinzel text-xl font-bold text-[#E9D18F]">Abonnement annuel</h3>
+                  <p className="leading-relaxed">
+                    Vous avez la possibilité de souscrire auprès de General Esquire, un abonnement prépayé sur une base forfaitaire de 10.000 € par an, sans restriction de volume de mission.
+                  </p>
+                  <p className="leading-relaxed">
+                    Toutefois en cas d’urgence – c’est-à-dire si vous nous sollicitez pour une prestation qui doit être délivrée dans un délai inférieur ou égal à 48 heures – il vous sera facturé un supplément de 1500 € par prestation nécessitant une rédaction.
+                  </p>
+                  <p className="leading-relaxed">
+                    Les documents traduits en chinois et russe donnent lieu à une facturation séparée qui est 10 € la page pour un document écrit, et de 10 € la minute pour un fichier multimédia, audio et/ou vidéo.
+                  </p>
+                  <p className="leading-relaxed">
+                    L’abonnement annuel est renouvelable par tacite reconduction, sauf dénonciation expresse dans un délai de trois mois avant sa date anniversaire par tout écrit ayant date certaine.
+                  </p>
+                </div>
+
+                {/* 2. Abonnement mensuel */}
+                <div className="bg-[#131513] border border-[#C5A059]/30 p-6 rounded-2xl space-y-3">
+                  <h3 className="font-cinzel text-xl font-bold text-[#E9D18F]">Abonnement mensuel</h3>
+                  <p className="leading-relaxed">
+                    Vous avez également la possibilité de souscrire un abonnement mensuel au tarif de 1000 € par mois, donnant droit à l’ensemble de nos prestations dans les termes et conditions susmentionnés.
+                  </p>
+                  <p className="leading-relaxed">
+                    Il est résiliable à tout moment, tout paiement fait à la société General Esquire lui étant acquis.
+                  </p>
+                </div>
+
+                {/* 3. Prestation ponctuelle */}
+                <div className="bg-[#131513] border border-[#C5A059]/30 p-6 rounded-2xl space-y-3">
+                  <h3 className="font-cinzel text-xl font-bold text-[#E9D18F]">Prestation ponctuelle</h3>
+                  <p className="leading-relaxed">
+                    Il est également possible de solliciter nos services sur une base ponctuelle.
+                  </p>
+                  <p className="leading-relaxed">
+                    Dans cette hypothèse, la facturation fait l’objet d’une convention de gré à gré, qui prend en considération les données propres à la préoccupation que vous nous soumettez, ainsi que notre disponibilité.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -398,3 +413,4 @@ export default function EntrepreneurPage() {
     </div>
   );
 }
+
