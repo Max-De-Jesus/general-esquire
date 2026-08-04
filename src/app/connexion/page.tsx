@@ -384,7 +384,7 @@ function ClientAuthForm() {
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
-                    required={mode !== "forgot"}
+                    required
                     minLength={6}
                     placeholder="••••••••"
                     value={password}
