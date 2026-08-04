@@ -20,6 +20,8 @@ interface AuthContextType {
   signUp: (email: string, password: string, fullName: string, profileType?: string, phone?: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<{ error: Error | null }>;
+  resetPassword: (email: string) => Promise<{ error: Error | null }>;
+  updatePassword: (newPassword: string) => Promise<{ error: Error | null }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -307,6 +309,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const resetPassword = async (email: string) => {
+    try {
+      const redirectTo = `${typeof window !== "undefined" ? window.location.origin : "https://www.generalesquire.com"}/reinitialisation-mot-de-passe`;
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
+        redirectTo,
+      });
+      return { error: error ?? null };
+    } catch (err: any) {
+      return { error: err };
+    }
+  };
+
+  const updatePassword = async (newPassword: string) => {
+    try {
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      return { error: error ?? null };
+    } catch (err: any) {
+      return { error: err };
+    }
+  };
+
   const signOut = async () => {
     try {
       if (typeof window !== "undefined") {
@@ -336,6 +359,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         signUp,
         signIn,
         signOut,
+        resetPassword,
+        updatePassword,
       }}
     >
       {children}
