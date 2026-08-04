@@ -32,6 +32,16 @@ const CAROUSEL_ITEMS = [
     title: "Cabinet General Esquire — Chrysalides",
     desc: "Excellence, réactivité et confidentialité absolue.",
   },
+  {
+    src: "/images/car_pro/Avocate enceinte image.jpg",
+    title: "Conseil Juridique & Accompagnement",
+    desc: "Un suivi humain et bienveillant, adapté à chaque étape de votre vie professionnelle.",
+  },
+  {
+    src: "/images/car_pro/avocate enceinte2.png",
+    title: "Expertise au Féminin & Diversité",
+    desc: "Un cabinet ouvert à toutes les situations, avec écoute, rigueur et discrétion.",
+  },
 ];
 
 function ProfessionnelCarousel() {
