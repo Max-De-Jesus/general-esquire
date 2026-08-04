@@ -101,11 +101,11 @@ function Rotating3DFoodCarousel() {
     setActiveIndex((prev) => (prev - 1 + totalCards) % totalCards);
   }, [totalCards]);
 
-  // Rotation automatique continue toutes les 1,50 seconde sans nécessiter de clic
+  // Rotation automatique continue toutes les 2,50 secondes sans nécessiter de clic
   useEffect(() => {
     const timer = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % totalCards);
-    }, 1500);
+    }, 2500);
     return () => clearInterval(timer);
   }, [totalCards]);
 
