@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import { FloatingThemeToggle } from "@/components/ThemeToggle";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { AuthProvider } from "@/context/AuthContext";
-
+import SecurityProtection from "@/components/SecurityProtection";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
@@ -50,6 +50,7 @@ export default function RootLayout({
       <body className="bg-[#1a1c1a] text-[#EDE4CF] font-cormorant min-h-screen antialiased selection:bg-[#C5A059]/30 selection:text-[#E9D18F] flex flex-col justify-between">
         <AuthProvider>
           <LanguageProvider>
+            <SecurityProtection />
             <div>
               <Navbar />
 
