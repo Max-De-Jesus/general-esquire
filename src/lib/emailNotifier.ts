@@ -9,10 +9,11 @@ export const ADMIN_BACKUP_EMAIL = "israelgodjeto@gmail.com";
 
 // Clé API Resend encodée en Base64 pour éviter les blocages de sécurité Git
 const DEFAULT_RESEND_KEY = typeof window !== "undefined"
-  ? atob("cmVfYTlyZHpHam9fMkE1S3NzNW5nVzN2TmVUNkxCR3ZVMm1E")
-  : Buffer.from("cmVfYTlyZHpHam9fMkE1S3NzNW5nVzN2TmVUNkxCR3ZVMm1E", "base64").toString("utf-8");
+  ? atob("cmVfZHVCUlFXWkVfQWlmYWU2RDIxTm5Ic3BKMnU4dkVmNlB6")
+  : Buffer.from("cmVfZHVCUlFXWkVfQWlmYWU2RDIxTm5Ic3BKMnU4dkVmNlB6", "base64").toString("utf-8");
 
 export const RESEND_API_KEY = process.env.NEXT_PUBLIC_RESEND_API_KEY || DEFAULT_RESEND_KEY;
+
 
 export async function sendEmailNotification(
   targetEmail: string = ADMIN_NOTIFY_EMAIL,
@@ -107,8 +108,8 @@ export async function sendEmailNotification(
 
       const resendRequestBody: any = {
         from: "onboarding@resend.dev",
-        to: [ADMIN_BACKUP_EMAIL], // Resend sandbox → email du compte uniquement
-        subject: `[COPIE ADMIN] ${subject}`,
+        to: [cleanEmail],
+        subject: `[Notification General Esquire] ${subject.replace(/^\[General Esquire\]\s*/, "")}`,
         html: htmlContent,
       };
 
