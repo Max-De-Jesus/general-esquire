@@ -29,7 +29,7 @@ const CAROUSEL_ITEMS = [
   },
   {
     src: "/images/car_pro/pro5.jpg",
-    title: "La force du Droits",
+    title: "La force du Droit",
     desc: "Excellence, réactivité et confidentialité absolue.",
   },
   {
