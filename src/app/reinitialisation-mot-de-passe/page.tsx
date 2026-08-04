@@ -23,11 +23,23 @@ function ResetPasswordForm() {
   const [sessionError, setSessionError] = useState(false);
 
   // Supabase envoie les tokens via le fragment d'URL (#access_token=...&type=recovery)
-  // On les parse manuellement et on établit la session explicitement
+  // IMPORTANT : enregistrer le listener AVANT d'appeler setSession pour ne pas rater l'événement
   useEffect(() => {
-    const handleRecoverySession = async () => {
-      // 1. Vérifier s'il y a un hash dans l'URL avec les tokens
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    const init = async () => {
       const hash = typeof window !== "undefined" ? window.location.hash : "";
+
+      // 1. Écouter en premier (avant tout appel Supabase)
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+        if (event === "PASSWORD_RECOVERY" || (event === "SIGNED_IN" && session)) {
+          setSessionReady(true);
+          clearTimeout(timeoutId);
+          subscription.unsubscribe();
+        }
+      });
+
+      // 2. Si hash recovery présent → établir la session avec les tokens
       if (hash && hash.includes("type=recovery")) {
         try {
           const hashParams = new URLSearchParams(hash.replace(/^#/, ""));
@@ -35,59 +47,45 @@ function ResetPasswordForm() {
           const refreshToken = hashParams.get("refresh_token");
 
           if (accessToken && refreshToken) {
-            // Établir la session Supabase explicitement avec les tokens
-            const { data, error } = await supabase.auth.setSession({
+            // Nettoyer le hash de l'URL proprement
+            if (typeof window !== "undefined") {
+              window.history.replaceState(null, "", window.location.pathname);
+            }
+            // setSession déclenche onAuthStateChange → SIGNED_IN → setSessionReady(true)
+            await supabase.auth.setSession({
               access_token: accessToken,
               refresh_token: refreshToken,
             });
-
-            if (!error && data.session) {
-              setSessionReady(true);
-              // Nettoyer le hash de l'URL sans recharger la page
-              if (typeof window !== "undefined") {
-                window.history.replaceState(null, "", window.location.pathname);
-              }
-              return;
-            }
           }
         } catch (err) {
-          console.warn("Erreur lors du parsing du token de récupération:", err);
+          console.warn("Erreur parsing token de récupération:", err);
+        }
+      } else {
+        // 3. Vérification session existante (cas où la page est rechargée)
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          setSessionReady(true);
+          clearTimeout(timeoutId);
+          subscription.unsubscribe();
+          return;
         }
       }
 
-      // 2. Écouter l'événement PASSWORD_RECOVERY via onAuthStateChange
-      const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-        if (event === "PASSWORD_RECOVERY") {
-          setSessionReady(true);
-          subscription.unsubscribe();
-        } else if (event === "SIGNED_IN" && session) {
-          setSessionReady(true);
-          subscription.unsubscribe();
-        }
-      });
-
-      // 3. Vérification directe de la session existante
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        setSessionReady(true);
-        subscription.unsubscribe();
-        return;
-      }
-
-      // 4. Timeout de sécurité : si aucune session après 6s
-      const timeout = setTimeout(() => {
+      // 4. Timeout de sécurité si rien ne se passe dans les 7s
+      timeoutId = setTimeout(() => {
         setSessionError(true);
         subscription.unsubscribe();
-      }, 6000);
-
-      return () => {
-        clearTimeout(timeout);
-        subscription.unsubscribe();
-      };
+      }, 7000);
     };
 
-    handleRecoverySession();
+    init();
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
   }, []);
+
+
 
 
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]{8,}$/;
