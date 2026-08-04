@@ -23,8 +23,12 @@ export default function SupabaseHashRedirect() {
     const type = hashParams.get("type");
     const accessToken = hashParams.get("access_token");
 
-    // Rediriger vers la page de réinitialisation si c'est un lien recovery
-    if (type === "recovery" && accessToken) {
+    // Rediriger vers la page de réinitialisation SEULEMENT si on n'y est pas déjà
+    if (
+      type === "recovery" &&
+      accessToken &&
+      !window.location.pathname.includes("reinitialisation-mot-de-passe")
+    ) {
       // Préserver le hash complet pour que Supabase puisse lire le token
       const targetUrl = `/reinitialisation-mot-de-passe${hash}`;
       window.location.replace(targetUrl);
