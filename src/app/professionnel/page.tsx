@@ -1,147 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 import TickerBanner from "@/components/TickerBanner";
-
-const CAROUSEL_ITEMS = [
-  {
-    src: "/images/car_pro/pro1.jpg",
-    title: " Expertise Juridique",
-    desc: "Rédaction d'actes, requêtes, conclusions et mémoires devant toutes juridictions.",
-  },
-  {
-    src: "/images/car_pro/pro2.jpg",
-    title: "Collaboration & Sous-traitance",
-    desc: "Un renfort ponctuel ou régulier pour soulager votre charge de travail.",
-  },
-  {
-    src: "/images/car_pro/pro3.jpg",
-    title: "Analyse Approfondie & Rigueur",
-    desc: "Recherches jurisprudentielles et doctrine de premier ordre.",
-  },
-  {
-    src: "/images/car_pro/pro4.jpg",
-    title: "Accompagnement Sur Mesure",
-    desc: "Abonnement ou prestations au dossier selon vos besoins spécifiques.",
-  },
-  {
-    src: "/images/car_pro/pro5.jpg",
-    title: "La force du Droit",
-    desc: "Excellence, réactivité et confidentialité absolue.",
-  },
-  {
-    src: "/images/car_pro/Avocate enceinte image.jpg",
-    title: "Conseil Juridique & Accompagnement",
-    desc: "Un suivi humain et bienveillant, adapté à chaque étape de votre vie professionnelle.",
-  },
-  {
-    src: "/images/car_pro/avocate enceinte2.png",
-    title: "Expertise au Féminin & Diversité",
-    desc: "Un cabinet ouvert à toutes les situations, avec écoute, rigueur et discrétion.",
-  },
-];
-
-function ProfessionnelCarousel() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % CAROUSEL_ITEMS.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % CAROUSEL_ITEMS.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + CAROUSEL_ITEMS.length) % CAROUSEL_ITEMS.length);
-  };
-
-  return (
-    <div className="mb-14 rounded-3xl overflow-hidden border border-[#C5A059]/40 bg-[#131513] shadow-2xl relative group">
-      {/* Dynamic Slide Container */}
-      <div className="relative w-full h-[300px] sm:h-[420px] md:h-[480px] overflow-hidden">
-        {CAROUSEL_ITEMS.map((item, idx) => {
-          const isActive = idx === currentIndex;
-          return (
-            <div
-              key={idx}
-              className={`absolute inset-0 transition-all duration-700 ease-in-out transform ${
-                isActive
-                  ? "opacity-100 scale-100 z-10"
-                  : "opacity-0 scale-105 pointer-events-none z-0"
-              }`}
-            >
-              <Image
-                src={item.src}
-                alt={item.title}
-                fill
-                priority={idx === 0}
-                className="object-cover object-center filter brightness-95 contrast-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0d0e0d] via-black/30 to-transparent" />
-
-              <div className="absolute bottom-6 left-6 right-6 sm:bottom-8 sm:left-8 sm:right-8 z-20">
-                <span className="font-cinzel text-xs text-[#E9D18F] tracking-[0.25em] uppercase block mb-1 drop-shadow-md">
-                  COLLABORATION JURIDIQUE
-                </span>
-                <h3 className="font-cinzel text-lg sm:text-2xl md:text-3xl font-bold text-white mb-1.5 drop-shadow-lg">
-                  {item.title}
-                </h3>
-                <p className="font-cormorant text-xs sm:text-base md:text-lg text-[#EDE4CF] max-w-2xl drop-shadow-md">
-                  {item.desc}
-                </p>
-              </div>
-            </div>
-          );
-        })}
-
-        {/* Flèches de navigation */}
-        <button
-          onClick={prevSlide}
-          className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#131513]/85 border border-[#C5A059]/60 text-[#E9D18F] hover:bg-[#C5A059] hover:text-black transition-all duration-300 flex items-center justify-center cursor-pointer shadow-lg active:scale-95"
-          aria-label="Slide précédent"
-        >
-          ❮
-        </button>
-        <button
-          onClick={nextSlide}
-          className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#131513]/85 border border-[#C5A059]/60 text-[#E9D18F] hover:bg-[#C5A059] hover:text-black transition-all duration-300 flex items-center justify-center cursor-pointer shadow-lg active:scale-95"
-          aria-label="Slide suivant"
-        >
-          ❯
-        </button>
-      </div>
-
-      {/* Barre d'indicateurs de position */}
-      <div className="bg-[#0a0b0a] border-t border-[#C5A059]/30 p-3 sm:p-4 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 mx-auto sm:mx-0">
-          {CAROUSEL_ITEMS.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setCurrentIndex(idx)}
-              className={`h-2.5 rounded-full transition-all duration-500 cursor-pointer ${
-                idx === currentIndex
-                  ? "w-8 bg-[#E9D18F] shadow-[0_0_10px_#E9D18F]"
-                  : "w-2.5 bg-[#C5A059]/40 hover:bg-[#C5A059]/80"
-              }`}
-              aria-label={`Aller au slide ${idx + 1}`}
-            />
-          ))}
-        </div>
-
-        <span className="hidden sm:inline-block font-cinzel text-xs text-[#C5A059] uppercase tracking-widest">
-          {currentIndex + 1} / {CAROUSEL_ITEMS.length}
-        </span>
-      </div>
-    </div>
-  );
-}
 
 export default function ProfessionnelPage() {
   const { t, lang } = useLanguage();
@@ -201,8 +64,27 @@ export default function ProfessionnelPage() {
           </div>
         </div>
 
-        {/* ─── CARROUSEL SLIDER DES IMAGES (FONCTIONNEL ET AUTO-PLAY - DOSSIER CAR PRO) ─────────────── */}
-        <ProfessionnelCarousel />
+        {/* ─── CARROUSEL SLIDER DES IMAGES ─────────────────────────────── */}
+        <div className="mb-14 rounded-3xl overflow-hidden border border-[#C5A059]/40 bg-[#131513] p-4 shadow-2xl">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              "/images/Professionnel du droit 2.jpg",
+              "/images/Professionnel du droit 3.jpg",
+              "/images/Professionnel du droit 4.jpg",
+              "/images/Professionnel du droit.jpg"
+            ].map((imgSrc, idx) => (
+              <div key={idx} className="relative h-64 sm:h-72 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-md group">
+                <Image
+                  src={imgSrc}
+                  alt={`Professionnel du droit ${idx + 1}`}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+            ))}
+          </div>
+        </div>
 
         {/* ─── TEXTE INTRODUCTIF PRINCIPAL ────────────────────────────────────── */}
         <div className="bg-[#131513]/90 border border-[#C5A059]/30 rounded-3xl p-8 sm:p-12 shadow-2xl mb-12 space-y-6">
@@ -332,7 +214,6 @@ export default function ProfessionnelPage() {
                       "Droit pénal des affaires — abus de biens sociaux, délit d'initié",
                       "Droit de la nationalité — naturalisation française",
                       "Droit de la profession d'avocat — inscription, omission, procédure disciplinaire, défense à une action en responsabilité civile professionnelle",
-                      "Droit administratif — litiges de la fonction publique",
                     ].map((item, i) => (
                       <li key={i} className="flex items-start gap-2.5 leading-relaxed">
                         <span className="text-[#C5A059] mt-1.5 flex-shrink-0 text-xs">◆</span>
@@ -350,6 +231,7 @@ export default function ProfessionnelPage() {
                       "Droit du travail — procédure de licenciement disciplinaire et économique, reclassement professionnel",
                       "Droit pénal — procédure pénale, chambre de l'instruction, droit pénitentiaire, crimes et délits contre les personnes et contre les biens, infractions routières",
                       "Droit des étrangers — titres de séjour, procédures de référé administratif, visas d'entrée, OQTF, IRTF, regroupement familial, OFPRA et CNDA",
+                      "Droit administratif — litiges de la fonction publique",
                       "Droits et libertés fondamentaux — requête et procédure devant la Cour européenne des droits de l'Homme",
                     ].map((item, i) => (
                       <li key={i} className="flex items-start gap-2.5 leading-relaxed">
