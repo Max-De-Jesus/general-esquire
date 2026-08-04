@@ -101,11 +101,13 @@ function Rotating3DFoodCarousel() {
     setActiveIndex((prev) => (prev - 1 + totalCards) % totalCards);
   }, [totalCards]);
 
+  // Rotation automatique continue toutes les 3 secondes sans nécessiter de clic
   useEffect(() => {
-    if (isHovered) return;
-    const timer = setInterval(nextCard, 4000);
+    const timer = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % totalCards);
+    }, 3000);
     return () => clearInterval(timer);
-  }, [isHovered, nextCard]);
+  }, [totalCards]);
 
   // Normalized offset with circular wrap (-half .. +half)
   const getDiff = (idx: number) => {
