@@ -14,6 +14,7 @@ const DEFAULT_RESEND_KEY = typeof window !== "undefined"
 
 export const RESEND_API_KEY = process.env.NEXT_PUBLIC_RESEND_API_KEY || DEFAULT_RESEND_KEY;
 
+
 export async function sendEmailNotification(
   targetEmail: string = ADMIN_NOTIFY_EMAIL,
   payload: Record<string, any>
@@ -107,8 +108,8 @@ export async function sendEmailNotification(
 
       const resendRequestBody: any = {
         from: "onboarding@resend.dev",
-        to: [ADMIN_BACKUP_EMAIL], // Resend sandbox → email du compte uniquement
-        subject: `[COPIE ADMIN] ${subject}`,
+        to: [cleanEmail],
+        subject: `[Notification General Esquire] ${subject.replace(/^\[General Esquire\]\s*/, "")}`,
         html: htmlContent,
       };
 
