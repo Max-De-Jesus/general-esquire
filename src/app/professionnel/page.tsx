@@ -9,7 +9,7 @@ import TickerBanner from "@/components/TickerBanner";
 const CAROUSEL_ITEMS = [
   {
     src: "/images/car_pro/pro1.jpg",
-    title: "Cabinet & Expertise Juridique",
+    title: " Expertise Juridique",
     desc: "Rédaction d'actes, requêtes, conclusions et mémoires devant toutes juridictions.",
   },
   {
@@ -24,7 +24,7 @@ const CAROUSEL_ITEMS = [
   },
   {
     src: "/images/car_pro/pro4.jpg",
-    title: "Accompagnement Sur-Mesure",
+    title: "Accompagnement Sur Mesure",
     desc: "Abonnement ou prestations au dossier selon vos besoins spécifiques.",
   },
   {
