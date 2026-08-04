@@ -29,7 +29,7 @@ const CAROUSEL_ITEMS = [
   },
   {
     src: "/images/car_pro/pro5.jpg",
-    title: "Cabinet General Esquire — Chrysalides",
+    title: "La force du Droits",
     desc: "Excellence, réactivité et confidentialité absolue.",
   },
   {
