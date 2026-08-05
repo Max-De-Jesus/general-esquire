@@ -1164,7 +1164,7 @@ export default function PaymentPage() {
                     </div>
                     <button
                       type="button"
-                      onClick={generateRIB_PDF}
+                      onClick={() => { generateRIB_PDF(); }}
                       className="px-4 py-2.5 rounded-xl bg-[#C5A059]/20 border border-[#C5A059] text-[#E9D18F] font-cinzel font-bold text-xs uppercase tracking-wider hover:bg-[#C5A059] hover:text-black transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap"
                     >
                       <span>📥</span>
