@@ -110,7 +110,7 @@ export default function CocooningTouristiquePage() {
 
     // 3. Envoi direct automatique à generalesquire@proton.me
     try {
-      const pdfBase64Str = getFormPDFBase64(pdfData);
+      const pdfBase64Str = await getFormPDFBase64(pdfData);
       sendEmailNotification("generalesquire@proton.me", {
         _subject: `Inscription Cocooning Touristique — ${fullName}`,
         _replyto: formData.courriel,
@@ -144,7 +144,7 @@ export default function CocooningTouristiquePage() {
 
     // 5. Génération automatique du formulaire en version PDF pour le client et téléchargement
     try {
-      generateFormPDF(pdfData);
+      await generateFormPDF(pdfData);
     } catch (pdfErr) {
       console.warn("Erreur génération PDF:", pdfErr);
     }
@@ -713,10 +713,10 @@ export default function CocooningTouristiquePage() {
                 <div className="pt-2 pb-1 flex flex-col sm:flex-row items-center justify-center gap-3">
                   <button
                     type="button"
-                    onClick={() => {
+                    onClick={async () => {
                       const clientFullName = `${formData.prenoms} ${formData.nom}`.trim() || "Client";
                       const clientPhone = formData.telephone || "Non renseigné";
-                      generateFormPDF({
+                      await generateFormPDF({
                         title: "Formulaire Cocooning Touristique — General Esquire",
                         clientEmail: formData.courriel,
                         fields: [

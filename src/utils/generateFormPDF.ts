@@ -9,10 +9,43 @@ export interface FormPDFData {
   images?: string[]; // Photos et pièces jointes annexées au formulaire
 }
 
+interface BothLogos {
+  logo1: string | null; // Faviconofficielle1-circle.png
+  logo2: string | null; // logo.png
+}
+
 /**
- * Génère et télécharge un PDF officiel haut de gamme pour toute soumission de formulaire General Esquire
+ * Charge les deux logos officiels de l'entreprise en base64
  */
-export function generateFormPDF(data: FormPDFData): void {
+async function loadBothLogosBase64(): Promise<BothLogos> {
+  const fetchB64 = async (path: string): Promise<string | null> => {
+    try {
+      const response = await fetch(path);
+      if (!response.ok) return null;
+      const blob = await response.blob();
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = () => resolve(null);
+        reader.readAsDataURL(blob);
+      });
+    } catch {
+      return null;
+    }
+  };
+
+  const [logo1, logo2] = await Promise.all([
+    fetchB64("/images/Faviconofficielle1-circle.png"),
+    fetchB64("/images/logo.png"),
+  ]);
+
+  return { logo1, logo2 };
+}
+
+/**
+ * Génère et télécharge un PDF haut de gamme pour toute soumission de formulaire General Esquire
+ */
+export async function generateFormPDF(data: FormPDFData): Promise<void> {
   try {
     const doc = new jsPDF({
       orientation: "portrait",
@@ -20,59 +53,73 @@ export function generateFormPDF(data: FormPDFData): void {
       format: "a4",
     });
 
-    const primaryGold = "#C5A059";
-    const darkBg = "#131513";
-    const textDark = "#1c1c1c";
-    const textGray = "#555555";
+    const { logo1, logo2 } = await loadBothLogosBase64();
 
     // 1. Bande de titre supérieure (En-tête cabinet)
-    doc.setFillColor(19, 21, 19); // #131513
-    doc.rect(0, 0, 210, 38, "F");
+    doc.setFillColor(19, 21, 19);
+    doc.rect(0, 0, 210, 44, "F");
 
-    // Bordure dorée décorative
-    doc.setDrawColor(197, 160, 89); // #C5A059
+    doc.setDrawColor(197, 160, 89);
     doc.setLineWidth(1);
-    doc.line(0, 38, 210, 38);
+    doc.line(0, 44, 210, 44);
 
-    // Titre Cabinet
-    doc.setTextColor(233, 209, 143); // #E9D18F
+    // Logo 1 (Faviconofficielle1-circle.png) à gauche
+    if (logo1) {
+      try {
+        doc.addImage(logo1, "PNG", 10, 7, 26, 26);
+      } catch {
+        // Ignorer si échec
+      }
+    }
+
+    // Titre & Coordonnées Cabinet (Milieu)
+    doc.setTextColor(233, 209, 143);
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(16);
-    doc.text("GENERAL ESQUIRE", 15, 16);
+    doc.setFontSize(15);
+    doc.text("GENERAL ESQUIRE", 40, 16);
 
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(9);
+    doc.setFontSize(8.5);
     doc.setTextColor(197, 160, 89);
-    doc.text("Cabinet de Conseil Juridique & Espace Activités Chrysalides", 15, 23);
+    doc.text("Cabinet de Conseil Juridique & Espace Activités Chrysalides", 40, 24);
 
     doc.setFontSize(8);
     doc.setTextColor(200, 200, 200);
-    doc.text("61 rue de Lyon, 75012 PARIS  |  contact@generalesquire.com", 15, 30);
+    doc.text("61 rue de Lyon, 75012 PARIS  |  contact@generalesquire.com", 40, 32);
 
     // Badge Destinataire à droite
     doc.setFillColor(30, 30, 30);
-    doc.roundedRect(125, 10, 70, 20, 2, 2, "F");
+    doc.roundedRect(128, 11, 44, 22, 2, 2, "F");
     doc.setDrawColor(197, 160, 89);
     doc.setLineWidth(0.3);
-    doc.roundedRect(125, 10, 70, 20, 2, 2, "D");
+    doc.roundedRect(128, 11, 44, 22, 2, 2, "D");
 
-    doc.setFontSize(7);
+    doc.setFontSize(6);
     doc.setTextColor(197, 160, 89);
-    doc.text("DESTINATAIRE ADMINISTRATIF", 129, 16);
-    doc.setFontSize(8);
+    doc.text("DESTINATAIRE ADMINISTRATIF", 131, 17);
+    doc.setFontSize(6.5);
     doc.setTextColor(255, 255, 255);
-    doc.text("generalesquire@proton.me", 129, 24);
+    doc.text("generalesquire@proton.me", 131, 25);
+
+    // Logo 2 (logo.png) à l'extrême droite
+    if (logo2) {
+      try {
+        doc.addImage(logo2, "PNG", 176, 7, 26, 26);
+      } catch {
+        // Ignorer si échec
+      }
+    }
 
     // 2. Titre du Formulaire
     doc.setTextColor(28, 28, 28);
-    doc.setFontSize(14);
+    doc.setFontSize(13);
     doc.setFont("helvetica", "bold");
-    doc.text(data.title.toUpperCase(), 15, 52);
+    doc.text(data.title.toUpperCase(), 15, 56);
 
     // Ligne séparatrice sous le titre
     doc.setDrawColor(197, 160, 89);
     doc.setLineWidth(0.5);
-    doc.line(15, 56, 195, 56);
+    doc.line(15, 60, 195, 60);
 
     // Informations Méta (Réf & Date)
     const refText = data.reference || `REF-ESQ-${Math.floor(100000 + Math.random() * 900000)}`;
@@ -81,22 +128,21 @@ export function generateFormPDF(data: FormPDFData): void {
     doc.setFontSize(9);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(80, 80, 80);
-    doc.text(`Référence soumission : ${refText}`, 15, 63);
-    doc.text(`Date & Heure : ${dateText}`, 195, 63, { align: "right" });
+    doc.text(`Référence soumission : ${refText}`, 15, 67);
+    doc.text(`Date & Heure : ${dateText}`, 195, 67, { align: "right" });
 
     // 3. Tableau des données du Formulaire
-    let currentY = 74;
+    let currentY = 78;
 
     doc.setFontSize(10);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(197, 160, 89);
-    doc.setFillColor(248, 245, 238); // Beige très clair
+    doc.setFillColor(248, 245, 238);
     doc.rect(15, currentY - 5, 180, 8, "F");
     doc.text("INFORMATIONS DU FORMULAIRE SOUMIS", 18, currentY);
     currentY += 8;
 
     data.fields.forEach((field, index) => {
-      // Alternance de couleur de fond de ligne
       if (index % 2 === 0) {
         doc.setFillColor(252, 252, 252);
         doc.rect(15, currentY - 4, 180, 10, "F");
@@ -105,31 +151,27 @@ export function generateFormPDF(data: FormPDFData): void {
         doc.rect(15, currentY - 4, 180, 10, "F");
       }
 
-      // Libellé (gauche)
       doc.setFont("helvetica", "bold");
       doc.setFontSize(9);
       doc.setTextColor(60, 60, 60);
       doc.text(field.label, 18, currentY + 2);
 
-      // Valeur (droite)
       doc.setFont("helvetica", "normal");
       doc.setTextColor(20, 20, 20);
 
-      // Gestion multi-lignes si le message est long
       const splitValue = doc.splitTextToSize(field.value || "Non renseigné", 110);
       doc.text(splitValue, 80, currentY + 2);
 
       const addedHeight = Math.max(10, splitValue.length * 5 + 4);
       currentY += addedHeight;
 
-      // Saut de page automatique si on dépasse le bas de page
       if (currentY > 260) {
         doc.addPage();
         currentY = 25;
       }
     });
 
-    // 3.5. Intégration des photos & pièces jointes dans le PDF
+    // 3.5. Annexes photos / pièces jointes
     if (data.images && data.images.length > 0) {
       doc.addPage();
       let imgY = 20;
@@ -170,7 +212,7 @@ export function generateFormPDF(data: FormPDFData): void {
       });
     }
 
-    // 4. Cadre d'Authentification / Validation
+    // 4. Cadre d'Authentification
     currentY = Math.max(currentY + 10, 230);
 
     doc.setDrawColor(200, 200, 200);
@@ -186,20 +228,19 @@ export function generateFormPDF(data: FormPDFData): void {
     doc.setFontSize(7.5);
     doc.setTextColor(90, 90, 90);
     const legalNotice =
-      "Document officiel généré automatiquement suite à la soumission sur le site generalesquire.com.\nTransmis en copie conforme et sécurisée à l'administration du cabinet (generalesquire@proton.me).\nCe document fait foi de réception initiale sous réserve de validation définitive par la direction.";
+      "Document généré automatiquement suite à la soumission sur le site generalesquire.com.\nTransmis en copie conforme et sécurisée à l'administration du cabinet (generalesquire@proton.me).\nCe document fait foi de réception initiale sous réserve de validation définitive par la direction.";
     doc.text(doc.splitTextToSize(legalNotice, 170), 20, currentY + 13);
 
     // 5. Pied de page
     doc.setFontSize(7);
     doc.setTextColor(150, 150, 150);
     doc.text(
-      "© 2026 GENERAL ESQUIRE — Tous droits réservés — Document généré au format PDF officiel",
+      "© 2026 GENERAL ESQUIRE — Tous droits réservés — Document généré au format PDF",
       105,
       287,
       { align: "center" }
     );
 
-    // Téléchargement automatique du fichier PDF
     const filename = `${data.title.toLowerCase().replace(/[^a-z0-9]/g, "_")}_${refText}.pdf`;
     doc.save(filename);
   } catch (err) {
@@ -208,10 +249,9 @@ export function generateFormPDF(data: FormPDFData): void {
 }
 
 /**
- * Génère et renvoie le PDF officiel sous forme de chaîne Base64 (Data URI)
- * pour l'envoi automatique direct par email à generalesquire@proton.me
+ * Génère et renvoie le PDF sous forme de chaîne Base64 (Data URI)
  */
-export function getFormPDFBase64(data: FormPDFData): string {
+export async function getFormPDFBase64(data: FormPDFData): Promise<string> {
   try {
     const doc = new jsPDF({
       orientation: "portrait",
@@ -219,51 +259,67 @@ export function getFormPDFBase64(data: FormPDFData): string {
       format: "a4",
     });
 
+    const { logo1, logo2 } = await loadBothLogosBase64();
+
     // 1. En-tête cabinet
     doc.setFillColor(19, 21, 19);
-    doc.rect(0, 0, 210, 38, "F");
+    doc.rect(0, 0, 210, 44, "F");
 
     doc.setDrawColor(197, 160, 89);
     doc.setLineWidth(1);
-    doc.line(0, 38, 210, 38);
+    doc.line(0, 44, 210, 44);
+
+    // Logo 1 à gauche
+    if (logo1) {
+      try {
+        doc.addImage(logo1, "PNG", 10, 7, 26, 26);
+      } catch {}
+    }
 
     doc.setTextColor(233, 209, 143);
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(16);
-    doc.text("GENERAL ESQUIRE", 15, 16);
+    doc.setFontSize(15);
+    doc.text("GENERAL ESQUIRE", 40, 16);
 
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(9);
+    doc.setFontSize(8.5);
     doc.setTextColor(197, 160, 89);
-    doc.text("Cabinet de Conseil Juridique & Espace Activités Chrysalides", 15, 23);
+    doc.text("Cabinet de Conseil Juridique & Espace Activités Chrysalides", 40, 24);
 
     doc.setFontSize(8);
     doc.setTextColor(200, 200, 200);
-    doc.text("61 rue de Lyon, 75012 PARIS  |  contact@generalesquire.com", 15, 30);
+    doc.text("61 rue de Lyon, 75012 PARIS  |  contact@generalesquire.com", 40, 32);
 
     // Destinataire
     doc.setFillColor(30, 30, 30);
-    doc.roundedRect(125, 10, 70, 20, 2, 2, "F");
+    doc.roundedRect(128, 11, 44, 22, 2, 2, "F");
     doc.setDrawColor(197, 160, 89);
     doc.setLineWidth(0.3);
-    doc.roundedRect(125, 10, 70, 20, 2, 2, "D");
+    doc.roundedRect(128, 11, 44, 22, 2, 2, "D");
 
-    doc.setFontSize(7);
+    doc.setFontSize(6);
     doc.setTextColor(197, 160, 89);
-    doc.text("DESTINATAIRE ADMINISTRATIF", 129, 16);
-    doc.setFontSize(8);
+    doc.text("DESTINATAIRE ADMINISTRATIF", 131, 17);
+    doc.setFontSize(6.5);
     doc.setTextColor(255, 255, 255);
-    doc.text("generalesquire@proton.me", 129, 24);
+    doc.text("generalesquire@proton.me", 131, 25);
+
+    // Logo 2 à l'extrême droite
+    if (logo2) {
+      try {
+        doc.addImage(logo2, "PNG", 176, 7, 26, 26);
+      } catch {}
+    }
 
     // 2. Titre du Formulaire
     doc.setTextColor(28, 28, 28);
-    doc.setFontSize(14);
+    doc.setFontSize(13);
     doc.setFont("helvetica", "bold");
-    doc.text(data.title.toUpperCase(), 15, 52);
+    doc.text(data.title.toUpperCase(), 15, 56);
 
     doc.setDrawColor(197, 160, 89);
     doc.setLineWidth(0.5);
-    doc.line(15, 56, 195, 56);
+    doc.line(15, 60, 195, 60);
 
     const refText = data.reference || `REF-ESQ-${Math.floor(100000 + Math.random() * 900000)}`;
     const dateText = data.dateStr || new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" });
@@ -271,11 +327,11 @@ export function getFormPDFBase64(data: FormPDFData): string {
     doc.setFontSize(9);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(80, 80, 80);
-    doc.text(`Référence soumission : ${refText}`, 15, 63);
-    doc.text(`Date & Heure : ${dateText}`, 195, 63, { align: "right" });
+    doc.text(`Référence soumission : ${refText}`, 15, 67);
+    doc.text(`Date & Heure : ${dateText}`, 195, 67, { align: "right" });
 
     // 3. Tableau des données
-    let currentY = 74;
+    let currentY = 78;
 
     doc.setFontSize(10);
     doc.setFont("helvetica", "bold");
@@ -314,7 +370,6 @@ export function getFormPDFBase64(data: FormPDFData): string {
       }
     });
 
-    // Intégration des photos & pièces jointes dans le PDF Base64
     if (data.images && data.images.length > 0) {
       doc.addPage();
       let imgY = 20;
@@ -355,7 +410,6 @@ export function getFormPDFBase64(data: FormPDFData): string {
       });
     }
 
-    // Cadre d'Authentification
     currentY = Math.max(currentY + 10, 230);
 
     doc.setDrawColor(200, 200, 200);
@@ -371,14 +425,13 @@ export function getFormPDFBase64(data: FormPDFData): string {
     doc.setFontSize(7.5);
     doc.setTextColor(90, 90, 90);
     const legalNotice =
-      "Document officiel généré automatiquement suite à la soumission sur le site generalesquire.com.\nTransmis en copie conforme et sécurisée à l'administration du cabinet (generalesquire@proton.me).\nCe document fait foi de réception initiale sous réserve de validation définitive par la direction.";
+      "Document généré automatiquement suite à la soumission sur le site generalesquire.com.\nTransmis en copie conforme et sécurisée à l'administration du cabinet (generalesquire@proton.me).\nCe document fait foi de réception initiale sous réserve de validation définitive par la direction.";
     doc.text(doc.splitTextToSize(legalNotice, 170), 20, currentY + 13);
 
-    // Pied de page
     doc.setFontSize(7);
     doc.setTextColor(150, 150, 150);
     doc.text(
-      "© 2026 GENERAL ESQUIRE — Tous droits réservés — Document généré au format PDF officiel",
+      "© 2026 GENERAL ESQUIRE — Tous droits réservés — Document généré au format PDF",
       105,
       287,
       { align: "center" }
@@ -392,26 +445,7 @@ export function getFormPDFBase64(data: FormPDFData): string {
 }
 
 /**
- * Charge le logo en base64 depuis le dossier public
- */
-async function loadLogoBase64(): Promise<string | null> {
-  try {
-    const response = await fetch("/images/Faviconofficielle1.jpg");
-    if (!response.ok) return null;
-    const blob = await response.blob();
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result as string);
-      reader.onerror = () => resolve(null);
-      reader.readAsDataURL(blob);
-    });
-  } catch {
-    return null;
-  }
-}
-
-/**
- * Génère et télécharge le RIB officiel de General Esquire au format PDF
+ * Génère et télécharge le RIB de General Esquire au format PDF
  */
 export async function generateRIB_PDF(): Promise<void> {
   try {
@@ -421,8 +455,7 @@ export async function generateRIB_PDF(): Promise<void> {
       format: "a4",
     });
 
-    // Chargement du logo
-    const logoB64 = await loadLogoBase64();
+    const { logo1, logo2 } = await loadBothLogosBase64();
 
     // ——— EN-TÊTE ———
     doc.setFillColor(19, 21, 19);
@@ -432,35 +465,40 @@ export async function generateRIB_PDF(): Promise<void> {
     doc.setLineWidth(1);
     doc.line(0, 44, 210, 44);
 
-    // Logo de l'entreprise (coin gauche de l'en-tête)
-    if (logoB64) {
+    // Logo 1 (Faviconofficielle1-circle.png) à gauche
+    if (logo1) {
       try {
-        doc.addImage(logoB64, "JPEG", 12, 5, 24, 24);
-      } catch {
-        // Logo non disponible, on continue sans
-      }
+        doc.addImage(logo1, "PNG", 10, 7, 26, 26);
+      } catch {}
     }
 
-    // Texte en-tête (décalé à droite du logo)
+    // Texte en-tête (décalé au milieu)
     doc.setTextColor(233, 209, 143);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(16);
-    doc.text("GENERAL ESQUIRE", 42, 16);
+    doc.text("GENERAL ESQUIRE", 40, 16);
 
     doc.setFont("helvetica", "normal");
     doc.setFontSize(9);
     doc.setTextColor(197, 160, 89);
-    doc.text("Relevé d'Identité Bancaire (RIB / IBAN Officielles)", 42, 24);
+    doc.text("Relevé d'Identité Bancaire (RIB / IBAN)", 40, 24);
 
     doc.setFontSize(8);
     doc.setTextColor(200, 200, 200);
-    doc.text("61 rue de Lyon, 75012 PARIS  |  contact@generalesquire.com", 42, 32);
+    doc.text("61 rue de Lyon, 75012 PARIS  |  contact@generalesquire.com", 40, 32);
+
+    // Logo 2 (logo.png) à l'extrême droite
+    if (logo2) {
+      try {
+        doc.addImage(logo2, "PNG", 174, 7, 26, 26);
+      } catch {}
+    }
 
     // ——— TITRE DOCUMENT ———
     doc.setTextColor(28, 28, 28);
     doc.setFontSize(13);
     doc.setFont("helvetica", "bold");
-    doc.text("COORDONNÉES BANCAIRES OFFICIELLES", 15, 58);
+    doc.text("COORDONNÉES BANCAIRES", 15, 58);
 
     doc.setDrawColor(197, 160, 89);
     doc.setLineWidth(0.5);
@@ -501,4 +539,3 @@ export async function generateRIB_PDF(): Promise<void> {
     console.error("Erreur lors de la génération du RIB PDF:", err);
   }
 }
-
