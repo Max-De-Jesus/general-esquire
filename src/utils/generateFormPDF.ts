@@ -392,9 +392,28 @@ export function getFormPDFBase64(data: FormPDFData): string {
 }
 
 /**
+ * Charge le logo en base64 depuis le dossier public
+ */
+async function loadLogoBase64(): Promise<string | null> {
+  try {
+    const response = await fetch("/images/Faviconofficielle1.jpg");
+    if (!response.ok) return null;
+    const blob = await response.blob();
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = () => resolve(null);
+      reader.readAsDataURL(blob);
+    });
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Génère et télécharge le RIB officiel de General Esquire au format PDF
  */
-export function generateRIB_PDF(): void {
+export async function generateRIB_PDF(): Promise<void> {
   try {
     const doc = new jsPDF({
       orientation: "portrait",
@@ -402,88 +421,72 @@ export function generateRIB_PDF(): void {
       format: "a4",
     });
 
-    // En-tête Cabinet
+    // Chargement du logo
+    const logoB64 = await loadLogoBase64();
+
+    // ——— EN-TÊTE ———
     doc.setFillColor(19, 21, 19);
-    doc.rect(0, 0, 210, 40, "F");
+    doc.rect(0, 0, 210, 44, "F");
 
     doc.setDrawColor(197, 160, 89);
     doc.setLineWidth(1);
-    doc.line(0, 40, 210, 40);
+    doc.line(0, 44, 210, 44);
 
+    // Logo de l'entreprise (coin gauche de l'en-tête)
+    if (logoB64) {
+      try {
+        doc.addImage(logoB64, "JPEG", 12, 5, 24, 24);
+      } catch {
+        // Logo non disponible, on continue sans
+      }
+    }
+
+    // Texte en-tête (décalé à droite du logo)
     doc.setTextColor(233, 209, 143);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(16);
-    doc.text("GENERAL ESQUIRE", 15, 16);
+    doc.text("GENERAL ESQUIRE", 42, 16);
 
     doc.setFont("helvetica", "normal");
     doc.setFontSize(9);
     doc.setTextColor(197, 160, 89);
-    doc.text("Relevé d'Identité Bancaire (RIB / IBAN Officielles)", 15, 24);
+    doc.text("Relevé d'Identité Bancaire (RIB / IBAN Officielles)", 42, 24);
 
     doc.setFontSize(8);
     doc.setTextColor(200, 200, 200);
-    doc.text("61 rue de Lyon, 75012 PARIS  |  contact@generalesquire.com", 15, 32);
+    doc.text("61 rue de Lyon, 75012 PARIS  |  contact@generalesquire.com", 42, 32);
 
-    // Titre Document
+    // ——— TITRE DOCUMENT ———
     doc.setTextColor(28, 28, 28);
-    doc.setFontSize(14);
+    doc.setFontSize(13);
     doc.setFont("helvetica", "bold");
-    doc.text("COORDONNÉES BANCAIRES OFFICIELLES (RECOMMANDÉ POUR GRÉ À GRÉ)", 15, 55);
+    doc.text("COORDONNÉES BANCAIRES OFFICIELLES", 15, 58);
 
     doc.setDrawColor(197, 160, 89);
     doc.setLineWidth(0.5);
-    doc.line(15, 59, 195, 59);
+    doc.line(15, 62, 195, 62);
 
-    // Cadre Coordonnées
+    // ——— CADRE COORDONNÉES BANCAIRES ———
     doc.setFillColor(250, 248, 242);
     doc.setDrawColor(197, 160, 89);
-    doc.roundedRect(15, 68, 180, 75, 3, 3, "FD");
+    doc.roundedRect(15, 70, 180, 80, 3, 3, "FD");
 
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(10);
-    doc.setTextColor(197, 160, 89);
-    doc.text("TITULAIRE DU COMPTE :", 22, 80);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(20, 20, 20);
-    doc.text("GENERAL ESQUIRE SAS", 80, 80);
+    const addRow = (label: string, value: string, y: number) => {
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(10);
+      doc.setTextColor(197, 160, 89);
+      doc.text(label, 22, y);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(20, 20, 20);
+      doc.text(value, 90, y);
+    };
 
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(197, 160, 89);
-    doc.text("NUMÉRO IBAN :", 22, 95);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(20, 20, 20);
-    doc.text("FR76 1741 8000 0100 0120 9...", 80, 95);
+    addRow("TITULAIRE DU COMPTE :", "GENERAL ESQUIRE", 84);
+    addRow("NUMÉRO IBAN :", "FR76 1741 8000 0100 0120 9487 411", 100);
+    addRow("CODE BIC / SWIFT :", "SHNNFR22XXX", 116);
+    addRow("BANQUE PARTENAIRE :", "SHINE", 132);
 
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(197, 160, 89);
-    doc.text("CODE BIC / SWIFT :", 22, 110);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(20, 20, 20);
-    doc.text("SNNNFR22XXX", 80, 110);
-
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(197, 160, 89);
-    doc.text("BANQUE PARTENAIRE :", 22, 125);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(20, 20, 20);
-    doc.text("Banque Européenne Partenaire - Réseau SWIFT", 80, 125);
-
-    // Instructions de virement
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(10);
-    doc.setTextColor(28, 28, 28);
-    doc.text("INSTRUCTIONS POUR LE VIREMENT COMPTE À COMPTE", 15, 158);
-
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(9);
-    doc.setTextColor(70, 70, 70);
-    const instructions =
-      "• Indiquez impérativement votre nom et votre numéro de référence client ou devis dans le motif de votre virement.\n" +
-      "• Pour les facturations de gré à gré et partenariats institutionnels, ce RIB officiel garantit la bonne réception directe des fonds.\n" +
-      "• Une fois le virement émis, un reçu temporaire vous sera délivré par mail (generalesquire@proton.me).";
-    doc.text(doc.splitTextToSize(instructions, 180), 15, 166);
-
-    // Pied de page
+    // ——— PIED DE PAGE ———
     doc.setFontSize(7);
     doc.setTextColor(150, 150, 150);
     doc.text(
