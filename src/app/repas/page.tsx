@@ -111,7 +111,7 @@ function Rotating3DFoodCarousel() {
 
   useEffect(() => {
     if (isHovered) return;
-    const timer = setInterval(nextCard, 5000);
+    const timer = setInterval(nextCard, 2200);
     return () => clearInterval(timer);
   }, [isHovered, nextCard]);
 
@@ -163,7 +163,7 @@ function Rotating3DFoodCarousel() {
                 transform: `translateX(calc(-50% + ${xOffset}px)) translateY(-50%) rotateY(${rotY}deg) scale(${scale})`,
                 opacity,
                 zIndex: zIdx,
-                transition: "transform 0.7s cubic-bezier(0.16,1,0.3,1), opacity 0.6s ease",
+                transition: "transform 1000ms cubic-bezier(0.25,1,0.5,1), opacity 1000ms ease",
                 border: isCenter ? "2px solid #E9D18F" : "1px solid rgba(197,160,89,0.15)",
                 boxShadow: isCenter
                   ? "0 0 50px rgba(197,160,89,0.55), 0 25px 60px rgba(0,0,0,0.6)"

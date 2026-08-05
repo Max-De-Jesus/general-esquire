@@ -182,7 +182,7 @@ function RadialGallery3D({ items }: { items: typeof GALLERY }) {
 
   useEffect(() => {
     if (isHovered) return;
-    const t = setInterval(next, 4500);
+    const t = setInterval(next, 2200);
     return () => clearInterval(t);
   }, [isHovered, next]);
 
@@ -245,7 +245,7 @@ function RadialGallery3D({ items }: { items: typeof GALLERY }) {
             <div
               key={idx}
               onClick={() => setActiveIdx(idx)}
-              className={`absolute cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] rounded-full overflow-hidden border-2 bg-[#0d0e0c] ${
+              className={`absolute cursor-pointer transition-all duration-1000 ease-[cubic-bezier(0.25,1,0.5,1)] rounded-full overflow-hidden border-2 bg-[#0d0e0c] ${
                 isCenter
                   ? "border-[#E9D18F] shadow-[0_0_35px_rgba(197,160,89,0.7),0_16px_36px_rgba(0,0,0,0.8)] z-30"
                   : "border-[#C5A059]/25 hover:border-[#C5A059]/60 z-10"
