@@ -6,7 +6,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
-import EmployerPaymentGuide from "@/components/EmployerPaymentGuide";
 
 function ClientAuthForm() {
   const router = useRouter();
@@ -453,9 +452,6 @@ function ClientAuthForm() {
           </>
         )}
       </div>
-
-      {/* Guide des consignes officielles employeur */}
-      <EmployerPaymentGuide className="mt-8 max-w-3xl" />
     </div>
   );
 }
