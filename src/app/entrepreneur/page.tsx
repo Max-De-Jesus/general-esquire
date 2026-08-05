@@ -135,21 +135,21 @@ function ExecutiveLuxurySlider() {
       };
     } else if (offset === 1 || (activeIdx === total - 1 && index === 0)) {
       return {
-        transform: "translateX(52%) rotateY(-26deg) scale(0.84)",
-        opacity: 0.55,
+        transform: "translateX(36%) rotateY(-20deg) scale(0.82)",
+        opacity: 0.5,
         zIndex: 10,
         isCenter: false,
       };
     } else if (offset === -1 || (activeIdx === 0 && index === total - 1)) {
       return {
-        transform: "translateX(-52%) rotateY(26deg) scale(0.84)",
-        opacity: 0.55,
+        transform: "translateX(-36%) rotateY(20deg) scale(0.82)",
+        opacity: 0.5,
         zIndex: 10,
         isCenter: false,
       };
     } else {
       return {
-        transform: offset > 0 ? "translateX(100%) scale(0.6)" : "translateX(-100%) scale(0.6)",
+        transform: offset > 0 ? "translateX(70%) scale(0.55)" : "translateX(-70%) scale(0.55)",
         opacity: 0,
         zIndex: 0,
         isCenter: false,
@@ -161,7 +161,7 @@ function ExecutiveLuxurySlider() {
 
   return (
     <div
-      className="relative w-full rounded-3xl overflow-hidden border border-[#C5A059]/40 bg-[#0d0f0c] p-6 sm:p-10 shadow-2xl select-none"
+      className="relative w-full rounded-3xl overflow-hidden border border-[#C5A059]/40 bg-[#0d0f0c] p-4 sm:p-10 shadow-2xl select-none"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onTouchStart={onTouchStart}
@@ -172,7 +172,7 @@ function ExecutiveLuxurySlider() {
 
       {/* 3D Coverflow Stage */}
       <div
-        className="relative flex items-center justify-center h-[260px] sm:h-[380px] md:h-[420px] w-full"
+        className="relative flex items-center justify-center h-[240px] sm:h-[380px] md:h-[420px] w-full overflow-hidden"
         style={{ perspective: "1000px" }}
       >
         <div className="relative w-full h-full flex items-center justify-center" style={{ transformStyle: "preserve-3d" }}>
@@ -185,8 +185,8 @@ function ExecutiveLuxurySlider() {
                 onClick={() => setActiveIdx(i)}
                 style={{
                   position: "absolute",
-                  width: "clamp(260px, 64vw, 680px)",
-                  height: "clamp(180px, 38vw, 360px)",
+                  width: "clamp(240px, 75vw, 680px)",
+                  height: "clamp(165px, 42vw, 360px)",
                   transform,
                   opacity,
                   zIndex,
@@ -395,42 +395,42 @@ export default function EntrepreneurPage() {
               {
                 icon: <ScaleIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
                 title: "Veille Juridique",
-                text: "une veille juridique sur les textes de loi et la jurisprudence ;",
+                text: "une veille juridique sur les textes de loi et la jurisprudence\u00A0;",
               },
               {
                 icon: <MailIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
                 title: "Domiciliation Temporaire",
-                text: "la domiciliation temporaire de vos courriers en cas d’urgence ;",
+                text: "la domiciliation temporaire de vos courriers en cas d’urgence\u00A0;",
               },
               {
                 icon: <ClipboardIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
                 title: "Assistance Formalités",
-                text: "l’assistance à l’occasion de vos formalités à forte implication juridique ;",
+                text: "l’assistance à l’occasion de vos formalités à forte implication juridique\u00A0;",
               },
               {
                 icon: <ChatIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
                 title: "Conseils Adaptés",
-                text: "des conseils adaptés à vos besoins si nécessaire en présentiel, et par défaut en visioconférence, audioconférence ou par écrit ;",
+                text: "des conseils adaptés à vos besoins si nécessaire en présentiel, et par défaut en visioconférence, audioconférence ou par écrit\u00A0;",
               },
               {
                 icon: <GlobeIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
                 title: "Traduction Juridique",
-                text: "la traduction de tous vos documents à valeur juridique en français, anglais (sans frais), chinois et russe (supplément à prévoir) ;",
+                text: "la traduction de tous vos documents à valeur juridique en français, anglais (sans frais), chinois et russe (supplément à prévoir)\u00A0;",
               },
               {
                 icon: <DocumentTextIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
                 title: "Rédaction d'Actes",
-                text: "la rédaction de contrats, lettres de recrutement, lettres de licenciement, lettres administratives diverses ;",
+                text: "la rédaction de contrats, lettres de recrutement, lettres de licenciement, lettres administratives diverses\u00A0;",
               },
               {
                 icon: <HandshakeIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
                 title: "Négociations Commerciales",
-                text: "l’assistance lors de vos négociations commerciales et professionnelles ;",
+                text: "l’assistance lors de vos négociations commerciales et professionnelles\u00A0;",
               },
               {
                 icon: <CourtIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
                 title: "Procédures Non Obligatoires",
-                text: "l’assistance dans les procédures sans représentation obligatoire ;",
+                text: "l’assistance dans les procédures sans représentation obligatoire\u00A0;",
               },
               {
                 icon: <LinkIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
@@ -440,7 +440,7 @@ export default function EntrepreneurPage() {
             ].map((item, i) => (
               <div
                 key={i}
-                className="p-7 rounded-2xl bg-[#131513] border border-[#C5A059]/30 hover:border-[#E9D18F] hover:bg-[#0F3823]/35 transition-all duration-300 shadow-xl flex flex-col justify-between group"
+                className="p-5 sm:p-7 rounded-2xl bg-[#131513] border border-[#C5A059]/30 hover:border-[#E9D18F] hover:bg-[#0F3823]/35 transition-all duration-300 shadow-xl flex flex-col justify-between group"
               >
                 <div>
                   {item.icon}

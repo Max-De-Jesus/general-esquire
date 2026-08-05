@@ -90,36 +90,41 @@ function Rotating3DFoodCarousel() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
-  const totalCards = CAROUSEL_3D_ITEMS.length;
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const total = CAROUSEL_3D_ITEMS.length;
 
   const nextCard = useCallback(() => {
-    setActiveIndex((prev) => (prev + 1) % totalCards);
-  }, [totalCards]);
+    setActiveIndex((prev) => (prev + 1) % total);
+  }, [total]);
 
   const prevCard = useCallback(() => {
-    setActiveIndex((prev) => (prev - 1 + totalCards) % totalCards);
-  }, [totalCards]);
+    setActiveIndex((prev) => (prev - 1 + total) % total);
+  }, [total]);
 
-  // Rotation automatique continue toutes les 2,50 secondes sans nécessiter de clic
   useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % totalCards);
-    }, 2500);
+    if (isHovered) return;
+    const timer = setInterval(nextCard, 5000);
     return () => clearInterval(timer);
-  }, [totalCards]);
+  }, [isHovered, nextCard]);
 
-  // Normalized offset with circular wrap (-half .. +half)
-  const getDiff = (idx: number) => {
-    let d = idx - activeIndex;
-    if (d > totalCards / 2) d -= totalCards;
-    if (d < -totalCards / 2) d += totalCards;
-    return d;
+  const getDiff = (index: number) => {
+    let diff = index - activeIndex;
+    if (diff > total / 2) diff -= total;
+    if (diff < -total / 2) diff += total;
+    return diff;
   };
 
   return (
     <div
-      className="relative w-full max-w-5xl mx-auto select-none"
+      className="relative w-full max-w-5xl mx-auto select-none overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onTouchStart={(e) => setTouchStartX(e.touches[0].clientX)}
@@ -132,7 +137,7 @@ function Rotating3DFoodCarousel() {
     >
       {/* ── Coverflow Stage ─────────────────────────────── */}
       <div
-        className="relative w-full h-[280px] sm:h-[440px] overflow-hidden"
+        className="relative w-full h-[240px] sm:h-[440px] overflow-hidden"
         style={{ perspective: "1100px" }}
       >
         {CAROUSEL_3D_ITEMS.map((item, idx) => {
@@ -141,10 +146,10 @@ function Rotating3DFoodCarousel() {
           if (absD > 2) return null; // only center ± 2
 
           const isCenter = absD === 0;
-          const xOffset = diff * 155;      // px horizontal spread
-          const rotY = -diff * 42;          // tilt inward
-          const scale = isCenter ? 1 : absD === 1 ? 0.76 : 0.55;
-          const opacity = isCenter ? 1 : absD === 1 ? 0.68 : 0.38;
+          const xOffset = isMobile ? diff * 85 : diff * 155; // px horizontal spread
+          const rotY = -diff * (isMobile ? 28 : 42);          // tilt inward
+          const scale = isCenter ? 1 : absD === 1 ? (isMobile ? 0.72 : 0.76) : 0.55;
+          const opacity = isCenter ? 1 : absD === 1 ? (isMobile ? 0.55 : 0.68) : 0.38;
           const zIdx = 20 - absD * 6;      // center on top
 
           return (
@@ -153,8 +158,8 @@ function Rotating3DFoodCarousel() {
               onClick={() => setActiveIndex(idx)}
               className="absolute top-1/2 left-1/2 rounded-full overflow-hidden cursor-pointer"
               style={{
-                width: "clamp(175px, 27vw, 305px)",
-                height: "clamp(175px, 27vw, 305px)",
+                width: isMobile ? "clamp(145px, 42vw, 305px)" : "clamp(175px, 27vw, 305px)",
+                height: isMobile ? "clamp(145px, 42vw, 305px)" : "clamp(175px, 27vw, 305px)",
                 transform: `translateX(calc(-50% + ${xOffset}px)) translateY(-50%) rotateY(${rotY}deg) scale(${scale})`,
                 opacity,
                 zIndex: zIdx,
@@ -171,7 +176,7 @@ function Rotating3DFoodCarousel() {
                 fill
                 priority={absD < 2}
                 unoptimized
-                sizes="(max-width: 640px) 175px, 305px"
+                sizes="(max-width: 640px) 145px, 305px"
                 className="object-cover object-center"
               />
               <div
@@ -182,14 +187,14 @@ function Rotating3DFoodCarousel() {
                 }`}
               />
               {isCenter && (
-                <div className="absolute bottom-4 inset-x-0 text-center px-3">
+                <div className="absolute bottom-3 sm:bottom-4 inset-x-0 text-center px-2 sm:px-3">
                   {item.title && (
-                    <p className="font-cinzel text-[11px] sm:text-xs text-[#E9D18F] font-bold tracking-wider drop-shadow-md truncate">
+                    <p className="font-cinzel text-[10px] sm:text-xs text-[#E9D18F] font-bold tracking-wider drop-shadow-md truncate">
                       {item.title}
                     </p>
                   )}
                   {item.tag && (
-                    <p className="font-cormorant text-[10px] sm:text-[11px] text-[#C5A059] mt-0.5">
+                    <p className="font-cormorant text-[9px] sm:text-[11px] text-[#C5A059] mt-0.5 truncate">
                       {item.tag}
                     </p>
                   )}
@@ -201,18 +206,18 @@ function Rotating3DFoodCarousel() {
       </div>
 
       {/* ── Navigation Buttons ────────────────────────────── */}
-      <div className="absolute top-1/2 -translate-y-1/2 left-2 right-2 flex items-center justify-between pointer-events-none z-50">
+      <div className="absolute top-1/2 -translate-y-1/2 left-1 right-1 sm:left-2 sm:right-2 flex items-center justify-between pointer-events-none z-50">
         <button
           onClick={prevCard}
           aria-label="Carte précédente"
-          className="pointer-events-auto w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#131513]/80 border-2 border-[#C5A059]/60 text-[#E9D18F] hover:border-[#E9D18F] hover:bg-[#0F3823] hover:text-white transition-all duration-300 flex items-center justify-center text-xl sm:text-2xl shadow-[0_0_20px_rgba(197,160,89,0.3)] hover:scale-110 cursor-pointer backdrop-blur-md"
+          className="pointer-events-auto w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-[#131513]/85 border border-[#C5A059]/60 text-[#E9D18F] hover:border-[#E9D18F] hover:bg-[#0F3823] hover:text-white transition-all duration-300 flex items-center justify-center text-lg sm:text-2xl shadow-[0_0_20px_rgba(197,160,89,0.3)] hover:scale-110 cursor-pointer backdrop-blur-md"
         >
           ‹
         </button>
         <button
           onClick={nextCard}
           aria-label="Carte suivante"
-          className="pointer-events-auto w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#131513]/80 border-2 border-[#C5A059]/60 text-[#E9D18F] hover:border-[#E9D18F] hover:bg-[#0F3823] hover:text-white transition-all duration-300 flex items-center justify-center text-xl sm:text-2xl shadow-[0_0_20px_rgba(197,160,89,0.3)] hover:scale-110 cursor-pointer backdrop-blur-md"
+          className="pointer-events-auto w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-[#131513]/85 border border-[#C5A059]/60 text-[#E9D18F] hover:border-[#E9D18F] hover:bg-[#0F3823] hover:text-white transition-all duration-300 flex items-center justify-center text-lg sm:text-2xl shadow-[0_0_20px_rgba(197,160,89,0.3)] hover:scale-110 cursor-pointer backdrop-blur-md"
         >
           ›
         </button>
