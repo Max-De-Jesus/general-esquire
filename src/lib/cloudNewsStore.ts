@@ -1,114 +1,117 @@
 import { NewsItem } from "@/data/adminStore";
 
-const CLOUD_STORE_URL = "https://api.restful-api.dev/objects/ff8081819f7e10ae019fb50798a7509f";
 const LOCAL_STORAGE_KEY = "ge_admin_news";
-
-// ─── Articles permanents intégrés dans le code ─────────────────────────────
-// Ces articles sont toujours affichés, quel que soit l'état du cloud store.
-const PERMANENT_NEWS: NewsItem[] = [
-  {
-    id: "news-madagascar-2026",
-    title: "Bientôt : Voyage touristique exceptionnel à Madagascar",
-    subtitle: "Une aventure unique au cœur de l'océan Indien",
-    summary:
-      "General Esquire prépare un voyage touristique exceptionnel à Madagascar. Découvrez prochainement un séjour unique au cœur d'une île aux paysages spectaculaires, à la biodiversité incomparable et à la richesse culturelle fascinante.",
-    content: `General Esquire a le plaisir d'annoncer l'organisation prochaine d'un voyage touristique exceptionnel à Madagascar.
-
-Cette aventure offrira aux participants une immersion au cœur de l'une des plus belles destinations d'Afrique et de l'océan Indien, réputée pour sa biodiversité unique, ses paysages grandioses et son patrimoine culturel exceptionnel.
-
-Au programme :
-
-• Découverte des célèbres lémuriens dans leur habitat naturel ;
-• Visite des sites emblématiques et des réserves naturelles ;
-• Exploration des plages paradisiaques et des paysages majestueux ;
-• Immersion dans les traditions et la culture malgaches ;
-• Accompagnement personnalisé durant tout le séjour.
-
-Ce voyage s'inscrit dans notre volonté de proposer des expériences enrichissantes, favorisant la découverte, les échanges culturels et le développement personnel.
-
-Les dates, le programme détaillé et les modalités d'inscription seront communiqués très prochainement sur notre plateforme.
-
-Restez connectés à notre espace Actualités & Annonces pour être parmi les premiers informés de l'ouverture officielle des inscriptions.`,
-    category: "Espace Activités",
-    date: "4 août 2026",
-    imageUrl: "/images/images.webp",
-    images: ["/images/images.webp", "/images/@-LemursPark-Lemur-Catta.jpg"],
-    author: "Administration General Esquire",
-    isFeatured: true,
-    isPublished: true,
-  },
-];
+const CLOUD_STORE_URL = "https://api.restful-api.dev/objects/ff8081819f7e10ae019fd3c71c167c9f";
 
 /**
- * Fusionne les articles permanents avec les articles du cloud/local,
- * en évitant les doublons (par id). Les permanents sont toujours en tête.
+ * Récupère la liste des actualités depuis l'API serveur /api/news.
+ * En cas d'indisponibilité, utilise le cache local localStorage.
+ * AUCUNE actualité n'est codée en dur dans le code.
  */
-function mergeWithPermanent(cloudNews: NewsItem[]): NewsItem[] {
-  const cloudIds = new Set(cloudNews.map((n) => n.id));
-  const permanentToAdd = PERMANENT_NEWS.filter((p) => !cloudIds.has(p.id));
-  return [...permanentToAdd, ...cloudNews];
-}
-
 export async function getCloudNews(): Promise<NewsItem[]> {
+  // 1. Tenter la récupération via l'API interne /api/news
   try {
-    const res = await fetch(CLOUD_STORE_URL, { cache: "no-store" });
+    const res = await fetch("/api/news", { cache: "no-store" });
     if (res.ok) {
       const data = await res.json();
-      if (data && data.data && Array.isArray(data.data.news)) {
-        const merged = mergeWithPermanent(data.data.news);
-        // Cache locally for offline/resilience
+      if (data && Array.isArray(data.news)) {
         if (typeof window !== "undefined") {
-          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(merged));
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data.news));
         }
-        return merged;
+        return data.news;
       }
     }
   } catch (err) {
-    console.warn("Cloud news API unavailable, using local cache fallback:", err);
+    console.warn("API /api/news non disponible, tentative de repli...", err);
   }
 
-  // Local storage fallback
+  // 2. Tenter la récupération via l'API REST cloud externe (secours)
+  try {
+    const cloudRes = await fetch(CLOUD_STORE_URL, { cache: "no-store" });
+    if (cloudRes.ok) {
+      const cloudData = await cloudRes.json();
+      if (cloudData && cloudData.data && Array.isArray(cloudData.data.news)) {
+        if (typeof window !== "undefined") {
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(cloudData.data.news));
+        }
+        return cloudData.data.news;
+      }
+    }
+  } catch {
+    // Continuer vers le cache local
+  }
+
+  // 3. Repli sur le stockage local du navigateur
   try {
     if (typeof window !== "undefined") {
       const localStored = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (localStored) {
-        return mergeWithPermanent(JSON.parse(localStored));
+        return JSON.parse(localStored);
       }
     }
   } catch {
-    // Ignore
+    // Ignorer
   }
 
-  // Dernier recours : uniquement les articles permanents
-  return [...PERMANENT_NEWS];
+  return [];
 }
 
+/**
+ * Met à jour la liste des actualités sur le serveur (/api/news), le Cloud Store et en local.
+ */
 export async function updateCloudNews(newsList: NewsItem[]): Promise<boolean> {
-  // Always update local storage first for guaranteed instant persistence
+  // 1. Enregistrement local immédiat pour garantir la réactivité UI
   try {
     if (typeof window !== "undefined") {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newsList));
     }
   } catch (lsErr) {
-    console.warn("Local storage news save error:", lsErr);
+    console.warn("Erreur sauvegarde locale actualités:", lsErr);
   }
 
+  // 2. Enregistrement sur le serveur via /api/news
+  let apiSuccess = false;
   try {
-    const res = await fetch(CLOUD_STORE_URL, {
+    const res = await fetch("/api/news", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newsList),
+    });
+    if (res.ok) {
+      apiSuccess = true;
+    }
+  } catch (err) {
+    console.warn("Mise à jour /api/news échouée (sauvegardé en local):", err);
+  }
+
+  // 3. Synchronisation optionnelle avec le Cloud Store REST externe
+  try {
+    await fetch(CLOUD_STORE_URL, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name: "General Esquire News Store",
-        data: {
-          news: newsList,
-        },
+        data: { news: newsList },
       }),
     });
-    return res.ok;
-  } catch (err) {
-    console.warn("Cloud news API update failed (saved to local cache smoothly):", err);
-    return true; // Return true as local storage succeeded
+  } catch {
+    // Ignorer les erreurs réseau externes
   }
+
+  return apiSuccess || true;
 }
 
-
+/**
+ * Supprime une actualité par son ID depuis le serveur /api/news et met à jour le store local.
+ */
+export async function deleteCloudNewsItem(id: string): Promise<NewsItem[]> {
+  try {
+    const current = await getCloudNews();
+    const updated = current.filter((item) => item.id !== id);
+    await updateCloudNews(updated);
+    return updated;
+  } catch (err) {
+    console.error("Erreur lors de la suppression de l'actualité:", err);
+    return [];
+  }
+}
