@@ -262,6 +262,7 @@ export default function ProfessionnelPage() {
                       "Droit pénal des affaires — abus de biens sociaux, délit d'initié",
                       "Droit de la nationalité — naturalisation française",
                       "Droit de la profession d'avocat — inscription, omission, procédure disciplinaire, défense à une action en responsabilité civile professionnelle",
+                      "Droit administratif — litiges de la fonction publique",
                     ].map((item, i) => (
                       <li key={i} className="flex items-start gap-2.5 leading-relaxed">
                         <span className="text-[#C5A059] mt-1.5 flex-shrink-0 text-xs">◆</span>
@@ -279,7 +280,6 @@ export default function ProfessionnelPage() {
                       "Droit du travail — procédure de licenciement disciplinaire et économique, reclassement professionnel",
                       "Droit pénal — procédure pénale, chambre de l'instruction, droit pénitentiaire, crimes et délits contre les personnes et contre les biens, infractions routières",
                       "Droit des étrangers — titres de séjour, procédures de référé administratif, visas d'entrée, OQTF, IRTF, regroupement familial, OFPRA et CNDA",
-                      "Droit administratif — litiges de la fonction publique",
                       "Droits et libertés fondamentaux — requête et procédure devant la Cour européenne des droits de l'Homme",
                     ].map((item, i) => (
                       <li key={i} className="flex items-start gap-2.5 leading-relaxed">
