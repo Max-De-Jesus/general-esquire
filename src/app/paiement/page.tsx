@@ -52,6 +52,11 @@ const SERVICE_PRESETS: Record<string, ServicePreset[]> = {
     { id: "chrys-stay", nameFr: "Séjour Cocooning Touristique Bénin (2 semaines)", nameEn: "Bénin Tourist Cocooning Stay (2 weeks)", price: 1500 },
     { id: "chrys-custom", nameFr: "Forfait de groupe sur devis", nameEn: "Group Package Quote", price: 0, isCustom: true },
   ],
+  "Conseil Juridique": [
+    { id: "cj-monthly", nameFr: "Mensualité Conseil Juridique", nameEn: "Legal Advisory Monthly Fee", price: 1000 },
+    { id: "cj-ponctuel", nameFr: "Consultation ponctuelle (forfait)", nameEn: "One-time legal consultation (fixed fee)", price: 300 },
+    { id: "cj-custom", nameFr: "Prestation sur devis", nameEn: "Quote-based service", price: 0, isCustom: true },
+  ],
 };
 
 /* ══════════════════════════════════════════════════════════════════
@@ -125,14 +130,33 @@ export default function PaymentPage() {
   const paypalClientId =
     process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ||
     "AdaU7YACT2DL7arhwDiRkHrYpPzgfXMaMsAsDLc151AVW8oXF56GJSfSgH4Yg5zyq3RL6PUJSXB-8umj";
+  /* Plan ID PayPal pour Cocooning Touristique (abonnement automatique) */
+  const cocooningPlanId =
+    process.env.NEXT_PUBLIC_PAYPAL_COCOONING_PLAN_ID || "PLAN_ID_NON_CONFIGURE";
+  const isCocooningPlanReady = cocooningPlanId !== "PLAN_ID_NON_CONFIGURE";
   const isStripeLiveReady = stripePublishableKey.startsWith("pk_live_") || stripePublishableKey.startsWith("pk_test_");
   const isPaypalLiveReady = paypalClientId.length > 10 && !paypalClientId.includes("votre_client_id");
 
-  /* ── Detect Recurring / Subscription Services ── */
+  /* ══════════════════════════════════════════════════════════════════
+     TROIS FLAGS PAYPAL INDÉPENDANTS
+     ══════════════════════════════════════════════════════════════════
+     A) isCocooningService   → actions.subscription.create() (prélèvement automatique)
+     B) isConseilJuridique   → actions.order.create() + capture() (paiement unitaire mensuel manuel)
+     C) isSubscriptionService → comportement existant (order/capture pour abonnements CdE / Pro)
+     ══════════════════════════════════════════════════════════════════ */
+  /* A — Cocooning Touristique : abonnement PayPal automatique */
+  const isCocooningService = selectedServiceId === "chrys-stay";
+
+  /* B — Conseil Juridique : paiement simple mensuel (sans récurrence automatique) */
+  const isConseilJuridiqueService = selectedServiceId.startsWith("cj-");
+
+  /* C — Tous les autres abonnements (Chef d'Entreprise, Pro du Droit…) */
   const isSubscriptionService =
-    selectedServiceId.includes("annual") ||
-    selectedServiceId.includes("monthly") ||
-    selectedServiceId.includes("quarterly");
+    !isCocooningService &&
+    !isConseilJuridiqueService &&
+    (selectedServiceId.includes("annual") ||
+      selectedServiceId.includes("monthly") ||
+      selectedServiceId.includes("quarterly"));
 
   const getSubscriptionFrequency = () => {
     if (selectedServiceId.includes("monthly")) return lang === "fr" ? "Mensuel (1 mois)" : "Monthly (1 month)";
@@ -386,14 +410,23 @@ export default function PaymentPage() {
     }
   };
 
-  /* ── PayPal handler ── */
+  /* ── PayPal handler (modal simulation — 3 cas indépendants) ── */
   const handlePaypalSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setPaypalProcessing(true);
     setTimeout(async () => {
       setPaypalProcessing(false);
       setShowPaypalModal(false);
-      await submitTransaction(isSubscriptionService ? "PayPal (Abonnement Récurrent)" : "PayPal");
+      if (isCocooningService) {
+        /* Cas A : Cocooning → Abonnement automatique PayPal */
+        await submitTransaction("PayPal Abonnement Cocooning Touristique (Simulation)");
+      } else if (isConseilJuridiqueService) {
+        /* Cas B : Conseil Juridique → Paiement simple mensuel, sans récurrence */
+        await submitTransaction("PayPal Mensualité Conseil Juridique (Paiement Simple)");
+      } else {
+        /* Cas C : Tous les autres (Chef d'Entreprise, Pro du Droit…) */
+        await submitTransaction(isSubscriptionService ? "PayPal (Abonnement Récurrent)" : "PayPal");
+      }
     }, 2000);
   };
 
@@ -1324,11 +1357,53 @@ export default function PaymentPage() {
                     </form>
                   )}
 
-                  {/* ── PayPal (SDK Officiel avec Tokens v3 Récurrents / Modal Simulation) ── */}
+                  {/* ══ PayPal — 3 SYSTÈMES INDÉPENDANTS ══
+                      A) Cocooning Touristique  → subscription.create()  (abonnement automatique)
+                      B) Conseil Juridique       → order.create()/capture() (paiement mensuel simple, sans récurrence)
+                      C) Tous les autres         → comportement existant order/capture
+                  ════════════════════════════════════════════════════════════ */}
                   {paymentMethod === "paypal" && (
                     <div className="space-y-4 text-center animate-fadeIn">
 
-                      {/* Recurring Plan Detail Box */}
+                      {/* ═══ CAS A : Cocooning Touristique — Abonnement automatique PayPal ═══ */}
+                      {isCocooningService && (
+                        <div className="bg-emerald-900/20 border border-emerald-500/40 rounded-2xl p-4 text-left font-sans text-xs space-y-2 animate-fadeIn">
+                          <div className="flex items-center justify-between">
+                            <span className="font-cinzel text-xs font-bold text-emerald-300 uppercase tracking-wider flex items-center gap-1.5">
+                              <span>🌴</span> {lang === "fr" ? "Abonnement Cocooning Touristique" : "Cocooning Tourist Subscription"}
+                            </span>
+                            <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-[10px]">
+                              PayPal Subscription
+                            </span>
+                          </div>
+                          <p className="text-[#cabfa6] font-cormorant text-sm leading-relaxed">
+                            {lang === "fr"
+                              ? "Votre abonnement Cocooning Touristique sera activé automatiquement. Les prélèvements sont gérés par PayPal selon le plan sélectionné."
+                              : "Your Cocooning Tourist subscription will be activated automatically. Charges are managed by PayPal according to the selected plan."}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* ═══ CAS B : Conseil Juridique — Paiement mensuel simple (sans récurrence) ═══ */}
+                      {isConseilJuridiqueService && (
+                        <div className="bg-amber-900/20 border border-[#C5A059]/40 rounded-2xl p-4 text-left font-sans text-xs space-y-2 animate-fadeIn">
+                          <div className="flex items-center justify-between">
+                            <span className="font-cinzel text-xs font-bold text-[#E9D18F] uppercase tracking-wider flex items-center gap-1.5">
+                              <span>⚖️</span> {lang === "fr" ? "Paiement Mensuel Unique" : "One-Time Monthly Payment"}
+                            </span>
+                            <span className="px-2 py-0.5 rounded-full bg-[#C5A059]/10 border border-[#C5A059]/30 text-[#C5A059] font-mono text-[10px]">
+                              Paiement Simple
+                            </span>
+                          </div>
+                          <p className="text-[#cabfa6] font-cormorant text-sm leading-relaxed">
+                            {lang === "fr"
+                              ? "Vous payez uniquement la mensualité du mois en cours. Aucun abonnement n'est créé — aucun prélèvement futur automatique. Le mois suivant, vous reviendrez sur votre espace client pour régler la prochaine échéance."
+                              : "You are paying only the current month's fee. No subscription is created — no future automatic charge. Next month, you will return to your client area to pay the next instalment."}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* ═══ CAS C : Tous les autres — Boîte récurrence existante ═══ */}
                       {isSubscriptionService && (
                         <div className="bg-[#003087]/20 border border-[#0079C1]/50 rounded-2xl p-4 text-left font-sans text-xs space-y-2 animate-fadeIn">
                           <div className="flex items-center justify-between">
@@ -1347,72 +1422,222 @@ export default function PaymentPage() {
                         </div>
                       )}
 
-                      {isPaypalLiveReady ? (
-                        <PayPalScriptProvider
-                          options={{
-                            clientId: paypalClientId,
-                            currency: "EUR",
-                            intent: "capture",
-                            vault: isSubscriptionService ? true : false,
-                          }}
-                        >
-                          <div className="py-2">
-                            <PayPalButtons
-                              style={{
-                                layout: "vertical",
-                                color: "gold",
-                                shape: "rect",
-                                label: isSubscriptionService ? "subscribe" : "pay",
-                              }}
-                              createOrder={(data, actions) => {
-                                return actions.order.create({
-                                  intent: "CAPTURE",
-                                  purchase_units: [
-                                    {
-                                      description: `${getSelectedServiceText()} ${isSubscriptionService ? `[Paiement Récurrent - ${getSubscriptionFrequency()}]` : ""}`,
-                                      amount: {
-                                        currency_code: "EUR",
-                                        value: calculatedAmount.toString(),
-                                      },
-                                    },
-                                  ],
-                                });
-                              }}
-                              onApprove={async (data, actions) => {
-                                if (actions.order) {
-                                  await actions.order.capture();
-                                  await submitTransaction(
-                                    `PayPal ${isSubscriptionService ? "Récurrent/Abonnement (Tokens v3)" : "Réel"} (ID: ${data.orderID})`
-                                  );
-                                }
-                              }}
-                              onError={(err) => {
-                                console.error("PayPal Error:", err);
-                                setPaymentError("Une erreur est survenue avec PayPal.");
-                              }}
-                            />
-                          </div>
-                        </PayPalScriptProvider>
-                      ) : (
+                      {/* ═══════════════════════════════════════════════════════════════
+                          BRANCHE A — Cocooning Touristique : subscription.create()
+                          → Prélèvement automatique via plan PayPal (abonnement récurrent)
+                          ═══════════════════════════════════════════════════════════════ */}
+                      {isCocooningService && (
                         <>
-                          <p className="font-cormorant text-sm text-[#cabfa6] italic">
-                            {isSubscriptionService
-                              ? (lang === "fr"
-                                  ? "Règlement et enregistrement de l'abonnement récurrent via la passerelle PayPal."
-                                  : "Payment and recurring subscription vaulting setup via PayPal gateway.")
-                              : (lang === "fr"
-                                  ? "Règlement sécurisé et rapide via votre compte PayPal."
-                                  : "Fast and secure checkout using your PayPal balance.")}
-                          </p>
-                          <button
-                            type="button"
-                            onClick={() => setShowPaypalModal(true)}
-                            className="relative group overflow-hidden w-full py-4.5 rounded-2xl bg-gradient-to-r from-[#f2c94c] via-[#ffd65c] to-[#f2c94c] hover:brightness-110 text-slate-950 font-cinzel text-xs font-black tracking-[0.2em] uppercase flex items-center justify-center gap-3 cursor-pointer shadow-[0_10px_30px_rgba(242,201,76,0.35)] hover:shadow-[0_15px_40px_rgba(242,201,76,0.55)] transition-all duration-300 transform hover:scale-[1.01]"
-                          >
-                            <span className="text-base font-extrabold tracking-tight italic font-serif text-[#003087]">PayPal</span>
-                            <span>{isSubscriptionService ? (lang === "fr" ? "S'abonner & Régler" : "Subscribe & Pay") : (lang === "fr" ? "Payer avec PayPal / Carte" : "Checkout with PayPal / Card")}</span>
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
-                          </button>
+                          {isPaypalLiveReady && isCocooningPlanReady ? (
+                            <PayPalScriptProvider
+                              options={{
+                                clientId: paypalClientId,
+                                currency: "EUR",
+                                vault: true,
+                                intent: "subscription",
+                              }}
+                            >
+                              <div className="py-2">
+                                <PayPalButtons
+                                  style={{
+                                    layout: "vertical",
+                                    color: "gold",
+                                    shape: "rect",
+                                    label: "subscribe",
+                                  }}
+                                  createSubscription={(data, actions) => {
+                                    return actions.subscription.create({
+                                      plan_id: cocooningPlanId,
+                                    });
+                                  }}
+                                  onApprove={async (data) => {
+                                    await submitTransaction(
+                                      `PayPal Abonnement Cocooning Touristique (Sub ID: ${data.subscriptionID})`
+                                    );
+                                  }}
+                                  onError={(err) => {
+                                    console.error("PayPal Subscription Error:", err);
+                                    setPaymentError("Une erreur est survenue avec PayPal Subscription.");
+                                  }}
+                                />
+                              </div>
+                            </PayPalScriptProvider>
+                          ) : (
+                            <>
+                              {!isCocooningPlanReady && (
+                                <div className="bg-amber-900/20 border border-amber-500/40 rounded-xl p-3 text-xs text-amber-300 font-cormorant text-left mb-3">
+                                  ⚠️ <strong>Configuration requise :</strong> Renseignez{" "}
+                                  <code className="bg-black/40 px-1 rounded">NEXT_PUBLIC_PAYPAL_COCOONING_PLAN_ID</code>{" "}
+                                  dans <code className="bg-black/40 px-1 rounded">.env.local</code> pour activer le SDK
+                                  PayPal Subscription en production.
+                                </div>
+                              )}
+                              <p className="font-cormorant text-sm text-[#cabfa6] italic">
+                                {lang === "fr"
+                                  ? "Activation de l'abonnement automatique Cocooning Touristique via la passerelle PayPal Subscription."
+                                  : "Activating automatic Cocooning Tourist subscription via PayPal Subscription gateway."}
+                              </p>
+                              <button
+                                type="button"
+                                onClick={() => setShowPaypalModal(true)}
+                                className="relative group overflow-hidden w-full py-4.5 rounded-2xl bg-gradient-to-r from-[#f2c94c] via-[#ffd65c] to-[#f2c94c] hover:brightness-110 text-slate-950 font-cinzel text-xs font-black tracking-[0.2em] uppercase flex items-center justify-center gap-3 cursor-pointer shadow-[0_10px_30px_rgba(242,201,76,0.35)] hover:shadow-[0_15px_40px_rgba(242,201,76,0.55)] transition-all duration-300 transform hover:scale-[1.01]"
+                              >
+                                <span className="text-base font-extrabold tracking-tight italic font-serif text-[#003087]">PayPal</span>
+                                <span>🌴 {lang === "fr" ? "S'abonner — Cocooning Touristique" : "Subscribe — Tourist Cocooning"}</span>
+                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
+                              </button>
+                            </>
+                          )}
+                        </>
+                      )}
+
+                      {/* ═══════════════════════════════════════════════════════════════
+                          BRANCHE B — Conseil Juridique : order.create() + capture()
+                          → Paiement mensuel unique, sans abonnement, sans récurrence
+                          Le client revient manuellement chaque mois
+                          ═══════════════════════════════════════════════════════════════ */}
+                      {isConseilJuridiqueService && (
+                        <>
+                          {isPaypalLiveReady ? (
+                            <PayPalScriptProvider
+                              options={{
+                                clientId: paypalClientId,
+                                currency: "EUR",
+                                intent: "capture",
+                              }}
+                            >
+                              <div className="py-2">
+                                <PayPalButtons
+                                  style={{
+                                    layout: "vertical",
+                                    color: "gold",
+                                    shape: "rect",
+                                    label: "pay",
+                                  }}
+                                  createOrder={(data, actions) => {
+                                    return actions.order.create({
+                                      intent: "CAPTURE",
+                                      purchase_units: [
+                                        {
+                                          description: `${getSelectedServiceText()} — Mensualité Conseil Juridique`,
+                                          amount: {
+                                            currency_code: "EUR",
+                                            value: calculatedAmount.toString(),
+                                          },
+                                        },
+                                      ],
+                                    });
+                                  }}
+                                  onApprove={async (data, actions) => {
+                                    if (actions.order) {
+                                      await actions.order.capture();
+                                      await submitTransaction(
+                                        `PayPal Mensualité Conseil Juridique — Paiement Simple (ID: ${data.orderID})`
+                                      );
+                                    }
+                                  }}
+                                  onError={(err) => {
+                                    console.error("PayPal Order Error:", err);
+                                    setPaymentError("Une erreur est survenue avec PayPal.");
+                                  }}
+                                />
+                              </div>
+                            </PayPalScriptProvider>
+                          ) : (
+                            <>
+                              <p className="font-cormorant text-sm text-[#cabfa6] italic">
+                                {lang === "fr"
+                                  ? "Paiement sécurisé de la mensualité en cours. Aucun abonnement créé, aucun prélèvement futur automatique."
+                                  : "Secure payment for the current month's fee. No subscription, no future automatic charge."}
+                              </p>
+                              <button
+                                type="button"
+                                onClick={() => setShowPaypalModal(true)}
+                                className="relative group overflow-hidden w-full py-4.5 rounded-2xl bg-gradient-to-r from-[#f2c94c] via-[#ffd65c] to-[#f2c94c] hover:brightness-110 text-slate-950 font-cinzel text-xs font-black tracking-[0.2em] uppercase flex items-center justify-center gap-3 cursor-pointer shadow-[0_10px_30px_rgba(242,201,76,0.35)] hover:shadow-[0_15px_40px_rgba(242,201,76,0.55)] transition-all duration-300 transform hover:scale-[1.01]"
+                              >
+                                <span className="text-base font-extrabold tracking-tight italic font-serif text-[#003087]">PayPal</span>
+                                <span>⚖️ {lang === "fr" ? "Payer ma mensualité" : "Pay this month's fee"}</span>
+                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
+                              </button>
+                            </>
+                          )}
+                        </>
+                      )}
+
+                      {/* ═══════════════════════════════════════════════════════════════
+                          BRANCHE C — Tous les autres profils : comportement existant
+                          (Chef d'Entreprise, Professionnel du Droit, Particulier, etc.)
+                          ═══════════════════════════════════════════════════════════════ */}
+                      {!isCocooningService && !isConseilJuridiqueService && (
+                        <>
+                          {isPaypalLiveReady ? (
+                            <PayPalScriptProvider
+                              options={{
+                                clientId: paypalClientId,
+                                currency: "EUR",
+                                intent: "capture",
+                                vault: isSubscriptionService ? true : false,
+                              }}
+                            >
+                              <div className="py-2">
+                                <PayPalButtons
+                                  style={{
+                                    layout: "vertical",
+                                    color: "gold",
+                                    shape: "rect",
+                                    label: isSubscriptionService ? "subscribe" : "pay",
+                                  }}
+                                  createOrder={(data, actions) => {
+                                    return actions.order.create({
+                                      intent: "CAPTURE",
+                                      purchase_units: [
+                                        {
+                                          description: `${getSelectedServiceText()} ${isSubscriptionService ? `[Paiement Récurrent - ${getSubscriptionFrequency()}]` : ""}`,
+                                          amount: {
+                                            currency_code: "EUR",
+                                            value: calculatedAmount.toString(),
+                                          },
+                                        },
+                                      ],
+                                    });
+                                  }}
+                                  onApprove={async (data, actions) => {
+                                    if (actions.order) {
+                                      await actions.order.capture();
+                                      await submitTransaction(
+                                        `PayPal ${isSubscriptionService ? "Récurrent/Abonnement (Tokens v3)" : "Réel"} (ID: ${data.orderID})`
+                                      );
+                                    }
+                                  }}
+                                  onError={(err) => {
+                                    console.error("PayPal Error:", err);
+                                    setPaymentError("Une erreur est survenue avec PayPal.");
+                                  }}
+                                />
+                              </div>
+                            </PayPalScriptProvider>
+                          ) : (
+                            <>
+                              <p className="font-cormorant text-sm text-[#cabfa6] italic">
+                                {isSubscriptionService
+                                  ? (lang === "fr"
+                                      ? "Règlement et enregistrement de l'abonnement récurrent via la passerelle PayPal."
+                                      : "Payment and recurring subscription vaulting setup via PayPal gateway.")
+                                  : (lang === "fr"
+                                      ? "Règlement sécurisé et rapide via votre compte PayPal."
+                                      : "Fast and secure checkout using your PayPal balance.")}
+                              </p>
+                              <button
+                                type="button"
+                                onClick={() => setShowPaypalModal(true)}
+                                className="relative group overflow-hidden w-full py-4.5 rounded-2xl bg-gradient-to-r from-[#f2c94c] via-[#ffd65c] to-[#f2c94c] hover:brightness-110 text-slate-950 font-cinzel text-xs font-black tracking-[0.2em] uppercase flex items-center justify-center gap-3 cursor-pointer shadow-[0_10px_30px_rgba(242,201,76,0.35)] hover:shadow-[0_15px_40px_rgba(242,201,76,0.55)] transition-all duration-300 transform hover:scale-[1.01]"
+                              >
+                                <span className="text-base font-extrabold tracking-tight italic font-serif text-[#003087]">PayPal</span>
+                                <span>{isSubscriptionService ? (lang === "fr" ? "S'abonner & Régler" : "Subscribe & Pay") : (lang === "fr" ? "Payer avec PayPal / Carte" : "Checkout with PayPal / Card")}</span>
+                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
+                              </button>
+                            </>
+                          )}
                         </>
                       )}
                     </div>
