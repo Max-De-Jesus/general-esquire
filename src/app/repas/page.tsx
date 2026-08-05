@@ -356,7 +356,7 @@ export default function RepasPage() {
       <header className="w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
           <Image
-            src="/images/bannerrepas.png"
+            src="/images/Tchooh6.jpeg"
             alt="Bannière Repas & Gastronomie — General Esquire"
             fill
             priority
@@ -518,7 +518,7 @@ export default function RepasPage() {
 
               <div className="lg:col-span-5 relative h-64 sm:h-80 rounded-2xl overflow-hidden border-2 border-[#C5A059]/40 shadow-xl group">
                 <Image
-                  src="/images/car_repas/Tchooh12 - Copie.jpeg"
+                  src="/images/car_repas/Tchooh12.webp"
                   alt="Beignet Yovodoko - Saveurs du Matin et Douceurs"
                   fill
                   sizes="(max-width: 1024px) 100vw, 450px"
