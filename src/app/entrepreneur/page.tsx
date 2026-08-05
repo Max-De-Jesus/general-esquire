@@ -502,6 +502,18 @@ export default function EntrepreneurPage() {
                   </p>
                 </div>
               </div>
+
+              {/* Image case1.png au bas de la case 1 */}
+              <div className="relative w-full h-48 sm:h-56 mt-6 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg">
+                <Image
+                  src="/images/case1.png"
+                  alt="Abonnement Annuel — General Esquire"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover object-center filter brightness-95 contrast-105 group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#131513]/70 via-transparent to-transparent" />
+              </div>
             </div>
 
             {/* 2. Abonnement Mensuel */}
@@ -525,6 +537,18 @@ export default function EntrepreneurPage() {
                     Il est résiliable à tout moment, tout paiement fait à la société General Esquire lui étant acquis.
                   </p>
                 </div>
+              </div>
+
+              {/* Image case2.png au bas de la case 2 (Centrée au milieu sur le personnage) */}
+              <div className="relative w-full h-48 sm:h-56 mt-6 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg">
+                <Image
+                  src="/images/case2.png"
+                  alt="Abonnement Mensuel — General Esquire"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover object-[center_35%] filter brightness-95 contrast-105 group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#131513]/70 via-transparent to-transparent" />
               </div>
             </div>
 
