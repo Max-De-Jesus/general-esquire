@@ -710,6 +710,29 @@ export default function CocooningTouristiquePage() {
                     ? "General Esquire vous remercie pour votre inscription. Nos équipes étudieront votre dossier et prendront contact avec vous très rapidement."
                     : "General Esquire thanks you for your application. Our teams will review your file and contact you very shortly."}
                 </p>
+
+                {/* Encadré d'explication sur la double notification et l'activation unique FormSubmit */}
+                <div className="p-4 bg-[#131513] border border-[#C5A059]/40 rounded-xl text-left max-w-xl mx-auto space-y-2 font-cormorant text-[#EDE4CF] shadow-inner">
+                  <div className="font-cinzel text-xs font-bold text-[#E9D18F] flex items-center gap-2">
+                    <span>📧</span>
+                    <span>{lang === "fr" ? "Information importante concernant vos e-mails :" : "Important information regarding your emails:"}</span>
+                  </div>
+                  <p className="leading-relaxed text-sm text-[#cabfa6]">
+                    {lang === "fr" ? (
+                      <>
+                        <strong className="text-[#E9D18F]">1. Premier e-mail (« Activate Form ») :</strong> Si vous recevez un premier courriel vous demandant de valider <em>« Activate Form »</em>, cliquez dessus. Cette action n'est à effectuer qu'<strong>une seule et unique fois</strong> pour autoriser la réception de toutes les notifications du Cabinet General Esquire.
+                        <br /><br />
+                        <strong className="text-[#E9D18F]">2. Deuxième e-mail (Réponse & Récapitulatif) :</strong> C'est dans le second e-mail qui vous parvient immédiatement après que vous trouverez votre récapitulatif complet et les informations relatives à votre séjour.
+                      </>
+                    ) : (
+                      <>
+                        <strong className="text-[#E9D18F]">1. First email ("Activate Form"):</strong> If you receive a first email asking you to click <em>"Activate Form"</em>, please click it. This action is done <strong>only once</strong> to permanently authorize notifications from General Esquire.
+                        <br /><br />
+                        <strong className="text-[#E9D18F]">2. Second email (Response & Summary):</strong> Your complete summary and stay details will arrive in the second email immediately following.
+                      </>
+                    )}
+                  </p>
+                </div>
                 <div className="pt-2 pb-1 flex flex-col sm:flex-row items-center justify-center gap-3">
                   <button
                     type="button"
