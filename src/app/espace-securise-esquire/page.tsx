@@ -88,6 +88,7 @@ export default function EspaceSecurisePage() {
   const [urlInput, setUrlInput] = useState("");
   const [formIsFeatured, setFormIsFeatured] = useState(false);
   const [formIsPublished, setFormIsPublished] = useState(true);
+  const [editingNewsId, setEditingNewsId] = useState<string | null>(null);
 
   // Clients & Accounts State
   const [clientsList, setClientsList] = useState<Client[]>([]);
@@ -535,8 +536,43 @@ export default function EspaceSecurisePage() {
     }
   };
 
-  // Create / Publish New Article with Admin Primary Cover Choice
-  const handleCreateNews = async (e: React.FormEvent) => {
+  // Prepare form to Edit an existing news article
+  const startEditNews = (item: NewsItem) => {
+    setEditingNewsId(item.id);
+    setFormTitle(item.title);
+    setFormSubtitle(item.subtitle || "");
+    setFormCategory(item.category);
+    setFormDate(item.date || new Date().toISOString().split("T")[0]);
+    setFormAuthor(item.author || "Administration General Esquire");
+    setFormSummary(item.summary);
+    setFormContent(item.content);
+    const imgs = item.images && item.images.length > 0 ? item.images : (item.imageUrl ? [item.imageUrl] : []);
+    setFormImages(imgs);
+    setPrimaryImageIndex(0);
+    setFormIsFeatured(!!item.isFeatured);
+    setFormIsPublished(item.isPublished !== false);
+    setNewsSuccess("");
+    setNewsError("");
+    window.scrollTo({ top: 300, behavior: "smooth" });
+  };
+
+  const cancelEditNews = () => {
+    setEditingNewsId(null);
+    setFormTitle("");
+    setFormSubtitle("");
+    setFormSummary("");
+    setFormContent("");
+    setFormImages([]);
+    setPrimaryImageIndex(0);
+    setUrlInput("");
+    setFormIsFeatured(false);
+    setFormIsPublished(true);
+    setNewsSuccess("");
+    setNewsError("");
+  };
+
+  // Create or Update News Article with Cover Image Choice
+  const handleSaveNews = async (e: React.FormEvent) => {
     e.preventDefault();
     setNewsSuccess("");
     setNewsError("");
@@ -547,46 +583,83 @@ export default function EspaceSecurisePage() {
     }
 
     setSavingNews(true);
-    const newId = typeof crypto !== "undefined" && crypto.randomUUID 
-      ? crypto.randomUUID() 
-      : "10000000-0000-4000-8000-" + Date.now().toString().padStart(12, "0");
-
     const finalImagesList = formImages.length > 0 ? formImages : ["/images/chant.avif"];
     const mainImage = formImages[primaryImageIndex] || finalImagesList[0];
 
-    const newItem: NewsItem = {
-      id: newId,
-      title: formTitle,
-      subtitle: formSubtitle || undefined,
-      summary: formSummary,
-      content: formContent,
-      category: formCategory,
-      date: formDate,
-      imageUrl: mainImage,
-      images: finalImagesList,
-      author: formAuthor || "Administration General Esquire",
-      isFeatured: formIsFeatured,
-      isPublished: formIsPublished,
-    };
+    let updated: NewsItem[];
 
-    const updated = [newItem, ...newsList];
+    if (editingNewsId) {
+      // Edit existing news
+      updated = newsList.map((item) => {
+        if (item.id === editingNewsId) {
+          return {
+            ...item,
+            title: formTitle,
+            subtitle: formSubtitle || undefined,
+            summary: formSummary,
+            content: formContent,
+            category: formCategory,
+            date: formDate,
+            imageUrl: mainImage,
+            images: finalImagesList,
+            author: formAuthor || "Administration General Esquire",
+            isFeatured: formIsFeatured,
+            isPublished: formIsPublished,
+          };
+        }
+        return item;
+      });
+      setNewsSuccess(lang === "fr" ? "Actualité modifiée avec succès !" : "News article updated successfully!");
+    } else {
+      // Create new news
+      const newId = typeof crypto !== "undefined" && crypto.randomUUID 
+        ? crypto.randomUUID() 
+        : "10000000-0000-4000-8000-" + Date.now().toString().padStart(12, "0");
+
+      const newItem: NewsItem = {
+        id: newId,
+        title: formTitle,
+        subtitle: formSubtitle || undefined,
+        summary: formSummary,
+        content: formContent,
+        category: formCategory,
+        date: formDate,
+        imageUrl: mainImage,
+        images: finalImagesList,
+        author: formAuthor || "Administration General Esquire",
+        isFeatured: formIsFeatured,
+        isPublished: formIsPublished,
+      };
+
+      updated = [newItem, ...newsList];
+      setNewsSuccess(lang === "fr" ? "Actualité publiée avec succès !" : "News article published successfully!");
+    }
+
     setNewsList(updated);
     try {
       localStorage.setItem("ge_admin_news", JSON.stringify(updated));
     } catch {}
 
     await updateCloudNews(updated);
-    setNewsSuccess(lang === "fr" ? "Actualité publiée avec succès !" : "News article published successfully!");
-
-    setFormTitle("");
-    setFormSubtitle("");
-    setFormSummary("");
-    setFormContent("");
-    setFormImages([]);
-    setPrimaryImageIndex(0);
-    setUrlInput("");
-    setFormIsFeatured(false);
+    cancelEditNews();
     setSavingNews(false);
+  };
+
+  const handleTogglePublish = async (id: string) => {
+    const updated = newsList.map((item) => {
+      if (item.id === id) {
+        return { ...item, isPublished: !item.isPublished };
+      }
+      return item;
+    });
+
+    setNewsList(updated);
+    try {
+      localStorage.setItem("ge_admin_news", JSON.stringify(updated));
+    } catch {}
+
+    await updateCloudNews(updated);
+    setNewsSuccess(lang === "fr" ? "Statut de publication mis à jour !" : "Publication status updated!");
   };
 
   const handleDeleteNews = async (id: string) => {
@@ -599,7 +672,8 @@ export default function EspaceSecurisePage() {
     } catch {}
 
     await updateCloudNews(updated);
-    setNewsSuccess(lang === "fr" ? "Actualité supprimée !" : "News article deleted!");
+    if (editingNewsId === id) cancelEditNews();
+    setNewsSuccess(lang === "fr" ? "Actualité supprimée définitivement !" : "News article deleted permanently!");
   };
 
   if (loading) {
@@ -1081,13 +1155,28 @@ export default function EspaceSecurisePage() {
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#C5A059]/30 pb-4">
                 <div>
                   <h3 className="font-cinzel text-2xl font-bold text-[#E9D18F] flex items-center gap-2">
-                    <span>📝</span>
-                    <span>Publier une Nouvelle Actualité (Choix de la Couverture Principale)</span>
+                    <span>{editingNewsId ? "✏️" : "📝"}</span>
+                    <span>
+                      {editingNewsId
+                        ? `Modifier l'Actualité : ${formTitle || "Article en cours"}`
+                        : "Publier une Nouvelle Actualité"}
+                    </span>
                   </h3>
                   <p className="text-sm font-cormorant text-[#cabfa6]">
-                    Sélectionnez vos images. Cliquez sur n'importe quelle photo pour la définir comme image de couverture principale sur la page publique.
+                    {editingNewsId
+                      ? "Modifiez ci-dessous l'ensemble des informations de l'actualité choisie puis cliquez sur Enregistrer."
+                      : "Remplissez les champs ci-dessous pour publier une actualité. Cliquez sur n'importe quelle photo pour la définir comme image de couverture."}
                   </p>
                 </div>
+                {editingNewsId && (
+                  <button
+                    type="button"
+                    onClick={cancelEditNews}
+                    className="px-4 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-[#EDE4CF] font-cinzel text-xs font-bold border border-gray-600 transition-all"
+                  >
+                    ✕ Annuler l'Édition
+                  </button>
+                )}
               </div>
 
               {newsSuccess && (
@@ -1104,7 +1193,7 @@ export default function EspaceSecurisePage() {
                 </div>
               )}
 
-              <form onSubmit={handleCreateNews} className="space-y-6">
+              <form onSubmit={handleSaveNews} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-xs font-cinzel font-semibold text-[#C5A059] uppercase tracking-wider mb-2">
@@ -1113,7 +1202,7 @@ export default function EspaceSecurisePage() {
                     <input
                       type="text"
                       required
-                      placeholder="Ex: Conférence sur les risques juridiques..."
+                      placeholder="Ex: Animation musicale traditionnelle..."
                       value={formTitle}
                       onChange={(e) => setFormTitle(e.target.value)}
                       className="w-full px-4 py-3 bg-[#131513] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-sm focus:outline-none focus:border-[#E9D18F]"
@@ -1126,7 +1215,7 @@ export default function EspaceSecurisePage() {
                     </label>
                     <input
                       type="text"
-                      placeholder="Ex: Protéger sa réputation et son patrimoine..."
+                      placeholder="Ex: Une immersion culturelle dès les premiers instants..."
                       value={formSubtitle}
                       onChange={(e) => setFormSubtitle(e.target.value)}
                       className="w-full px-4 py-3 bg-[#131513] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-sm focus:outline-none focus:border-[#E9D18F]"
@@ -1144,7 +1233,7 @@ export default function EspaceSecurisePage() {
                     >
                       <option value="Veille Juridique">Veille Juridique</option>
                       <option value="Espace Activités">Espace Activités</option>
-                      <option value="Événementiels">Événementiels</option>
+                      <option value="Activités événementielles">Activités événementielles</option>
                       <option value="Communiqués">Communiqués</option>
                     </select>
                   </div>
@@ -1154,11 +1243,12 @@ export default function EspaceSecurisePage() {
                       Date de Publication *
                     </label>
                     <input
-                      type="date"
+                      type="text"
                       required
+                      placeholder="Ex: 5 août 2026"
                       value={formDate}
                       onChange={(e) => setFormDate(e.target.value)}
-                      className="w-full px-4 py-3 bg-[#131513] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-sm focus:outline-none focus:border-[#E9D18F] [color-scheme:dark]"
+                      className="w-full px-4 py-3 bg-[#131513] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-sm focus:outline-none focus:border-[#E9D18F]"
                     />
                   </div>
                 </div>
@@ -1264,49 +1354,131 @@ export default function EspaceSecurisePage() {
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={savingNews}
-                  className="w-full py-4 rounded-full bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] text-black font-cinzel font-bold text-sm uppercase tracking-widest shadow-xl hover:brightness-110 transition-all cursor-pointer disabled:opacity-50"
-                >
-                  {savingNews ? "Publication en cours..." : "🚀 Publier l'Actualité"}
-                </button>
+                {/* Status Toggles */}
+                <div className="flex flex-wrap items-center gap-6 p-4 bg-[#131513] border border-[#C5A059]/30 rounded-xl">
+                  <label className="flex items-center gap-2 cursor-pointer font-cinzel text-xs text-[#EDE4CF]">
+                    <input
+                      type="checkbox"
+                      checked={formIsPublished}
+                      onChange={(e) => setFormIsPublished(e.target.checked)}
+                      className="w-4 h-4 accent-[#C5A059]"
+                    />
+                    <span>Publier cet article sur la page publique</span>
+                  </label>
+
+                  <label className="flex items-center gap-2 cursor-pointer font-cinzel text-xs text-[#EDE4CF]">
+                    <input
+                      type="checkbox"
+                      checked={formIsFeatured}
+                      onChange={(e) => setFormIsFeatured(e.target.checked)}
+                      className="w-4 h-4 accent-[#C5A059]"
+                    />
+                    <span>Mettre à la une (Badge "À la une")</span>
+                  </label>
+                </div>
+
+                <div className="flex gap-4">
+                  <button
+                    type="submit"
+                    disabled={savingNews}
+                    className="flex-1 py-4 rounded-full bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] text-black font-cinzel font-bold text-sm uppercase tracking-widest shadow-xl hover:brightness-110 transition-all cursor-pointer disabled:opacity-50"
+                  >
+                    {savingNews
+                      ? "Enregistrement en cours..."
+                      : editingNewsId
+                      ? "💾 Enregistrer les Modifications"
+                      : "🚀 Publier l'Actualité"}
+                  </button>
+
+                  {editingNewsId && (
+                    <button
+                      type="button"
+                      onClick={cancelEditNews}
+                      className="px-8 py-4 rounded-full bg-gray-800 hover:bg-gray-700 text-[#EDE4CF] font-cinzel font-bold text-xs uppercase tracking-widest transition-all"
+                    >
+                      Annuler
+                    </button>
+                  )}
+                </div>
               </form>
             </div>
 
             {/* Liste des Actualités */}
             <div className="p-8 bg-[#1a1c1a] border border-[#C5A059]/40 rounded-3xl shadow-xl space-y-6">
               <h3 className="font-cinzel text-xl font-bold text-[#E9D18F] flex items-center justify-between">
-                <span>📚 Liste des Actualités Publiées ({newsList.length})</span>
+                <span>📚 Liste des Actualités ({newsList.length})</span>
                 <button onClick={fetchNewsList} className="text-xs font-cinzel text-[#C5A059] hover:text-[#E9D18F]">
                   🔄 Actualiser
                 </button>
               </h3>
 
-              {newsList.map((item) => (
-                <div key={item.id} className="p-5 bg-[#131513] border border-[#C5A059]/30 rounded-2xl flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-4">
-                    <div className="relative w-20 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-[#1a1c1a] border border-[#C5A059]/30">
-                      <Image
-                        src={item.imageUrl || (item.images && item.images[0]) || "/images/chant.avif"}
-                        alt={item.title}
-                        fill
-                        className="object-cover"
-                      />
+              {newsList.length === 0 ? (
+                <div className="text-center py-8 text-sm text-[#cabfa6] font-cormorant">
+                  Aucune actualité en base de données. Utilisez le formulaire ci-dessus pour en publier une.
+                </div>
+              ) : (
+                newsList.map((item) => (
+                  <div key={item.id} className="p-5 bg-[#131513] border border-[#C5A059]/30 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                      <div className="relative w-20 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-[#1a1c1a] border border-[#C5A059]/30">
+                        <Image
+                          src={item.imageUrl || (item.images && item.images[0]) || "/images/chant.avif"}
+                          alt={item.title}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2 mb-1">
+                          <h4 className="font-cinzel text-base font-bold text-[#EDE4CF]">{item.title}</h4>
+                          {item.isPublished !== false ? (
+                            <span className="px-2 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 text-[10px] font-cinzel font-semibold">
+                              🟢 Publié
+                            </span>
+                          ) : (
+                            <span className="px-2 py-0.5 rounded-full bg-rose-950/80 border border-rose-500/50 text-rose-300 text-[10px] font-cinzel font-semibold">
+                              🔴 Masqué
+                            </span>
+                          )}
+                          {item.isFeatured && (
+                            <span className="px-2 py-0.5 rounded-full bg-amber-950/80 border border-amber-500/50 text-amber-300 text-[10px] font-cinzel font-semibold">
+                              ⭐ À la une
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-[#cabfa6]">{item.date} — {item.category}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-cinzel text-base font-bold text-[#EDE4CF]">{item.title}</h4>
-                      <p className="text-xs text-[#cabfa6]">{item.date} — {item.category}</p>
+
+                    <div className="flex items-center gap-2.5">
+                      <button
+                        onClick={() => startEditNews(item)}
+                        className="px-3.5 py-2 rounded-xl bg-[#C5A059]/20 hover:bg-[#C5A059]/40 border border-[#C5A059]/60 text-[#E9D18F] text-xs font-bold font-cinzel transition-all cursor-pointer"
+                      >
+                        ✏️ Éditer
+                      </button>
+
+                      <button
+                        onClick={() => handleTogglePublish(item.id)}
+                        className={`px-3.5 py-2 rounded-xl border text-xs font-bold font-cinzel transition-all cursor-pointer ${
+                          item.isPublished !== false
+                            ? "bg-amber-950/60 border-amber-500/60 text-amber-200 hover:bg-amber-900"
+                            : "bg-emerald-950/60 border-emerald-500/60 text-emerald-200 hover:bg-emerald-900"
+                        }`}
+                      >
+                        {item.isPublished !== false ? "👁️ Masquer" : "👁️ Publier"}
+                      </button>
+
+                      <button
+                        onClick={() => handleDeleteNews(item.id)}
+                        className="px-3.5 py-2 rounded-xl bg-rose-950/80 border border-rose-500/60 text-rose-200 text-xs font-bold font-cinzel hover:bg-rose-900 transition-all cursor-pointer"
+                      >
+                        🗑️ Supprimer
+                      </button>
                     </div>
                   </div>
-                  <button
-                    onClick={() => handleDeleteNews(item.id)}
-                    className="px-4 py-2 rounded-xl bg-rose-950/80 border border-rose-500/60 text-rose-200 text-xs font-bold"
-                  >
-                    Supprimer
-                  </button>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         )}

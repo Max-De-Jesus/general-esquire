@@ -16,12 +16,12 @@ export default function PublicActualitesPage() {
   const [activeArticle, setActiveArticle] = useState<NewsItem | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
-  const categories = ["Tous", "Veille Juridique", "Espace Activités", "Événementiels", "Communiqués"];
+  const categories = ["Tous", "Veille Juridique", "Espace Activités", "Activités événementielles", "Communiqués"];
 
   const getCategoryLabel = (cat: string) => {
     if (cat === "Conseil Juridique" || cat === "Veille Juridique") return "Veille Juridique";
     if (cat === "Chrysalides" || cat === "Espace Activités") return "Espace Activités";
-    if (cat === "Événement" || cat === "Evenement" || cat === "Événements" || cat === "Événementiels") return "Événementiels";
+    if (cat === "Événement" || cat === "Evenement" || cat === "Événements" || cat === "Événementiels" || cat === "Activités événementielles") return "Activités événementielles";
     if (cat === "Annonce" || cat === "Annonces" || cat === "Communiqués" || cat === "Communiqué") return "Communiqués";
     return cat;
   };
@@ -40,17 +40,7 @@ export default function PublicActualitesPage() {
       if (cloudItems && cloudItems.length > 0) {
         setNews(cloudItems.filter((n: NewsItem) => n.isPublished !== false));
       } else {
-        // Fallback stockage local si indisponible
-        try {
-          const localStored = localStorage.getItem("ge_admin_news");
-          if (localStored) {
-            setNews(JSON.parse(localStored).filter((n: NewsItem) => n.isPublished !== false));
-          } else {
-            setNews([]);
-          }
-        } catch {
-          setNews([]);
-        }
+        setNews([]);
       }
       setLoadingNews(false);
     };
@@ -63,7 +53,7 @@ export default function PublicActualitesPage() {
     : news.filter((item) => {
         if (selectedCategory === "Veille Juridique") return item.category === "Veille Juridique" || item.category === "Conseil Juridique";
         if (selectedCategory === "Espace Activités") return item.category === "Espace Activités" || item.category === "Chrysalides";
-        if (selectedCategory === "Événementiels") return item.category === "Événementiels" || item.category === "Événement" || item.category === "Événements" || item.category === "Evenement";
+        if (selectedCategory === "Activités événementielles") return item.category === "Activités événementielles" || item.category === "Événementiels" || item.category === "Événement" || item.category === "Événements" || item.category === "Evenement";
         if (selectedCategory === "Communiqués") return item.category === "Communiqués" || item.category === "Communiqué" || item.category === "Annonce" || item.category === "Annonces";
         return item.category === selectedCategory;
       });
