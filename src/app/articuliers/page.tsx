@@ -54,10 +54,10 @@ export default function ParticuliersPage() {
     hero_tag: lang === "fr" ? "Espace Conseil Juridique" : "Legal Advisory Desk",
     hero_title: lang === "fr" ? "Vous êtes un simple particulier" : "You Are an Individual",
     quote: lang === "fr"
-      ? "« Peu importe votre origine ou votre nationalité ; General Esquire se fera l’honneur et la joie de vous accueillir pour vous écouter, vous renseigner et vous assister. »"
+      ? "« Peu importe votre origine ou votre nationalité\u00A0; General Esquire se fera l’honneur et la joie de vous accueillir pour vous écouter, vous renseigner et vous assister. »"
       : "“Regardless of your origin or nationality, General Esquire considers it an honor to welcome, advise, and assist you.”",
     situations_title: lang === "fr" ? "Est-ce que l'une des situations suivantes vous parle ?" : "Do Any of the Following Situations Apply to You?",
-    situations_sub: lang === "fr" ? "Sachant que la liste n’est pas exhaustive :" : "Note that this list is not exhaustive:",
+    situations_sub: lang === "fr" ? "Sachant que la liste n’est pas exhaustive\u00A0:" : "Note that this list is not exhaustive:",
     highlight_title: lang === "fr" ? "Si oui, vous êtes au cœur de notre activité !" : "If so, you are at the core of our practice!",
     highlight_desc: lang === "fr"
       ? "Dans toutes les situations sus-évoquées ou qui s'en rapprochent, pour tout besoin d'assistance juridique ou administrative, et plus particulièrement toute rédaction précontentieuse ou contentieuse, General Esquire se tient à vos côtés."
@@ -136,7 +136,7 @@ export default function ParticuliersPage() {
       <div className="relative z-10 max-w-6xl mx-auto px-6">
 
         {/* Breadcrumb Navigation */}
-        <div className="flex items-center gap-2 font-cinzel text-xs text-[#C5A059] mb-8 uppercase tracking-widest">
+        <div className="flex flex-wrap items-center gap-1.5 font-cinzel text-[10px] sm:text-xs text-[#C5A059] mb-8 uppercase tracking-wider">
           <Link href="/" className="hover:text-[#E9D18F] transition-colors">{tx.breadcrumb_home}</Link>
           <span>/</span>
           <span className="text-[#EDE4CF]">{tx.breadcrumb_page}</span>

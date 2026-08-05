@@ -381,7 +381,7 @@ export default function DetentePage() {
               </p>
               <p className="italic text-[#E9D18F] font-light border-l-4 border-[#C5A059] pl-5 py-2 bg-[#C5A059]/5 rounded-r-xl">
                 {lang === "fr"
-                  ? "« Il n'y a aucune raison d'être timide ; c'est une ambiance bon enfant, le mot d'ordre étant la bienveillance. »"
+                  ? "« Il n'y a aucune raison d'être timide\u00A0; c'est une ambiance bon enfant, le mot d'ordre étant la bienveillance. »"
                   : "\"There is no reason to be shy; it is a warm, friendly atmosphere where kindness is our guiding principle.\""}
               </p>
             </SymmetricCard>
