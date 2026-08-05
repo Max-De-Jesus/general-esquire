@@ -106,10 +106,10 @@ export default function InstitutionsPubliquesPage() {
     photo2: lang === "fr" ? "Conseil Stratégique" : "Strategic Advisory",
     method_title: lang === "fr" ? "Notre Méthode de Travail" : "Our Working Method",
     method_p1: lang === "fr"
-      ? "Notre méthode de travail est très simple : vous nous adressez votre demande par écrit, accompagnée de toutes les pièces nécessaires à son appréhension optimale ; et nous convenons d'un rendez-vous par visioconférence pour définir ensemble les modalités pratiques et financières de l'exécution de notre mission."
+      ? "Notre méthode de travail est très simple\u00A0: vous nous adressez votre demande par écrit, accompagnée de toutes les pièces nécessaires à son appréhension optimale\u00A0; et nous convenons d'un rendez-vous par visioconférence pour définir ensemble les modalités pratiques et financières de l'exécution de notre mission."
       : "Our working method is straightforward: send us your written request with all supporting documents, and we will schedule a video consultation to define the scope and financial terms.",
     method_p2: lang === "fr"
-      ? "Il n'y a pas de formule d'abonnement pour les institutions publiques ; et nous ne pouvons exécuter notre mission sans une provision au moins équivalente aux trois quarts du devis que vous auriez préalablement validé."
+      ? "Il n'y a pas de formule d'abonnement pour les institutions publiques\u00A0; et nous ne pouvons exécuter notre mission sans une provision au moins équivalente aux trois quarts du devis que vous auriez préalablement validé."
       : "No subscription plans apply to public institutions; missions commence upon receipt of an advance payment equal to at least 75% of the approved quote.",
     method_p3: lang === "fr"
       ? "Un projet d'écritures vous sera soumis, et sujet à amendement s'il y a lieu, dans un délai qui aura lui aussi été défini contractuellement."

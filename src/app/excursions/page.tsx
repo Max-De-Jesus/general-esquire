@@ -366,7 +366,7 @@ export default function ExcursionsPage() {
       : "For fifteen days, you will be immersed in sights, sounds and sensations. Ouidah alone, with its historic and cultural landmarks, will dazzle you — and you will have the opportunity to attend the Voodoo Days festival, which takes place precisely during your stay.",
     must_title: lang === "fr" ? "Les Incontournables du Bénin" : "Benin's Must-See Destinations",
     must_p1: lang === "fr"
-      ? "En quinze jours, vous n'aurez peut-être pas vu tout le Bénin ; mais il y a des incontournables, à commencer par la capitale économique Cotonou, le temple de  Python a Ouidah, la cité du Vaudou, et Abomey, celle des rois au passé glorieux."
+      ? "En quinze jours, vous n'aurez peut-être pas vu tout le Bénin\u00A0; mais il y a des incontournables, à commencer par la capitale économique Cotonou, le temple de  Python a Ouidah, la cité du Vaudou, et Abomey, celle des rois au passé glorieux."
       : "In fifteen days you may not see all of Benin, but the must-sees include the economic capital Cotonou, Ouidah the city of Voodoo, and Abomey, the city of kings with a glorious past.",
     must_p2: lang === "fr"
       ? "Vous aurez sans doute l'occasion d'assister à des danses rituelles, des démonstrations de magie, des cérémonies vaudou… toutes choses qui vont vous émerveiller et élargir votre ouverture d'esprit."
@@ -432,7 +432,7 @@ export default function ExcursionsPage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 md:pb-20">
 
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 font-cinzel text-xs text-[#C5A059] mb-8 uppercase tracking-widest">
+        <div className="flex flex-wrap items-center gap-1.5 font-cinzel text-[10px] sm:text-xs text-[#C5A059] mb-8 uppercase tracking-wider">
           <Link href="/" className="hover:text-[#E9D18F] transition-colors">{tx.breadcrumb_home}</Link>
           <span className="text-[#C5A059]/40">/</span>
           <span className="text-[#EDE4CF]">{tx.breadcrumb_page}</span>
@@ -440,7 +440,7 @@ export default function ExcursionsPage() {
 
         {/* Page Header */}
         <div className="text-center mb-14">
-          <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase border border-[#C5A059]/40 px-5 py-1.5 rounded-full bg-[#131513]/80 backdrop-blur-md inline-block mb-4 shadow-md">
+          <span className="font-cinzel text-[10px] sm:text-xs text-[#C5A059] tracking-[0.15em] sm:tracking-[0.3em] uppercase border border-[#C5A059]/40 px-4 sm:px-5 py-1.5 rounded-full bg-[#131513]/80 backdrop-blur-md inline-block max-w-full truncate mb-4 shadow-md">
             {tx.tag}
           </span>
           <h1 className="font-cinzel text-4xl sm:text-6xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] mt-2 mb-4 drop-shadow-lg">

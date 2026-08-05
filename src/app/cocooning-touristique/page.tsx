@@ -201,8 +201,8 @@ export default function CocooningTouristiquePage() {
         </div>
 
         {/* Breadcrumb Navigation */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-2 font-cinzel text-xs text-[#C5A059] uppercase tracking-widest">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-8">
+          <div className="flex flex-wrap items-center gap-1.5 font-cinzel text-[10px] sm:text-xs text-[#C5A059] uppercase tracking-wider">
             <Link href="/" className="hover:text-[#E9D18F] transition-colors">
               {lang === "fr" ? "Accueil" : "Home"}
             </Link>
@@ -213,7 +213,7 @@ export default function CocooningTouristiquePage() {
           </div>
           <Link
             href="/"
-            className="font-cinzel text-xs text-[#C5A059] hover:text-[#E9D18F] transition-colors flex items-center gap-2"
+            className="font-cinzel text-[10px] sm:text-xs text-[#C5A059] hover:text-[#E9D18F] transition-colors flex items-center gap-1.5"
           >
             <span>&larr;</span> {lang === "fr" ? "RETOUR À L'ACCUEIL" : "BACK TO HOME"}
           </Link>

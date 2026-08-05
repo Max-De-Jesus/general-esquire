@@ -465,10 +465,10 @@ export default function ConseilJuridiquePage() {
           {/* 1. Professionnel du droit */}
           <Link
             href="/professionnel"
-            className="group px-3.5 sm:px-5 py-4 rounded-md bg-[#0F1E14]/80 border border-[#C5A059]/40 hover:border-[#C5A059] hover:bg-[#0F3823] transition-all duration-300 flex items-center gap-2 shadow-sm cursor-pointer overflow-hidden"
+            className="group px-3.5 sm:px-5 py-3.5 rounded-md bg-[#0F1E14]/80 border border-[#C5A059]/40 hover:border-[#C5A059] hover:bg-[#0F3823] transition-all duration-300 flex items-center gap-2.5 shadow-sm cursor-pointer"
           >
             <span className="text-[#C5A059] group-hover:text-[#E9D18F] font-cinzel text-base flex-shrink-0">—</span>
-            <span className="font-cinzel text-[0.64rem] xs:text-[0.70rem] sm:text-[0.78rem] font-semibold tracking-[0.05em] sm:tracking-[0.10em] text-[#C5A059] group-hover:text-[#EDE4CF] transition-colors uppercase leading-snug whitespace-nowrap overflow-hidden text-ellipsis">
+            <span className="font-cinzel text-[0.70rem] sm:text-[0.78rem] font-semibold tracking-[0.05em] text-[#C5A059] group-hover:text-[#EDE4CF] transition-colors uppercase leading-snug break-words">
               {lang === "fr" ? "VOUS ÊTES UN PROFESSIONNEL DU DROIT" : "YOU ARE A LEGAL PROFESSIONAL"}
             </span>
           </Link>
@@ -476,10 +476,10 @@ export default function ConseilJuridiquePage() {
           {/* 2. Institution publique */}
           <Link
             href="/institution"
-            className="group px-3.5 sm:px-5 py-4 rounded-md bg-[#0F1E14]/80 border border-[#C5A059]/40 hover:border-[#C5A059] hover:bg-[#0F3823] transition-all duration-300 flex items-center gap-2 shadow-sm cursor-pointer overflow-hidden"
+            className="group px-3.5 sm:px-5 py-3.5 rounded-md bg-[#0F1E14]/80 border border-[#C5A059]/40 hover:border-[#C5A059] hover:bg-[#0F3823] transition-all duration-300 flex items-center gap-2.5 shadow-sm cursor-pointer"
           >
             <span className="text-[#C5A059] group-hover:text-[#E9D18F] font-cinzel text-base flex-shrink-0">—</span>
-            <span className="font-cinzel text-[0.64rem] xs:text-[0.70rem] sm:text-[0.78rem] font-semibold tracking-[0.05em] sm:tracking-[0.10em] text-[#C5A059] group-hover:text-[#EDE4CF] transition-colors uppercase leading-snug whitespace-nowrap overflow-hidden text-ellipsis">
+            <span className="font-cinzel text-[0.70rem] sm:text-[0.78rem] font-semibold tracking-[0.05em] text-[#C5A059] group-hover:text-[#EDE4CF] transition-colors uppercase leading-snug break-words">
               {lang === "fr" ? "VOUS ÊTES UNE INSTITUTION PUBLIQUE" : "YOU ARE A PUBLIC INSTITUTION"}
             </span>
           </Link>
@@ -487,10 +487,10 @@ export default function ConseilJuridiquePage() {
           {/* 3. Chef d'entreprise */}
           <Link
             href="/entrepreneur"
-            className="group px-3.5 sm:px-5 py-4 rounded-md bg-[#0F1E14]/80 border border-[#C5A059]/40 hover:border-[#C5A059] hover:bg-[#0F3823] transition-all duration-300 flex items-center gap-2 shadow-sm cursor-pointer overflow-hidden"
+            className="group px-3.5 sm:px-5 py-3.5 rounded-md bg-[#0F1E14]/80 border border-[#C5A059]/40 hover:border-[#C5A059] hover:bg-[#0F3823] transition-all duration-300 flex items-center gap-2.5 shadow-sm cursor-pointer"
           >
             <span className="text-[#C5A059] group-hover:text-[#E9D18F] font-cinzel text-base flex-shrink-0">—</span>
-            <span className="font-cinzel text-[0.64rem] xs:text-[0.70rem] sm:text-[0.78rem] font-semibold tracking-[0.05em] sm:tracking-[0.10em] text-[#C5A059] group-hover:text-[#EDE4CF] transition-colors uppercase leading-snug whitespace-nowrap overflow-hidden text-ellipsis">
+            <span className="font-cinzel text-[0.70rem] sm:text-[0.78rem] font-semibold tracking-[0.05em] text-[#C5A059] group-hover:text-[#EDE4CF] transition-colors uppercase leading-snug break-words">
               {lang === "fr" ? "VOUS ÊTES UN CHEF D'ENTREPRISE" : "YOU ARE A BUSINESS LEADER"}
             </span>
           </Link>
@@ -498,10 +498,10 @@ export default function ConseilJuridiquePage() {
           {/* 4. Simple particulier */}
           <Link
             href="/articuliers"
-            className="group px-3.5 sm:px-5 py-4 rounded-md bg-[#0F1E14]/80 border border-[#C5A059]/40 hover:border-[#C5A059] hover:bg-[#0F3823] transition-all duration-300 flex items-center gap-2 shadow-sm cursor-pointer overflow-hidden"
+            className="group px-3.5 sm:px-5 py-3.5 rounded-md bg-[#0F1E14]/80 border border-[#C5A059]/40 hover:border-[#C5A059] hover:bg-[#0F3823] transition-all duration-300 flex items-center gap-2.5 shadow-sm cursor-pointer"
           >
             <span className="text-[#C5A059] group-hover:text-[#E9D18F] font-cinzel text-base flex-shrink-0">—</span>
-            <span className="font-cinzel text-[0.64rem] xs:text-[0.70rem] sm:text-[0.78rem] font-semibold tracking-[0.05em] sm:tracking-[0.10em] text-[#C5A059] group-hover:text-[#EDE4CF] transition-colors uppercase leading-snug whitespace-nowrap overflow-hidden text-ellipsis">
+            <span className="font-cinzel text-[0.70rem] sm:text-[0.78rem] font-semibold tracking-[0.05em] text-[#C5A059] group-hover:text-[#EDE4CF] transition-colors uppercase leading-snug break-words">
               {lang === "fr" ? "VOUS ÊTES UN SIMPLE PARTICULIER" : "YOU ARE AN INDIVIDUAL"}
             </span>
           </Link>
