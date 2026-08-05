@@ -456,6 +456,78 @@ export default function EntrepreneurPage() {
           </div>
         </section>
 
+        {/* ─── GALERIE EXPOSITION : CHEFS D'ENTREPRISE DE TOUS HORIZONS (DOSSIER AJOUT PRO) ─── */}
+        <section className="mb-16">
+          <div className="text-center mb-10">
+            <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase block mb-2">
+              {lang === "fr" ? "Diversité & Métiers" : "Diversity & Professions"}
+            </span>
+            <h2 className="font-cinzel text-3xl sm:text-4xl text-[#E9D18F] font-bold mb-3">
+              {lang === "fr"
+                ? "Des Chefs d’Entreprise de Tous Horizons"
+                : "Business Leaders Across Diverse Industries"}
+            </h2>
+            <p className="font-cormorant text-lg text-[#cabfa6] mt-2 max-w-2xl mx-auto italic">
+              {lang === "fr"
+                ? "Artisans, commerçants, dirigeants de PME, consultants ou fondateurs de jeunes pousses : chaque profession fait face à des défis juridiques uniques. Notre cabinet est à vos côtés."
+                : "Entrepreneurs, trade professionals, SME executives, consultants or startup founders: every industry faces distinct legal challenges. Our firm stands by your side."}
+            </p>
+            <div className="flex items-center justify-center gap-3 mt-4">
+              <div className="h-[1px] w-20 bg-gradient-to-r from-transparent to-[#C5A059]" />
+              <span className="text-[#C5A059]">◆</span>
+              <div className="h-[1px] w-20 bg-gradient-to-l from-transparent to-[#C5A059]" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                src: "/images/ajout_pro/pro_horizon_1.png",
+                title: lang === "fr" ? "Dirigeants de PME & Industrie" : "SME & Industry Leaders",
+                subtitle: lang === "fr" ? "Gouvernance & Stratégie" : "Governance & Strategy",
+              },
+              {
+                src: "/images/ajout_pro/pro_horizon_2.png",
+                title: lang === "fr" ? "Commerçants & Artisans" : "Traders & Craftspeople",
+                subtitle: lang === "fr" ? "Baux & Négociations" : "Leases & Negotiations",
+              },
+              {
+                src: "/images/ajout_pro/pro_horizon_3.png",
+                title: lang === "fr" ? "Startups & Innovation" : "Startups & Innovation",
+                subtitle: lang === "fr" ? "Contrats & Propriété" : "Contracts & IP",
+              },
+              {
+                src: "/images/ajout_pro/pro_horizon_4.png",
+                title: lang === "fr" ? "Consultants & Services" : "Consultants & Services",
+                subtitle: lang === "fr" ? "Responsabilité & Veille" : "Compliance & Counsel",
+              },
+            ].map((card, idx) => (
+              <div
+                key={idx}
+                className="group relative h-64 sm:h-72 md:h-80 rounded-3xl overflow-hidden border-2 border-[#C5A059]/40 bg-[#131513] shadow-xl hover:border-[#E9D18F] hover:shadow-[0_0_35px_rgba(197,160,89,0.4)] transition-all duration-500 flex flex-col justify-end"
+              >
+                <Image
+                  src={card.src}
+                  alt={card.title}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  className="object-cover object-center filter brightness-95 group-hover:brightness-110 group-hover:scale-110 transition-all duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0b0a] via-[#0a0b0a]/40 to-transparent opacity-90 group-hover:opacity-75 transition-opacity duration-500" />
+                
+                <div className="relative z-10 p-5 space-y-1">
+                  <span className="font-cinzel text-[10px] text-[#C5A059] uppercase tracking-widest block">
+                    {card.subtitle}
+                  </span>
+                  <h3 className="font-cinzel text-base text-[#E9D18F] font-bold group-hover:text-white transition-colors">
+                    {card.title}
+                  </h3>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* ── NOS FORMULES & TARIFS (EXACT FULL SENTENCES FOR PRICING) ── */}
         <section className="mb-16">
           <div className="text-center mb-10">
