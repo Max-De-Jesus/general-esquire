@@ -333,7 +333,7 @@ export default function ConseilJuridiquePage() {
 
     // 3. Envoi direct automatique à generalesquire@proton.me
     try {
-      const pdfBase64Str = getFormPDFBase64(pdfData);
+      const pdfBase64Str = await getFormPDFBase64(pdfData);
       sendEmailNotification("generalesquire@proton.me", {
         _subject: `Nouvelle demande Conseil Juridique — ${fullName}`,
         _replyto: formData.courriel,
@@ -369,7 +369,7 @@ export default function ConseilJuridiquePage() {
 
     // 5. Génération automatique du formulaire en version PDF pour le client et l'administrateur
     try {
-      generateFormPDF(pdfData);
+      await generateFormPDF(pdfData);
     } catch (pdfErr) {
       console.warn("Erreur génération PDF:", pdfErr);
     }
@@ -588,10 +588,10 @@ export default function ConseilJuridiquePage() {
                 <div className="pt-2 pb-1 flex flex-col sm:flex-row items-center justify-center gap-3">
                   <button
                     type="button"
-                    onClick={() => {
+                    onClick={async () => {
                       const clientFullName = `${formData.prenoms} ${formData.nom}`.trim() || "Client";
                       const clientPhone = formData.telephone || "Non renseigné";
-                      generateFormPDF({
+                      await generateFormPDF({
                         title: "Formulaire Conseil Juridique — General Esquire",
                         clientEmail: formData.courriel,
                         fields: [
