@@ -502,18 +502,6 @@ export default function EntrepreneurPage() {
                   </p>
                 </div>
               </div>
-
-              {/* Image case1.png au bas de la case 1 */}
-              <div className="relative w-full h-48 sm:h-56 mt-6 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg">
-                <Image
-                  src="/images/case1.png"
-                  alt="Abonnement Annuel — General Esquire"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover object-center filter brightness-95 contrast-105 group-hover:scale-105 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#131513]/70 via-transparent to-transparent" />
-              </div>
             </div>
 
             {/* 2. Abonnement Mensuel */}
@@ -539,14 +527,14 @@ export default function EntrepreneurPage() {
                 </div>
               </div>
 
-              {/* Image case2.png au bas de la case 2 (Centrée au milieu sur le personnage) */}
-              <div className="relative w-full h-48 sm:h-56 mt-6 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg">
+              {/* Image case1.png occupant toute la hauteur restante au bas de la case 2 */}
+              <div className="relative w-full min-h-[220px] flex-1 mt-6 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg">
                 <Image
-                  src="/images/case2.png"
+                  src="/images/case1.png"
                   alt="Abonnement Mensuel — General Esquire"
                   fill
                   sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover object-[center_35%] filter brightness-95 contrast-105 group-hover:scale-105 transition-transform duration-700"
+                  className="object-cover object-center filter brightness-95 contrast-105 group-hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#131513]/70 via-transparent to-transparent" />
               </div>
@@ -573,6 +561,18 @@ export default function EntrepreneurPage() {
                     Dans cette hypothèse, la facturation fait l’objet d’une convention de gré à gré, qui prend en considération les données propres à la préoccupation que vous nous soumettez, ainsi que notre disponibilité.
                   </p>
                 </div>
+              </div>
+
+              {/* Image case2.png occupant toute la hauteur restante au bas de la case 3 (Centrée au milieu sur le personnage) */}
+              <div className="relative w-full min-h-[220px] flex-1 mt-6 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg">
+                <Image
+                  src="/images/case2.png"
+                  alt="Prestation Ponctuelle — General Esquire"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover object-[center_35%] filter brightness-95 contrast-105 group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#131513]/70 via-transparent to-transparent" />
               </div>
             </div>
           </div>
