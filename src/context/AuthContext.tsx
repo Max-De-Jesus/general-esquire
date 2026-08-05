@@ -311,7 +311,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const resetPassword = async (email: string) => {
     try {
-      const redirectTo = `${typeof window !== "undefined" ? window.location.origin : "https://www.generalesquire.com"}/reinitialisation-mot-de-passe`;
+      // Déterminer le domaine de redirection (toujours https://generalesquire.com en ligne, jamais localhost sauf si explicitement sur dev)
+      const isLocal = typeof window !== "undefined" && window.location.hostname.includes("localhost");
+      const baseOrigin = typeof window !== "undefined" && !isLocal
+        ? window.location.origin
+        : "https://generalesquire.com";
+
+      const redirectTo = `${baseOrigin}/reinitialisation-mot-de-passe`;
+
       const { error } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
         redirectTo,
       });
