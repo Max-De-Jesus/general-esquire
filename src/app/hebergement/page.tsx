@@ -129,7 +129,7 @@ export default function HebergementPage() {
 
       <div className="max-w-5xl mx-auto px-6">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 font-cinzel text-xs text-[#C5A059] mb-8 uppercase tracking-widest">
+        <div className="flex flex-wrap items-center gap-1.5 font-cinzel text-[10px] sm:text-xs text-[#C5A059] mb-6 uppercase tracking-wider">
           <Link href="/" className="hover:text-[#E9D18F] transition-colors">{t("nav_home")}</Link>
           <span>/</span>
           <Link href="/cocooning-touristique" className="hover:text-[#E9D18F] transition-colors">{t("nav_cocooning")}</Link>
@@ -139,7 +139,7 @@ export default function HebergementPage() {
 
         {/* Page header */}
         <div className="text-center mb-10">
-          <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase border border-[#C5A059]/40 px-4 py-1 rounded-full bg-[#131513]/80 backdrop-blur-md">
+          <span className="font-cinzel text-[10px] sm:text-xs text-[#C5A059] tracking-[0.15em] sm:tracking-[0.3em] uppercase border border-[#C5A059]/40 px-3 sm:px-4 py-1 rounded-full bg-[#131513]/80 backdrop-blur-md inline-block max-w-full truncate">
             Chrysalides — {t("nav_cocooning")}
           </span>
           <h1 className="font-cinzel text-3xl sm:text-5xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] mt-4 mb-4">

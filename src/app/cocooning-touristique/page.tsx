@@ -176,7 +176,7 @@ export default function CocooningTouristiquePage() {
       <header className="w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
           <Image
-            src="/images/bannercoo.png"
+            src="/images/Tchooh5.png"
             alt="Bannière Cocooning Touristique — General Esquire"
             fill
             priority

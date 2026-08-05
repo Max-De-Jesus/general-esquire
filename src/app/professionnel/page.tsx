@@ -476,13 +476,14 @@ export default function ProfessionnelPage() {
               <div className="px-6 sm:px-10 py-8 space-y-6">
 
                 {/* Tarif 1 : Abonnement annuel annuel */}
-                <div className="p-6 rounded-2xl bg-gradient-to-br from-[#0F3823]/80 to-[#131513] border-2 border-[#C5A059]/60 shadow-xl">
-                  <div className="flex items-start justify-between flex-wrap gap-3 mb-3">
+                <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-[#0F3823]/80 to-[#131513] border-2 border-[#C5A059]/60 shadow-xl">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 sm:gap-4 mb-3">
                     <h3 className="font-cinzel text-sm sm:text-base text-[#E9D18F] uppercase tracking-wider font-bold">
                       1. Abonnement annuel — facturation annuelle
                     </h3>
-                    <div className="font-cinzel text-3xl text-[#E9D18F] font-extrabold whitespace-nowrap">
-                      15 000 € TTC <span className="text-xs text-[#cabfa6] font-normal font-cormorant">par an</span>
+                    <div className="font-cinzel text-2xl sm:text-3xl text-[#E9D18F] font-extrabold flex items-baseline gap-2 flex-wrap shrink-0">
+                      <span>15 000 € TTC</span>
+                      <span className="text-xs text-[#cabfa6] font-normal font-cormorant">par an</span>
                     </div>
                   </div>
                   <div className="space-y-3 font-cormorant text-base text-[#EDE4CF]/85 leading-relaxed">
@@ -500,13 +501,14 @@ export default function ProfessionnelPage() {
                 </div>
 
                 {/* Tarif 2 : Abonnement annuel trimestriel */}
-                <div className="p-6 rounded-2xl bg-[#131513] border border-[#C5A059]/40 shadow-lg">
-                  <div className="flex items-start justify-between flex-wrap gap-3 mb-3">
+                <div className="p-5 sm:p-6 rounded-2xl bg-[#131513] border border-[#C5A059]/40 shadow-lg">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 sm:gap-4 mb-3">
                     <h3 className="font-cinzel text-sm sm:text-base text-[#E9D18F] uppercase tracking-wider font-bold">
                       2. Abonnement annuel — facturation trimestrielle
                     </h3>
-                    <div className="font-cinzel text-3xl text-[#E9D18F] font-extrabold whitespace-nowrap">
-                      3 500 € TTC <span className="text-xs text-[#cabfa6] font-normal font-cormorant">par trimestre</span>
+                    <div className="font-cinzel text-2xl sm:text-3xl text-[#E9D18F] font-extrabold flex items-baseline gap-2 flex-wrap shrink-0">
+                      <span>3 500 € TTC</span>
+                      <span className="text-xs text-[#cabfa6] font-normal font-cormorant">par trimestre</span>
                     </div>
                   </div>
                   <div className="space-y-3 font-cormorant text-base text-[#EDE4CF]/85 leading-relaxed">
