@@ -73,7 +73,7 @@ function RadialGallery3D() {
   // Auto-play
   useEffect(() => {
     if (isHovered) return;
-    const t = setInterval(next, 4200);
+    const t = setInterval(next, 2200);
     return () => clearInterval(t);
   }, [isHovered, next]);
 
@@ -140,7 +140,7 @@ function RadialGallery3D() {
                 transform:  `translateX(calc(${offset} * min(100px, 28vw))) rotateY(${rotY}deg) translateZ(${tz}px) scale(${scale})`,
                 opacity,
                 zIndex:     isCenter ? 50 : 30 - abs * 10,
-                transition: "all 0.7s cubic-bezier(0.16,1,0.3,1)",
+                transition: "all 1000ms cubic-bezier(0.25,1,0.5,1)",
               }}
               className={`rounded-full overflow-hidden bg-[#0d0e0c] cursor-pointer border-2 ${
                 isCenter
