@@ -528,7 +528,7 @@ export default function EntrepreneurPage() {
               </div>
 
               {/* Image case1.png occupant toute la hauteur restante au bas de la case 2 */}
-              <div className="relative w-full min-h-[220px] flex-1 mt-6 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg">
+              <div className="relative w-full min-h-[260px] sm:min-h-[300px] flex-1 mt-6 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg bg-[#0d0f0d]">
                 <Image
                   src="/images/case1.png"
                   alt="Abonnement Mensuel — General Esquire"
@@ -563,16 +563,16 @@ export default function EntrepreneurPage() {
                 </div>
               </div>
 
-              {/* Image case2.png occupant toute la hauteur restante au bas de la case 3 (Centrée au milieu sur le personnage) */}
-              <div className="relative w-full min-h-[220px] flex-1 mt-6 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg">
+              {/* Image case2.png occupant toute la hauteur restante au bas de la case 3 (Dame parfaitement centrée au milieu du cadre) */}
+              <div className="relative w-full min-h-[260px] sm:min-h-[300px] flex-1 mt-6 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg bg-[#0d0f0d]">
                 <Image
                   src="/images/case2.png"
                   alt="Prestation Ponctuelle — General Esquire"
                   fill
                   sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover object-[center_35%] filter brightness-95 contrast-105 group-hover:scale-105 transition-transform duration-700"
+                  className="object-cover object-[center_12%] filter brightness-95 contrast-105 group-hover:scale-105 transition-transform duration-700"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#131513]/70 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#131513]/80 via-transparent to-transparent" />
               </div>
             </div>
           </div>
