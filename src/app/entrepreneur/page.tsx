@@ -319,6 +319,26 @@ export default function EntrepreneurPage() {
           </div>
         </div>
 
+        {/* ─── BADGE ROTATIF ANIMÉ HAUTS-DE-FRANCE ─────────────────────── */}
+        <div className="my-6 sm:my-8 flex justify-center items-center relative z-20">
+          <div className="relative group">
+            {/* Halo lumineux d'arrière-plan avec pulsation */}
+            <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-[#C5A059]/40 via-[#E9D18F]/30 to-[#C5A059]/40 blur-xl opacity-80 animate-pulse group-hover:opacity-100 transition-opacity" />
+            
+            {/* Badge circulaire avec animation de rotation douce */}
+            <div className="relative w-36 h-36 sm:w-44 sm:h-44 rounded-full bg-[#0e100e] border-2 border-[#C5A059] p-3 shadow-[0_0_30px_rgba(197,160,89,0.5)] flex items-center justify-center overflow-hidden">
+              <Image
+                src="/images/Badge Hauts de France.png"
+                alt="Badge Région Hauts-de-France — General Esquire"
+                width={170}
+                height={170}
+                priority
+                className="object-contain filter drop-shadow-[0_4px_16px_rgba(197,160,89,0.6)] animate-[spin_25s_linear_infinite] hover:[animation-play-state:paused] transition-transform duration-500 hover:scale-110"
+              />
+            </div>
+          </div>
+        </div>
+
         {/* ── 3D EXECUTIVE LUXURY COVERFLOW SLIDER ── */}
         <section className="mb-16">
           <ExecutiveLuxurySlider />
