@@ -34,7 +34,7 @@ const CAR_PRO_SLIDES = [
   },
   {
     src: "/images/car_pro/pro5.jpg",
-    title: "La Force du Droit & Excellence",
+    title: "COMPÉTENCE & FORCE DU DROIT",
     desc: "Réactivité, discrétion absolue et respect rigoureux de la déontologie.",
   },
   {
