@@ -38,17 +38,17 @@ function HeroCarousel() {
   useEffect(() => { const t = setInterval(nextSlide, 5000); return () => clearInterval(t); }, [nextSlide]);
   return (
     <div className="relative rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-2xl bg-[#131513]">
-      <div className="relative h-[320px] sm:h-[440px] md:h-[520px] w-full">
+      <div className="relative h-[220px] xs:h-[280px] sm:h-[440px] md:h-[520px] w-full bg-[#131513]">
         {WELLNESS_SLIDES.map((slide, i) => (
           <div key={i} className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${i === current ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"}`}>
-            <Image src={slide.src} alt="" fill priority={i === 0} unoptimized className="object-cover object-center brightness-90 contrast-105 group-hover:scale-105 transition-transform duration-[8000ms]" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#131513]/80 via-transparent to-transparent" />
+            <Image src={slide.src} alt="" fill priority={i === 0} unoptimized className="object-contain sm:object-cover object-center brightness-90 contrast-105 group-hover:scale-105 transition-transform duration-[8000ms]" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#131513]/80 via-transparent to-transparent pointer-events-none" />
           </div>
         ))}
       </div>
-      <button onClick={prevSlide} className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-[#131513]/80 border border-[#C5A059]/50 text-[#C5A059] hover:bg-[#C5A059] hover:text-black transition-all flex items-center justify-center text-xl cursor-pointer backdrop-blur-md">‹</button>
-      <button onClick={nextSlide} className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-[#131513]/80 border border-[#C5A059]/50 text-[#C5A059] hover:bg-[#C5A059] hover:text-black transition-all flex items-center justify-center text-xl cursor-pointer backdrop-blur-md">›</button>
-      <div className="absolute bottom-5 right-8 z-20 flex gap-2">
+      <button onClick={prevSlide} className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#131513]/80 border border-[#C5A059]/50 text-[#C5A059] hover:bg-[#C5A059] hover:text-black transition-all flex items-center justify-center text-lg sm:text-xl cursor-pointer backdrop-blur-md">‹</button>
+      <button onClick={nextSlide} className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#131513]/80 border border-[#C5A059]/50 text-[#C5A059] hover:bg-[#C5A059] hover:text-black transition-all flex items-center justify-center text-lg sm:text-xl cursor-pointer backdrop-blur-md">›</button>
+      <div className="absolute bottom-3 sm:bottom-5 right-4 sm:right-8 z-20 flex gap-2">
         {WELLNESS_SLIDES.map((_, i) => (
           <button key={i} onClick={() => setCurrent(i)} className={`h-2.5 rounded-full transition-all cursor-pointer ${i === current ? "w-8 bg-[#C5A059] shadow-[0_0_8px_rgba(197,160,89,0.8)]" : "w-2.5 bg-[#C5A059]/40"}`} />
         ))}
@@ -213,9 +213,9 @@ function SymmetricCard({
     <div className={`relative rounded-3xl overflow-hidden border border-[#C5A059]/25 shadow-2xl hover:border-[#C5A059]/50 transition-all duration-700 h-full flex flex-col ${wide ? "lg:col-span-2" : ""}`}>
       {/* Glass BG */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#0F3823]/70 via-[#131513]/90 to-[#0a1a0f]/80" />
-      <div className={`relative z-10 flex flex-col ${reverse ? "lg:flex-row-reverse" : "lg:flex-row"} h-full min-h-[360px] items-stretch flex-1`}>
+      <div className={`relative z-10 flex flex-col ${reverse ? "lg:flex-row-reverse" : "lg:flex-row"} h-full items-stretch flex-1`}>
         {/* Content */}
-        <div className="flex-1 flex flex-col justify-center px-8 sm:px-14 py-10 text-center">
+        <div className="flex-1 flex flex-col justify-center px-6 sm:px-14 py-8 sm:py-10 text-center">
           {/* Decorative top line */}
           <div className="flex items-center justify-center gap-3 mb-6">
             <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-[#C5A059]/60" />
@@ -235,8 +235,8 @@ function SymmetricCard({
             <div className="h-[1px] w-8 bg-[#C5A059]/30" />
           </div>
         </div>
-        {/* Image Container — Spans 100% full height down to the bottom */}
-        <div className="relative w-full lg:w-2/5 min-h-[300px] sm:min-h-[360px] lg:min-h-full flex-shrink-0 overflow-hidden self-stretch h-full">
+        {/* Image Container — Responsive height on mobile & full height on desktop */}
+        <div className="relative w-full lg:w-2/5 h-56 sm:h-72 lg:h-auto lg:min-h-full flex-shrink-0 overflow-hidden self-stretch bg-[#0d0f0d]">
           <Image src={image} alt={imageAlt} fill sizes="(max-width: 1024px) 100vw, 40vw" className="object-cover object-center brightness-95" />
           <div className={`absolute inset-0 ${reverse ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-transparent via-transparent to-[#131513]/60 hidden lg:block`} />
           <div className="absolute inset-0 bg-gradient-to-t from-[#131513]/80 via-transparent to-transparent" />
@@ -267,7 +267,7 @@ export default function DetentePage() {
       {/* ── 1. BANNER ──────────────────────────────────────────────────────── */}
       <header className="w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,480px)] relative overflow-hidden">
-          <Image src="/images/Sport3.jpg" alt="Bannière Détente & Sérénité — General Esquire" fill priority className="object-cover object-[center_40%] brightness-95 contrast-105 animate-kenburns" />
+          <Image src="/images/Femmezen.jpg" alt="Bannière Détente & Sérénité — General Esquire" fill priority className="object-cover object-[center_40%] brightness-95 contrast-105 animate-kenburns" />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#131513]/80" />
         </div>
       </header>
@@ -344,7 +344,7 @@ export default function DetentePage() {
           <SymmetricCard
             emoji="🤝"
             title={lang === "fr" ? "Un guide personnel dédié à votre bonheur" : "A Dedicated Personal Guide for Your Happiness"}
-            image="/images/SOINS12.png"
+            image="/images/GUIDE.png"
             imageAlt="Guide Personnel"
             reverse
           >
