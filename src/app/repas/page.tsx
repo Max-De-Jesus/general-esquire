@@ -523,7 +523,7 @@ export default function RepasPage() {
 
               <div className="lg:col-span-5 relative h-64 sm:h-80 rounded-2xl overflow-hidden border-2 border-[#C5A059]/40 shadow-xl group">
                 <Image
-                  src="/images/car_repas/Tchooh12.webp"
+                  src="/images/Tchooh12.webp"
                   alt="Beignet Yovodoko - Saveurs du Matin et Douceurs"
                   fill
                   sizes="(max-width: 1024px) 100vw, 450px"
