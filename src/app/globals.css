@@ -196,7 +196,7 @@ input[type="date"]::-webkit-clear-button {
   transform: translateY(20px);
 }
 
-/* ---- CHORÉGRAPHIE UNIFIÉE (MOBILE & LAPTOP / DESKTOP) ---- */
+/* ---- CHORÉGRAPHIE EXACTE IDENTIQUE (MOBILE ET LAPTOP / DESKTOP) ---- */
 .menu-panel-vs1.is-open {
   visibility: visible;
   pointer-events: auto;
@@ -204,31 +204,31 @@ input[type="date"]::-webkit-clear-button {
 }
 
 .menu-panel-vs1.is-open::before {
-  animation: shimmerVert 2s ease-out forwards calc(var(--duree-panneau) * .85);
+  animation: shimmerVert 2.4s ease-out forwards calc(var(--duree-panneau) * .92);
 }
 
 .menu-panel-vs1.is-open .menu-panel__logo {
-  animation: revealUp .6s ease both calc(var(--duree-panneau) * .50);
+  animation: revealUp .8s ease both calc(var(--duree-panneau) * .62);
 }
 
 .menu-panel-vs1.is-open .menu-panel__titre {
-  animation: revealUp .5s ease both calc(var(--duree-panneau) * .62);
+  animation: revealUp .7s ease both calc(var(--duree-panneau) * .70);
 }
 
 .menu-panel-vs1.is-open .menu-liste li:nth-child(1) {
-  animation: revealUp .5s ease both calc(var(--duree-panneau) * .72);
+  animation: revealUp .7s ease both calc(var(--duree-panneau) * .78);
 }
 
 .menu-panel-vs1.is-open .menu-liste li:nth-child(2) {
-  animation: revealUp .5s ease both calc(var(--duree-panneau) * .80);
+  animation: revealUp .7s ease both calc(var(--duree-panneau) * .84);
 }
 
 .menu-panel-vs1.is-open .menu-liste li:nth-child(3) {
-  animation: revealUp .5s ease both calc(var(--duree-panneau) * .88);
+  animation: revealUp .7s ease both calc(var(--duree-panneau) * .90);
 }
 
 .menu-panel-vs1.is-open .menu-liste li:nth-child(4) {
-  animation: revealUp .5s ease both calc(var(--duree-panneau) * .95);
+  animation: revealUp .7s ease both calc(var(--duree-panneau) * .96);
 }
 
 /* ---- ADAPTATION LARGEUR ET BORDURE DESKTOP / LAPTOP (≥ 768px) ---- */
