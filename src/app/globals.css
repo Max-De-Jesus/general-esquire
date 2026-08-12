@@ -138,11 +138,11 @@ input[type="date"]::-webkit-clear-button {
   animation: remonterTexteBoucled 160s linear infinite;
 }
 
-/* ─── CHORÉGRAPHIE ET RESPONSIVE DE PANNEAU DE MENU (DESKTOP VS MOBILE) ─── */
+/* ─── CHORÉGRAPHIE ET RESPONSIVE DE PANNEAU DE MENU (DESKTOP ET MOBILE) ─── */
 :root {
   --duree-panneau: 12s;
-  --emeraude-premium: #0B2A1A;
-  --emeraude-vif: #145A32;
+  --emeraude-premium: #0F4C2E;
+  --emeraude-vif: #166534;
   --vert-neon: #2ECC71;
 }
 
@@ -158,10 +158,10 @@ input[type="date"]::-webkit-clear-button {
   align-items: center;
   padding: clamp(1.5rem, 5vw, 3rem);
   background:
-    radial-gradient(ellipse 90% 60% at 50% 35%, rgba(20,90,50,0.45) 0%, transparent 70%),
-    radial-gradient(ellipse 70% 40% at 85% 85%, rgba(197,160,89,0.22) 0%, transparent 65%),
-    linear-gradient(170deg, #04140C 0%, #0B2A1A 45%, #030D08 100%);
-  box-shadow: -15px 0 70px rgba(3,13,8,0.95), 0 0 35px rgba(20,90,50,0.35), inset 1px 0 0 rgba(46,204,113,0.3);
+    radial-gradient(ellipse 90% 70% at 50% 30%, rgba(34, 139, 78, 0.7) 0%, transparent 75%),
+    radial-gradient(ellipse 80% 50% at 85% 85%, rgba(233, 209, 143, 0.32) 0%, transparent 70%),
+    linear-gradient(165deg, #104e30 0%, #186b3a 45%, #0c3b23 100%);
+  box-shadow: -15px 0 70px rgba(0, 0, 0, 0.8), 0 0 45px rgba(34, 139, 78, 0.45), inset 1px 0 0 rgba(233, 209, 143, 0.35);
   transform: translateX(100%);
   opacity: 0;
   visibility: hidden;
@@ -178,9 +178,9 @@ input[type="date"]::-webkit-clear-button {
   background: linear-gradient(
     105deg,
     transparent,
-    rgba(20,90,50,0.35) 25%,
-    rgba(46,204,113,0.55) 50%,
-    rgba(233,209,143,0.45) 75%,
+    rgba(34, 139, 78, 0.4) 25%,
+    rgba(46, 204, 113, 0.6) 50%,
+    rgba(233, 209, 143, 0.5) 75%,
     transparent
   );
   transform: translateX(-220%);
@@ -196,64 +196,47 @@ input[type="date"]::-webkit-clear-button {
   transform: translateY(20px);
 }
 
-/* ---- 1. OUVERTURE MOBILE (< 768px) : CHORÉGRAPHIE EXACTE VS/1 (12s avec pause & recul) ---- */
-@media (max-width: 767px) {
-  .menu-panel-vs1 {
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .menu-panel-vs1.is-open {
-    visibility: visible;
-    pointer-events: auto;
-    animation: panneauMobile var(--duree-panneau) cubic-bezier(.22,.61,.36,1) forwards;
-  }
-
-  .menu-panel-vs1.is-open::before {
-    animation: shimmerVert 2.4s ease-out forwards calc(var(--duree-panneau) * .92);
-  }
-
-  .menu-panel-vs1.is-open .menu-panel__logo {
-    animation: revealUp .8s ease both calc(var(--duree-panneau) * .62);
-  }
-  .menu-panel-vs1.is-open .menu-panel__titre {
-    animation: revealUp .7s ease both calc(var(--duree-panneau) * .70);
-  }
-  .menu-panel-vs1.is-open .menu-liste li:nth-child(1) {
-    animation: revealUp .7s ease both calc(var(--duree-panneau) * .78);
-  }
-  .menu-panel-vs1.is-open .menu-liste li:nth-child(2) {
-    animation: revealUp .7s ease both calc(var(--duree-panneau) * .84);
-  }
-  .menu-panel-vs1.is-open .menu-liste li:nth-child(3) {
-    animation: revealUp .7s ease both calc(var(--duree-panneau) * .90);
-  }
-  .menu-panel-vs1.is-open .menu-liste li:nth-child(4) {
-    animation: revealUp .7s ease both calc(var(--duree-panneau) * .96);
-  }
+/* ---- CHORÉGRAPHIE UNIFIÉE (MOBILE & LAPTOP / DESKTOP) ---- */
+.menu-panel-vs1.is-open {
+  visibility: visible;
+  pointer-events: auto;
+  animation: panneauMobile var(--duree-panneau) cubic-bezier(.22,.61,.36,1) forwards;
 }
 
-/* ---- 2. OUVERTURE DESKTOP / LAPTOP (≥ 768px) ---- */
+.menu-panel-vs1.is-open::before {
+  animation: shimmerVert 2s ease-out forwards calc(var(--duree-panneau) * .85);
+}
+
+.menu-panel-vs1.is-open .menu-panel__logo {
+  animation: revealUp .6s ease both calc(var(--duree-panneau) * .50);
+}
+
+.menu-panel-vs1.is-open .menu-panel__titre {
+  animation: revealUp .5s ease both calc(var(--duree-panneau) * .62);
+}
+
+.menu-panel-vs1.is-open .menu-liste li:nth-child(1) {
+  animation: revealUp .5s ease both calc(var(--duree-panneau) * .72);
+}
+
+.menu-panel-vs1.is-open .menu-liste li:nth-child(2) {
+  animation: revealUp .5s ease both calc(var(--duree-panneau) * .80);
+}
+
+.menu-panel-vs1.is-open .menu-liste li:nth-child(3) {
+  animation: revealUp .5s ease both calc(var(--duree-panneau) * .88);
+}
+
+.menu-panel-vs1.is-open .menu-liste li:nth-child(4) {
+  animation: revealUp .5s ease both calc(var(--duree-panneau) * .95);
+}
+
+/* ---- ADAPTATION LARGEUR ET BORDURE DESKTOP / LAPTOP (≥ 768px) ---- */
 @media (min-width: 768px) {
   .menu-panel-vs1 {
     width: 50%;
     max-width: 520px;
-    background: linear-gradient(160deg, rgba(15,56,35,.98), rgba(19,21,19,.99));
-    border-left: 1px solid rgba(197, 160, 89, 0.3);
-  }
-
-  .menu-panel-vs1.is-open {
-    visibility: visible;
-    pointer-events: auto;
-    animation: slideInRightDesktop 0.45s ease-out forwards;
-  }
-
-  .menu-panel-vs1 .menu-panel__logo,
-  .menu-panel-vs1 .menu-panel__titre,
-  .menu-panel-vs1 .menu-liste li {
-    opacity: 1 !important;
-    transform: none !important;
-    animation: none !important;
+    border-left: 2px solid rgba(233, 209, 143, 0.45);
   }
 }
 

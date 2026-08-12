@@ -9,12 +9,10 @@
   100% { background-position: 200% center; }
 }
 
-/* Swirl / Wave text animation */
+/* Swirl / Wave text animation - pure vertical motion to prevent text clipping */
 @keyframes textSwirlWave {
-  0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
-  25%       { transform: translateY(-4px) rotate(-0.5deg) scale(1.01); }
-  50%       { transform: translateY(2px) rotate(0.5deg) scale(1); }
-  75%       { transform: translateY(-2px) rotate(-0.3deg) scale(1.005); }
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-3px); }
 }
 
 /* Subtle border pulse on the wow box */
@@ -50,6 +48,7 @@
   box-sizing: border-box;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  padding: 0.25rem 0.5rem;
 }
 
 .wow-box {
