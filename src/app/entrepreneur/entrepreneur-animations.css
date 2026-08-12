@@ -44,7 +44,12 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: shimmerSweep 3.5s linear infinite, textSwirlWave 6s ease-in-out infinite;
-  display: inline-block;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .wow-box {
