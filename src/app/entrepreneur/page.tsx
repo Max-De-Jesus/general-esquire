@@ -132,27 +132,31 @@ function ExecutiveLuxurySlider() {
         opacity: 1,
         zIndex: 30,
         isCenter: true,
+        visibility: "visible" as const,
       };
     } else if (offset === 1 || (activeIdx === total - 1 && index === 0)) {
       return {
-        transform: "translateX(36%) rotateY(-20deg) scale(0.82)",
-        opacity: 0.5,
+        transform: "translateX(28%) rotateY(-16deg) scale(0.82)",
+        opacity: 0.55,
         zIndex: 10,
         isCenter: false,
+        visibility: "visible" as const,
       };
     } else if (offset === -1 || (activeIdx === 0 && index === total - 1)) {
       return {
-        transform: "translateX(-36%) rotateY(20deg) scale(0.82)",
-        opacity: 0.5,
+        transform: "translateX(-28%) rotateY(16deg) scale(0.82)",
+        opacity: 0.55,
         zIndex: 10,
         isCenter: false,
+        visibility: "visible" as const,
       };
     } else {
       return {
-        transform: offset > 0 ? "translateX(70%) scale(0.55)" : "translateX(-70%) scale(0.55)",
+        transform: "translateX(0%) scale(0.4)",
         opacity: 0,
         zIndex: 0,
         isCenter: false,
+        visibility: "hidden" as const,
       };
     }
   };
@@ -161,7 +165,7 @@ function ExecutiveLuxurySlider() {
 
   return (
     <div
-      className="relative w-full rounded-3xl overflow-hidden border border-[#C5A059]/40 bg-[#0d0f0c] p-4 sm:p-10 shadow-2xl select-none"
+      className="relative w-full max-w-full rounded-3xl overflow-hidden border border-[#C5A059]/40 bg-[#0d0e0d] p-4 sm:p-10 shadow-2xl select-none"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onTouchStart={onTouchStart}
@@ -173,11 +177,11 @@ function ExecutiveLuxurySlider() {
       {/* 3D Coverflow Stage */}
       <div
         className="relative flex items-center justify-center h-[240px] sm:h-[380px] md:h-[420px] w-full overflow-hidden"
-        style={{ perspective: "1000px" }}
+        style={{ perspective: "1000px", contain: "paint" }}
       >
-        <div className="relative w-full h-full flex items-center justify-center" style={{ transformStyle: "preserve-3d" }}>
+        <div className="relative w-full h-full flex items-center justify-center">
           {SLIDES.map((slide, i) => {
-            const { transform, opacity, zIndex, isCenter } = getSlideProps(i);
+            const { transform, opacity, zIndex, isCenter, visibility } = getSlideProps(i);
 
             return (
               <div
@@ -185,13 +189,13 @@ function ExecutiveLuxurySlider() {
                 onClick={() => setActiveIdx(i)}
                 style={{
                   position: "absolute",
-                  width: "clamp(240px, 75vw, 680px)",
-                  height: "clamp(165px, 42vw, 360px)",
+                  width: "clamp(220px, 60vw, 640px)",
+                  height: "clamp(150px, 35vw, 340px)",
                   transform,
                   opacity,
                   zIndex,
+                  visibility,
                   transition: "all 0.75s cubic-bezier(0.16, 1, 0.3, 1)",
-                  transformStyle: "preserve-3d",
                 }}
                 className={`rounded-3xl overflow-hidden cursor-pointer border-2 transition-all duration-700 bg-[#131513] ${
                   isCenter
@@ -345,8 +349,8 @@ export default function EntrepreneurPage() {
         </section>
 
         {/* ── BODY TEXT (EXACT USER INSTRUCTIONS) ── */}
-        <section className="bg-[#131513]/90 border border-[#C5A059]/25 rounded-3xl p-8 sm:p-12 shadow-2xl mb-16 space-y-7 font-cormorant text-xl text-[#EDE4CF]/95 leading-relaxed">
-          <p className="first-letter:text-5xl first-letter:font-cinzel first-letter:text-[#C5A059] first-letter:font-bold first-letter:float-left first-letter:mr-3 first-letter:leading-none">
+        <section className="bg-[#131513]/90 border border-[#C5A059]/25 rounded-3xl p-6 sm:p-10 md:p-12 shadow-2xl mb-16 space-y-7 font-cormorant text-xl text-[#EDE4CF]/95 leading-relaxed overflow-hidden max-w-full">
+          <p className="text-left leading-relaxed first-letter:text-4xl sm:first-letter:text-5xl first-letter:font-cinzel first-letter:text-[#C5A059] first-letter:font-bold first-letter:float-left first-letter:mr-3 first-letter:leading-none">
             {lang === "fr" ? (
               "Nul n’est, plus qu’un chef d’entreprise, exposé à subir les conséquences de l’ignorance de la loi, en ce qu’elle est à la fois injonctive et prohibitive, mais aussi et plus que tout… sanctionnatrice. Le licenciement d’un salarié par exemple, ne se fait pas de façon hasardeuse. Il en est de même pour les déclarations faites auprès du fisc, dans le cadre d’un contrôle. Déjà la forme juridique de la personne morale elle-même influencera fortement la marge de manœuvre de son dirigeant et de ses associés s’il y en a, sachant que le moindre manquement peut entraîner pour l’entreprise comme pour ses représentants légaux, des sanctions de nature pénale, civile ou administrative."
             ) : (
@@ -357,14 +361,14 @@ export default function EntrepreneurPage() {
           {/* ── SUPER WOW EFFECT SENTENCE (Étoiles scintillantes & Ondulation Tourbillon) ── */}
           <div className="wow-box relative py-6 px-4 sm:px-10 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#0F3823]/80 via-[#161816] to-[#0F3823]/80 border-2 border-[#E9D18F]/60 overflow-hidden shadow-[0_0_40px_rgba(197,160,89,0.35)] w-full max-w-full">
             <Sparkles />
-            <p className="wow-sentence font-cormorant text-lg sm:text-2xl md:text-3xl font-bold text-center leading-relaxed relative z-10 drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)] px-1">
+            <p className="wow-sentence font-cormorant text-lg sm:text-2xl md:text-3xl font-bold text-center leading-relaxed relative z-10 drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)] px-2 sm:px-4 py-1">
               {lang === "fr"
                 ? "Le risque de la fermeture d’un établissement est en effet réel, et fait aussi mal au portefeuille et à la réputation, que l’emprisonnement du dirigeant, les amendes, ou les dommages et\u00A0intérêts."
                 : "The risk of business closure is very real, hurting finances and reputation just as severely as executive imprisonment, fines, or damages."}
             </p>
           </div>
 
-          <p className="text-xl sm:text-2xl font-light italic text-[#E9D18F]/95 text-center pt-2">
+          <p className="text-xl sm:text-2xl font-light italic text-[#E9D18F]/95 text-center pt-2 px-2">
             {lang === "fr" ? (
               "Que vous soyez un homme ou une femme, seul ou associé, notre offre de service et nos tarifs peuvent s’adapter avec flexibilité, en fonction de votre budget et de vos préoccupations."
             ) : (
