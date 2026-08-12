@@ -7,7 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { supabase, Client } from "@/lib/supabase";
 import { NewsItem } from "@/data/adminStore";
-import { getCloudNews, updateCloudNews } from "@/lib/cloudNewsStore";
+import { adminListNews, adminCreateNews, adminUpdateNews, adminDeleteNews } from "@/lib/newsAdmin";
 import { logActivity, getActivityLogs, ActivityLogEntry } from "@/lib/activityLog";
 import { sendEmailNotification } from "@/lib/emailNotifier";
 
@@ -143,7 +143,7 @@ export default function EspaceSecurisePage() {
   const fetchNewsList = async () => {
     setLoadingNews(true);
     try {
-      const data = await getCloudNews();
+      const data = await adminListNews();
       setNewsList(data || []);
     } catch {
       // Ignore
@@ -586,94 +586,64 @@ export default function EspaceSecurisePage() {
     const finalImagesList = formImages.length > 0 ? formImages : ["/images/chant.avif"];
     const mainImage = formImages[primaryImageIndex] || finalImagesList[0];
 
-    let updated: NewsItem[];
+    const articlePayload: Partial<NewsItem> = {
+      title: formTitle,
+      subtitle: formSubtitle || undefined,
+      summary: formSummary,
+      content: formContent,
+      category: formCategory,
+      date: formDate,
+      imageUrl: mainImage,
+      images: finalImagesList,
+      author: formAuthor || "Administration General Esquire",
+      isFeatured: formIsFeatured,
+      isPublished: formIsPublished,
+    };
 
-    if (editingNewsId) {
-      // Edit existing news
-      updated = newsList.map((item) => {
-        if (item.id === editingNewsId) {
-          return {
-            ...item,
-            title: formTitle,
-            subtitle: formSubtitle || undefined,
-            summary: formSummary,
-            content: formContent,
-            category: formCategory,
-            date: formDate,
-            imageUrl: mainImage,
-            images: finalImagesList,
-            author: formAuthor || "Administration General Esquire",
-            isFeatured: formIsFeatured,
-            isPublished: formIsPublished,
-          };
-        }
-        return item;
-      });
-      setNewsSuccess(lang === "fr" ? "Actualité modifiée avec succès !" : "News article updated successfully!");
-    } else {
-      // Create new news
-      const newId = typeof crypto !== "undefined" && crypto.randomUUID 
-        ? crypto.randomUUID() 
-        : "10000000-0000-4000-8000-" + Date.now().toString().padStart(12, "0");
-
-      const newItem: NewsItem = {
-        id: newId,
-        title: formTitle,
-        subtitle: formSubtitle || undefined,
-        summary: formSummary,
-        content: formContent,
-        category: formCategory,
-        date: formDate,
-        imageUrl: mainImage,
-        images: finalImagesList,
-        author: formAuthor || "Administration General Esquire",
-        isFeatured: formIsFeatured,
-        isPublished: formIsPublished,
-      };
-
-      updated = [newItem, ...newsList];
-      setNewsSuccess(lang === "fr" ? "Actualité publiée avec succès !" : "News article published successfully!");
-    }
-
-    setNewsList(updated);
     try {
-      localStorage.setItem("ge_admin_news", JSON.stringify(updated));
-    } catch {}
-
-    await updateCloudNews(updated);
-    cancelEditNews();
-    setSavingNews(false);
+      if (editingNewsId) {
+        await adminUpdateNews(editingNewsId, articlePayload);
+        setNewsSuccess(lang === "fr" ? "Actualité modifiée avec succès !" : "News article updated successfully!");
+      } else {
+        await adminCreateNews(articlePayload);
+        setNewsSuccess(lang === "fr" ? "Actualité publiée avec succès !" : "News article published successfully!");
+      }
+      await fetchNewsList();
+      cancelEditNews();
+    } catch (err) {
+      console.warn("Erreur enregistrement actualité:", err);
+      setNewsError(lang === "fr" ? "Erreur lors de l'enregistrement de l'actualité." : "Error saving the article.");
+    } finally {
+      setSavingNews(false);
+    }
   };
 
   const handleTogglePublish = async (id: string) => {
-    const updated = newsList.map((item) => {
-      if (item.id === id) {
-        return { ...item, isPublished: !item.isPublished };
-      }
-      return item;
-    });
+    const target = newsList.find((item) => item.id === id);
+    if (!target) return;
 
-    setNewsList(updated);
     try {
-      localStorage.setItem("ge_admin_news", JSON.stringify(updated));
-    } catch {}
-
-    await updateCloudNews(updated);
-    setNewsSuccess(lang === "fr" ? "Statut de publication mis à jour !" : "Publication status updated!");
+      await adminUpdateNews(id, { ...target, isPublished: !target.isPublished });
+      await fetchNewsList();
+      setNewsSuccess(lang === "fr" ? "Statut de publication mis à jour !" : "Publication status updated!");
+    } catch (err) {
+      console.warn("Erreur changement statut publication:", err);
+      setNewsError(lang === "fr" ? "Erreur lors de la mise à jour du statut." : "Error updating publication status.");
+    }
   };
 
   const handleDeleteNews = async (id: string) => {
     if (!confirm(lang === "fr" ? "Voulez-vous vraiment supprimer cette actualité ?" : "Are you sure you want to delete this news article?")) return;
 
-    const updated = newsList.filter((item) => item.id !== id);
-    setNewsList(updated);
     try {
-      localStorage.setItem("ge_admin_news", JSON.stringify(updated));
-    } catch {}
-
-    await updateCloudNews(updated);
-    if (editingNewsId === id) cancelEditNews();
-    setNewsSuccess(lang === "fr" ? "Actualité supprimée définitivement !" : "News article deleted permanently!");
+      await adminDeleteNews(id);
+      await fetchNewsList();
+      if (editingNewsId === id) cancelEditNews();
+      setNewsSuccess(lang === "fr" ? "Actualité supprimée définitivement !" : "News article deleted permanently!");
+    } catch (err) {
+      console.warn("Erreur suppression actualité:", err);
+      setNewsError(lang === "fr" ? "Erreur lors de la suppression de l'actualité." : "Error deleting the article.");
+    }
   };
 
   if (loading) {

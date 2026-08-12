@@ -92,7 +92,7 @@ export default function PaymentPage() {
   const [cocooningSession, setCocooningSession] = useState<"janvier" | "juillet">("janvier");
 
   /* ── Payment UI state ── */
-  const [paymentMethod, setPaymentMethod] = useState<"card" | "paypal" | "virement" | "wero">("paypal");
+  const [paymentMethod, setPaymentMethod] = useState<"paypal" | "virement" | "wero">("paypal");
   const [weroRef, setWeroRef] = useState("");
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -111,12 +111,6 @@ export default function PaymentPage() {
     }
   };
 
-  /* ── Card state ── */
-  const [cardNumber, setCardNumber] = useState("");
-  const [cardExpiry, setCardExpiry] = useState("");
-  const [cardCvv, setCardCvv] = useState("");
-  const [cardName, setCardName] = useState("");
-
   /* ── PayPal modal simulation ── */
   const [showPaypalModal, setShowPaypalModal] = useState(false);
   const [paypalEmail, setPaypalEmail] = useState("");
@@ -124,9 +118,6 @@ export default function PaymentPage() {
   const [paypalProcessing, setPaypalProcessing] = useState(false);
 
   /* ── Environment Payment Keys ── */
-  const stripePublishableKey =
-    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ||
-    "pk_live_51TyzoH1wH2HICAohK79Nl0HGnLMrzHboY9Whtuv5og0DBy6ArR4SZEpGU6i4twMprfBlNgnyUhGNMgzAiu2IthAu00iEFO96Bv";
   const paypalClientId =
     process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ||
     "AdaU7YACT2DL7arhwDiRkHrYpPzgfXMaMsAsDLc151AVW8oXF56GJSfSgH4Yg5zyq3RL6PUJSXB-8umj";
@@ -134,7 +125,6 @@ export default function PaymentPage() {
   const cocooningPlanId =
     process.env.NEXT_PUBLIC_PAYPAL_COCOONING_PLAN_ID || "PLAN_ID_NON_CONFIGURE";
   const isCocooningPlanReady = cocooningPlanId !== "PLAN_ID_NON_CONFIGURE";
-  const isStripeLiveReady = stripePublishableKey.startsWith("pk_live_") || stripePublishableKey.startsWith("pk_test_");
   const isPaypalLiveReady = paypalClientId.length > 10 && !paypalClientId.includes("votre_client_id");
 
   /* ══════════════════════════════════════════════════════════════════
@@ -275,11 +265,9 @@ export default function PaymentPage() {
     setPaymentError(null);
 
     try {
-      // 1. Call secure server API route to register client & payment, bypass RLS safely, and notify firm email
-      const res = await fetch("/api/register-payment", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      // 1. Call secure Supabase Edge Function to register client & payment, bypass RLS safely, and notify firm email
+      const { data, error } = await supabase.functions.invoke("register-payment", {
+        body: {
           fullName,
           email,
           phone,
@@ -292,12 +280,10 @@ export default function PaymentPage() {
           frequency: getSubscriptionFrequency(),
           country,
           address,
-        }),
+        },
       });
 
-      const data = await res.json();
-
-      if (data && data.transactionRef) {
+      if (!error && data && data.transactionRef) {
         setTransactionRef(data.transactionRef);
         setPaymentSuccess(true);
         return;
@@ -357,56 +343,6 @@ export default function PaymentPage() {
       setPaymentSuccess(true);
     } finally {
       setIsProcessing(false);
-    }
-  };
-
-  /* ── Card handler (Stripe / Simulation) ── */
-  const handleCardPayment = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!cardNumber || !cardExpiry || !cardCvv) {
-      alert(lang === "fr" ? "Veuillez remplir les informations de carte." : "Please fill in the card details.");
-      return;
-    }
-    setIsProcessing(true);
-    setPaymentError(null);
-
-    if (isStripeLiveReady) {
-      try {
-        const res = await fetch("/api/create-payment-intent", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            amount: calculatedAmount,
-            currency: "eur",
-            serviceName: getSelectedServiceText(),
-            clientEmail: email,
-          }),
-        });
-
-        const contentType = res.headers.get("content-type") || "";
-        let data: any = {};
-        if (contentType.includes("application/json")) {
-          data = await res.json();
-        } else {
-          const text = await res.text();
-          console.warn("API response was non-JSON:", text.substring(0, 150));
-        }
-
-        if (!res.ok) {
-          console.warn("Stripe live API status non-200:", res.status, data?.error);
-        }
-
-        // Transaction confirmée & enregistrée
-        await submitTransaction("Carte Bancaire (Stripe)");
-      } catch (err: unknown) {
-        console.warn("Graceful Stripe transaction fallback activated:", err);
-        await submitTransaction("Carte Bancaire");
-      }
-    } else {
-      // Mode simulation si les clés Stripe ne sont pas remplies dans .env.local
-      setTimeout(async () => {
-        await submitTransaction("Carte Bancaire (Simulation)");
-      }, 2000);
     }
   };
 
@@ -617,9 +553,7 @@ export default function PaymentPage() {
               <div className="flex justify-between mb-2">
                 <span>Moyen utilisé :</span>
                 <span>
-                  {paymentMethod === "card"
-                    ? "Carte Bancaire"
-                    : paymentMethod === "paypal"
+                  {paymentMethod === "paypal"
                     ? (isSubscriptionService ? "PayPal (Abonnement Récurrent)" : "PayPal")
                     : paymentMethod === "wero"
                     ? "Wero (Paiement Instantané)"
@@ -1281,80 +1215,10 @@ export default function PaymentPage() {
                   </div>
 
                   {/* Status Banner for Live vs Test/Simulation Keys */}
-                  {paymentMethod === "card" && !isStripeLiveReady && (
-                    <div className="bg-[#C5A059]/10 border border-[#C5A059]/30 rounded-2xl p-4 text-xs font-cormorant text-[#E9D18F] flex items-center justify-between gap-3">
-                      <span>💡 <strong>Prêt pour Stripe Réel :</strong> Ajoutez vos clés Stripe (`NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` et `STRIPE_SECRET_KEY`) dans <code>.env.local</code> pour traiter de vraies cartes bancaires.</span>
-                    </div>
-                  )}
-
                   {paymentMethod === "paypal" && !isPaypalLiveReady && (
                     <div className="bg-[#C5A059]/10 border border-[#C5A059]/30 rounded-2xl p-4 text-xs font-cormorant text-[#E9D18F] flex items-center justify-between gap-3">
                       <span>💡 <strong>Prêt pour PayPal Réel & Tokens v3 :</strong> Renseignez votre Client ID (`NEXT_PUBLIC_PAYPAL_CLIENT_ID`) dans <code>.env.local</code> pour charger le SDK officiel et enregistrer le jeton de méthode de paiement récurrente.</span>
                     </div>
-                  )}
-
-                  {/* ── Card Form (Stripe / Simulation) ── */}
-                  {paymentMethod === "card" && (
-                    <form onSubmit={handleCardPayment} className="space-y-4 animate-fadeIn">
-                      <div>
-                        <label className={labelClass}>{lang === "fr" ? "Titulaire de la Carte" : "Cardholder Name"}</label>
-                        <input
-                          type="text"
-                          required
-                          placeholder="e.g. Jean Dupont"
-                          value={cardName}
-                          onChange={(e) => setCardName(e.target.value)}
-                          className={inputClass}
-                        />
-                      </div>
-                      <div>
-                        <label className={labelClass}>{lang === "fr" ? "Numéro de Carte" : "Card Number"}</label>
-                        <input
-                          type="text"
-                          required
-                          maxLength={19}
-                          placeholder="4242 4242 4242 4242"
-                          value={cardNumber}
-                          onChange={(e) => setCardNumber(e.target.value)}
-                          className={inputClass}
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <label className={labelClass}>{lang === "fr" ? "Date d'Expiration" : "Expiry Date"}</label>
-                          <input
-                            type="text"
-                            required
-                            maxLength={5}
-                            placeholder="MM/AA"
-                            value={cardExpiry}
-                            onChange={(e) => setCardExpiry(e.target.value)}
-                            className={`${inputClass} text-center`}
-                          />
-                        </div>
-                        <div>
-                          <label className={labelClass}>CVV / CVC</label>
-                          <input
-                            type="password"
-                            required
-                            maxLength={4}
-                            placeholder="•••"
-                            value={cardCvv}
-                            onChange={(e) => setCardCvv(e.target.value)}
-                            className={`${inputClass} text-center`}
-                          />
-                        </div>
-                      </div>
-                      <button
-                        type="submit"
-                        disabled={isProcessing}
-                        className="w-full py-4 mt-2 rounded-xl font-cinzel text-xs font-bold tracking-widest text-black bg-gradient-to-r from-[#C5A059] to-[#E9D18F] hover:shadow-[0_0_20px_rgba(197,160,89,0.5)] disabled:opacity-50 transition-all cursor-pointer uppercase"
-                      >
-                        {isProcessing
-                          ? (lang === "fr" ? "Traitement sécurisé..." : "Processing Transaction...")
-                          : `${lang === "fr" ? "Payer" : "Pay"} ${calculatedAmount.toLocaleString("fr-FR")} €`}
-                      </button>
-                    </form>
                   )}
 
                   {/* ══ PayPal — 3 SYSTÈMES INDÉPENDANTS ══
