@@ -355,16 +355,12 @@ export default function EntrepreneurPage() {
           </p>
 
           {/* ── SUPER WOW EFFECT SENTENCE (Étoiles scintillantes & Ondulation Tourbillon) ── */}
-          <div className="wow-box relative py-8 px-6 sm:px-12 rounded-3xl bg-gradient-to-r from-[#0F3823]/80 via-[#161816] to-[#0F3823]/80 border-2 border-[#E9D18F]/60 overflow-hidden shadow-[0_0_40px_rgba(197,160,89,0.35)]">
+          <div className="wow-box relative py-6 px-4 sm:px-10 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#0F3823]/80 via-[#161816] to-[#0F3823]/80 border-2 border-[#E9D18F]/60 overflow-hidden shadow-[0_0_40px_rgba(197,160,89,0.35)] w-full max-w-full">
             <Sparkles />
-            <p className="wow-sentence font-cormorant text-2xl sm:text-3xl font-bold text-center leading-relaxed relative z-10 drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]">
-              {lang === "fr" ? (
-                <>
-                  Le risque de la fermeture d’un établissement est en effet réel, et fait aussi mal au portefeuille et à la réputation, que l’emprisonnement du dirigeant, les amendes, ou les <span className="whitespace-nowrap">dommages et intérêts.</span>
-                </>
-              ) : (
-                "The risk of business closure is very real, hurting finances and reputation just as severely as executive imprisonment, fines, or damages."
-              )}
+            <p className="wow-sentence font-cormorant text-lg sm:text-2xl md:text-3xl font-bold text-center leading-relaxed relative z-10 drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)] px-1">
+              {lang === "fr"
+                ? "Le risque de la fermeture d’un établissement est en effet réel, et fait aussi mal au portefeuille et à la réputation, que l’emprisonnement du dirigeant, les amendes, ou les dommages et\u00A0intérêts."
+                : "The risk of business closure is very real, hurting finances and reputation just as severely as executive imprisonment, fines, or damages."}
             </p>
           </div>
 

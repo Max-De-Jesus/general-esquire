@@ -11,17 +11,17 @@ export function LanguageToggle() {
       onClick={() => setLang(lang === "fr" ? "en" : "fr")}
       aria-label="Changer de langue / Change Language"
       title={lang === "fr" ? "Switch to English" : "Passer en Français"}
-      className="flex items-center gap-1 sm:gap-1.5 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full font-cinzel text-[10px] sm:text-xs tracking-wider border border-[#C5A059]/40 bg-[#131513]/80 hover:bg-[#C5A059]/20 text-[#E9D18F] shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer backdrop-blur-md whitespace-nowrap"
+      className="flex items-center gap-1 px-1.5 py-1 sm:px-3 sm:py-1.5 rounded-full font-cinzel text-[9px] sm:text-xs tracking-wider border border-[#C5A059]/40 bg-[#131513]/80 hover:bg-[#C5A059]/20 text-[#E9D18F] shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer backdrop-blur-md whitespace-nowrap flex-shrink-0"
     >
       {lang === "fr" ? (
         <>
-          <EnglishFlagIcon className="w-3.5 h-2.5 sm:w-4 sm:h-3" />
-          <span className="font-semibold text-[10px] sm:text-[11px]">EN</span>
+          <EnglishFlagIcon className="w-3 h-2 sm:w-4 sm:h-3" />
+          <span className="font-semibold text-[9px] sm:text-[11px]">EN</span>
         </>
       ) : (
         <>
-          <FrenchFlagIcon className="w-3.5 h-2.5 sm:w-4 sm:h-3" />
-          <span className="font-semibold text-[10px] sm:text-[11px]">FR</span>
+          <FrenchFlagIcon className="w-3 h-2 sm:w-4 sm:h-3" />
+          <span className="font-semibold text-[9px] sm:text-[11px]">FR</span>
         </>
       )}
     </button>
