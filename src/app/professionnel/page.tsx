@@ -156,7 +156,7 @@ export default function ProfessionnelPage() {
       <header className="w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
           <Image
-            src="/images/bannerchef.png"
+            src="/images/blanc/bannernew.png"
             alt="Bannière Professionnels du Droit — General Esquire"
             fill
             priority

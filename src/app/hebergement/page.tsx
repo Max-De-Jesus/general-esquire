@@ -235,7 +235,7 @@ export default function HebergementPage() {
 
             <div className="w-full md:w-1/2 relative h-72 sm:h-80 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-xl flex-shrink-0">
               <Image
-                src="/images/bienvenue 2.png"
+                src="/images/blanc/bien.png"
                 alt="Accueil chaleureux au Bénin — General Esquire"
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-700"

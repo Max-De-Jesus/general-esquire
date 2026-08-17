@@ -121,7 +121,7 @@ export default function ParticuliersPage() {
       <header className="relative z-10 w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
           <Image
-            src="/images/bannerparticulier.png"
+            src="/images/blanc/banpart.png"
             alt="Bannière Particuliers — General Esquire"
             fill
             priority
@@ -146,7 +146,7 @@ export default function ParticuliersPage() {
         <div className="relative rounded-3xl overflow-hidden border border-[#C5A059]/40 mb-12 shadow-2xl">
           <div className="relative h-64 sm:h-80 md:h-96 w-full">
             <Image
-              src="/images/Image ParticuLiers9.avif"
+              src="/images/blanc/hero.png"
               alt="Espace Particuliers — General Esquire"
               fill
               priority
@@ -222,7 +222,7 @@ export default function ParticuliersPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div className="relative h-64 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg group">
               <Image
-                src="/images/Image particuliers.jfif"
+                src="/images/blanc/fam1.png"
                 alt="Accompagnement Particuliers"
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -230,7 +230,7 @@ export default function ParticuliersPage() {
             </div>
             <div className="relative h-64 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg group">
               <Image
-                src="/images/Image ParticuLiers8.avif"
+                src="/images/blanc/fam2.png"
                 alt="Ecoute et conseils"
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -457,7 +457,7 @@ export default function ParticuliersPage() {
                 { src: "/images/photo particulier/Particluiers2.jpg", alt: "Accompagnement Client 3" },
                 { src: "/images/photo particulier/Particluiers4.jpg", alt: "Accompagnement Client 4" },
                 { src: "/images/photo particulier/Particluiers5.webp", alt: "Accompagnement Client 5" },
-                { src: "/images/photo particulier/Particluiers3.jpg", alt: "Accompagnement Client 6" },
+                { src: "/images/blanc/b1.png", alt: "Accompagnement Client 6" },
                 { src: "/images/photo particulier/Particluiers7.jpg", alt: "Accompagnement Client 7" },
                 { src: "/images/photo particulier/Particluiers8.jpg", alt: "Accompagnement Client 8" },
               ].map((img, idx) => (
