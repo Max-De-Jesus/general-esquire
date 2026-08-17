@@ -53,7 +53,10 @@ export default function Footer() {
           {/* Trait de séparation horizontal */}
           <div className="w-16 h-[1px] bg-[#C5A059]/30 mx-auto my-3" aria-hidden="true" />
 
-          {/* Liens TikTok & Instagram avec Logos */}
+          {/* Titre Réseaux Sociaux & Liens TikTok / Instagram avec Logos */}
+          <p className="font-cinzel text-[0.65rem] tracking-[0.2em] uppercase text-[#C5A059] mb-2 font-semibold">
+            {lang === "fr" ? "Nos réseaux sociaux" : "Our social networks"}
+          </p>
           <div className="space-y-2 font-cormorant text-sm flex flex-col items-center">
             <p>
               <a
