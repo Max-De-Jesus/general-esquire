@@ -6,6 +6,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { NewsItem } from "@/data/adminStore";
 import TickerBanner from "@/components/TickerBanner";
 import { getCloudNews } from "@/lib/cloudNewsStore";
+import TourismVideosSection from "@/components/TourismVideosSection";
 
 export default function PublicActualitesPage() {
   const { lang } = useLanguage();
@@ -206,6 +207,9 @@ export default function PublicActualitesPage() {
             </p>
           </div>
         )}
+
+        {/* Section Tourisme Vidéos — Découvrez le Bénin */}
+        <TourismVideosSection />
       </div>
 
       {/* Modal Article Complète avec Carrousel Multi-Photos */}
