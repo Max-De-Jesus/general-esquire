@@ -158,7 +158,7 @@ export default function TourismVideosSection() {
 
         <p className="font-cormorant text-xl sm:text-2xl text-[#cabfa6] leading-relaxed max-w-3xl mx-auto italic">
           {lang === "fr"
-            ? "Ayez un aperçu captivant du Bénin à travers nos vidéos exclusives : paysages préservés, traditions royales et douceur de vivre touristique."
+            ? "Nous vous proposons un aperçu captivant du Bénin à travers nos vidéos exclusives : paysages préservés, traditions royales et douceur de vivre touristique."
             : "Get an exclusive glimpse of Benin through our curated video series: scenic landscapes, royal heritage, and luxury touristic hospitality."}
         </p>
 
