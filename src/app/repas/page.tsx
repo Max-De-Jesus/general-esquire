@@ -452,7 +452,7 @@ export default function RepasPage() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               <div className="lg:col-span-5 order-2 lg:order-1 relative h-64 sm:h-80 rounded-2xl overflow-hidden border-2 border-[#C5A059]/40 shadow-xl group">
                 <Image
-                  src="/images/car_repas/Tchooh9 - Copie.jpg"
+                  src="/images/car_repas/Tchooh3.jpg"
                   alt="Cuisine Roborative et Épicée"
                   fill
                   sizes="(max-width: 1024px) 100vw, 450px"
