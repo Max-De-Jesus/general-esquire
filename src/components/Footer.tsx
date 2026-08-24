@@ -58,17 +58,17 @@ export default function Footer() {
             {lang === "fr" ? "Suivez-nous sur :" : "Follow us on :"}
           </p>
           <div className="flex items-center justify-center gap-2 sm:gap-2.5 flex-wrap pt-1">
-            {/* TikTok */}
+            {/* Facebook */}
             <a
-              href="https://www.tiktok.com/@generalesquire?_r=1&_t=ZN-98zEGIk4yZO"
+              href="https://www.facebook.com/generalesquire"
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 text-[#C5A059] hover:text-[#E9D18F] bg-[#C5A059]/5 hover:bg-[#C5A059]/15 border border-[#C5A059]/20 hover:border-[#C5A059]/50 rounded-full transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-[0_0_10px_rgba(197,160,89,0.25)] flex items-center justify-center"
-              aria-label="TikTok General Esquire"
-              title="TikTok"
+              aria-label="Facebook General Esquire"
+              title="Facebook"
             >
               <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.24 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
               </svg>
             </a>
 
@@ -100,17 +100,17 @@ export default function Footer() {
               </svg>
             </a>
 
-            {/* Threads */}
+            {/* TikTok */}
             <a
-              href="https://www.threads.net/@general_esquire"
+              href="https://www.tiktok.com/@generalesquire?_r=1&_t=ZN-98zEGIk4yZO"
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 text-[#C5A059] hover:text-[#E9D18F] bg-[#C5A059]/5 hover:bg-[#C5A059]/15 border border-[#C5A059]/20 hover:border-[#C5A059]/50 rounded-full transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-[0_0_10px_rgba(197,160,89,0.25)] flex items-center justify-center"
-              aria-label="Threads General Esquire"
-              title="Threads"
+              aria-label="TikTok General Esquire"
+              title="TikTok"
             >
               <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                <path d="M12.186 20.572c-4.437 0-7.794-3.155-7.794-7.616 0-4.664 3.553-7.747 8.026-7.747 4.551 0 7.72 3.109 7.72 7.575 0 3.784-2.228 5.794-4.717 5.794-1.399 0-2.476-.71-2.884-1.748l-.053-.16-.14.095c-.754.512-1.76.813-2.73.813-2.15 0-3.69-1.547-3.69-3.676 0-2.476 1.954-4.086 4.795-4.086.996 0 1.865.176 2.585.524v-.706c0-2.164-1.32-3.447-3.486-3.447-1.42 0-2.66.568-3.402 1.558l-1.92-1.378c1.238-1.572 3.12-2.42 5.433-2.42 3.58 0 5.86 2.164 5.86 5.677v5.207c0 .927.426 1.408 1.107 1.408 1.442 0 2.686-1.503 2.686-3.834 0-3.415-2.34-5.61-5.688-5.61-3.327 0-5.882 2.29-5.882 5.642 0 3.178 2.302 5.485 5.565 5.485 1.47 0 2.766-.462 3.655-1.3l1.528 1.637c-1.385 1.34-3.23 2.062-5.184 2.062zm-1.89-6.305c-1.543 0-2.583.82-2.583 2.008 0 1.054.78 1.767 1.944 1.767.873 0 1.66-.402 2.138-1.096v-1.768c-.463-.61-1.077-.911-1.499-.911z"/>
+                <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.24 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
               </svg>
             </a>
 
@@ -139,6 +139,48 @@ export default function Footer() {
             >
               <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
                 <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45a1.6 1.6 0 0 0-1.6 1.6 1.6 1.6 0 0 0 1.6 1.6 1.6 1.6 0 0 0 1.6-1.6c0-.88-.72-1.6-1.6-1.6z"/>
+              </svg>
+            </a>
+
+            {/* Telegram */}
+            <a
+              href="https://t.me/eneralesquire"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 text-[#C5A059] hover:text-[#E9D18F] bg-[#C5A059]/5 hover:bg-[#C5A059]/15 border border-[#C5A059]/20 hover:border-[#C5A059]/50 rounded-full transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-[0_0_10px_rgba(197,160,89,0.25)] flex items-center justify-center"
+              aria-label="Telegram General Esquire"
+              title="Telegram"
+            >
+              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+              </svg>
+            </a>
+
+            {/* Twitch */}
+            <a
+              href="https://www.twitch.tv/generalesquire"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 text-[#C5A059] hover:text-[#E9D18F] bg-[#C5A059]/5 hover:bg-[#C5A059]/15 border border-[#C5A059]/20 hover:border-[#C5A059]/50 rounded-full transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-[0_0_10px_rgba(197,160,89,0.25)] flex items-center justify-center"
+              aria-label="Twitch General Esquire"
+              title="Twitch"
+            >
+              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/>
+              </svg>
+            </a>
+
+            {/* Threads */}
+            <a
+              href="https://www.threads.net/@general_esquire"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 text-[#C5A059] hover:text-[#E9D18F] bg-[#C5A059]/5 hover:bg-[#C5A059]/15 border border-[#C5A059]/20 hover:border-[#C5A059]/50 rounded-full transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-[0_0_10px_rgba(197,160,89,0.25)] flex items-center justify-center"
+              aria-label="Threads General Esquire"
+              title="Threads"
+            >
+              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <path d="M12.186 20.572c-4.437 0-7.794-3.155-7.794-7.616 0-4.664 3.553-7.747 8.026-7.747 4.551 0 7.72 3.109 7.72 7.575 0 3.784-2.228 5.794-4.717 5.794-1.399 0-2.476-.71-2.884-1.748l-.053-.16-.14.095c-.754.512-1.76.813-2.73.813-2.15 0-3.69-1.547-3.69-3.676 0-2.476 1.954-4.086 4.795-4.086.996 0 1.865.176 2.585.524v-.706c0-2.164-1.32-3.447-3.486-3.447-1.42 0-2.66.568-3.402 1.558l-1.92-1.378c1.238-1.572 3.12-2.42 5.433-2.42 3.58 0 5.86 2.164 5.86 5.677v5.207c0 .927.426 1.408 1.107 1.408 1.442 0 2.686-1.503 2.686-3.834 0-3.415-2.34-5.61-5.688-5.61-3.327 0-5.882 2.29-5.882 5.642 0 3.178 2.302 5.485 5.565 5.485 1.47 0 2.766-.462 3.655-1.3l1.528 1.637c-1.385 1.34-3.23 2.062-5.184 2.062zm-1.89-6.305c-1.543 0-2.583.82-2.583 2.008 0 1.054.78 1.767 1.944 1.767.873 0 1.66-.402 2.138-1.096v-1.768c-.463-.61-1.077-.911-1.499-.911z"/>
               </svg>
             </a>
 

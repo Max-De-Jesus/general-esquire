@@ -7,6 +7,7 @@ import { NewsItem } from "@/data/adminStore";
 import TickerBanner from "@/components/TickerBanner";
 import { getCloudNews } from "@/lib/cloudNewsStore";
 import TourismVideosSection from "@/components/TourismVideosSection";
+import FAQSection from "@/components/FAQSection";
 
 export default function PublicActualitesPage() {
   const { lang } = useLanguage();
@@ -210,6 +211,9 @@ export default function PublicActualitesPage() {
 
         {/* Section Tourisme Vidéos — Découvrez le Bénin */}
         <TourismVideosSection />
+
+        {/* Section Foire Aux Questions (FAQ) Interactive & Animée */}
+        <FAQSection />
       </div>
 
       {/* Modal Article Complète avec Carrousel Multi-Photos */}
