@@ -378,21 +378,20 @@ export default function ConseilJuridiquePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#1A1C1A] text-[#EDE4CF] flex flex-col justify-between overflow-x-hidden relative">
+    <div className="min-h-screen text-[#EDE4CF] flex flex-col justify-between overflow-x-hidden relative">
       {/* ─── FOND VIDÉO ARRIÈRE-PLAN AVEC CONTRASTES & DÉGRADÉS ──────────── */}
-      <div className="fixed inset-0 w-full h-full -z-10 overflow-hidden pointer-events-none">
+      <div className="fixed inset-0 w-full h-full z-0 overflow-hidden pointer-events-none">
         <video
           src="/images/VIDEOS/VIDEO1.mp4"
           autoPlay
           loop
           muted
           playsInline
-          className="w-full h-full object-cover filter brightness-[0.38] contrast-[1.25] saturate-[0.85]"
+          className="w-full h-full object-cover filter brightness-75 contrast-125 saturate-110"
         />
         {/* Voiles sombres et dégradés protecteurs pour intégration et lisibilité parfaite */}
-        <div className="absolute inset-0 bg-[#121412]/80 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#131513]/95 via-transparent to-[#101210]/95 pointer-events-none" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_0%,_#0d0f0d_80%)] pointer-events-none" />
+        <div className="absolute inset-0 bg-black/40 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#101210]/85 via-black/25 to-[#101210]/90 pointer-events-none" />
       </div>
 
       {/* ─── 1. EN-TÊTE : BANNIÈRE SEULE (vs/1 style exact) ──────────────── */}
