@@ -44,10 +44,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     user?.email?.toLowerCase() === "contact@generalesquire.com"
   );
 
-  // Check if client account has been confirmed / approved by admin
+  // Check if client account is approved (approved by default for seamless client flow unless explicitly refused)
   const isApproved = Boolean(
     isAdmin ||
-    (clientProfile?.status && ["Accepté", "Accepte", "Confirmé", "Validé", "Approuvé"].includes(clientProfile.status))
+    !clientProfile?.status ||
+    clientProfile?.status !== "Refusé"
   );
 
   const fetchClientProfile = async (email: string) => {
@@ -134,7 +135,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               phone: phone || signInData.user.user_metadata?.phone || null,
               profile_type: (profileType || signInData.user.user_metadata?.profile_type || "Particulier") as any,
               requested_service: "Inscription Compte Client",
-              status: "En attente de validation" as const,
+              status: "Accepté" as const,
               password_plain: password,
               registered_at: new Date().toISOString(),
               updated_at: new Date().toISOString(),
@@ -158,16 +159,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               }
             } catch {}
 
-            // Notification d'alerte immédiate à generalesquire@proton.me
+            // Notification d'alerte à generalesquire@proton.me
             try {
               await sendEmailNotification("generalesquire@proton.me", {
-                _subject: `NOUVELLE INSCRIPTION CLIENT À VALIDER — ${fullName || email}`,
+                _subject: `NOUVELLE INSCRIPTION CLIENT — ${fullName || email}`,
                 _replyto: email,
                 "Nom complet": fullName || email.split("@")[0],
                 "Email": email,
                 "Téléphone": phone || "Non renseigné",
                 "Profil / Statut": profileType,
-                "Statut actuel": "En attente de validation",
+                "Statut actuel": "Accepté (Actif)",
                 "Lien Administration": "https://www.generalesquire.com/espace-securise-esquire",
                 "Date": new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" }),
               });
@@ -179,7 +180,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return { error };
       }
 
-      // Ensure client entry exists in clients table with status 'En attente de validation'
+      // Ensure client entry exists in clients table with status 'Accepté'
       if (data.user) {
         const clientRecord = {
           email: email.toLowerCase(),
@@ -187,7 +188,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           phone: phone || null,
           profile_type: profileType as any,
           requested_service: "Inscription Compte Client",
-          status: "En attente de validation" as const,
+          status: "Accepté" as const,
           password_plain: password,
           registered_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
@@ -224,13 +225,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         // Envoi automatique de la notification mail d'alerte admin à generalesquire@proton.me
         try {
           await sendEmailNotification("generalesquire@proton.me", {
-            _subject: `NOUVELLE INSCRIPTION CLIENT À VALIDER — ${fullName}`,
+            _subject: `NOUVELLE INSCRIPTION CLIENT — ${fullName}`,
             _replyto: email,
             "Nom complet": fullName,
             "Email": email,
             "Téléphone": phone || "Non renseigné",
             "Profil / Statut": profileType,
-            "Statut actuel": "En attente de validation",
+            "Statut actuel": "Accepté (Actif)",
             "Lien Administration": "https://www.generalesquire.com/espace-securise-esquire",
             "Date": new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" }),
           });
