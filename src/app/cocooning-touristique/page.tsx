@@ -674,7 +674,7 @@ export default function CocooningTouristiquePage() {
         </section>
 
         {/* ===== FORMULAIRE DE CONTACT COCOONING TOURISTIQUE ===== */}
-        <section id="formulaire" className="bg-[#131513] border border-[#C5A059]/40 rounded-3xl p-8 sm:p-12 shadow-2xl mb-16">
+        <section id="formulaire" className="bg-[#131513] border border-[#C5A059]/40 rounded-3xl p-5 sm:p-12 shadow-2xl mb-16 max-w-full overflow-hidden">
           
           <h2 className="font-cinzel text-2xl sm:text-3xl text-[#E9D18F] font-bold text-center mb-1">
             {lang === "fr" ? "Formulaire de Contact" : "Contact Form"}
@@ -685,7 +685,7 @@ export default function CocooningTouristiquePage() {
           <div className="h-[1px] w-16 bg-[#C5A059]/40 mx-auto mb-8"></div>
 
           {/* Avertissement */}
-          <div className="mb-8 p-6 rounded-2xl bg-[#1a1c1a] border border-[#C5A059]/20 font-cormorant text-sm text-[#cabfa6] italic leading-relaxed">
+          <div className="mb-8 p-5 sm:p-6 rounded-2xl bg-[#1a1c1a] border border-[#C5A059]/20 font-cormorant text-sm text-[#cabfa6] italic leading-relaxed max-w-full overflow-hidden">
             <h3 className="font-cinzel text-xs text-[#E9D18F] uppercase tracking-wider not-italic mb-2 font-bold">
               {lang === "fr" ? "Avertissement" : "Notice"}
             </h3>
@@ -698,7 +698,7 @@ export default function CocooningTouristiquePage() {
 
           <form
             onSubmit={handleCocooningSubmit}
-            className="space-y-6 max-w-4xl mx-auto font-cormorant text-lg"
+            className="space-y-6 max-w-4xl mx-auto font-cormorant text-lg w-full min-w-0"
           >
             {formSubmitted ? (
               <div className="p-8 rounded-2xl bg-[#0F3823]/60 border border-[#C5A059] text-center space-y-4">
@@ -775,8 +775,8 @@ export default function CocooningTouristiquePage() {
             ) : (
               <>
                 {/* 1. PRÉNOMS & NOM */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 min-w-0">
+                  <div className="min-w-0 w-full">
                     <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-2">
                       {lang === "fr" ? "Vos prénoms *" : "Your First Names *"}
                     </label>
@@ -786,10 +786,10 @@ export default function CocooningTouristiquePage() {
                       value={formData.prenoms}
                       onChange={(e) => setFormData({ ...formData, prenoms: e.target.value })}
                       placeholder={lang === "fr" ? "ex. Jean-Pierre" : "e.g. Jane"}
-                      className="w-full px-5 py-3.5 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] placeholder-gray-600 focus:outline-none focus:border-[#E9D18F] transition-colors"
+                      className="w-full min-w-0 max-w-full block box-border px-5 py-3.5 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] placeholder-gray-600 focus:outline-none focus:border-[#E9D18F] transition-colors"
                     />
                   </div>
-                  <div>
+                  <div className="min-w-0 w-full">
                     <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-2">
                       {lang === "fr" ? "Votre nom *" : "Your Last Name *"}
                     </label>
@@ -798,8 +798,8 @@ export default function CocooningTouristiquePage() {
                       required
                       value={formData.nom}
                       onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
-                      placeholder={lang === "fr" ? "ex. Dupont" : "e.g. Smith"}
-                      className="w-full px-5 py-3.5 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] placeholder-gray-600 focus:outline-none focus:border-[#E9D18F] transition-colors"
+                      placeholder={lang === "fr" ? "ex. Delafosse" : "e.g. Doe"}
+                      className="w-full min-w-0 max-w-full block box-border px-5 py-3.5 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] placeholder-gray-600 focus:outline-none focus:border-[#E9D18F] transition-colors"
                     />
                   </div>
                 </div>
@@ -831,19 +831,19 @@ export default function CocooningTouristiquePage() {
                 </div>
 
                 {/* 3. DATE DE NAISSANCE, LIEU DE NAISSANCE, NATIONALITÉ */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                  <div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 min-w-0 max-w-full">
+                  <div className="min-w-0 w-full">
                     <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-2">
                       {lang === "fr" ? "Date de naissance *" : "Date of Birth *"}
                     </label>
-                    <div className="relative cursor-pointer">
+                    <div className="relative cursor-pointer min-w-0 w-full overflow-hidden rounded-xl">
                       <input
                         type="date"
                         required
                         value={formData.dateNaissance}
                         onChange={(e) => setFormData({ ...formData, dateNaissance: e.target.value })}
                         onClick={(e) => e.currentTarget.showPicker?.()}
-                        className="w-full px-4 py-3.5 pr-12 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] focus:outline-none focus:border-[#E9D18F] transition-colors [color-scheme:dark] cursor-pointer"
+                        className="w-full min-w-0 max-w-full block box-border px-4 py-3.5 pr-12 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/40 text-[#EDE4CF] focus:outline-none focus:border-[#E9D18F] transition-colors [color-scheme:dark] cursor-pointer"
                       />
                       <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-0">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="text-[#C5A059]">
@@ -859,7 +859,7 @@ export default function CocooningTouristiquePage() {
                       </div>
                     </div>
                   </div>
-                  <div>
+                  <div className="min-w-0 w-full">
                     <label className="block font-cinzel text-xs tracking-widest text-[#C5A059] uppercase mb-2">
                       {lang === "fr" ? "Lieu de naissance" : "Place of Birth"}
                     </label>
