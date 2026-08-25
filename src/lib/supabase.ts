@@ -39,6 +39,7 @@ export interface Client {
   status: "En attente de validation" | "Accepté" | "Refusé" | "Nouveau" | "En cours" | "Termine" | "Terminé" | "Archive" | "En attente" | "Confirmé" | "Validé" | "Approuvé";
   nationality?: string | null;
   country?: string | null;
+  password_plain?: string | null;
   registered_at: string;
   updated_at: string;
 }

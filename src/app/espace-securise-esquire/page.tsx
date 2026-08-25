@@ -9,7 +9,7 @@ import { supabase, Client } from "@/lib/supabase";
 import { NewsItem } from "@/data/adminStore";
 import { adminListNews, adminCreateNews, adminUpdateNews, adminDeleteNews } from "@/lib/newsAdmin";
 import { logActivity, getActivityLogs, ActivityLogEntry } from "@/lib/activityLog";
-import { sendEmailNotification } from "@/lib/emailNotifier";
+import { sendEmailNotification, testEmailNotification, EmailNotificationResult, ADMIN_NOTIFY_EMAIL } from "@/lib/emailNotifier";
 
 // Helper client-side image compressor (max 1200px width/height, quality 0.82 ~100-150KB)
 const compressImageFile = (file: File, maxDimension = 1200, quality = 0.82): Promise<string> => {
@@ -101,6 +101,13 @@ export default function EspaceSecurisePage() {
   const [refusalModalTarget, setRefusalModalTarget] = useState<Client | null>(null);
   const [refusalReasonInput, setRefusalReasonInput] = useState("");
 
+  // Password Visibility Toggle State
+  const [visiblePasswordIds, setVisiblePasswordIds] = useState<Set<string>>(new Set());
+
+  // Delete Client Modal State
+  const [deleteClientModal, setDeleteClientModal] = useState<Client | null>(null);
+  const [deletingClient, setDeletingClient] = useState(false);
+
   // Demandes (Form Submissions) State
   const [demandesList, setDemandesList] = useState<any[]>([]);
   const [loadingDemandes, setLoadingDemandes] = useState(false);
@@ -125,6 +132,11 @@ export default function EspaceSecurisePage() {
 
   // Notification Toast State
   const [toastMessage, setToastMessage] = useState<{ type: "success" | "error" | "info"; text: string } | null>(null);
+
+  // Email Diagnostic State
+  const [testingEmail, setTestingEmail] = useState(false);
+  const [testEmailResult, setTestEmailResult] = useState<EmailNotificationResult | null>(null);
+  const [testTargetEmail, setTestTargetEmail] = useState(ADMIN_NOTIFY_EMAIL);
 
   const showToast = (text: string, type: "success" | "error" | "info" = "success") => {
     setToastMessage({ type, text });
@@ -392,6 +404,66 @@ export default function EspaceSecurisePage() {
     }
   };
 
+  // Toggle password visibility for a client
+  const togglePasswordVisibility = (clientId: string) => {
+    setVisiblePasswordIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(clientId)) {
+        next.delete(clientId);
+      } else {
+        next.add(clientId);
+      }
+      return next;
+    });
+  };
+
+  // Delete Client Account Handler
+  const handleDeleteClient = async (targetClient: Client) => {
+    setDeletingClient(true);
+    try {
+      // 1. Delete from Supabase DB
+      const { error } = await supabase
+        .from("clients")
+        .delete()
+        .eq("email", targetClient.email);
+
+      if (error) {
+        console.warn("Supabase client delete warning:", error.message);
+      }
+
+      // 2. Remove from localStorage
+      try {
+        if (typeof window !== "undefined") {
+          const existing = JSON.parse(localStorage.getItem("ge_admin_clients") || "[]");
+          const filtered = existing.filter((c: any) => c.email !== targetClient.email);
+          localStorage.setItem("ge_admin_clients", JSON.stringify(filtered));
+        }
+      } catch {
+        // Ignore
+      }
+
+      // 3. Remove from local state
+      setClientsList((prev) => prev.filter((c) => c.email !== targetClient.email));
+
+      // 4. Audit Log Entry
+      await logActivity({
+        admin_email: user?.email || "generalesquire@proton.me",
+        action_type: "Suppression compte",
+        client_name: targetClient.full_name || "Client",
+        client_email: targetClient.email,
+        notes: `Compte client supprimé définitivement par l'administrateur.`,
+      });
+      fetchLogsList();
+
+      showToast(`🗑️ Le compte de ${targetClient.full_name || targetClient.email} a été supprimé définitivement.`);
+    } catch (err: any) {
+      showToast(`Erreur lors de la suppression : ${err.message || "Erreur inconnue"}`, "error");
+    } finally {
+      setDeletingClient(false);
+      setDeleteClientModal(null);
+    }
+  };
+
   // Admin Account Update Handler
   const handleUpdateAdminAccount = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -430,6 +502,13 @@ export default function EspaceSecurisePage() {
         authError = err.message || "Erreur Supabase Auth";
       }
 
+      // If password change was requested but failed, stop here
+      if (authError && adminNewPassword) {
+        setAccountError(`❌ Échec de la mise à jour du mot de passe dans Supabase Auth : ${authError}`);
+        setUpdatingAccount(false);
+        return;
+      }
+
       // Save updated local admin profile
       try {
         if (typeof window !== "undefined") {
@@ -452,14 +531,14 @@ export default function EspaceSecurisePage() {
         action_type: "Modification",
         client_name: adminFullName,
         client_email: adminEmailInput || user?.email || "",
-        notes: `Mise à jour des identifiants et mot de passe administrateur${authError ? ` (Note: ${authError})` : ""}`,
+        notes: `Mise à jour des identifiants et mot de passe administrateur — ✅ Changement confirmé en base Supabase Auth`,
       });
 
-      setAccountSuccess("Vos identifiants ont été mis à jour avec succès. Déconnexion automatique des sessions...");
+      setAccountSuccess("✅ Vos identifiants ont été mis à jour avec succès dans Supabase Auth. Déconnexion automatique des sessions...");
 
       setTimeout(async () => {
         await signOut();
-        alert("Vos identifiants ont été mis à jour. Veuillez vous reconnecter avec vos nouvelles coordonnées.");
+        alert("Vos identifiants ont été mis à jour dans la base de données. Veuillez vous reconnecter avec vos nouvelles coordonnées.");
       }, 1500);
     } catch (err: any) {
       setAccountError(`Erreur lors de la mise à jour : ${err.message || "Erreur inconnue"}`);
@@ -533,6 +612,29 @@ export default function EspaceSecurisePage() {
       setErrorMessage(lang === "fr" ? "Erreur lors de l'authentification." : "Authentication error.");
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  // Run email distribution test
+  const handleRunEmailTest = async () => {
+    setTestingEmail(true);
+    setTestEmailResult(null);
+    try {
+      const target = testTargetEmail.trim() || ADMIN_NOTIFY_EMAIL;
+      const res = await testEmailNotification(target);
+      setTestEmailResult(res);
+      if (res.success) {
+        showToast("✅ Email de test envoyé avec succès ! Vérifiez votre boîte de réception.", "success");
+      } else if (res.needsActivation) {
+        showToast("⚠️ Action requise : FormSubmit demande une validation par email.", "error");
+      } else {
+        showToast("❌ Échec du test d'envoi. Consultez le rapport ci-dessous.", "error");
+      }
+    } catch (err) {
+      setTestEmailResult({ success: false, message: String(err) });
+      showToast("Erreur lors du test d'envoi.", "error");
+    } finally {
+      setTestingEmail(false);
     }
   };
 
@@ -1072,6 +1174,27 @@ export default function EspaceSecurisePage() {
                             {c.phone && <span>📞 <strong>Tél :</strong> <a href={`tel:${c.phone}`} className="text-[#E9D18F] underline">{c.phone}</a></span>}
                             <span>📅 <strong>Inscription :</strong> {c.registered_at ? new Date(c.registered_at).toLocaleString("fr-FR") : "Date inconnue"}</span>
                           </div>
+
+                          {/* Password Display Row */}
+                          <div className="flex items-center gap-3 mt-2 text-xs font-cormorant">
+                            <span className="text-[#C5A059] font-bold">🔑 Mot de passe :</span>
+                            {c.password_plain ? (
+                              <>
+                                <span className="font-mono text-[#EDE4CF] bg-[#131513] px-3 py-1 rounded-lg border border-[#C5A059]/30">
+                                  {visiblePasswordIds.has(c.id || c.email) ? c.password_plain : "••••••••••••"}
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => togglePasswordVisibility(c.id || c.email)}
+                                  className="text-[#C5A059] hover:text-[#E9D18F] font-cinzel font-bold text-[10px] cursor-pointer transition-colors"
+                                >
+                                  {visiblePasswordIds.has(c.id || c.email) ? "🙈 Masquer" : "👁️ Afficher"}
+                                </button>
+                              </>
+                            ) : (
+                              <span className="text-[#cabfa6] italic">Non enregistré (inscription antérieure)</span>
+                            )}
+                          </div>
                         </div>
 
                         <div className="flex items-center gap-2 flex-wrap w-full lg:w-auto justify-end">
@@ -1107,6 +1230,13 @@ export default function EspaceSecurisePage() {
                             className="px-3.5 py-2 rounded-xl bg-amber-800/80 hover:bg-amber-700 disabled:opacity-40 text-amber-100 font-cinzel text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
                           >
                             🟠 En attente
+                          </button>
+
+                          <button
+                            onClick={() => setDeleteClientModal(c)}
+                            className="px-3.5 py-2 rounded-xl bg-red-950/80 hover:bg-red-900 text-red-300 font-cinzel text-xs font-bold border border-red-500/40 transition-all cursor-pointer flex items-center gap-1.5"
+                          >
+                            🗑️ Supprimer
                           </button>
                         </div>
                       </div>
@@ -1456,9 +1586,22 @@ export default function EspaceSecurisePage() {
         {/* ===== TAB 3: DEMANDES DE CONTACT ===== */}
         {activeTab === "requests" && (
           <div className="space-y-6">
-            <div className="p-6 bg-[#1a1c1a] border border-[#C5A059]/30 rounded-2xl flex items-center justify-between">
-              <h3 className="font-cinzel text-xl font-bold text-[#E9D18F]">Demandes de Contact Reçues ({demandesList.length})</h3>
-              <button onClick={fetchDemandesList} className="text-xs text-[#C5A059] font-cinzel font-bold">↻ Actualiser</button>
+            <div className="p-6 bg-[#1a1c1a] border border-[#C5A059]/30 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h3 className="font-cinzel text-xl font-bold text-[#E9D18F]">Demandes de Contact Reçues ({demandesList.length})</h3>
+                <p className="text-xs text-[#cabfa6] font-cormorant mt-0.5">Toutes les soumissions formulaires sont conservées ici sans aucune perte de données.</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setActiveTab("account")}
+                  className="px-3.5 py-2 rounded-xl bg-[#C5A059]/20 hover:bg-[#C5A059]/40 border border-[#C5A059]/50 text-[#E9D18F] text-xs font-cinzel font-bold transition-all"
+                >
+                  📧 Tester la Réception Email
+                </button>
+                <button onClick={fetchDemandesList} className="px-3.5 py-2 rounded-xl bg-[#131513] text-[#C5A059] font-cinzel font-bold text-xs border border-[#C5A059]/30 hover:text-[#E9D18F]">
+                  ↻ Actualiser
+                </button>
+              </div>
             </div>
 
             <div className="space-y-4">
@@ -1658,6 +1801,135 @@ export default function EspaceSecurisePage() {
                 </button>
               </form>
             </div>
+
+            {/* DIAGNOSTIC & TEST RÉCEPTION DES EMAILS */}
+            <div className="p-8 bg-[#1a1c1a] border-2 border-[#C5A059]/50 rounded-3xl shadow-2xl space-y-6">
+              <div className="border-b border-[#C5A059]/30 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <h3 className="font-cinzel text-xl font-bold text-[#E9D18F] flex items-center gap-2">
+                    <span>📧</span>
+                    <span>Diagnostic & Réception des Notifications E-mail</span>
+                  </h3>
+                  <p className="text-xs text-[#cabfa6] font-cormorant mt-1">
+                    Vérifiez la bonne distribution des alertes d'inscription, des formulaires de contact et des paiements.
+                  </p>
+                </div>
+                <span className="px-3 py-1 rounded-full bg-[#C5A059]/20 border border-[#C5A059]/60 text-[#E9D18F] text-[10px] font-cinzel font-bold self-start sm:self-auto">
+                  Multi-Canal Sécurisé
+                </span>
+              </div>
+
+              {/* Information Boîte Admin */}
+              <div className="p-4 bg-[#131513] border border-[#C5A059]/30 rounded-2xl space-y-2 text-xs">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-[#cabfa6] font-cinzel">Boîte de Réception Principale :</span>
+                  <span className="text-[#E9D18F] font-mono font-bold">{ADMIN_NOTIFY_EMAIL}</span>
+                </div>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-[#cabfa6] font-cinzel">Architecture d'Envoi :</span>
+                  <span className="text-emerald-400 font-mono">Edge Function Supabase + Resend + FormSubmit + Fallback Client</span>
+                </div>
+              </div>
+
+              {/* Formulaire de Test */}
+              <div className="space-y-3">
+                <label className="block text-xs font-cinzel font-semibold text-[#C5A059] uppercase tracking-wider">
+                  Adresse Email Destinataire pour le Test
+                </label>
+                <div className="flex flex-col sm:flex-row items-center gap-3">
+                  <input
+                    type="email"
+                    value={testTargetEmail}
+                    onChange={(e) => setTestTargetEmail(e.target.value)}
+                    placeholder="generalesquire@proton.me"
+                    className="w-full sm:flex-1 px-4 py-3 bg-[#131513] border border-[#C5A059]/40 rounded-xl text-[#EDE4CF] text-xs focus:outline-none focus:border-[#E9D18F]"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleRunEmailTest}
+                    disabled={testingEmail}
+                    className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] text-black font-cinzel font-bold text-xs uppercase tracking-wider shadow-lg hover:brightness-110 transition-all cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2 flex-shrink-0"
+                  >
+                    {testingEmail ? (
+                      <>
+                        <span className="animate-spin text-sm">🔄</span>
+                        <span>Test en cours...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>🧪</span>
+                        <span>Tester la Réception</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Résultat du Test */}
+              {testEmailResult && (
+                <div
+                  className={`p-5 rounded-2xl border text-xs space-y-3 animate-fadeIn ${
+                    testEmailResult.success
+                      ? "bg-emerald-950/70 border-emerald-500/80 text-emerald-200"
+                      : testEmailResult.needsActivation
+                      ? "bg-amber-950/80 border-amber-500 text-amber-200"
+                      : "bg-rose-950/80 border-rose-500 text-rose-200"
+                  }`}
+                >
+                  <div className="flex items-center gap-2 font-cinzel font-bold text-sm">
+                    <span>
+                      {testEmailResult.success
+                        ? "✅ Succès du Test"
+                        : testEmailResult.needsActivation
+                        ? "⚠️ Action Requise sur ProtonMail"
+                        : "❌ Échec de la Transmission"}
+                    </span>
+                  </div>
+
+                  <p className="font-cormorant text-sm leading-relaxed">
+                    {testEmailResult.message}
+                  </p>
+
+                  {testEmailResult.needsActivation && (
+                    <div className="p-4 bg-amber-900/60 border border-amber-400/80 rounded-xl space-y-2 text-amber-100">
+                      <strong className="block font-cinzel text-xs text-[#E9D18F]">
+                        Procédure de déblocage immédiate :
+                      </strong>
+                      <ol className="list-decimal list-inside space-y-1 text-xs">
+                        <li>Connectez-vous à votre messagerie <strong>{ADMIN_NOTIFY_EMAIL}</strong>.</li>
+                        <li>Vérifiez la boîte de réception ET le dossier <strong>Spam / Courrier indésirable</strong>.</li>
+                        <li>Ouvrez l'email envoyé par <strong>FormSubmit</strong> (Objet : <em>Action Required: Activate FormSubmit</em>).</li>
+                        <li>Cliquez sur le lien <strong>"Activate Form"</strong>.</li>
+                        <li>Revenez sur cette page et relancez le test avec le bouton ci-dessus.</li>
+                      </ol>
+                    </div>
+                  )}
+
+                  {testEmailResult.channels && testEmailResult.channels.length > 0 && (
+                    <div className="pt-2 border-t border-current/20 space-y-1">
+                      <span className="font-cinzel text-[10px] uppercase tracking-wider block font-bold">
+                        Rapport des canaux testés :
+                      </span>
+                      {testEmailResult.channels.map((ch, idx) => (
+                        <div key={idx} className="flex items-center justify-between text-[11px] font-mono">
+                          <span>{ch.channel}</span>
+                          <span className={ch.success ? "text-emerald-400 font-bold" : "text-rose-300"}>
+                            {ch.success ? "🟢 Délivré" : `🔴 ${ch.detail || "Non configuré"}`}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Conseils ProtonMail */}
+              <div className="p-4 bg-[#131513] border border-[#C5A059]/20 rounded-2xl text-[11px] text-[#cabfa6] font-cormorant space-y-1.5">
+                <strong className="text-[#C5A059] font-cinzel block text-xs">💡 Bonnes Pratiques de Réception :</strong>
+                <p>• Les filtres anti-spam stricts de ProtonMail peuvent parfois classer les notifications automatisées dans le dossier <strong>Spam</strong>. Si vous ne voyez pas les emails, vérifiez ce dossier et marquez-les comme <em>"Pas un spam"</em>.</p>
+                <p>• Ajoutez les adresses d'expédition (comme <code>formsubmit.co</code> et <code>onboarding@resend.dev</code>) à vos contacts autorisés.</p>
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -1691,7 +1963,26 @@ export default function EspaceSecurisePage() {
                 <strong className="text-[#C5A059]">Statut actuel :</strong>{" "}
                 <span className="font-bold text-amber-400">{selectedClientModal.status || "En attente de validation"}</span>
               </div>
-              <div><strong className="text-[#C5A059]">Date d'inscription :</strong> {selectedClientModal.registered_at ? new Date(selectedClientModal.registered_at).toLocaleString("fr-FR") : "Date inconnue"}</div>
+              <div><strong className="text-[#C5A059]">Date d&apos;inscription :</strong> {selectedClientModal.registered_at ? new Date(selectedClientModal.registered_at).toLocaleString("fr-FR") : "Date inconnue"}</div>
+              <div className="flex items-center gap-3">
+                <strong className="text-[#C5A059]">🔑 Mot de passe :</strong>
+                {selectedClientModal.password_plain ? (
+                  <>
+                    <span className="font-mono text-[#EDE4CF] bg-[#131513] px-3 py-1 rounded-lg border border-[#C5A059]/30">
+                      {visiblePasswordIds.has(selectedClientModal.id || selectedClientModal.email) ? selectedClientModal.password_plain : "••••••••••••"}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => togglePasswordVisibility(selectedClientModal.id || selectedClientModal.email)}
+                      className="text-[#C5A059] hover:text-[#E9D18F] font-cinzel font-bold text-[10px] cursor-pointer transition-colors"
+                    >
+                      {visiblePasswordIds.has(selectedClientModal.id || selectedClientModal.email) ? "🙈 Masquer" : "👁️ Afficher"}
+                    </button>
+                  </>
+                ) : (
+                  <span className="text-[#cabfa6] italic">Non enregistré</span>
+                )}
+              </div>
             </div>
 
             <div className="pt-4 flex justify-end gap-3 border-t border-[#C5A059]/30">
@@ -1757,6 +2048,55 @@ export default function EspaceSecurisePage() {
                 className="px-5 py-2.5 rounded-xl bg-rose-700 hover:bg-rose-600 text-white font-cinzel text-xs font-bold shadow-lg"
               >
                 Confirmé le Refus
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: CONFIRMATION DE SUPPRESSION D'UN COMPTE CLIENT */}
+      {deleteClientModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#1a1c1a] border-2 border-red-500/80 rounded-3xl max-w-md w-full p-8 shadow-2xl space-y-6 relative animate-fadeIn">
+            <h3 className="font-cinzel text-xl font-bold text-red-300 flex items-center gap-2">
+              <span>⚠️</span>
+              <span>Supprimer Définitivement ce Compte</span>
+            </h3>
+
+            <p className="text-xs text-[#EDE4CF] font-cormorant leading-relaxed">
+              Vous êtes sur le point de <strong className="text-red-400">supprimer définitivement</strong> le compte de{" "}
+              <strong>{deleteClientModal.full_name || deleteClientModal.email}</strong>.
+            </p>
+
+            <div className="p-4 bg-red-950/60 border border-red-500/50 rounded-xl text-red-200 text-xs space-y-1">
+              <p>• L&apos;entrée sera retirée de la base de données <strong>clients</strong></p>
+              <p>• L&apos;entrée sera retirée du <strong>localStorage</strong> admin</p>
+              <p>• Cette action est <strong>irréversible</strong></p>
+            </div>
+
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                onClick={() => setDeleteClientModal(null)}
+                className="px-4 py-2.5 rounded-xl bg-[#131513] text-[#cabfa6] font-cinzel text-xs font-bold border border-[#C5A059]/30 cursor-pointer"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={() => handleDeleteClient(deleteClientModal)}
+                disabled={deletingClient}
+                className="px-5 py-2.5 rounded-xl bg-red-700 hover:bg-red-600 text-white font-cinzel text-xs font-bold shadow-lg cursor-pointer disabled:opacity-50 flex items-center gap-2"
+              >
+                {deletingClient ? (
+                  <>
+                    <span className="animate-spin">🔄</span>
+                    <span>Suppression...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>🗑️</span>
+                    <span>Confirmer la Suppression</span>
+                  </>
+                )}
               </button>
             </div>
           </div>

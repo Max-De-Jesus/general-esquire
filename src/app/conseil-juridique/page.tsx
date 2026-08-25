@@ -334,7 +334,7 @@ export default function ConseilJuridiquePage() {
     // 3. Envoi direct automatique à generalesquire@proton.me
     try {
       const pdfBase64Str = await getFormPDFBase64(pdfData);
-      sendEmailNotification("generalesquire@proton.me", {
+      await sendEmailNotification("generalesquire@proton.me", {
         _subject: `Nouvelle demande Conseil Juridique — ${fullName}`,
         _replyto: formData.courriel,
         _attachment: pdfBase64Str,
