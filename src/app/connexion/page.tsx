@@ -27,7 +27,15 @@ function ClientAuthForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   const COUNTRY_CODES = [
-    { code: "+33", flag: "🇫🇷", name: "France (+33)" },
+    { code: "+33", flag: "🇫🇷", name: "France Métropole (+33)" },
+    { code: "+590", flag: "🇬🇵", name: "Guadeloupe / St-Martin / St-Barth (+590)" },
+    { code: "+596", flag: "🇲🇶", name: "Martinique (+596)" },
+    { code: "+594", flag: "🇬🇫", name: "Guyane Française (+594)" },
+    { code: "+262", flag: "🇷🇪", name: "La Réunion / Mayotte (+262)" },
+    { code: "+508", flag: "🇵🇲", name: "Saint-Pierre-et-Miquelon (+508)" },
+    { code: "+687", flag: "🇳🇨", name: "Nouvelle-Calédonie (+687)" },
+    { code: "+689", flag: "🇵🇫", name: "Polynésie Française (+689)" },
+    { code: "+681", flag: "🇼🇫", name: "Wallis-et-Futuna (+681)" },
     { code: "+229", flag: "🇧🇯", name: "Bénin (+229)" },
     { code: "+225", flag: "🇨🇮", name: "Côte d'Ivoire (+225)" },
     { code: "+221", flag: "🇸🇳", name: "Sénégal (+221)" },

@@ -111,7 +111,7 @@ export default function CocooningTouristiquePage() {
     // 3. Envoi direct automatique à generalesquire@proton.me
     try {
       const pdfBase64Str = await getFormPDFBase64(pdfData);
-      sendEmailNotification("generalesquire@proton.me", {
+      await sendEmailNotification("generalesquire@proton.me", {
         _subject: `Inscription Cocooning Touristique — ${fullName}`,
         _replyto: formData.courriel,
         _attachment: pdfBase64Str,

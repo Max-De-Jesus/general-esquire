@@ -4,7 +4,7 @@ export interface ActivityLogEntry {
   id?: string;
   created_at?: string;
   admin_email: string;
-  action_type: "Création compte" | "Validation compte" | "Refus compte" | "Mise en attente" | "Envoi email" | "Modification";
+  action_type: "Création compte" | "Validation compte" | "Refus compte" | "Mise en attente" | "Envoi email" | "Modification" | "Suppression compte";
   client_name: string;
   client_email: string;
   notes?: string;
