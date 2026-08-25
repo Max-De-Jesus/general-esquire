@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import EmployerPaymentGuide from "@/components/EmployerPaymentGuide";
 import { generateRIB_PDF } from "@/utils/generateFormPDF";
 
@@ -92,7 +91,7 @@ export default function PaymentPage() {
   const [cocooningSession, setCocooningSession] = useState<"janvier" | "juillet">("janvier");
 
   /* ── Payment UI state ── */
-  const [paymentMethod, setPaymentMethod] = useState<"paypal" | "virement" | "wero">("paypal");
+  const [paymentMethod, setPaymentMethod] = useState<"virement" | "wero">("virement");
   const [weroRef, setWeroRef] = useState("");
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -111,36 +110,8 @@ export default function PaymentPage() {
     }
   };
 
-  /* ── PayPal modal simulation ── */
-  const [showPaypalModal, setShowPaypalModal] = useState(false);
-  const [paypalEmail, setPaypalEmail] = useState("");
-  const [paypalPassword, setPaypalPassword] = useState("");
-  const [paypalProcessing, setPaypalProcessing] = useState(false);
-
-  /* ── Environment Payment Keys ── */
-  const paypalClientId =
-    process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ||
-    "AdaU7YACT2DL7arhwDiRkHrYpPzgfXMaMsAsDLc151AVW8oXF56GJSfSgH4Yg5zyq3RL6PUJSXB-8umj";
-  /* Plan ID PayPal pour Cocooning Touristique (abonnement automatique) */
-  const cocooningPlanId =
-    process.env.NEXT_PUBLIC_PAYPAL_COCOONING_PLAN_ID || "PLAN_ID_NON_CONFIGURE";
-  const isCocooningPlanReady = cocooningPlanId !== "PLAN_ID_NON_CONFIGURE";
-  const isPaypalLiveReady = paypalClientId.length > 10 && !paypalClientId.includes("votre_client_id");
-
-  /* ══════════════════════════════════════════════════════════════════
-     TROIS FLAGS PAYPAL INDÉPENDANTS
-     ══════════════════════════════════════════════════════════════════
-     A) isCocooningService   → actions.subscription.create() (prélèvement automatique)
-     B) isConseilJuridique   → actions.order.create() + capture() (paiement unitaire mensuel manuel)
-     C) isSubscriptionService → comportement existant (order/capture pour abonnements CdE / Pro)
-     ══════════════════════════════════════════════════════════════════ */
-  /* A — Cocooning Touristique : abonnement PayPal automatique */
   const isCocooningService = selectedServiceId === "chrys-stay";
-
-  /* B — Conseil Juridique : paiement simple mensuel (sans récurrence automatique) */
   const isConseilJuridiqueService = selectedServiceId.startsWith("cj-");
-
-  /* C — Tous les autres abonnements (Chef d'Entreprise, Pro du Droit…) */
   const isSubscriptionService =
     !isCocooningService &&
     !isConseilJuridiqueService &&
@@ -346,26 +317,6 @@ export default function PaymentPage() {
     }
   };
 
-  /* ── PayPal handler (modal simulation — 3 cas indépendants) ── */
-  const handlePaypalSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setPaypalProcessing(true);
-    setTimeout(async () => {
-      setPaypalProcessing(false);
-      setShowPaypalModal(false);
-      if (isCocooningService) {
-        /* Cas A : Cocooning → Abonnement automatique PayPal */
-        await submitTransaction("PayPal Abonnement Cocooning Touristique (Simulation)");
-      } else if (isConseilJuridiqueService) {
-        /* Cas B : Conseil Juridique → Paiement simple mensuel, sans récurrence */
-        await submitTransaction("PayPal Mensualité Conseil Juridique (Paiement Simple)");
-      } else {
-        /* Cas C : Tous les autres (Chef d'Entreprise, Pro du Droit…) */
-        await submitTransaction(isSubscriptionService ? "PayPal (Abonnement Récurrent)" : "PayPal");
-      }
-    }, 2000);
-  };
-
   /* ── Virement handler ── */
   const handleVirementConfirm = async () => {
     await submitTransaction("Virement", "En attente");
@@ -460,63 +411,6 @@ export default function PaymentPage() {
               </Link>
             </div>
           </div>
-        ) : !isApproved && !isAdmin ? (
-          /* ═══ PENDING / REFUSED ACCOUNT APPROVAL BY ADMIN ═══ */
-          <div className="bg-[#131513] border-2 border-[#C5A059]/60 rounded-3xl p-8 md:p-12 text-center max-w-2xl mx-auto shadow-2xl relative overflow-hidden animate-fadeIn space-y-6">
-            <div className="absolute inset-0 bg-[#C5A059]/[0.03] pointer-events-none" />
-            <div className="w-20 h-20 bg-[#C5A059]/15 border-2 border-[#C5A059] rounded-full flex items-center justify-center mx-auto shadow-[0_0_25px_rgba(197,160,89,0.3)]">
-              <span className="text-3xl">{clientProfile?.status === "Refusé" ? "🛑" : "⏳"}</span>
-            </div>
-
-            <div className="inline-block px-4 py-1.5 rounded-full bg-[#C5A059]/10 border border-[#C5A059]/30 text-[#C5A059] font-cinzel text-xs font-semibold tracking-widest uppercase mb-2">
-              {clientProfile?.status === "Refusé"
-                ? (lang === "fr" ? "Demande Non Retenue" : "Registration Refused")
-                : (lang === "fr" ? "Validation de Compte Requise" : "Account Approval Required")}
-            </div>
-
-            <h2 className="font-cinzel text-2xl md:text-3xl font-bold text-[#E9D18F] tracking-wider uppercase">
-              {clientProfile?.status === "Refusé"
-                ? (lang === "fr" ? "Compte Non Validé" : "Account Not Approved")
-                : (lang === "fr" ? "Compte en attente de validation" : "Account Pending Validation")}
-            </h2>
-
-            <p className="font-cormorant text-lg text-[#EDE4CF]/90 leading-relaxed">
-              {clientProfile?.status === "Refusé"
-                ? (lang === "fr"
-                    ? "Votre demande d'inscription n'a pas été validée par l'administration de General Esquire. L'accès aux services de paiement reste suspendu pour ce compte. Si vous estimez qu'il s'agit d'une erreur, veuillez contacter notre secrétariat."
-                    : "Your registration request was not approved by administration. Access to payment remains disabled.")
-                : (lang === "fr"
-                    ? "Vos informations d'inscription ont bien été transmises à l'administration. Conformément aux procédures de sécurité de General Esquire, votre compte doit être validé par un administrateur avant de pouvoir accéder à la page de paiement."
-                    : "Your registration details have been sent to administration. As per General Esquire security policies, your account must be approved by an administrator before accessing payment services.")}
-            </p>
-
-            <div className="p-4 bg-black/40 border border-[#C5A059]/20 rounded-2xl max-w-md mx-auto font-cormorant text-sm text-[#cabfa6] space-y-1.5 text-left">
-              <div><strong className="text-[#C5A059]">Client :</strong> {clientProfile?.full_name || user.email}</div>
-              <div><strong className="text-[#C5A059]">Email :</strong> {user.email}</div>
-              {clientProfile?.phone && <div><strong className="text-[#C5A059]">Téléphone :</strong> {clientProfile.phone}</div>}
-              <div>
-                <strong className="text-[#C5A059]">Statut actuel :</strong>{" "}
-                <span className={`font-bold ${clientProfile?.status === "Refusé" ? "text-red-400" : "text-amber-400"}`}>
-                  {clientProfile?.status || "En attente de validation"}
-                </span>
-              </div>
-            </div>
-
-            <p className="font-cormorant text-sm text-[#C5A059] italic">
-              {lang === "fr"
-                ? "Une notification par message électronique à generalesquire@proton.me a été émise. Dès validation par nos équipes, vous recevrez un email et l'accès au paiement sera débloqué immédiatement."
-                : "An email notification has been dispatched to administration. You will be able to complete payment as soon as confirmed."}
-            </p>
-
-            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                href="/"
-                className="w-full sm:w-auto px-8 py-3.5 rounded-full font-cinzel text-xs font-bold tracking-widest text-black bg-gradient-to-r from-[#C5A059] to-[#E9D18F] hover:brightness-110 shadow-lg transition-all uppercase cursor-pointer"
-              >
-                {lang === "fr" ? "Retour à l'accueil" : "Back to Home"}
-              </Link>
-            </div>
-          </div>
         ) : paymentSuccess ? (
           /* ═══ SUCCESS CONFIRMATION ═══ */
           <div className="bg-[#131513] border border-[#C5A059] rounded-3xl p-8 md:p-12 text-center max-w-2xl mx-auto shadow-2xl relative overflow-hidden animate-fadeIn">
@@ -553,9 +447,7 @@ export default function PaymentPage() {
               <div className="flex justify-between mb-2">
                 <span>Moyen utilisé :</span>
                 <span>
-                  {paymentMethod === "paypal"
-                    ? (isSubscriptionService ? "PayPal (Abonnement Récurrent)" : "PayPal")
-                    : paymentMethod === "wero"
+                  {paymentMethod === "wero"
                     ? "Wero (Paiement Instantané)"
                     : "Virement Bancaire"}
                 </span>
@@ -1174,338 +1066,70 @@ export default function PaymentPage() {
                     </span>
                   </div>
 
-                  {/* Payment method tab - PayPal luxury card with gold shimmer & ambient animation */}
-                  <div className="relative group overflow-hidden rounded-2xl border-2 border-[#C5A059] bg-gradient-to-br from-[#1c1914] via-[#131513] to-[#1a1712] p-6 text-[#E9D18F] shadow-[0_0_35px_rgba(197,160,89,0.25)] hover:shadow-[0_0_50px_rgba(197,160,89,0.45)] transition-all duration-500 transform hover:-translate-y-0.5">
-                    {/* Background Shimmer Effect */}
-                    <div className="absolute -inset-1 bg-gradient-to-r from-[#C5A059]/0 via-[#E9D18F]/30 to-[#C5A059]/0 opacity-60 group-hover:opacity-100 transition-opacity duration-1000 blur-md pointer-events-none animate-pulse" />
-
-                    <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
-                      <div className="flex items-center gap-4">
-                        {/* Animated Badge Icon */}
-                        <div className="relative w-14 h-14 rounded-2xl bg-gradient-to-br from-[#f2c94c] via-[#C5A059] to-[#0079C1] p-0.5 shadow-[0_0_20px_rgba(242,201,76,0.35)] group-hover:scale-105 transition-transform duration-300">
-                          <div className="w-full h-full bg-[#131513] rounded-[14px] flex items-center justify-center relative overflow-hidden">
-                            <span className="text-3xl font-extrabold text-[#f2c94c] font-cinzel tracking-tighter drop-shadow-[0_0_10px_rgba(242,201,76,0.5)]">P</span>
-                            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent pointer-events-none" />
-                          </div>
-                        </div>
-
+                  {/* Payment method selector tabs (Virement vs Wero) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Tab Virement Bancaire */}
+                    <button
+                      type="button"
+                      onClick={() => setPaymentMethod("virement")}
+                      className={`relative group overflow-hidden rounded-2xl p-5 text-left transition-all duration-300 border-2 cursor-pointer ${
+                        paymentMethod === "virement"
+                          ? "bg-gradient-to-br from-[#1c1914] via-[#131513] to-[#1a1712] border-[#C5A059] shadow-[0_0_30px_rgba(197,160,89,0.3)]"
+                          : "bg-[#131513]/60 border-[#C5A059]/25 hover:border-[#C5A059]/60 hover:bg-[#1a1c1a]"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="text-2xl">🏛️</span>
                         <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-cinzel text-sm md:text-base font-bold uppercase tracking-[0.18em] text-[#E9D18F] drop-shadow-[0_0_10px_rgba(233,209,143,0.35)]">
-                              {lang === "fr" ? "Paiement Officiel par PayPal" : "Official PayPal Payment"}
-                            </span>
-                            <span className="text-xs">🛡️</span>
-                          </div>
-                          <span className="text-xs md:text-sm font-cormorant text-[#EDE4CF]/90 italic block mt-0.5">
-                            {lang === "fr"
-                              ? "Règlement 100% Sécurisé — Compte PayPal ou Carte Bancaire sans compte"
-                              : "100% Secure Checkout — PayPal Account or Credit Card via PayPal"}
+                          <span className="font-cinzel text-sm font-bold text-[#E9D18F] block uppercase tracking-wider">
+                            {lang === "fr" ? "Virement Bancaire" : "Bank Transfer"}
+                          </span>
+                          <span className="text-[10px] font-cinzel text-[#C5A059] tracking-widest uppercase">
+                            SEPA & International
                           </span>
                         </div>
                       </div>
+                      <p className="font-cormorant text-xs text-[#cabfa6] leading-relaxed">
+                        {lang === "fr"
+                          ? "Téléchargez le RIB officiel et effectuez votre virement depuis votre banque."
+                          : "Download the official bank details and transfer from your bank account."}
+                      </p>
+                      {paymentMethod === "virement" && (
+                        <div className="absolute top-3 right-3 w-2.5 h-2.5 rounded-full bg-[#C5A059] shadow-[0_0_8px_#C5A059]" />
+                      )}
+                    </button>
 
-                      {/* Gold Luxury Tag Badge */}
-                      <div className="flex items-center gap-2 self-end sm:self-center">
-                        <span className="px-4 py-2 rounded-full bg-gradient-to-r from-[#C5A059]/25 via-[#E9D18F]/35 to-[#C5A059]/25 border border-[#E9D18F]/70 text-[#E9D18F] font-cinzel text-[11px] font-bold uppercase tracking-widest shadow-[0_0_15px_rgba(233,209,143,0.3)] flex items-center gap-2">
-                          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping inline-block shadow-[0_0_8px_#34d399]" />
-                          <span>Paiement Sécurisé Inclus</span>
-                        </span>
+                    {/* Tab Wero */}
+                    <button
+                      type="button"
+                      onClick={() => setPaymentMethod("wero")}
+                      className={`relative group overflow-hidden rounded-2xl p-5 text-left transition-all duration-300 border-2 cursor-pointer ${
+                        paymentMethod === "wero"
+                          ? "bg-gradient-to-br from-[#170e2b] via-[#1f153a] to-[#131513] border-purple-500/80 shadow-[0_0_30px_rgba(168,85,247,0.3)]"
+                          : "bg-[#131513]/60 border-purple-500/25 hover:border-purple-500/60 hover:bg-[#1a1c1a]"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="text-2xl">⚡</span>
+                        <div>
+                          <span className="font-cinzel text-sm font-bold text-purple-300 block uppercase tracking-wider">
+                            Wero
+                          </span>
+                          <span className="text-[10px] font-cinzel text-emerald-400 tracking-widest uppercase">
+                            Instantané & Sans Frais
+                          </span>
+                        </div>
                       </div>
-                    </div>
+                      <p className="font-cormorant text-xs text-[#cabfa6] leading-relaxed">
+                        {lang === "fr"
+                          ? "Paiement direct depuis votre application bancaire (BNP, SG, CA, LCL, etc.)."
+                          : "Instant payment from your mobile banking app."}
+                      </p>
+                      {paymentMethod === "wero" && (
+                        <div className="absolute top-3 right-3 w-2.5 h-2.5 rounded-full bg-purple-400 shadow-[0_0_8px_#c084fc]" />
+                      )}
+                    </button>
                   </div>
-
-                  {/* Status Banner for Live vs Test/Simulation Keys */}
-                  {paymentMethod === "paypal" && !isPaypalLiveReady && (
-                    <div className="bg-[#C5A059]/10 border border-[#C5A059]/30 rounded-2xl p-4 text-xs font-cormorant text-[#E9D18F] flex items-center justify-between gap-3">
-                      <span>💡 <strong>Prêt pour PayPal Réel & Tokens v3 :</strong> Renseignez votre Client ID (`NEXT_PUBLIC_PAYPAL_CLIENT_ID`) dans <code>.env.local</code> pour charger le SDK officiel et enregistrer le jeton de méthode de paiement récurrente.</span>
-                    </div>
-                  )}
-
-                  {/* ══ PayPal — 3 SYSTÈMES INDÉPENDANTS ══
-                      A) Cocooning Touristique  → subscription.create()  (abonnement automatique)
-                      B) Conseil Juridique       → order.create()/capture() (paiement mensuel simple, sans récurrence)
-                      C) Tous les autres         → comportement existant order/capture
-                  ════════════════════════════════════════════════════════════ */}
-                  {paymentMethod === "paypal" && (
-                    <div className="space-y-4 text-center animate-fadeIn">
-
-                      {/* ═══ CAS A : Cocooning Touristique — Abonnement automatique PayPal ═══ */}
-                      {isCocooningService && (
-                        <div className="bg-emerald-900/20 border border-emerald-500/40 rounded-2xl p-4 text-left font-sans text-xs space-y-2 animate-fadeIn">
-                          <div className="flex items-center justify-between">
-                            <span className="font-cinzel text-xs font-bold text-emerald-300 uppercase tracking-wider flex items-center gap-1.5">
-                              <span>🌴</span> {lang === "fr" ? "Abonnement Cocooning Touristique" : "Cocooning Tourist Subscription"}
-                            </span>
-                            <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-[10px]">
-                              PayPal Subscription
-                            </span>
-                          </div>
-                          <p className="text-[#cabfa6] font-cormorant text-sm leading-relaxed">
-                            {lang === "fr"
-                              ? "Votre abonnement Cocooning Touristique sera activé automatiquement. Les prélèvements sont gérés par PayPal selon le plan sélectionné."
-                              : "Your Cocooning Tourist subscription will be activated automatically. Charges are managed by PayPal according to the selected plan."}
-                          </p>
-                        </div>
-                      )}
-
-                      {/* ═══ CAS B : Conseil Juridique — Paiement mensuel simple (sans récurrence) ═══ */}
-                      {isConseilJuridiqueService && (
-                        <div className="bg-amber-900/20 border border-[#C5A059]/40 rounded-2xl p-4 text-left font-sans text-xs space-y-2 animate-fadeIn">
-                          <div className="flex items-center justify-between">
-                            <span className="font-cinzel text-xs font-bold text-[#E9D18F] uppercase tracking-wider flex items-center gap-1.5">
-                              <span>⚖️</span> {lang === "fr" ? "Paiement Mensuel Unique" : "One-Time Monthly Payment"}
-                            </span>
-                            <span className="px-2 py-0.5 rounded-full bg-[#C5A059]/10 border border-[#C5A059]/30 text-[#C5A059] font-mono text-[10px]">
-                              Paiement Simple
-                            </span>
-                          </div>
-                          <p className="text-[#cabfa6] font-cormorant text-sm leading-relaxed">
-                            {lang === "fr"
-                              ? "Vous payez uniquement la mensualité du mois en cours. Aucun abonnement n'est créé — aucun prélèvement futur automatique. Le mois suivant, vous reviendrez sur votre espace client pour régler la prochaine échéance."
-                              : "You are paying only the current month's fee. No subscription is created — no future automatic charge. Next month, you will return to your client area to pay the next instalment."}
-                          </p>
-                        </div>
-                      )}
-
-                      {/* ═══ CAS C : Tous les autres — Boîte récurrence existante ═══ */}
-                      {isSubscriptionService && (
-                        <div className="bg-[#003087]/20 border border-[#0079C1]/50 rounded-2xl p-4 text-left font-sans text-xs space-y-2 animate-fadeIn">
-                          <div className="flex items-center justify-between">
-                            <span className="font-cinzel text-xs font-bold text-[#E9D18F] uppercase tracking-wider flex items-center gap-1.5">
-                              <span>🔄</span> {lang === "fr" ? "Paiement Récurrent Autorisé" : "Recurring Payment Authorized"}
-                            </span>
-                            <span className="px-2 py-0.5 rounded-full bg-[#0079C1]/20 border border-[#0079C1]/40 text-[#60a5fa] font-mono text-[10px]">
-                              PayPal Tokens v3
-                            </span>
-                          </div>
-                          <p className="text-[#cabfa6] font-cormorant text-sm leading-relaxed">
-                            {lang === "fr"
-                              ? `Le forfait « ${getSelectedServiceText()} » constitue un paiement récurrent (${getSubscriptionFrequency()}). En validant via PayPal, vous autorisez General Esquire SAS à prélever ce montant selon le cycle de facturation.`
-                              : `The package "${getSelectedServiceText()}" is a recurring payment (${getSubscriptionFrequency()}). By confirming via PayPal, you authorize General Esquire SAS to charge this amount per billing cycle.`}
-                          </p>
-                        </div>
-                      )}
-
-                      {/* ═══════════════════════════════════════════════════════════════
-                          BRANCHE A — Cocooning Touristique : subscription.create()
-                          → Prélèvement automatique via plan PayPal (abonnement récurrent)
-                          ═══════════════════════════════════════════════════════════════ */}
-                      {isCocooningService && (
-                        <>
-                          {isPaypalLiveReady && isCocooningPlanReady ? (
-                            <PayPalScriptProvider
-                              options={{
-                                clientId: paypalClientId,
-                                currency: "EUR",
-                                vault: true,
-                                intent: "subscription",
-                              }}
-                            >
-                              <div className="py-2">
-                                <PayPalButtons
-                                  style={{
-                                    layout: "vertical",
-                                    color: "gold",
-                                    shape: "rect",
-                                    label: "subscribe",
-                                  }}
-                                  createSubscription={(data, actions) => {
-                                    return actions.subscription.create({
-                                      plan_id: cocooningPlanId,
-                                    });
-                                  }}
-                                  onApprove={async (data) => {
-                                    await submitTransaction(
-                                      `PayPal Abonnement Cocooning Touristique (Sub ID: ${data.subscriptionID})`
-                                    );
-                                  }}
-                                  onError={(err) => {
-                                    console.error("PayPal Subscription Error:", err);
-                                    setPaymentError("Une erreur est survenue avec PayPal Subscription.");
-                                  }}
-                                />
-                              </div>
-                            </PayPalScriptProvider>
-                          ) : (
-                            <>
-                              {!isCocooningPlanReady && (
-                                <div className="bg-amber-900/20 border border-amber-500/40 rounded-xl p-3 text-xs text-amber-300 font-cormorant text-left mb-3">
-                                  ⚠️ <strong>Configuration requise :</strong> Renseignez{" "}
-                                  <code className="bg-black/40 px-1 rounded">NEXT_PUBLIC_PAYPAL_COCOONING_PLAN_ID</code>{" "}
-                                  dans <code className="bg-black/40 px-1 rounded">.env.local</code> pour activer le SDK
-                                  PayPal Subscription en production.
-                                </div>
-                              )}
-                              <p className="font-cormorant text-sm text-[#cabfa6] italic">
-                                {lang === "fr"
-                                  ? "Activation de l'abonnement automatique Cocooning Touristique via la passerelle PayPal Subscription."
-                                  : "Activating automatic Cocooning Tourist subscription via PayPal Subscription gateway."}
-                              </p>
-                              <button
-                                type="button"
-                                onClick={() => setShowPaypalModal(true)}
-                                className="relative group overflow-hidden w-full py-4.5 rounded-2xl bg-gradient-to-r from-[#f2c94c] via-[#ffd65c] to-[#f2c94c] hover:brightness-110 text-slate-950 font-cinzel text-xs font-black tracking-[0.2em] uppercase flex items-center justify-center gap-3 cursor-pointer shadow-[0_10px_30px_rgba(242,201,76,0.35)] hover:shadow-[0_15px_40px_rgba(242,201,76,0.55)] transition-all duration-300 transform hover:scale-[1.01]"
-                              >
-                                <span className="text-base font-extrabold tracking-tight italic font-serif text-[#003087]">PayPal</span>
-                                <span>🌴 {lang === "fr" ? "S'abonner — Cocooning Touristique" : "Subscribe — Tourist Cocooning"}</span>
-                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
-                              </button>
-                            </>
-                          )}
-                        </>
-                      )}
-
-                      {/* ═══════════════════════════════════════════════════════════════
-                          BRANCHE B — Conseil Juridique : order.create() + capture()
-                          → Paiement mensuel unique, sans abonnement, sans récurrence
-                          Le client revient manuellement chaque mois
-                          ═══════════════════════════════════════════════════════════════ */}
-                      {isConseilJuridiqueService && (
-                        <>
-                          {isPaypalLiveReady ? (
-                            <PayPalScriptProvider
-                              options={{
-                                clientId: paypalClientId,
-                                currency: "EUR",
-                                intent: "capture",
-                              }}
-                            >
-                              <div className="py-2">
-                                <PayPalButtons
-                                  style={{
-                                    layout: "vertical",
-                                    color: "gold",
-                                    shape: "rect",
-                                    label: "pay",
-                                  }}
-                                  createOrder={(data, actions) => {
-                                    return actions.order.create({
-                                      intent: "CAPTURE",
-                                      purchase_units: [
-                                        {
-                                          description: `${getSelectedServiceText()} — Mensualité Conseil Juridique`,
-                                          amount: {
-                                            currency_code: "EUR",
-                                            value: calculatedAmount.toString(),
-                                          },
-                                        },
-                                      ],
-                                    });
-                                  }}
-                                  onApprove={async (data, actions) => {
-                                    if (actions.order) {
-                                      await actions.order.capture();
-                                      await submitTransaction(
-                                        `PayPal Mensualité Conseil Juridique — Paiement Simple (ID: ${data.orderID})`
-                                      );
-                                    }
-                                  }}
-                                  onError={(err) => {
-                                    console.error("PayPal Order Error:", err);
-                                    setPaymentError("Une erreur est survenue avec PayPal.");
-                                  }}
-                                />
-                              </div>
-                            </PayPalScriptProvider>
-                          ) : (
-                            <>
-                              <p className="font-cormorant text-sm text-[#cabfa6] italic">
-                                {lang === "fr"
-                                  ? "Paiement sécurisé de la mensualité en cours. Aucun abonnement créé, aucun prélèvement futur automatique."
-                                  : "Secure payment for the current month's fee. No subscription, no future automatic charge."}
-                              </p>
-                              <button
-                                type="button"
-                                onClick={() => setShowPaypalModal(true)}
-                                className="relative group overflow-hidden w-full py-4.5 rounded-2xl bg-gradient-to-r from-[#f2c94c] via-[#ffd65c] to-[#f2c94c] hover:brightness-110 text-slate-950 font-cinzel text-xs font-black tracking-[0.2em] uppercase flex items-center justify-center gap-3 cursor-pointer shadow-[0_10px_30px_rgba(242,201,76,0.35)] hover:shadow-[0_15px_40px_rgba(242,201,76,0.55)] transition-all duration-300 transform hover:scale-[1.01]"
-                              >
-                                <span className="text-base font-extrabold tracking-tight italic font-serif text-[#003087]">PayPal</span>
-                                <span>⚖️ {lang === "fr" ? "Payer ma mensualité" : "Pay this month's fee"}</span>
-                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
-                              </button>
-                            </>
-                          )}
-                        </>
-                      )}
-
-                      {/* ═══════════════════════════════════════════════════════════════
-                          BRANCHE C — Tous les autres profils : comportement existant
-                          (Chef d'Entreprise, Professionnel du Droit, Particulier, etc.)
-                          ═══════════════════════════════════════════════════════════════ */}
-                      {!isCocooningService && !isConseilJuridiqueService && (
-                        <>
-                          {isPaypalLiveReady ? (
-                            <PayPalScriptProvider
-                              options={{
-                                clientId: paypalClientId,
-                                currency: "EUR",
-                                intent: "capture",
-                                vault: isSubscriptionService ? true : false,
-                              }}
-                            >
-                              <div className="py-2">
-                                <PayPalButtons
-                                  style={{
-                                    layout: "vertical",
-                                    color: "gold",
-                                    shape: "rect",
-                                    label: isSubscriptionService ? "subscribe" : "pay",
-                                  }}
-                                  createOrder={(data, actions) => {
-                                    return actions.order.create({
-                                      intent: "CAPTURE",
-                                      purchase_units: [
-                                        {
-                                          description: `${getSelectedServiceText()} ${isSubscriptionService ? `[Paiement Récurrent - ${getSubscriptionFrequency()}]` : ""}`,
-                                          amount: {
-                                            currency_code: "EUR",
-                                            value: calculatedAmount.toString(),
-                                          },
-                                        },
-                                      ],
-                                    });
-                                  }}
-                                  onApprove={async (data, actions) => {
-                                    if (actions.order) {
-                                      await actions.order.capture();
-                                      await submitTransaction(
-                                        `PayPal ${isSubscriptionService ? "Récurrent/Abonnement (Tokens v3)" : "Réel"} (ID: ${data.orderID})`
-                                      );
-                                    }
-                                  }}
-                                  onError={(err) => {
-                                    console.error("PayPal Error:", err);
-                                    setPaymentError("Une erreur est survenue avec PayPal.");
-                                  }}
-                                />
-                              </div>
-                            </PayPalScriptProvider>
-                          ) : (
-                            <>
-                              <p className="font-cormorant text-sm text-[#cabfa6] italic">
-                                {isSubscriptionService
-                                  ? (lang === "fr"
-                                      ? "Règlement et enregistrement de l'abonnement récurrent via la passerelle PayPal."
-                                      : "Payment and recurring subscription vaulting setup via PayPal gateway.")
-                                  : (lang === "fr"
-                                      ? "Règlement sécurisé et rapide via votre compte PayPal."
-                                      : "Fast and secure checkout using your PayPal balance.")}
-                              </p>
-                              <button
-                                type="button"
-                                onClick={() => setShowPaypalModal(true)}
-                                className="relative group overflow-hidden w-full py-4.5 rounded-2xl bg-gradient-to-r from-[#f2c94c] via-[#ffd65c] to-[#f2c94c] hover:brightness-110 text-slate-950 font-cinzel text-xs font-black tracking-[0.2em] uppercase flex items-center justify-center gap-3 cursor-pointer shadow-[0_10px_30px_rgba(242,201,76,0.35)] hover:shadow-[0_15px_40px_rgba(242,201,76,0.55)] transition-all duration-300 transform hover:scale-[1.01]"
-                              >
-                                <span className="text-base font-extrabold tracking-tight italic font-serif text-[#003087]">PayPal</span>
-                                <span>{isSubscriptionService ? (lang === "fr" ? "S'abonner & Régler" : "Subscribe & Pay") : (lang === "fr" ? "Payer avec PayPal / Carte" : "Checkout with PayPal / Card")}</span>
-                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
-                              </button>
-                            </>
-                          )}
-                        </>
-                      )}
-                    </div>
-                  )}
 
                   {/* ── Wero (Paiement Instantané Européen) ── */}
                   {paymentMethod === "wero" && (
@@ -1638,11 +1262,11 @@ export default function PaymentPage() {
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl bg-black/40 border border-[#C5A059]/15">
                             <div>
                               <span className="text-[#cabfa6] text-[10px] uppercase block">IBAN :</span>
-                              <span className="text-[#E9D18F] font-bold text-sm tracking-widest font-mono">FR76 1741 8000 0100 0120 9...</span>
+                              <span className="text-[#E9D18F] font-bold text-sm tracking-widest font-mono">FR76 1741 8000 0100 0120 9487 411</span>
                             </div>
                             <button
                               type="button"
-                              onClick={() => handleCopyText("FR7617418000010001209...", "iban")}
+                              onClick={() => handleCopyText("FR7617418000010001209487411", "iban")}
                               className="self-start sm:self-center px-3 py-1.5 rounded-lg bg-[#C5A059]/10 hover:bg-[#C5A059]/20 border border-[#C5A059]/40 text-[#E9D18F] text-[10px] font-bold uppercase transition-all cursor-pointer flex items-center gap-1.5"
                             >
                               {copiedField === "iban" ? "✓ Copié !" : "📋 Copier"}
@@ -1653,15 +1277,26 @@ export default function PaymentPage() {
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl bg-black/40 border border-[#C5A059]/15">
                             <div>
                               <span className="text-[#cabfa6] text-[10px] uppercase block">BIC / SWIFT :</span>
-                              <span className="text-white font-bold text-sm tracking-widest font-mono">SNNNFR22XXX</span>
+                              <span className="text-white font-bold text-sm tracking-widest font-mono">SHNNFR22XXX</span>
                             </div>
                             <button
                               type="button"
-                              onClick={() => handleCopyText("SNNNFR22XXX", "bic")}
+                              onClick={() => handleCopyText("SHNNFR22XXX", "bic")}
                               className="self-start sm:self-center px-3 py-1.5 rounded-lg bg-[#C5A059]/10 hover:bg-[#C5A059]/20 border border-[#C5A059]/40 text-[#E9D18F] text-[10px] font-bold uppercase transition-all cursor-pointer flex items-center gap-1.5"
                             >
                               {copiedField === "bic" ? "✓ Copié !" : "📋 Copier"}
                             </button>
+                          </div>
+
+                          {/* Banque Partenaire */}
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl bg-black/40 border border-[#C5A059]/15">
+                            <div>
+                              <span className="text-[#cabfa6] text-[10px] uppercase block">Banque Partenaire :</span>
+                              <span className="text-white font-bold text-sm">SHINE</span>
+                            </div>
+                            <span className="text-[10px] text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded-full border border-emerald-500/30">
+                              ✓ Compte Professionnel Vérifié
+                            </span>
                           </div>
 
                           {/* Motif / Référence */}
@@ -1682,13 +1317,24 @@ export default function PaymentPage() {
                           </div>
                         </div>
 
+                        {/* Download RIB Button */}
+                        <div className="pt-2">
+                          <button
+                            type="button"
+                            onClick={() => generateRIB_PDF()}
+                            className="w-full py-3.5 rounded-xl font-cinzel text-xs font-bold tracking-widest text-[#E9D18F] bg-[#1a1712] border-2 border-[#C5A059]/60 hover:border-[#E9D18F] hover:bg-[#252018] shadow-[0_0_20px_rgba(197,160,89,0.2)] transition-all cursor-pointer uppercase flex items-center justify-center gap-2"
+                          >
+                            <span>📥</span> {lang === "fr" ? "Télécharger le RIB Officiel (PDF)" : "Download Official Bank Details (PDF)"}
+                          </button>
+                        </div>
+
                         {/* Virement International Notice */}
                         <div className="bg-black/30 border border-[#C5A059]/20 rounded-xl p-3.5 font-cormorant text-xs text-[#cabfa6] space-y-1">
                           <span className="font-cinzel text-[10px] text-[#C5A059] font-bold uppercase tracking-wider block">
                             🌐 Virement International (Réseau Swift)
                           </span>
                           <p>
-                            Pour recevoir ou effectuer un virement utilisant le réseau Swift, le BIC de notre banque partenaire est <strong className="text-white">SNNNFR22XXX</strong>.
+                            Pour recevoir ou effectuer un virement utilisant le réseau Swift, le BIC de notre banque partenaire est <strong className="text-white">SHNNFR22XXX</strong>.
                           </p>
                         </div>
                       </div>
@@ -1726,104 +1372,6 @@ export default function PaymentPage() {
           </>
         )}
       </main>
-
-      {/* ═══ PAYPAL LOGIN & RECURRING AGREEMENT MODAL ═══ */}
-      {showPaypalModal && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white text-slate-800 rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl space-y-6 animate-scaleUp">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-              <span className="font-cinzel font-extrabold text-[#003087] text-lg tracking-widest flex items-center gap-2">
-                Pay<span className="text-[#0079C1]">Pal</span>
-                {isSubscriptionService && (
-                  <span className="text-[10px] bg-[#0079C1]/15 text-[#0079C1] px-2 py-0.5 rounded-full font-sans font-bold">
-                    Récurrent Tokens v3
-                  </span>
-                )}
-              </span>
-              <button
-                onClick={() => setShowPaypalModal(false)}
-                className="text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer"
-              >
-                &times;
-              </button>
-            </div>
-
-            <form onSubmit={handlePaypalSubmit} className="space-y-4 font-sans text-sm">
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="text-xs text-slate-500 uppercase font-bold tracking-wider block">Payer à :</span>
-                    <span className="font-semibold text-slate-800">General Esquire SAS</span>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-xs text-slate-500 uppercase font-bold tracking-wider block">Montant :</span>
-                    <span className="font-bold text-slate-800 text-lg">{calculatedAmount.toLocaleString()} €</span>
-                  </div>
-                </div>
-
-                {isSubscriptionService && (
-                  <div className="pt-2 border-t border-slate-200 text-xs space-y-1">
-                    <div className="flex justify-between text-slate-600">
-                      <span>Service récurrent :</span>
-                      <span className="font-bold text-slate-900">{getSelectedServiceText()}</span>
-                    </div>
-                    <div className="flex justify-between text-slate-600">
-                      <span>Fréquence du forfait :</span>
-                      <span className="font-bold text-[#0079C1]">{getSubscriptionFrequency()}</span>
-                    </div>
-                    <div className="flex justify-between text-slate-500 text-[10px] pt-1">
-                      <span>Modèle : API Payment Method Tokens v3</span>
-                      <span className="text-emerald-600 font-bold">✓ Vault Actif</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-600 mb-1">Adresse Email PayPal</label>
-                <input
-                  type="email"
-                  required
-                  placeholder="e.g. votre.compte@email.com"
-                  value={paypalEmail}
-                  onChange={(e) => setPaypalEmail(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:outline-none focus:border-[#0079C1] text-slate-800 bg-white"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-600 mb-1">Mot de Passe</label>
-                <input
-                  type="password"
-                  required
-                  placeholder="••••••••"
-                  value={paypalPassword}
-                  onChange={(e) => setPaypalPassword(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:outline-none focus:border-[#0079C1] text-slate-800 bg-white"
-                />
-              </div>
-
-              {isSubscriptionService && (
-                <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-[11px] text-amber-900 leading-tight">
-                  ⚠️ En cliquant sur le bouton ci-dessous, vous acceptez le consentement de facturation récurrente PayPal pour {getSubscriptionFrequency()}.
-                </div>
-              )}
-
-              <button
-                type="submit"
-                disabled={paypalProcessing}
-                className="w-full py-3 rounded-full bg-[#0070ba] hover:bg-[#005ea6] text-white font-bold tracking-wide text-xs uppercase shadow-md transition-all cursor-pointer"
-              >
-                {paypalProcessing
-                  ? (lang === "fr" ? "Authentification & Jeton v3..." : "Verifying & Setting Vault...")
-                  : isSubscriptionService
-                  ? (lang === "fr" ? "Autoriser l'Abonnement Récurrent PayPal" : "Authorize PayPal Recurring Payment")
-                  : (lang === "fr" ? "Connexion & Valider le Règlement" : "Log In & Authorize Payment")}
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
     </>
   );
 }

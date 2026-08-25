@@ -126,12 +126,12 @@ function ClientAuthForm() {
         } else {
           setSuccessMessage(
             lang === "fr"
-              ? "Compte créé avec succès ! Vos informations ont été transmises à l'administration (generalesquire@proton.me). Votre compte doit être confirmé par l'administrateur avant d'accéder au paiement."
-              : "Account created successfully! Admin notification sent. Your account must be confirmed by an administrator before accessing payment."
+              ? "Compte créé et activé avec succès ! Redirection vers votre espace de règlement..."
+              : "Account created and activated successfully! Redirecting to payment..."
           );
           setTimeout(() => {
             router.push(redirectPath);
-          }, 2500);
+          }, 1200);
         }
       } else {
         const { error } = await signIn(email, password);

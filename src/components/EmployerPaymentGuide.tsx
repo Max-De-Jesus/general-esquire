@@ -59,7 +59,7 @@ export default function EmployerPaymentGuide({ className = "" }: { className?: s
                 En fonction de votre sélection, vous pourrez souscrire un abonnement annuel ou mensuel, ou faire un paiement ponctuel. Vous pouvez aussi télécharger notre RIB pour nous faire un virement de compte à compte (recommandé pour la facturation de gré à gré).
               </p>
               <p className="font-light text-sm sm:text-base text-[#E9D18F]">
-                La somme à payer s’affichera dans le récapitulatif, et vous pourrez payer par carte bancaire ou Paypal.
+                La somme à payer s’affichera dans le récapitulatif, et vous pourrez payer par virement bancaire sécurisé (avec RIB officiel à télécharger) ou par Wero.
               </p>
             </div>
 
