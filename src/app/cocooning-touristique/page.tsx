@@ -172,6 +172,22 @@ export default function CocooningTouristiquePage() {
 
   return (
     <div className="min-h-screen bg-[#1a1c1a] text-[#EDE4CF] pb-12 md:pb-20 relative">
+      {/* ─── FOND VIDÉO ARRIÈRE-PLAN AVEC CONTRASTES & DÉGRADÉS ──────────── */}
+      <div className="fixed inset-0 w-full h-full -z-10 overflow-hidden pointer-events-none">
+        <video
+          src="/images/VIDEOS/VIDEO2.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover filter brightness-[0.38] contrast-[1.25] saturate-[0.9]"
+        />
+        {/* Voiles sombres et dégradés protecteurs pour intégration et lisibilité parfaite */}
+        <div className="absolute inset-0 bg-[#121412]/80 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#131513]/95 via-transparent to-[#101210]/95 pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_0%,_#0d0f0d_80%)] pointer-events-none" />
+      </div>
+
       {/* ─── 1. EN-TÊTE : BANNIÈRE SEULE (PLEINE LARGEUR) ──────────────── */}
       <header className="w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
@@ -188,17 +204,7 @@ export default function CocooningTouristiquePage() {
       {/* ─── 2. BANDE DÉROULANTE (TICKER ALL-WIDTH SOUS LA BANNIÈRE) ───────────────── */}
       <TickerBanner className="mb-8" />
 
-      <div className="max-w-5xl mx-auto px-6">
-        
-        {/* Filigrane Background */}
-        <div className="absolute inset-0 -z-10 opacity-15 overflow-hidden pointer-events-none">
-          <Image
-            src="/images/background.jpeg"
-            alt="Fond Filigrane"
-            fill
-            className="object-cover object-center filter brightness-75 contrast-125"
-          />
-        </div>
+      <div className="max-w-5xl mx-auto px-6 relative z-10">
 
         {/* Breadcrumb Navigation */}
         <div className="flex flex-wrap items-center justify-between gap-3 mb-8">
@@ -242,10 +248,8 @@ export default function CocooningTouristiquePage() {
           </div>
         </div>
 
-
-
         {/* Subtitle Quote */}
-        <div className="text-center max-w-3xl mx-auto mb-16 px-4 sm:px-0">
+        <div className="text-center max-w-3xl mx-auto mb-16 px-6 py-6 rounded-2xl bg-[#131513]/80 border border-[#C5A059]/30 backdrop-blur-md shadow-xl">
           <p className="font-cormorant text-xl sm:text-2xl md:text-3xl text-[#E9D18F] italic font-light leading-relaxed">
             {lang === "fr"
               ? "«\u00A0Venez vous évader avec nous, découvrir d’autres cultures, déguster des mets savoureux, vous faire dorloter, et souffler un peu face aux difficultés de\u00A0la\u00A0vie.\u00A0»"
@@ -254,7 +258,7 @@ export default function CocooningTouristiquePage() {
         </div>
 
         {/* Presentation Storytelling Section */}
-        <div className="bg-[#131513]/90 border border-[#C5A059]/30 rounded-3xl p-8 sm:p-12 shadow-2xl mb-16 space-y-6 font-cormorant text-xl text-[#EDE4CF]/90 leading-relaxed font-light">
+        <div className="bg-[#131513]/90 border border-[#C5A059]/30 rounded-3xl p-8 sm:p-12 shadow-2xl mb-16 space-y-6 font-cormorant text-xl text-[#EDE4CF]/90 leading-relaxed font-light backdrop-blur-md">
           <p>
             {lang === "fr"
               ? "General Esquire n’est pas seulement un cabinet de conseil juridique qui se tient à vos côtés lors de vos challenges juridiques. Nous ambitionnons aussi de vous offrir un soutien psychologique sous la forme d’un cocooning touristique."

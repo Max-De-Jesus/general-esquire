@@ -159,6 +159,16 @@ const FAQ_ITEMS: FAQItem[] = [
       "Yes, installment plans are available depending on your client profile and chosen package (with a base rate of €100 for an initial legal consultation).\n\nFor touristic cocooning retreats, payment schedules are automatically calibrated according to the preparation time remaining prior to departure.",
   },
   {
+    id: "pourquoi-un-voyage",
+    category: "sejour",
+    questionFr: "Pourquoi un voyage ?",
+    questionEn: "Why travel?",
+    answerFr:
+      "D’abord pourquoi pas ? Et ensuite parce que nous souhaitons pour vous, le maximum de plaisir contre le minimum de dépense. Et enfin, parce que nous serions heureux de vous faire découvrir de nouveaux horizons, et de nouvelles personnes.\n\nNous organisons donc un voyage d’agrément pour vous permettre de vous changer les idées, car la vie en général, et le combat judiciaire en particulier, sous quelque forme que ce soit, sont assez violents, émotionnellement parlant.\n\nNous sélectionnons avec soin pour vous, des destinations particulièrement adaptées à votre confort et à votre bien-être.",
+    answerEn:
+      "First of all, why not? And secondly, because we want you to experience maximum pleasure for minimal expenditure. Finally, because we would be delighted to introduce you to new horizons and new people.\n\nWe therefore organize a leisure journey to allow you to disconnect and clear your mind, because life in general, and legal battles in particular, in whatever form, are emotionally demanding.\n\nWe carefully select destinations tailored to your utmost comfort and well-being.",
+  },
+  {
     id: "conditions-sejour",
     category: "sejour",
     questionFr: "Quelles sont les conditions du séjour ?",
@@ -194,8 +204,8 @@ export default function FAQSection() {
   const { lang } = useLanguage();
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [expandedIds, setExpandedIds] = useState<Set<string>>(
-    new Set(["qui-est-general-esquire"])
+  const [expandedId, setExpandedId] = useState<string | null>(
+    "qui-est-general-esquire"
   );
 
   const categories = [
@@ -207,14 +217,14 @@ export default function FAQSection() {
     },
     {
       id: "general",
-      labelFr: "Général & Philosophie",
-      labelEn: "General & Philosophy",
+      labelFr: "Qui sommes nous ?",
+      labelEn: "Who We Are",
       count: FAQ_ITEMS.filter((i) => i.category === "general").length,
     },
     {
       id: "pourquoi",
-      labelFr: "Pourquoi General Esquire",
-      labelEn: "Why General Esquire",
+      labelFr: "Notre plus-value",
+      labelEn: "Our Value Proposition",
       count: FAQ_ITEMS.filter((i) => i.category === "pourquoi").length,
     },
     {
@@ -225,8 +235,8 @@ export default function FAQSection() {
     },
     {
       id: "sejour",
-      labelFr: "Séjour & Voyage",
-      labelEn: "Travel & Stay",
+      labelFr: "Notre bonus",
+      labelEn: "Our Bonus",
       count: FAQ_ITEMS.filter((i) => i.category === "sejour").length,
     },
   ];
@@ -256,28 +266,8 @@ export default function FAQSection() {
   }, [activeCategory, searchQuery, lang]);
 
   const toggleItem = (id: string) => {
-    setExpandedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
+    setExpandedId((prev) => (prev === id ? null : id));
   };
-
-  const expandAll = () => {
-    setExpandedIds(new Set(filteredItems.map((i) => i.id)));
-  };
-
-  const collapseAll = () => {
-    setExpandedIds(new Set());
-  };
-
-  const allExpanded =
-    filteredItems.length > 0 &&
-    filteredItems.every((i) => expandedIds.has(i.id));
 
   return (
     <section
@@ -371,7 +361,7 @@ export default function FAQSection() {
         })}
       </div>
 
-      {/* Barre d'actions : Compteur + Bouton Tout Déplier / Replier */}
+      {/* Barre d'actions : Compteur + Bouton Tout Replier */}
       <div className="max-w-4xl mx-auto mb-6 px-2 flex items-center justify-between text-xs font-cinzel text-[#C5A059] relative z-10">
         <span>
           {filteredItems.length}{" "}
@@ -382,25 +372,21 @@ export default function FAQSection() {
             : "questions found"}
         </span>
 
-        <button
-          onClick={allExpanded ? collapseAll : expandAll}
-          className="hover:text-[#E9D18F] transition-colors underline decoration-[#C5A059]/40 underline-offset-4 cursor-pointer"
-        >
-          {allExpanded
-            ? lang === "fr"
-              ? "Tout replier"
-              : "Collapse all"
-            : lang === "fr"
-            ? "Tout déplier"
-            : "Expand all"}
-        </button>
+        {expandedId && (
+          <button
+            onClick={() => setExpandedId(null)}
+            className="hover:text-[#E9D18F] transition-colors underline decoration-[#C5A059]/40 underline-offset-4 cursor-pointer"
+          >
+            {lang === "fr" ? "Tout replier" : "Collapse all"}
+          </button>
+        )}
       </div>
 
       {/* Liste des Questions / Réponses (Accordéons) */}
       <div className="max-w-4xl mx-auto space-y-4 relative z-10">
         {filteredItems.length > 0 ? (
           filteredItems.map((item, idx) => {
-            const isExpanded = expandedIds.has(item.id);
+            const isExpanded = expandedId === item.id;
             const question = lang === "fr" ? item.questionFr : item.questionEn;
             const answer = lang === "fr" ? item.answerFr : item.answerEn;
             const bullets = lang === "fr" ? item.bulletsFr : item.bulletsEn;

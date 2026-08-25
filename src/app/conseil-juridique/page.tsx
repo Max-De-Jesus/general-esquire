@@ -378,7 +378,23 @@ export default function ConseilJuridiquePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#1A1C1A] text-[#EDE4CF] flex flex-col justify-between overflow-x-hidden">
+    <div className="min-h-screen bg-[#1A1C1A] text-[#EDE4CF] flex flex-col justify-between overflow-x-hidden relative">
+      {/* ─── FOND VIDÉO ARRIÈRE-PLAN AVEC CONTRASTES & DÉGRADÉS ──────────── */}
+      <div className="fixed inset-0 w-full h-full -z-10 overflow-hidden pointer-events-none">
+        <video
+          src="/images/VIDEOS/VIDEO1.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover filter brightness-[0.38] contrast-[1.25] saturate-[0.85]"
+        />
+        {/* Voiles sombres et dégradés protecteurs pour intégration et lisibilité parfaite */}
+        <div className="absolute inset-0 bg-[#121412]/80 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#131513]/95 via-transparent to-[#101210]/95 pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_0%,_#0d0f0d_80%)] pointer-events-none" />
+      </div>
+
       {/* ─── 1. EN-TÊTE : BANNIÈRE SEULE (vs/1 style exact) ──────────────── */}
       <header className="w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
@@ -396,7 +412,7 @@ export default function ConseilJuridiquePage() {
       <TickerBanner className="mb-8" />
 
       {/* ─── 3. CONTENU PRINCIPAL CONSEIL JURIDIQUE ───────────────────── */}
-      <main className="max-w-[840px] mx-auto px-4 sm:px-8 py-10 sm:py-16 flex-grow text-left">
+      <main className="max-w-[840px] mx-auto px-4 sm:px-8 py-10 sm:py-16 flex-grow text-left relative z-10">
         {/* En-tête Rubrique */}
         <div className="mb-8">
           <span className="font-cinzel text-xs uppercase tracking-[0.26em] text-[#C5A059] block mb-2 font-semibold">
@@ -409,7 +425,7 @@ export default function ConseilJuridiquePage() {
         </div>
 
         {/* Accroche Box */}
-        <div className="p-6 sm:p-8 rounded-2xl bg-[#0e100e]/90 border border-[#C5A059]/35 shadow-xl text-center relative z-10 mb-10 sm:mb-14">
+        <div className="p-6 sm:p-8 rounded-2xl bg-[#0e100e]/90 border border-[#C5A059]/35 shadow-xl text-center relative z-10 mb-10 sm:mb-14 backdrop-blur-md">
           <p className="font-cormorant text-xl sm:text-2xl text-[#EDE4CF] font-light leading-relaxed mb-3">
             {lang === "fr" ? (
               <>Avez-vous besoin d'un avis, d'un conseil,<br />ou d'accompagnement juridique ?</>
@@ -436,7 +452,7 @@ export default function ConseilJuridiquePage() {
         </figure>
 
         {/* Corps du texte */}
-        <div className="space-y-6 font-cormorant text-lg sm:text-xl text-[#EDE4CF]/90 leading-[1.95] font-light mb-10">
+        <div className="space-y-6 font-cormorant text-lg sm:text-xl text-[#EDE4CF] leading-[1.95] font-light mb-10 p-6 sm:p-8 rounded-2xl bg-[#0e100e]/85 border border-[#C5A059]/30 backdrop-blur-md shadow-xl">
           <p>
             {lang === "fr"
               ? "Nul n'est censé ignorer la loi, dit l'adage, dans un monde où la loi elle-même, le dénominateur commun par lequel tous nos actes sont jugés, est en constante évolution."
