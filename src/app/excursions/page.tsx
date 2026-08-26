@@ -379,7 +379,7 @@ export default function ExcursionsPage() {
     cta_title: lang === "fr" ? "Prêt(e) pour l'aventure béninoise ?" : "Ready for the Beninese Adventure?",
     cta_sub: lang === "fr" ? "Inscriptions ouvertes de février à fin septembre pour le séjour de janvier." : "Registrations open from February to end of September for the January stay.",
     cta_btn: lang === "fr" ? "Inscrivez-vous au Séjour →" : "Book Your Stay →",
-    back: lang === "fr" ? "← RETOUR À L'ACCUEIL" : "← BACK TO HOME",
+    back: lang === "fr" ? "← RETOUR AU COCOONING TOURISTIQUE" : "← BACK TO TOURIST COCOONING",
   };
 
   const panelData = [
@@ -566,8 +566,8 @@ export default function ExcursionsPage() {
         </div>
 
         {/* Back */}
-        <div className="text-center mt-12">
-          <Link href="/" className="font-cinzel text-xs tracking-widest text-[#C5A059] hover:text-[#E9D18F] transition-colors inline-flex items-center gap-2">
+        <div className="text-center mt-12 pb-8">
+          <Link href="/cocooning-touristique" className="font-cinzel text-xs tracking-widest text-[#C5A059] hover:text-[#E9D18F] transition-colors inline-flex items-center gap-2 border-b border-transparent hover:border-[#E9D18F]">
             {tx.back}
           </Link>
         </div>

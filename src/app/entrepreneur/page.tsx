@@ -705,12 +705,12 @@ export default function EntrepreneurPage() {
         </div>
 
         {/* Back link */}
-        <div className="text-center mt-12">
+        <div className="text-center mt-12 pb-8">
           <Link
-            href="/"
-            className="font-cinzel text-xs tracking-widest text-[#C5A059] hover:text-[#E9D18F] transition-colors inline-flex items-center gap-2"
+            href="/conseil-juridique"
+            className="font-cinzel text-xs tracking-widest text-[#C5A059] hover:text-[#E9D18F] transition-colors inline-flex items-center gap-2 border-b border-transparent hover:border-[#E9D18F]"
           >
-            ← RETOUR À L'ACCUEIL
+            ← {lang === "fr" ? "RETOUR AU CONSEIL JURIDIQUE" : "BACK TO LEGAL ADVISORY"}
           </Link>
         </div>
       </div>

@@ -482,6 +482,16 @@ export default function ParticuliersPage() {
           </div>
         </section>
 
+        {/* Retour au conseil juridique */}
+        <div className="text-center mt-12 pb-8">
+          <Link
+            href="/conseil-juridique"
+            className="font-cinzel text-xs text-[#C5A059] hover:text-[#E9D18F] uppercase tracking-widest transition-colors inline-flex items-center gap-2 border-b border-transparent hover:border-[#E9D18F]"
+          >
+            ← {lang === "fr" ? "Retour au Conseil juridique" : "Back to Legal Advisory"}
+          </Link>
+        </div>
+
       </div>
     </div>
   );
