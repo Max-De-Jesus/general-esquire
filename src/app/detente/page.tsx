@@ -447,10 +447,20 @@ export default function DetentePage() {
               ? "Rejoignez-nous pour notre prochain séjour de cocooning touristique. Tout est pensé pour votre bien-être et votre résilience."
               : "Join us for our upcoming tourist cocooning retreat. Everything is tailored for your well-being and resilience."}
           </p>
-          <Link href="/cocooning-touristique" className="inline-block px-14 py-4 rounded-full font-cinzel text-sm tracking-widest font-bold uppercase text-black bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] hover:brightness-110 hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(197,160,89,0.5)]">
+          <Link href="/cocooning-touristique#formulaire" className="inline-block px-14 py-4 rounded-full font-cinzel text-sm tracking-widest font-bold uppercase text-black bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] hover:brightness-110 hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(197,160,89,0.5)]">
             {lang === "fr" ? "Inscrivez-vous au Séjour →" : "Book My Stay →"}
           </Link>
         </section>
+
+        {/* Retour au Cocooning Touristique */}
+        <div className="text-center mt-12 pb-8">
+          <Link
+            href="/cocooning-touristique"
+            className="font-cinzel text-xs tracking-widest text-[#C5A059] hover:text-[#E9D18F] transition-colors inline-flex items-center gap-2 border-b border-transparent hover:border-[#E9D18F]"
+          >
+            ← {lang === "fr" ? "RETOUR AU COCOONING TOURISTIQUE" : "BACK TO TOURIST COCOONING"}
+          </Link>
+        </div>
       </div>
 
     </>

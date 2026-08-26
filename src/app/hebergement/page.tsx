@@ -405,9 +405,12 @@ export default function HebergementPage() {
         </div>
 
         {/* Back link */}
-        <div className="text-center mt-12">
-          <Link href="/" className="font-cinzel text-xs tracking-widest text-[#C5A059] hover:text-[#E9D18F] transition-colors inline-flex items-center gap-2">
-            ← RETOUR À L'ACCUEIL
+        <div className="text-center mt-12 pb-8">
+          <Link
+            href="/cocooning-touristique"
+            className="font-cinzel text-xs tracking-widest text-[#C5A059] hover:text-[#E9D18F] transition-colors inline-flex items-center gap-2 border-b border-transparent hover:border-[#E9D18F]"
+          >
+            ← {lang === "fr" ? "RETOUR AU COCOONING TOURISTIQUE" : "BACK TO TOURIST COCOONING"}
           </Link>
         </div>
       </div>

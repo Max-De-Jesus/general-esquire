@@ -147,7 +147,7 @@ export default function InstitutionsPubliquesPage() {
       ? "Adressez-nous votre demande par écrit — nous vous proposons un rendez-vous par visioconférence."
       : "Send us your request in writing — we will arrange a video consultation.",
     cta_btn: lang === "fr" ? "Nous Contacter →" : "Contact Us →",
-    back: lang === "fr" ? "← RETOUR À L'ACCUEIL" : "← BACK TO HOME",
+    back: lang === "fr" ? "← RETOUR AU CONSEIL JURIDIQUE" : "← BACK TO LEGAL ADVISORY",
   };
 
   return (
@@ -461,8 +461,8 @@ export default function InstitutionsPubliquesPage() {
         </div>
 
         {/* Back */}
-        <div className="text-center mt-12">
-          <Link href="/" className="font-cinzel text-xs tracking-widest text-[#C5A059] hover:text-[#E9D18F] transition-colors inline-flex items-center gap-2">
+        <div className="text-center mt-12 pb-8">
+          <Link href="/conseil-juridique" className="font-cinzel text-xs tracking-widest text-[#C5A059] hover:text-[#E9D18F] transition-colors inline-flex items-center gap-2 border-b border-transparent hover:border-[#E9D18F]">
             {tx.back}
           </Link>
         </div>
