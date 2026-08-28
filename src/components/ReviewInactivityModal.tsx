@@ -160,10 +160,17 @@ export default function ReviewInactivityModal() {
           Merci de nous laisser gracieusement un avis, pour favoriser notre visibilité.
         </p>
 
-        {/* SECTION QR CODE & LIEN DIRECT */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 bg-[#0c2215]/80 border border-[#C5A059]/35 rounded-2xl p-4 mb-5">
+        {/* SECTION QR CODE & LIEN DIRECT (Cliquable vers nouvel onglet) */}
+        <a
+          href={GOOGLE_REVIEW_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={handleClose}
+          className="group flex flex-col sm:flex-row items-center justify-center gap-4 bg-[#0c2215]/80 hover:bg-[#0c2215] border border-[#C5A059]/35 hover:border-[#E9D18F] rounded-2xl p-4 mb-5 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-[0_0_20px_rgba(197,160,89,0.2)] text-left"
+          title="Cliquez pour ouvrir Google Avis dans un nouvel onglet"
+        >
           {/* Cadre du QR Code */}
-          <div className="bg-white p-2.5 rounded-xl border-2 border-[#E9D18F] shadow-[0_0_20px_rgba(233,209,143,0.3)] shrink-0">
+          <div className="bg-white p-2.5 rounded-xl border-2 border-[#E9D18F] shadow-[0_0_20px_rgba(233,209,143,0.3)] group-hover:scale-105 transition-transform duration-300 shrink-0">
             <Image
               src="/images/qr-code-google-avis.svg"
               alt="Scanner le QR Code pour laisser un avis Google"
@@ -175,32 +182,32 @@ export default function ReviewInactivityModal() {
           </div>
 
           {/* Explications & Appel à l'action */}
-          <div className="text-center sm:text-left space-y-1.5">
-            <p className="font-cinzel text-xs sm:text-sm font-bold uppercase tracking-wider text-[#E9D18F]">
-              Scanner avec votre téléphone
+          <div className="text-center sm:text-left space-y-1.5 flex-1">
+            <p className="font-cinzel text-xs sm:text-sm font-bold uppercase tracking-wider text-[#E9D18F] group-hover:text-white transition-colors">
+              Scanner ou Cliquer pour ouvrir
             </p>
             <p className="font-cormorant text-sm sm:text-base text-[#EDE4CF]/90 italic leading-snug">
-              Pointez l'appareil photo de votre smartphone pour accéder directement à notre page d'avis Google.
+              Pointez l'appareil photo de votre smartphone ou cliquez directement sur cette zone pour ouvrir la page d'avis dans un nouvel onglet.
             </p>
             <p className="text-[11px] text-[#C5A059] font-medium tracking-wide">
               ✦ Rapide, simple et sans inscription requise ✦
             </p>
           </div>
-        </div>
+        </a>
 
         {/* Consigne sur une seule ligne */}
         <p className="font-cormorant text-sm sm:text-base text-[#EDE4CF]/80 italic mb-4 whitespace-normal sm:whitespace-nowrap">
           Veuillez cliquer sur le lien ci-dessous ou scanner le code pour nous donner votre avis.
         </p>
 
-        {/* Actions : Bouton direct vers le lien Google Review */}
+        {/* Actions : Bouton direct vers le lien Google Review dans un nouvel onglet */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <a
             href={GOOGLE_REVIEW_URL}
             target="_blank"
             rel="noopener noreferrer"
             onClick={handleClose}
-            className="w-full sm:w-auto flex-1 inline-flex items-center justify-center gap-2 py-3 px-5 rounded-xl font-cinzel text-sm font-bold uppercase tracking-wider text-[#0c2617] bg-gradient-to-r from-[#E9D18F] via-[#C5A059] to-[#E9D18F] hover:from-[#FFF] hover:to-[#E9D18F] shadow-[0_4px_20px_rgba(197,160,89,0.4)] hover:shadow-[0_6px_28px_rgba(233,209,143,0.65)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 cursor-pointer"
+            className="w-full sm:w-auto flex-1 inline-flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl font-cinzel text-sm font-bold uppercase tracking-wider text-[#0c2617] bg-gradient-to-r from-[#E9D18F] via-[#C5A059] to-[#E9D18F] hover:from-[#FFF] hover:to-[#E9D18F] shadow-[0_4px_20px_rgba(197,160,89,0.4)] hover:shadow-[0_6px_28px_rgba(233,209,143,0.65)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 cursor-pointer"
           >
             <span>Donner mon avis sur Google</span>
             <svg
@@ -216,7 +223,7 @@ export default function ReviewInactivityModal() {
           <button
             type="button"
             onClick={handleClose}
-            className="w-full sm:w-auto py-3 px-4 rounded-xl font-cinzel text-xs uppercase tracking-wider text-[#EDE4CF]/70 hover:text-[#EDE4CF] bg-transparent hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer"
+            className="w-full sm:w-auto py-3.5 px-5 rounded-xl font-cinzel text-xs uppercase tracking-wider text-[#EDE4CF]/70 hover:text-[#EDE4CF] bg-transparent hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer"
           >
             Continuer la visite
           </button>
