@@ -169,19 +169,39 @@ export default function AvisGooglePage() {
           )}
         </div>
 
+        {/* ENCART TECHNIQUE & MENTION DÉVELOPPEUR */}
+        <div className="w-full mt-6 bg-[#f1f3f4] border border-[#dadce0] rounded-xl p-4 text-xs text-[#3c4043] flex items-start gap-3 shadow-sm">
+          <svg className="w-5 h-5 text-[#1a73e8] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+          </svg>
+          <div className="space-y-1">
+            <p className="font-semibold text-[#202124]">
+              Conditions d'activation de l'API & Compte Développeur :
+            </p>
+            <p className="text-[#5f6368] leading-relaxed">
+              L'achat de l'API de référencement doit obligatoirement être effectué par un développeur. Cette clé d'authentification est à usage unique (utilisable une seule fois) et seul un compte développeur Gravity agréé peut procéder au paiement.
+            </p>
+          </div>
+        </div>
+
         {/* MENTIONS DE BAS DE PAGE STYLE GOOGLE SUPPORT */}
-        <div className="w-full mt-6 text-center text-xs text-[#5f6368] space-y-1">
+        <div className="w-full mt-4 text-center text-xs text-[#5f6368] space-y-1">
           <p>Service de référencement & gestion d'avis — Intégration conforme aux normes de visibilité web.</p>
           <p>© {new Date().getFullYear()} Google LLC / Service Partenaire. Tous droits réservés.</p>
         </div>
       </main>
 
       {/* ─── GOOGLE MINIMAL FOOTER ─── */}
-      <footer className="w-full bg-[#f2f2f2] border-t border-[#dadce0] px-4 sm:px-8 py-3 text-xs text-[#5f6368] flex flex-col sm:flex-row items-center justify-between gap-2">
-        <div className="flex items-center gap-4">
-          <span className="font-semibold text-[#3c4043]">France</span>
-          <span className="text-[#dadce0]">|</span>
-          <span>Centre d'aide Google Avis & Visibilité</span>
+      <footer className="w-full bg-[#f2f2f2] border-t border-[#dadce0] px-4 sm:px-8 py-4 text-xs text-[#5f6368] flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-center sm:text-left">
+          <div className="flex items-center justify-center sm:justify-start gap-2">
+            <span className="font-semibold text-[#3c4043]">France</span>
+            <span className="text-[#dadce0]">|</span>
+            <span>Console API Développeur</span>
+          </div>
+          <span className="text-[11px] text-[#5f6368] bg-[#e8eaed] px-2.5 py-0.5 rounded-full border border-[#dadce0]">
+            Accès réservé : Compte développeur Gravity (Clé à usage unique)
+          </span>
         </div>
         <div className="flex items-center gap-4">
           <Link href="/" className="hover:underline">Accueil</Link>
