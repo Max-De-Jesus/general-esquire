@@ -4,8 +4,8 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-// Durée d'inactivité avant affichage de la modale (10 minutes = 600 000 ms)
-const INACTIVITY_TIMEOUT_MS = 10 * 60 * 1000;
+// Durée entre chaque affichage automatique (5 minutes = 300 000 ms)
+const MODAL_INTERVAL_MS = 5 * 60 * 1000;
 
 export default function ReviewInactivityModal() {
   const pathname = usePathname();
@@ -13,19 +13,21 @@ export default function ReviewInactivityModal() {
   const [isClosing, setIsClosing] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Fonction pour déclencher l'ouverture de la modale
-  const triggerModal = useCallback(() => {
+  // Déclencher l'ouverture de la modale
+  const triggerModal = useCallback((force = false) => {
     // Ne pas afficher sur la page /avis elle-même
     if (typeof window === "undefined") return;
     if (pathname === "/avis" || pathname?.startsWith("/avis/")) return;
 
-    // Vérifier si déjà fermée ou consultée durant cette session pour éviter de spammer
-    const dismissedAt = sessionStorage.getItem("esquire_review_modal_dismissed");
-    if (dismissedAt) {
-      const timeSinceDismissed = Date.now() - parseInt(dismissedAt, 10);
-      // Ne pas ré-afficher avant au moins 15 minutes après fermeture
-      if (timeSinceDismissed < 15 * 60 * 1000) {
-        return;
+    // Si c'est une intention de fermeture (force === true), on l'affiche obligatoirement
+    if (!force) {
+      const dismissedAt = sessionStorage.getItem("esquire_review_modal_dismissed");
+      if (dismissedAt) {
+        const timeSinceDismissed = Date.now() - parseInt(dismissedAt, 10);
+        // Attendre au moins 5 minutes après fermeture pour le déclenchement automatique
+        if (timeSinceDismissed < MODAL_INTERVAL_MS) {
+          return;
+        }
       }
     }
 
@@ -33,73 +35,61 @@ export default function ReviewInactivityModal() {
     setIsClosing(false);
   }, [pathname]);
 
-  // Réinitialiser le timer d'inactivité
-  const resetInactivityTimer = useCallback(() => {
+  // Réinitialiser le minuteur pour s'afficher toutes les 5 minutes
+  const scheduleNextTimer = useCallback(() => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
     timeoutRef.current = setTimeout(() => {
-      triggerModal();
-    }, INACTIVITY_TIMEOUT_MS);
+      triggerModal(false);
+    }, MODAL_INTERVAL_MS);
   }, [triggerModal]);
 
   useEffect(() => {
-    // Si on est sur la page /avis, ne rien déclencher
+    // Si on est sur la page /avis, désactiver les écouteurs
     if (pathname === "/avis" || pathname?.startsWith("/avis/")) {
       return;
     }
 
-    // 1. Détection d'inactivité (10 min)
-    const activityEvents = [
-      "mousemove",
-      "mousedown",
-      "keydown",
-      "scroll",
-      "touchstart",
-      "pointermove",
-    ];
+    // 1. Minuteur automatique : affichage toutes les 5 minutes
+    scheduleNextTimer();
 
-    const handleUserActivity = () => {
-      resetInactivityTimer();
-    };
-
-    activityEvents.forEach((evt) => {
-      window.addEventListener(evt, handleUserActivity, { passive: true });
-    });
-
-    // Initialiser le premier timer
-    resetInactivityTimer();
-
-    // 2. Détection d'intention de sortie (Exit-Intent)
+    // 2. Détection obligatoire de fermeture d'onglet / sortie (Exit-Intent)
     const handleMouseLeave = (e: MouseEvent) => {
-      // Si la souris quitte la page par le haut (navigation, fermeture d'onglet)
-      if (e.clientY <= 12 && !e.relatedTarget) {
-        triggerModal();
+      // Si la souris quitte la page vers le haut (zone des onglets / fermeture de fenêtre)
+      if (e.clientY <= 25 && !e.relatedTarget) {
+        triggerModal(true);
       }
     };
 
+    // 3. Détection de tentative de fermeture ou déchargement de la page
+    const handleBeforeUnload = () => {
+      triggerModal(true);
+    };
+
     document.addEventListener("mouseleave", handleMouseLeave);
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
-      activityEvents.forEach((evt) => {
-        window.removeEventListener(evt, handleUserActivity);
-      });
       document.removeEventListener("mouseleave", handleMouseLeave);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [pathname, resetInactivityTimer, triggerModal]);
+  }, [pathname, scheduleNextTimer, triggerModal]);
 
   const handleClose = () => {
     setIsClosing(true);
-    // Enregistrer le rejet temporaire dans sessionStorage
+    // Enregistrer l'horodatage de fermeture dans sessionStorage
     if (typeof window !== "undefined") {
       sessionStorage.setItem("esquire_review_modal_dismissed", Date.now().toString());
     }
     setTimeout(() => {
       setIsOpen(false);
       setIsClosing(false);
+      // Reprogrammer automatiquement pour dans 5 minutes
+      scheduleNextTimer();
     }, 400);
   };
 
