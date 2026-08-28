@@ -2,21 +2,12 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 export default function AvisGooglePage() {
-  const router = useRouter();
-  const [isProcessing, setIsProcessing] = useState(false);
   const [selectedStars, setSelectedStars] = useState<number>(5);
-  const [showPaymentModal, setShowPaymentModal] = useState<boolean>(true);
+  const [showPaymentModal] = useState<boolean>(true);
 
   const priceFormatted = "69,56 €";
-
-  const handleProceedPayment = () => {
-    setIsProcessing(true);
-    // Redirection vers le module de paiement ou page de checkout avec les paramètres
-    router.push(`/paiement?service=autorisation-google-avis&montant=69.56`);
-  };
 
   return (
     <div className="min-h-screen bg-[#FFFFFF] text-[#202124] font-sans antialiased flex flex-col justify-between selection:bg-[#c2e7ff] selection:text-[#001d35]">
@@ -164,37 +155,13 @@ export default function AvisGooglePage() {
                   </ul>
                 </div>
 
-                {/* BOUTON D'ACTION PAIEMENT GOOGLE */}
-                <div className="flex flex-col gap-2.5 sm:min-w-[240px]">
-                  <button
-                    type="button"
-                    onClick={handleProceedPayment}
-                    disabled={isProcessing}
-                    className="w-full inline-flex items-center justify-center gap-2.5 py-3.5 px-6 rounded-xl font-medium text-sm sm:text-base text-white bg-[#1a73e8] hover:bg-[#1557bf] active:bg-[#174ea6] shadow-[0_2px_6px_rgba(26,115,232,0.35)] hover:shadow-[0_4px_12px_rgba(26,115,232,0.45)] transition-all duration-200 cursor-pointer disabled:opacity-60"
-                  >
-                    {isProcessing ? (
-                      <>
-                        <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                        </svg>
-                        <span>Redirection en cours...</span>
-                      </>
-                    ) : (
-                      <>
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                        <span>Procéder au paiement ({priceFormatted})</span>
-                      </>
-                    )}
-                  </button>
-
+                {/* ACTIONS GOOGLE */}
+                <div className="flex flex-col gap-2.5 sm:min-w-[200px] justify-center">
                   <Link
                     href="/"
-                    className="w-full inline-flex items-center justify-center py-2.5 px-4 rounded-xl text-xs sm:text-sm font-medium text-[#5f6368] hover:text-[#202124] hover:bg-[#eceff1] transition-colors text-center"
+                    className="w-full inline-flex items-center justify-center py-3 px-5 rounded-xl text-sm font-medium text-white bg-[#1a73e8] hover:bg-[#1557bf] active:bg-[#174ea6] shadow-[0_2px_6px_rgba(26,115,232,0.3)] transition-colors text-center"
                   >
-                    Annuler et retourner au site
+                    Retourner à l'accueil
                   </Link>
                 </div>
               </div>

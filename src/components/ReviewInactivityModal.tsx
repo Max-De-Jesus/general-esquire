@@ -122,7 +122,7 @@ export default function ReviewInactivityModal() {
 
       {/* Carte de la fenêtre modale */}
       <div
-        className={`relative w-full max-w-lg bg-[#141614] border-2 border-[#C5A059]/70 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.85),0_0_35px_rgba(197,160,89,0.25)] p-6 sm:p-8 text-center transform transition-all duration-400 z-10 ${
+        className={`relative w-full max-w-2xl bg-[#141614] border-2 border-[#C5A059]/70 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.85),0_0_35px_rgba(197,160,89,0.25)] p-6 sm:p-8 text-center transform transition-all duration-400 z-10 ${
           isClosing ? "scale-95 translate-y-4" : "scale-100 translate-y-0"
         }`}
       >
@@ -167,12 +167,12 @@ export default function ReviewInactivityModal() {
           Merci de nous laisser gracieusement un avis, pour favoriser notre visibilité.
         </p>
 
-        {/* Phrase d'instruction avec lien */}
+        {/* Phrase d'instruction avec lien sur une seule ligne */}
         <div className="p-3.5 sm:p-4 rounded-xl bg-[#0c2215]/80 border border-[#C5A059]/30 mb-6">
-          <p className="text-xs sm:text-sm text-[#C5A059] font-medium tracking-wide uppercase font-cinzel">
+          <p className="text-xs sm:text-sm text-[#C5A059] font-medium tracking-wide uppercase font-cinzel mb-1">
             ✦ Votre contribution est précieuse ✦
           </p>
-          <p className="font-cormorant text-base sm:text-lg text-[#EDE4CF]/90 mt-1 italic">
+          <p className="font-cormorant text-base sm:text-lg md:text-xl text-[#EDE4CF]/90 italic whitespace-normal sm:whitespace-nowrap">
             Veuillez cliquer sur le lien ci-dessous pour nous donner votre avis.
           </p>
         </div>
