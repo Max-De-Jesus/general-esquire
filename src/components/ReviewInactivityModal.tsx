@@ -65,9 +65,13 @@ export default function ReviewInactivityModal() {
     // Lancer le timer initial
     resetInactivityTimer();
 
-    // 2. Détection de fermeture d'onglet ou déchargement de page
-    const handleBeforeUnload = () => {
+    // 2. Détection de fermeture de l'onglet du navigateur (clic sur la croix de l'onglet)
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       triggerModal(true);
+      // Déclenche l'interception standard du navigateur pour empêcher la fermeture directe
+      e.preventDefault();
+      e.returnValue = "";
+      return "";
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
