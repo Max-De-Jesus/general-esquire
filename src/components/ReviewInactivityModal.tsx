@@ -1,31 +1,29 @@
 "use client";
 
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import Image from "next/image";
 
-// Durée entre chaque affichage automatique (5 minutes = 300 000 ms)
-const MODAL_INTERVAL_MS = 5 * 60 * 1000;
+// Lien officiel Google Avis de General Esquire
+const GOOGLE_REVIEW_URL = "https://g.page/r/Cb6OOUdT3CohEAE/review";
+
+// Durée d'inactivité avant affichage (5 minutes = 300 000 ms)
+const INACTIVITY_TIMEOUT_MS = 5 * 60 * 1000;
 
 export default function ReviewInactivityModal() {
-  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Déclencher l'ouverture de la modale
   const triggerModal = useCallback((force = false) => {
-    // Ne pas afficher sur la page /avis elle-même
     if (typeof window === "undefined") return;
-    if (pathname === "/avis" || pathname?.startsWith("/avis/")) return;
 
-    // Si c'est une intention de fermeture (force === true), on l'affiche obligatoirement
     if (!force) {
       const dismissedAt = sessionStorage.getItem("esquire_review_modal_dismissed");
       if (dismissedAt) {
         const timeSinceDismissed = Date.now() - parseInt(dismissedAt, 10);
-        // Attendre au moins 5 minutes après fermeture pour le déclenchement automatique
-        if (timeSinceDismissed < MODAL_INTERVAL_MS) {
+        // Attendre au moins 5 minutes après fermeture pour un réaffichage automatique
+        if (timeSinceDismissed < INACTIVITY_TIMEOUT_MS) {
           return;
         }
       }
@@ -33,63 +31,67 @@ export default function ReviewInactivityModal() {
 
     setIsOpen(true);
     setIsClosing(false);
-  }, [pathname]);
+  }, []);
 
-  // Réinitialiser le minuteur pour s'afficher toutes les 5 minutes
-  const scheduleNextTimer = useCallback(() => {
+  // Réinitialiser le timer d'inactivité (5 minutes sans interaction)
+  const resetInactivityTimer = useCallback(() => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
     timeoutRef.current = setTimeout(() => {
       triggerModal(false);
-    }, MODAL_INTERVAL_MS);
+    }, INACTIVITY_TIMEOUT_MS);
   }, [triggerModal]);
 
   useEffect(() => {
-    // Si on est sur la page /avis, désactiver les écouteurs
-    if (pathname === "/avis" || pathname?.startsWith("/avis/")) {
-      return;
-    }
+    // 1. Détection d'inactivité (5 minutes sans mouvement, clic, touche ou défilement)
+    const activityEvents = [
+      "mousemove",
+      "mousedown",
+      "keydown",
+      "scroll",
+      "touchstart",
+      "pointermove",
+    ];
 
-    // 1. Minuteur automatique : affichage toutes les 5 minutes
-    scheduleNextTimer();
-
-    // 2. Détection obligatoire de fermeture d'onglet / sortie (Exit-Intent)
-    const handleMouseLeave = (e: MouseEvent) => {
-      // Si la souris quitte la page vers le haut (zone des onglets / fermeture de fenêtre)
-      if (e.clientY <= 25 && !e.relatedTarget) {
-        triggerModal(true);
-      }
+    const handleUserActivity = () => {
+      resetInactivityTimer();
     };
 
-    // 3. Détection de tentative de fermeture ou déchargement de la page
+    activityEvents.forEach((evt) => {
+      window.addEventListener(evt, handleUserActivity, { passive: true });
+    });
+
+    // Lancer le timer initial
+    resetInactivityTimer();
+
+    // 2. Détection de fermeture d'onglet ou déchargement de page
     const handleBeforeUnload = () => {
       triggerModal(true);
     };
 
-    document.addEventListener("mouseleave", handleMouseLeave);
     window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
-      document.removeEventListener("mouseleave", handleMouseLeave);
+      activityEvents.forEach((evt) => {
+        window.removeEventListener(evt, handleUserActivity);
+      });
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [pathname, scheduleNextTimer, triggerModal]);
+  }, [resetInactivityTimer, triggerModal]);
 
   const handleClose = () => {
     setIsClosing(true);
-    // Enregistrer l'horodatage de fermeture dans sessionStorage
     if (typeof window !== "undefined") {
       sessionStorage.setItem("esquire_review_modal_dismissed", Date.now().toString());
     }
     setTimeout(() => {
       setIsOpen(false);
       setIsClosing(false);
-      // Reprogrammer automatiquement pour dans 5 minutes
-      scheduleNextTimer();
+      resetInactivityTimer();
     }, 400);
   };
 
@@ -97,7 +99,7 @@ export default function ReviewInactivityModal() {
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] flex items-center justify-center p-4 transition-all duration-400 ${
+      className={`fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 transition-all duration-400 ${
         isClosing ? "opacity-0 pointer-events-none" : "opacity-100"
       }`}
       aria-labelledby="review-modal-title"
@@ -106,19 +108,19 @@ export default function ReviewInactivityModal() {
     >
       {/* Arrière-plan flouté sombre */}
       <div
-        className="fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-400"
+        className="fixed inset-0 bg-black/85 backdrop-blur-md transition-opacity duration-400"
         onClick={handleClose}
       />
 
       {/* Carte de la fenêtre modale */}
       <div
-        className={`relative w-full max-w-2xl bg-[#141614] border-2 border-[#C5A059]/70 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.85),0_0_35px_rgba(197,160,89,0.25)] p-6 sm:p-8 text-center transform transition-all duration-400 z-10 ${
+        className={`relative w-full max-w-xl bg-[#141614] border-2 border-[#C5A059]/75 rounded-3xl shadow-[0_25px_70px_rgba(0,0,0,0.9),0_0_40px_rgba(197,160,89,0.3)] p-5 sm:p-7 text-center transform transition-all duration-400 z-10 ${
           isClosing ? "scale-95 translate-y-4" : "scale-100 translate-y-0"
         }`}
       >
         {/* Éléments décoratifs et halos dorés */}
-        <div className="absolute -top-12 -left-12 w-32 h-32 bg-[#C5A059]/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-[#1a5e39]/25 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-10 -left-10 w-32 h-32 bg-[#C5A059]/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-[#1a5e39]/25 rounded-full blur-3xl pointer-events-none" />
 
         {/* Bouton de fermeture */}
         <button
@@ -130,65 +132,87 @@ export default function ReviewInactivityModal() {
           <span className="text-xl font-bold leading-none select-none">&times;</span>
         </button>
 
-        {/* Badge / Icône Étoiles & Avis */}
-        <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-[#1a3d28] via-[#0c2617] to-[#141614] border border-[#C5A059]/60 shadow-[0_0_25px_rgba(197,160,89,0.3)] mb-5">
-          <div className="relative flex items-center justify-center">
-            <svg
-              className="w-9 h-9 sm:w-11 sm:h-11 text-[#E9D18F] drop-shadow-[0_2px_8px_rgba(233,209,143,0.6)]"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-            </svg>
-            <span className="absolute -top-1 -right-2 text-[#E9D18F] text-xs font-bold animate-pulse">✦</span>
-          </div>
+        {/* Badge Google Avis & Étoiles */}
+        <div className="inline-flex items-center justify-center gap-2 px-3.5 py-1.5 rounded-full bg-[#1a3d28]/70 border border-[#C5A059]/50 shadow-[0_0_20px_rgba(197,160,89,0.25)] mb-3">
+          <svg className="w-5 h-5 text-[#E9D18F]" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+          </svg>
+          <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider font-cinzel text-[#E9D18F]">
+            Avis Google Officiel
+          </span>
+          <span className="text-[#E9D18F] text-xs font-bold animate-pulse">✦</span>
         </div>
 
         {/* Titre Principal */}
         <h2
           id="review-modal-title"
-          className="font-cinzel text-xl sm:text-2xl md:text-3xl font-bold text-[#E9D18F] tracking-wide mb-3 drop-shadow-[0_0_12px_rgba(233,209,143,0.35)]"
+          className="font-cinzel text-xl sm:text-2xl font-bold text-[#E9D18F] tracking-wide mb-2 drop-shadow-[0_0_12px_rgba(233,209,143,0.35)]"
         >
           Vous nous quittez déjà ?
         </h2>
 
-        {/* Phrase personnalisée de l'utilisateur */}
-        <p className="font-cormorant text-lg sm:text-xl text-[#EDE4CF] leading-relaxed mb-4 font-normal">
+        {/* Phrase de l'utilisateur */}
+        <p className="font-cormorant text-base sm:text-lg text-[#EDE4CF] leading-relaxed mb-4 font-normal">
           Merci de nous laisser gracieusement un avis, pour favoriser notre visibilité.
         </p>
 
-        {/* Phrase d'instruction avec lien sur une seule ligne */}
-        <div className="p-3.5 sm:p-4 rounded-xl bg-[#0c2215]/80 border border-[#C5A059]/30 mb-6">
-          <p className="text-xs sm:text-sm text-[#C5A059] font-medium tracking-wide uppercase font-cinzel mb-1">
-            ✦ Votre contribution est précieuse ✦
-          </p>
-          <p className="font-cormorant text-base sm:text-lg md:text-xl text-[#EDE4CF]/90 italic whitespace-normal sm:whitespace-nowrap">
-            Veuillez cliquer sur le lien ci-dessous pour nous donner votre avis.
-          </p>
+        {/* SECTION QR CODE & LIEN DIRECT */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 bg-[#0c2215]/80 border border-[#C5A059]/35 rounded-2xl p-4 mb-5">
+          {/* Cadre du QR Code */}
+          <div className="bg-white p-2.5 rounded-xl border-2 border-[#E9D18F] shadow-[0_0_20px_rgba(233,209,143,0.3)] shrink-0">
+            <Image
+              src="/images/qr-code-google-avis.svg"
+              alt="Scanner le QR Code pour laisser un avis Google"
+              width={120}
+              height={120}
+              className="w-28 h-28 object-contain"
+              priority
+            />
+          </div>
+
+          {/* Explications & Appel à l'action */}
+          <div className="text-center sm:text-left space-y-1.5">
+            <p className="font-cinzel text-xs sm:text-sm font-bold uppercase tracking-wider text-[#E9D18F]">
+              Scanner avec votre téléphone
+            </p>
+            <p className="font-cormorant text-sm sm:text-base text-[#EDE4CF]/90 italic leading-snug">
+              Pointez l'appareil photo de votre smartphone pour accéder directement à notre page d'avis Google.
+            </p>
+            <p className="text-[11px] text-[#C5A059] font-medium tracking-wide">
+              ✦ Rapide, simple et sans inscription requise ✦
+            </p>
+          </div>
         </div>
 
-        {/* Actions : Bouton de redirection vers /avis */}
+        {/* Consigne sur une seule ligne */}
+        <p className="font-cormorant text-sm sm:text-base text-[#EDE4CF]/80 italic mb-4 whitespace-normal sm:whitespace-nowrap">
+          Veuillez cliquer sur le lien ci-dessous ou scanner le code pour nous donner votre avis.
+        </p>
+
+        {/* Actions : Bouton direct vers le lien Google Review */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Link
-            href="/avis"
+          <a
+            href={GOOGLE_REVIEW_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={handleClose}
-            className="w-full sm:w-auto flex-1 inline-flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl font-cinzel text-sm sm:text-base font-bold uppercase tracking-wider text-[#0c2617] bg-gradient-to-r from-[#E9D18F] via-[#C5A059] to-[#E9D18F] hover:from-[#FFF] hover:to-[#E9D18F] shadow-[0_4px_20px_rgba(197,160,89,0.4)] hover:shadow-[0_6px_28px_rgba(233,209,143,0.65)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 cursor-pointer"
+            className="w-full sm:w-auto flex-1 inline-flex items-center justify-center gap-2 py-3 px-5 rounded-xl font-cinzel text-sm font-bold uppercase tracking-wider text-[#0c2617] bg-gradient-to-r from-[#E9D18F] via-[#C5A059] to-[#E9D18F] hover:from-[#FFF] hover:to-[#E9D18F] shadow-[0_4px_20px_rgba(197,160,89,0.4)] hover:shadow-[0_6px_28px_rgba(233,209,143,0.65)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 cursor-pointer"
           >
-            <span>Donner mon avis</span>
+            <span>Donner mon avis sur Google</span>
             <svg
               className="w-4 h-4"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg>
-          </Link>
+          </a>
 
           <button
             type="button"
             onClick={handleClose}
-            className="w-full sm:w-auto py-3.5 px-5 rounded-xl font-cinzel text-xs sm:text-sm uppercase tracking-wider text-[#EDE4CF]/70 hover:text-[#EDE4CF] bg-transparent hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer"
+            className="w-full sm:w-auto py-3 px-4 rounded-xl font-cinzel text-xs uppercase tracking-wider text-[#EDE4CF]/70 hover:text-[#EDE4CF] bg-transparent hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer"
           >
             Continuer la visite
           </button>
