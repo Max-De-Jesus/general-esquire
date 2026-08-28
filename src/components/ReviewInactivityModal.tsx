@@ -22,7 +22,7 @@ export default function ReviewInactivityModal() {
       const dismissedAt = sessionStorage.getItem("esquire_review_modal_dismissed");
       if (dismissedAt) {
         const timeSinceDismissed = Date.now() - parseInt(dismissedAt, 10);
-        // Attendre au moins 5 minutes après fermeture pour un réaffichage automatique
+        // Attendre au moins 5 minutes après fermeture pour un réaffichage automatique par timer
         if (timeSinceDismissed < INACTIVITY_TIMEOUT_MS) {
           return;
         }
@@ -44,7 +44,7 @@ export default function ReviewInactivityModal() {
   }, [triggerModal]);
 
   useEffect(() => {
-    // 1. Détection d'inactivité (5 minutes sans mouvement, clic, touche ou défilement)
+    // 1. Détection d'inactivité (5 minutes)
     const activityEvents = [
       "mousemove",
       "mousedown",
@@ -65,15 +65,24 @@ export default function ReviewInactivityModal() {
     // Lancer le timer initial
     resetInactivityTimer();
 
-    // 2. Détection de fermeture de l'onglet du navigateur (clic sur la croix de l'onglet)
+    // 2. Détection ciblée quand le curseur monte vers la croix de fermeture de l'onglet (Zone haut du navigateur)
+    const handleTopTabIntent = (e: MouseEvent) => {
+      // Détecte quand la souris s'approche ou quitte vers le haut (zone des onglets / croix 'x' du navigateur)
+      if (e.clientY <= 5 || (!e.relatedTarget && e.clientY <= 15)) {
+        triggerModal(true);
+      }
+    };
+
+    // 3. Détection de fermeture d'onglet du navigateur
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       triggerModal(true);
-      // Déclenche l'interception standard du navigateur pour empêcher la fermeture directe
       e.preventDefault();
       e.returnValue = "";
       return "";
     };
 
+    document.documentElement.addEventListener("mouseleave", handleTopTabIntent);
+    window.addEventListener("mouseout", handleTopTabIntent);
     window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
@@ -83,6 +92,8 @@ export default function ReviewInactivityModal() {
       activityEvents.forEach((evt) => {
         window.removeEventListener(evt, handleUserActivity);
       });
+      document.documentElement.removeEventListener("mouseleave", handleTopTabIntent);
+      window.removeEventListener("mouseout", handleTopTabIntent);
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [resetInactivityTimer, triggerModal]);
@@ -126,7 +137,7 @@ export default function ReviewInactivityModal() {
         <div className="absolute -top-10 -left-10 w-32 h-32 bg-[#C5A059]/15 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-[#1a5e39]/25 rounded-full blur-3xl pointer-events-none" />
 
-        {/* Bouton de fermeture */}
+        {/* Bouton de fermeture de la modale */}
         <button
           type="button"
           onClick={handleClose}
