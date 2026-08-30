@@ -28,6 +28,18 @@ export default function PublicActualitesPage() {
     return cat;
   };
 
+  const getCategoryDisplayName = (cat: string) => {
+    if (lang === "fr") return cat;
+    switch (cat) {
+      case "Tous": return "All";
+      case "Veille Juridique": return "Legal Watch";
+      case "Espace Activités": return "Activities Hub";
+      case "Activités événementielles": return "Events";
+      case "Communiqués": return "Press Releases";
+      default: return cat;
+    }
+  };
+
   // Reset active image index when opening an article
   const handleOpenArticle = (item: NewsItem) => {
     setActiveArticle(item);
@@ -76,7 +88,7 @@ export default function PublicActualitesPage() {
       </header>
 
       {/* ─── 2. BANDE DÉROULANTE (TICKER) ────────────────────────────────── */}
-      <TickerBanner items={["GENERAL ESQUIRE", "ACTUALITÉS & ANNONCES", "COMMUNIQUÉS", "ESPACE ACTIVITÉS", "ÉVÉNEMENTIELS", "VEILLE JURIDIQUE"]} className="mb-8" />
+      <TickerBanner items={lang === "fr" ? ["GENERAL ESQUIRE", "ACTUALITÉS & ANNONCES", "COMMUNIQUÉS", "ESPACE ACTIVITÉS", "ÉVÉNEMENTIELS", "VEILLE JURIDIQUE"] : ["GENERAL ESQUIRE", "NEWS & ANNOUNCEMENTS", "PRESS RELEASES", "ACTIVITIES HUB", "EVENTS", "LEGAL WATCH"]} className="mb-8" />
 
       {/* ─── CONTENU PRINCIPAL ────────────────────────────── */}
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-8 py-8 md:py-16">
@@ -113,7 +125,7 @@ export default function PublicActualitesPage() {
                   : "bg-[#131513] text-[#EDE4CF]/80 border-[#C5A059]/30 hover:border-[#E9D18F] hover:text-white"
               }`}
             >
-              {cat}
+              {getCategoryDisplayName(cat)}
             </button>
           ))}
         </div>
@@ -149,7 +161,7 @@ export default function PublicActualitesPage() {
                     {/* Badge de catégorie */}
                     <div className="absolute top-4 left-4 flex items-center gap-2">
                       <span className="bg-[#131513]/90 backdrop-blur-md border border-[#C5A059]/50 text-[#E9D18F] font-cinzel text-[10px] font-bold tracking-widest uppercase px-3.5 py-1 rounded-full shadow-md">
-                        ✦ {getCategoryLabel(item.category)}
+                        ✦ {getCategoryDisplayName(getCategoryLabel(item.category))}
                       </span>
                     </div>
 
@@ -161,7 +173,7 @@ export default function PublicActualitesPage() {
                       )}
                       {item.isFeatured && (
                         <span className="bg-gradient-to-r from-[#C5A059] to-[#E9D18F] text-black font-cinzel text-[9px] font-extrabold tracking-widest uppercase px-3 py-1 rounded-full shadow-md">
-                          À la une
+                          {lang === "fr" ? "À la une" : "Featured"}
                         </span>
                       )}
                     </div>
@@ -171,7 +183,9 @@ export default function PublicActualitesPage() {
                   <div className="p-6 flex-grow flex flex-col">
                     <div className="font-cormorant text-[#C5A059] text-sm mb-2 font-semibold tracking-wide flex items-center justify-between">
                       <span>{item.date}</span>
-                      <span className="text-xs text-[#cabfa6]/70">Par {item.author || "Administration"}</span>
+                      <span className="text-xs text-[#cabfa6]/70">
+                        {lang === "fr" ? "Par" : "By"} {item.author || (lang === "fr" ? "Administration" : "Administration")}
+                      </span>
                     </div>
                     
                     <h3 className="font-cinzel text-lg text-[#EDE4CF] font-bold mb-3 line-clamp-2 group-hover:text-[#E9D18F] transition-colors leading-snug">
@@ -228,7 +242,7 @@ export default function PublicActualitesPage() {
             </button>
 
             <span className="inline-block font-cinzel text-xs text-[#C5A059] tracking-[0.25em] uppercase border border-[#C5A059]/40 px-3.5 py-1 rounded-full bg-[#131513] mb-4">
-              ✦ {getCategoryLabel(activeArticle.category)}
+              ✦ {getCategoryDisplayName(getCategoryLabel(activeArticle.category))}
             </span>
 
             <h2 className="font-cinzel text-2xl sm:text-3xl font-bold text-[#E9D18F] mb-3 leading-snug">
@@ -243,7 +257,7 @@ export default function PublicActualitesPage() {
 
             <div className="flex items-center gap-4 text-xs font-cinzel text-[#C5A059] mb-6 border-b border-[#C5A059]/20 pb-4">
               <span>📅 {activeArticle.date}</span>
-              <span>✍️ Par {activeArticle.author}</span>
+              <span>✍️ {lang === "fr" ? "Par" : "By"} {activeArticle.author || (lang === "fr" ? "Administration" : "Administration")}</span>
             </div>
 
             {/* Photo Gallery Carousel */}
@@ -320,7 +334,7 @@ export default function PublicActualitesPage() {
                 onClick={() => setActiveArticle(null)}
                 className="px-8 py-3 rounded-full bg-gradient-to-r from-[#C5A059] to-[#E9D18F] text-black font-cinzel font-bold text-xs uppercase tracking-widest hover:brightness-110 transition-all cursor-pointer shadow-lg"
               >
-                Fermer l'Article
+                {lang === "fr" ? "Fermer l'Article" : "Close Article"}
               </button>
             </div>
           </div>

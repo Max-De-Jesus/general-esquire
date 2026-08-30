@@ -8,7 +8,7 @@ import TickerBanner from "@/components/TickerBanner";
 import { UtensilsIcon, FlameIcon, CoffeeIcon } from "@/components/Icons";
 
 // ─── Hero Carousel Slides ─────────────────────────────────────────────────────
-const SLIDES = [
+const SLIDES_FR = [
   {
     src: "/images/car_repas/Food.jpg",
     tag: "Chrysalides — Gastronomie",
@@ -38,6 +38,39 @@ const SLIDES = [
     tag: "Options Sur-Mesure",
     title: "Petit-déjeuner occidental aussi disponible",
     desc: "Nous nous adaptons avec plaisir à vos préférences et régimes alimentaires.",
+  },
+];
+
+const SLIDES_EN = [
+  {
+    src: "/images/car_repas/Food.jpg",
+    tag: "Chrysalides — Gastronomy",
+    title: "Welcome to a Realm of Flavors",
+    desc: "Three daily gourmet meals prepared with care, plus energizing excursion snacks.",
+  },
+  {
+    src: "/images/car_repas/Bouillie.jpg",
+    tag: "Traditional Breakfast",
+    title: "Warm Porridge & Yovodoko Fritters",
+    desc: "Savor local corn, millet, or sorghum porridge with freshly fried yovodoko pastries.",
+  },
+  {
+    src: "/images/car_repas/food3.jpg",
+    tag: "Hearty & Nourishing Cuisine",
+    title: "Generous Local Dishes & Fine Flavors",
+    desc: "Selected meats, fresh fish, crab, and authentic sauces to enjoy by hand.",
+  },
+  {
+    src: "/images/car_repas/Tchooh14 - Copie.jpg",
+    tag: "Beninese Delicacies",
+    title: "Chilled Gari & Crispy Peanuts",
+    desc: "Taste the refreshing chilled gari paired with golden roasted peanuts.",
+  },
+  {
+    src: "/images/car_repas/food14.jpg",
+    tag: "Tailored Options",
+    title: "Continental Breakfast Also Available",
+    desc: "We cater with pleasure to your specific dietary requirements and preferences.",
   },
 ];
 
@@ -244,6 +277,8 @@ function Rotating3DFoodCarousel() {
 
 // ─── Professional Carousel ────────────────────────────────────────────────────
 function HeroCarousel() {
+  const { lang } = useLanguage();
+  const slides = lang === "fr" ? SLIDES_FR : SLIDES_EN;
   const [current, setCurrent] = useState(0);
   const [fading, setFading] = useState(false);
 
@@ -252,15 +287,15 @@ function HeroCarousel() {
     setTimeout(() => { setCurrent(idx); setFading(false); }, 400);
   }, []);
 
-  const next = useCallback(() => goTo((current + 1) % SLIDES.length), [current, goTo]);
-  const prev = useCallback(() => goTo((current - 1 + SLIDES.length) % SLIDES.length), [current, goTo]);
+  const next = useCallback(() => goTo((current + 1) % slides.length), [current, goTo, slides.length]);
+  const prev = useCallback(() => goTo((current - 1 + slides.length) % slides.length), [current, goTo, slides.length]);
 
   useEffect(() => {
     const t = setInterval(next, 6000);
     return () => clearInterval(t);
   }, [next]);
 
-  const slide = SLIDES[current];
+  const slide = slides[current];
 
   return (
     <div className="relative w-full rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-2xl">
@@ -273,14 +308,14 @@ function HeroCarousel() {
       </div>
 
       <div className="absolute top-5 right-5 font-cinzel text-xs text-[#C5A059] bg-[#131513]/70 backdrop-blur-md px-3 py-1 rounded-full border border-[#C5A059]/30">
-        {current + 1} / {SLIDES.length}
+        {current + 1} / {slides.length}
       </div>
 
       <button onClick={prev} className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-[#131513]/70 border border-[#C5A059]/40 text-[#E9D18F] hover:bg-[#C5A059]/20 transition-all flex items-center justify-center text-xl shadow-lg">‹</button>
       <button onClick={next} className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-[#131513]/70 border border-[#C5A059]/40 text-[#E9D18F] hover:bg-[#C5A059]/20 transition-all flex items-center justify-center text-xl shadow-lg">›</button>
 
       <div className="absolute bottom-4 right-6 flex items-center gap-2">
-        {SLIDES.map((_, i) => (
+        {slides.map((_, i) => (
           <button key={i} onClick={() => goTo(i)}
             className={`transition-all duration-300 rounded-full ${i === current ? "w-7 h-2 bg-[#C5A059]" : "w-2 h-2 bg-white/30 hover:bg-[#C5A059]/60"}`}
           />
@@ -549,21 +584,33 @@ export default function RepasPage() {
               </div>
 
               <p className="font-cinzel text-[#E9D18F] text-xs sm:text-sm tracking-[0.25em] uppercase font-bold">
-                Philosophie Gourmande du Séjour
+                {lang === "fr" ? "Philosophie Gourmande du Séjour" : "Culinary Philosophy of the Retreat"}
               </p>
 
               <blockquote className="font-cormorant text-2xl sm:text-4xl text-white font-bold italic drop-shadow-md leading-tight max-w-3xl mx-auto">
-                « C’est ce qui entre dans ton ventre qui t’appartient. »
+                {lang === "fr"
+                  ? "« C’est ce qui entre dans ton ventre qui t’appartient. »"
+                  : "“What enters your stomach is what truly belongs to you.”"}
               </blockquote>
 
               <p className="font-cormorant text-lg sm:text-xl text-[#EDE4CF]/90 max-w-2xl mx-auto leading-relaxed">
-                Vous l’avez déjà compris, la gastronomie est une composante essentielle du cocooning que nous vous promettons. Alors dans toute situation, bonne ou mauvaise, <strong className="text-[#E9D18F] whitespace-nowrap">mangeons d’abord !</strong>
+                {lang === "fr" ? (
+                  <>
+                    Vous l’avez déjà compris, la gastronomie est une composante essentielle du cocooning que nous vous promettons. Alors dans toute situation, bonne ou mauvaise, <strong className="text-[#E9D18F] whitespace-nowrap">mangeons d’abord !</strong>
+                  </>
+                ) : (
+                  <>
+                    As you have gathered, gastronomy is a vital cornerstone of our cocooning retreat. In every situation, come what may, <strong className="text-[#E9D18F] whitespace-nowrap">let us feast first!</strong>
+                  </>
+                )}
               </p>
 
               <div className="h-[1px] w-24 bg-[#C5A059]/40 mx-auto" />
 
               <p className="font-cinzel text-[10px] sm:text-xs text-[#cabfa6] tracking-wider uppercase whitespace-nowrap overflow-x-auto">
-                Toutefois, dans une démarche responsable, les boissons alcoolisées ne sont pas incluses dans votre forfait.
+                {lang === "fr"
+                  ? "Toutefois, dans une démarche responsable, les boissons alcoolisées ne sont pas incluses dans votre forfait."
+                  : "Please note that, in keeping with responsible wellness, alcoholic beverages are not included in your package."}
               </p>
             </div>
           </div>
@@ -574,13 +621,15 @@ export default function RepasPage() {
         <section className="mb-16">
           <div className="text-center mb-10">
             <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase block mb-2">
-              Galerie Gourmande
+              {lang === "fr" ? "Galerie Gourmande" : "Gourmet Gallery"}
             </span>
             <h2 className="font-cinzel text-3xl sm:text-4xl text-[#E9D18F]">
-              Découvrez la Richesse de Nos Plats
+              {lang === "fr" ? "Découvrez la Richesse de Nos Plats" : "Discover the Richness of Our Cuisine"}
             </h2>
             <p className="font-cormorant text-lg text-[#cabfa6] mt-2">
-              Découvrez l'ensemble de nos spécialités culinaires et repas préparés avec soin
+              {lang === "fr"
+                ? "Découvrez l'ensemble de nos spécialités culinaires et repas préparés avec soin"
+                : "Explore our full selection of culinary delights and carefully prepared meals"}
             </p>
           </div>
 

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import ServicesModal from "./ServicesModal";
-import { LanguageToggle } from "./ThemeToggle";
+import { LanguageToggle, ReviewButton } from "./ThemeToggle";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 
@@ -65,9 +65,10 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* Controls: Language Toggle, Auth (Payment Page Only) & Services Menu Trigger */}
-          <div className="flex items-center gap-1 sm:gap-2.5 md:gap-4 flex-shrink-0">
+          {/* Controls: Language Toggle, Review Button, Auth (Payment Page Only) & Services Menu Trigger */}
+          <div className="flex items-center gap-1 sm:gap-2.5 md:gap-3 flex-shrink-0">
             <LanguageToggle />
+            <ReviewButton />
 
             {/* Auth Button / User Profile — Displayed on ALL pages when logged in, or on /paiement when logged out */}
             {user ? (

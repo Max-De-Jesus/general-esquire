@@ -811,9 +811,9 @@ export default function CocooningTouristiquePage() {
                   </label>
                   <div className="flex flex-wrap items-center justify-center gap-8 font-cinzel text-sm">
                     {[
-                      { id: "masculin", label: "Masculin" },
-                      { id: "feminin", label: "Féminin" },
-                      { id: "non-genre", label: "Non genré" },
+                      { id: "masculin", label: lang === "fr" ? "Masculin" : "Male" },
+                      { id: "feminin", label: lang === "fr" ? "Féminin" : "Female" },
+                      { id: "non-genre", label: lang === "fr" ? "Non genré" : "Non-binary" },
                     ].map((item) => (
                       <label key={item.id} className="flex items-center gap-2.5 cursor-pointer">
                         <input
@@ -967,21 +967,21 @@ export default function CocooningTouristiquePage() {
                   </label>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 font-cinzel text-sm">
                     {[
-                      "Sans porc",
-                      "Sans sucre",
-                      "Sans sel",
-                      "Sans gluten",
-                      "Sans lactose",
-                      "Végétarien",
+                      { id: "Sans porc", label: lang === "fr" ? "Sans porc" : "Pork-free" },
+                      { id: "Sans sucre", label: lang === "fr" ? "Sans sucre" : "Sugar-free" },
+                      { id: "Sans sel", label: lang === "fr" ? "Sans sel" : "Salt-free" },
+                      { id: "Sans gluten", label: lang === "fr" ? "Sans gluten" : "Gluten-free" },
+                      { id: "Sans lactose", label: lang === "fr" ? "Sans lactose" : "Lactose-free" },
+                      { id: "Végétarien", label: lang === "fr" ? "Végétarien" : "Vegetarian" },
                     ].map((item) => (
-                      <label key={item} className="flex items-center gap-2.5 cursor-pointer">
+                      <label key={item.id} className="flex items-center gap-2.5 cursor-pointer">
                         <input
                           type="checkbox"
-                          checked={formData.preferencesAlimentaires.includes(item)}
-                          onChange={() => handleDietToggle(item)}
+                          checked={formData.preferencesAlimentaires.includes(item.id)}
+                          onChange={() => handleDietToggle(item.id)}
                           className="accent-[#C5A059] w-4 h-4 rounded"
                         />
-                        <span className="text-[#EDE4CF] text-xs sm:text-sm">{item}</span>
+                        <span className="text-[#EDE4CF] text-xs sm:text-sm">{item.label}</span>
                       </label>
                     ))}
                   </div>
@@ -1025,7 +1025,7 @@ export default function CocooningTouristiquePage() {
                           onChange={() => setFormData({ ...formData, surveillanceMedicale: "oui" })}
                           className="accent-[#C5A059] w-4 h-4"
                         />
-                        <span className="text-[#EDE4CF]">Oui</span>
+                        <span className="text-[#EDE4CF]">{lang === "fr" ? "Oui" : "Yes"}</span>
                       </label>
                       <label className="flex items-center gap-2.5 cursor-pointer">
                         <input
@@ -1036,7 +1036,7 @@ export default function CocooningTouristiquePage() {
                           onChange={() => setFormData({ ...formData, surveillanceMedicale: "non" })}
                           className="accent-[#C5A059] w-4 h-4"
                         />
-                        <span className="text-[#EDE4CF]">Non</span>
+                        <span className="text-[#EDE4CF]">{lang === "fr" ? "Non" : "No"}</span>
                       </label>
                     </div>
                   </div>
@@ -1059,7 +1059,7 @@ export default function CocooningTouristiquePage() {
                     {/* 1° Photo */}
                     <div className="p-4 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/30">
                       <span className="block font-cinzel text-xs text-[#E9D18F] font-bold mb-2">
-                        1° Une photo de vous
+                        {lang === "fr" ? "1° Une photo de vous" : "1° A photo of yourself"}
                       </span>
                       <input
                         type="file"
@@ -1073,7 +1073,7 @@ export default function CocooningTouristiquePage() {
                     {/* 2° Passeport */}
                     <div className="p-4 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/30">
                       <span className="block font-cinzel text-xs text-[#E9D18F] font-bold mb-2">
-                        2° Votre passeport valide
+                        {lang === "fr" ? "2° Votre passeport valide" : "2° Valid passport copy"}
                       </span>
                       <input
                         type="file"
@@ -1087,7 +1087,7 @@ export default function CocooningTouristiquePage() {
                     {/* 3° Avis médical */}
                     <div className="p-4 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/30">
                       <span className="block font-cinzel text-xs text-[#E9D18F] font-bold mb-2">
-                        3° Avis médical s’il y a lieu
+                        {lang === "fr" ? "3° Avis médical s’il y a lieu" : "3° Medical notice (if applicable)"}
                       </span>
                       <input
                         type="file"
@@ -1101,7 +1101,7 @@ export default function CocooningTouristiquePage() {
                     {/* 4° Tout autre document important */}
                     <div className="p-4 rounded-xl bg-[#0a0b0a] border border-[#C5A059]/30">
                       <span className="block font-cinzel text-xs text-[#E9D18F] font-bold mb-2">
-                        4° Tout autre document important
+                        {lang === "fr" ? "4° Tout autre document important" : "4° Any other relevant document"}
                       </span>
                       <input
                         type="file"
@@ -1120,7 +1120,7 @@ export default function CocooningTouristiquePage() {
                     type="submit"
                     className="w-full sm:w-auto px-12 py-4 rounded-full font-cinzel text-xs tracking-widest uppercase font-bold text-black bg-gradient-to-r from-[#C5A059] via-[#E9D18F] to-[#C5A059] hover:brightness-110 transition-all shadow-[0_0_30px_rgba(197,160,89,0.4)] hover:scale-105 cursor-pointer"
                   >
-                    Transmettre le formulaire • VALIDER
+                    {lang === "fr" ? "Transmettre le formulaire • VALIDER" : "Submit Application • CONFIRM"}
                   </button>
                 </div>
               </>
