@@ -7,12 +7,20 @@ import { useLanguage } from "@/context/LanguageContext";
 import TickerBanner from "@/components/TickerBanner";
 
 // ─── Wellness Carousel Slides ────────────────────────────────────────────────
-const WELLNESS_SLIDES = [
+const WELLNESS_SLIDES_FR = [
   { src: "/images/massage8.png", tag: "Massages & Soins Corps", title: "Séances de Massage Apaisantes", desc: "Laissez-vous choyer par nos praticiens qualifiés pour libérer toutes les tensions accumulées." },
   { src: "/images/CARS32.png", tag: "Douceur & Sérénité", title: "Bienvenue dans un Monde de Douceur", desc: "Un cadre idyllique spécialement conçu pour accueillir votre processus de résilience." },
   { src: "/images/massage2.jpg", tag: "Ressourcement Psychologique", title: "Prise en Charge de la Souffrance Émotionnelle", desc: "Un accompagnement attentif pour panser les blessures de la vie et des épreuves judiciaires." },
   { src: "/images/CAR33.png", tag: "Guide Personnel Attentif", title: "Un Accompagnant à Vos Côtés", desc: "Votre guide personnel veille à ce que rien n'entame vos précieux instants de bonheur." },
   { src: "/images/Chant2.jpg", tag: "Soirées & Spectacles", title: "Récitals, Musique & Convivialité", desc: "Des moments de joie partagée dans une ambiance amicale et chaleureuse." },
+];
+
+const WELLNESS_SLIDES_EN = [
+  { src: "/images/massage8.png", tag: "Massages & Body Treatments", title: "Soothing Massage Sessions", desc: "Pamper yourself with our certified practitioners to release all built-up stress and tension." },
+  { src: "/images/CARS32.png", tag: "Gentleness & Serenity", title: "Welcome to a Realm of Gentleness", desc: "An idyllic setting designed specifically to nurture your resilience and renewal." },
+  { src: "/images/massage2.jpg", tag: "Emotional Rejuvenation", title: "Care for Emotional & Mental Well-being", desc: "Caring support to soothe life's hardships and legal turmoil." },
+  { src: "/images/CAR33.png", tag: "Attentive Personal Guide", title: "A Dedicated Companion by Your Side", desc: "Your personal guide ensures every moment of your stay is peaceful and enriching." },
+  { src: "/images/Chant2.jpg", tag: "Evenings & Live Shows", title: "Recitals, Music & Warm Fellowship", desc: "Shared joyful moments in a friendly, heartwarming atmosphere." },
 ];
 
 // ─── Gallery items ────────────────────────────────────────────────────────────
@@ -32,14 +40,16 @@ const GALLERY = [
 
 // ─── Hero Carousel ────────────────────────────────────────────────────────────
 function HeroCarousel() {
+  const { lang } = useLanguage();
+  const slides = lang === "fr" ? WELLNESS_SLIDES_FR : WELLNESS_SLIDES_EN;
   const [current, setCurrent] = useState(0);
-  const nextSlide = useCallback(() => setCurrent((p) => (p + 1) % WELLNESS_SLIDES.length), []);
-  const prevSlide = useCallback(() => setCurrent((p) => (p - 1 + WELLNESS_SLIDES.length) % WELLNESS_SLIDES.length), []);
+  const nextSlide = useCallback(() => setCurrent((p) => (p + 1) % slides.length), [slides.length]);
+  const prevSlide = useCallback(() => setCurrent((p) => (p - 1 + slides.length) % slides.length), [slides.length]);
   useEffect(() => { const t = setInterval(nextSlide, 5000); return () => clearInterval(t); }, [nextSlide]);
   return (
     <div className="relative rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-2xl bg-[#131513]">
       <div className="relative h-[220px] xs:h-[280px] sm:h-[440px] md:h-[520px] w-full bg-[#131513]">
-        {WELLNESS_SLIDES.map((slide, i) => (
+        {slides.map((slide, i) => (
           <div key={i} className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${i === current ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"}`}>
             <Image src={slide.src} alt="" fill priority={i === 0} unoptimized className="object-contain sm:object-cover object-center brightness-90 contrast-105 group-hover:scale-105 transition-transform duration-[8000ms]" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#131513]/80 via-transparent to-transparent pointer-events-none" />
@@ -49,7 +59,7 @@ function HeroCarousel() {
       <button onClick={prevSlide} className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#131513]/80 border border-[#C5A059]/50 text-[#C5A059] hover:bg-[#C5A059] hover:text-black transition-all flex items-center justify-center text-lg sm:text-xl cursor-pointer backdrop-blur-md">‹</button>
       <button onClick={nextSlide} className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#131513]/80 border border-[#C5A059]/50 text-[#C5A059] hover:bg-[#C5A059] hover:text-black transition-all flex items-center justify-center text-lg sm:text-xl cursor-pointer backdrop-blur-md">›</button>
       <div className="absolute bottom-3 sm:bottom-5 right-4 sm:right-8 z-20 flex gap-2">
-        {WELLNESS_SLIDES.map((_, i) => (
+        {slides.map((_, i) => (
           <button key={i} onClick={() => setCurrent(i)} className={`h-2.5 rounded-full transition-all cursor-pointer ${i === current ? "w-8 bg-[#C5A059] shadow-[0_0_8px_rgba(197,160,89,0.8)]" : "w-2.5 bg-[#C5A059]/40"}`} />
         ))}
       </div>
@@ -404,10 +414,26 @@ export default function DetentePage() {
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-            <PillarCard emoji="💆" title="MASSAGES & SOINS" text="Séances de massage professionnel et rituels de relaxation du corps." />
-            <PillarCard emoji="🚶" title="PROMENADES EN VILLE" text="Balades guidées et découvertes urbaines avec votre guide dédié." />
-            <PillarCard emoji="💃" title="SOIRÉES DANSANTES" text="Fêtes conviviales, rythmes entraînants et joie partagée." />
-            <PillarCard emoji="🎭" title="RÉCITALS & SPECTACLES" text="Représentations culturelles et scènes ouvertes pour vos talents." />
+            <PillarCard
+              emoji="💆"
+              title={lang === "fr" ? "MASSAGES & SOINS" : "MASSAGES & CARE"}
+              text={lang === "fr" ? "Séances de massage professionnel et rituels de relaxation du corps." : "Professional massage sessions and body relaxation rituals."}
+            />
+            <PillarCard
+              emoji="🚶"
+              title={lang === "fr" ? "PROMENADES EN VILLE" : "CITY STROLLS"}
+              text={lang === "fr" ? "Balades guidées et découvertes urbaines avec votre guide dédié." : "Guided walks and scenic urban explorations with your personal guide."}
+            />
+            <PillarCard
+              emoji="💃"
+              title={lang === "fr" ? "SOIRÉES DANSANTES" : "DANCE EVENINGS"}
+              text={lang === "fr" ? "Fêtes conviviales, rythmes entraînants et joie partagée." : "Friendly social gatherings, joyful rhythms, and shared laughter."}
+            />
+            <PillarCard
+              emoji="🎭"
+              title={lang === "fr" ? "RÉCITALS & SPECTACLES" : "RECITALS & SHOWS"}
+              text={lang === "fr" ? "Représentations culturelles et scènes ouvertes pour vos talents." : "Cultural performances and open stages to celebrate all talents."}
+            />
           </div>
         </section>
         {/* ── GALERIE RADIALE 3D ──────────────────────────────────────────────── */}

@@ -8,7 +8,7 @@ import TickerBanner from "@/components/TickerBanner";
 import { HomeIcon, HandshakeIcon, StarIcon } from "@/components/Icons";
 
 // ─── Hero carousel slides (Images 100% uniques) ─────────────────────────────
-const SLIDES = [
+const SLIDES_FR = [
   {
     src: "/images/Kwabo.avif",
     tag: "Chrysalides — Bénin",
@@ -41,6 +41,39 @@ const SLIDES = [
   },
 ];
 
+const SLIDES_EN = [
+  {
+    src: "/images/Kwabo.avif",
+    tag: "Chrysalides — Benin",
+    title: "Welcome to a World of Caring Hospitality",
+    desc: "A warm welcome awaits you upon landing at Bernardin Gantin Airport in Cotonou.",
+  },
+  {
+    src: "/images/Dormir.jpg",
+    tag: "Private Living & Serenity",
+    title: "Not a Hotel — A Real Home",
+    desc: "A refined blend of premium hospitality standards and genuine local family warmth.",
+  },
+  {
+    src: "/images/carousel2.png",
+    tag: "Comfort & Elegance",
+    title: "Your Peaceful Sanctuary for 15 Days",
+    desc: "Each guest is accompanied by a dedicated personal guide attending to every need.",
+  },
+  {
+    src: "/images/Repos.jpg",
+    tag: "Restful Retreat",
+    title: "Unwind in Total Peace",
+    desc: "General Esquire ensures high-end comfort and peaceful rest throughout your stay.",
+  },
+  {
+    src: "/images/carousel5.png",
+    tag: "Genuine Connection",
+    title: "Escape Impersonal Hotel Isolation",
+    desc: "Here, you are welcomed like family with authentic, heartwarming African hospitality.",
+  },
+];
+
 // ─── Gallery images (Photos valides uniques & sans doublons) ─────────────────
 const GALLERY = [
   { src: "/images/Bienvenue.jpg", label: "Accueil" },
@@ -56,6 +89,8 @@ const GALLERY = [
 
 // ─── Professional Carousel ────────────────────────────────────────────────────
 function HeroCarousel() {
+  const { lang } = useLanguage();
+  const slides = lang === "fr" ? SLIDES_FR : SLIDES_EN;
   const [current, setCurrent] = useState(0);
   const [fading, setFading] = useState(false);
 
@@ -64,15 +99,15 @@ function HeroCarousel() {
     setTimeout(() => { setCurrent(idx); setFading(false); }, 400);
   }, []);
 
-  const next = useCallback(() => goTo((current + 1) % SLIDES.length), [current, goTo]);
-  const prev = useCallback(() => goTo((current - 1 + SLIDES.length) % SLIDES.length), [current, goTo]);
+  const next = useCallback(() => goTo((current + 1) % slides.length), [current, goTo, slides.length]);
+  const prev = useCallback(() => goTo((current - 1 + slides.length) % slides.length), [current, goTo, slides.length]);
 
   useEffect(() => {
     const t = setInterval(next, 6000);
     return () => clearInterval(t);
   }, [next]);
 
-  const slide = SLIDES[current];
+  const slide = slides[current];
 
   return (
     <div className="relative w-full rounded-3xl overflow-hidden border-2 border-[#C5A059]/40 shadow-2xl">
@@ -86,7 +121,7 @@ function HeroCarousel() {
 
       {/* Counter */}
       <div className="absolute top-5 right-5 font-cinzel text-xs text-[#C5A059] bg-[#131513]/70 backdrop-blur-md px-3 py-1 rounded-full border border-[#C5A059]/30">
-        {current + 1} / {SLIDES.length}
+        {current + 1} / {slides.length}
       </div>
 
       {/* Arrows */}
@@ -95,7 +130,7 @@ function HeroCarousel() {
 
       {/* Dots */}
       <div className="absolute bottom-4 right-6 flex items-center gap-2">
-        {SLIDES.map((_, i) => (
+        {slides.map((_, i) => (
           <button key={i} onClick={() => goTo(i)}
             className={`transition-all duration-300 rounded-full cursor-pointer ${i === current ? "w-7 h-2 bg-[#C5A059]" : "w-2 h-2 bg-white/30 hover:bg-[#C5A059]/60"}`}
           />
@@ -251,7 +286,9 @@ export default function HebergementPage() {
               <div className="w-full md:w-3/5 p-8 sm:p-12 space-y-6 bg-[#0F3823]/90 relative z-10">
                 <div className="flex items-center justify-center gap-3">
                   <div className="h-[1px] w-12 bg-[#C5A059]" />
-                  <span className="text-[#C5A059] text-xs font-cinzel tracking-widest uppercase">L'Esprit Chrysalides</span>
+                  <span className="text-[#C5A059] text-xs font-cinzel tracking-widest uppercase">
+                    {lang === "fr" ? "L'Esprit Chrysalides" : "The Chrysalides Spirit"}
+                  </span>
                   <div className="h-[1px] w-12 bg-[#C5A059]" />
                 </div>
 
@@ -337,11 +374,15 @@ export default function HebergementPage() {
         <section className="mb-16 -mx-6 sm:-mx-0">
           <div className="text-center mb-10 px-6">
             <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase block mb-2">
-              Votre cadre de vie
+              {lang === "fr" ? "Votre cadre de vie" : "Your Living Setting"}
             </span>
-            <h2 className="font-cinzel text-3xl text-[#E9D18F]">Vous serez bien chez nous</h2>
+            <h2 className="font-cinzel text-3xl text-[#E9D18F]">
+              {lang === "fr" ? "Vous serez bien chez nous" : "You Will Feel Right at Home"}
+            </h2>
             <p className="font-cormorant text-base text-[#cabfa6] mt-2">
-              Confort, sérénité et chaleur humaine — voici votre hébergement
+              {lang === "fr"
+                ? "Confort, sérénité et chaleur humaine — voici votre hébergement"
+                : "Comfort, serenity, and human warmth — your peaceful retreat"}
             </p>
           </div>
 

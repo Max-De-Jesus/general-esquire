@@ -19,7 +19,7 @@ import {
 } from "@/components/Icons";
 
 // ─── Carousel slides — Uniform dimensions & high visual impact ─────────────────
-const SLIDES = [
+const SLIDES_FR = [
   {
     src: "/images/Chef d'entreprise3.jpg",
     tag: "Conseil & Stratégie",
@@ -55,6 +55,45 @@ const SLIDES = [
     tag: "Gouvernance & Statuts",
     title: "Sécurisez vos décisions stratégiques",
     desc: "La forme juridique conditionne la responsabilité des dirigeants et associés.",
+  },
+];
+
+const SLIDES_EN = [
+  {
+    src: "/images/Chef d'entreprise3.jpg",
+    tag: "Counsel & Strategy",
+    title: "Protect Your Business Starting Today",
+    desc: "Ignorance of the law can cost far more than a timely legal consultation.",
+  },
+  {
+    src: "/images/Chef d'entreprise7.jpg",
+    tag: "Employment Law",
+    title: "Dismissals Cannot Be Left to Chance",
+    desc: "Any flawed procedure exposes your company to severe legal and financial penalties.",
+  },
+  {
+    src: "/images/Chef d'entreprise4.jpg",
+    tag: "Tax & Audits",
+    title: "Your Tax Filings Deserve Rigorous Expertise",
+    desc: "An unprepared audit can trigger civil and criminal liability for executives.",
+  },
+  {
+    src: "/images/Chef d'entreprise8.jpg",
+    tag: "Tailored Support",
+    title: "Flexible According to Your Budget & Needs",
+    desc: "Annual, monthly, or ad-hoc plans — General Esquire adapts to your growth.",
+  },
+  {
+    src: "/images/Chef d'entreprise13.jpg",
+    tag: "Network & Partners",
+    title: "A Vetted Network of Experts at Your Service",
+    desc: "Law, finance, accounting, taxation: we connect you with the best specialists.",
+  },
+  {
+    src: "/images/Chef d'entreprise6.jpg",
+    tag: "Corporate Governance",
+    title: "Secure Your Strategic Decisions",
+    desc: "Your legal structure determines the personal liability of founders and directors.",
   },
 ];
 
@@ -95,11 +134,14 @@ function Sparkles() {
 
 // ─── 3D Executive Luxury Coverflow Slider ────────────────────────────────────
 function ExecutiveLuxurySlider() {
+  const { lang } = useLanguage();
+  const slides = lang === "fr" ? SLIDES_FR : SLIDES_EN;
+
   const [activeIdx, setActiveIdx] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
-  const total = SLIDES.length;
+  const total = slides.length;
 
   const next = useCallback(() => setActiveIdx((p) => (p + 1) % total), [total]);
   const prev = useCallback(() => setActiveIdx((p) => (p - 1 + total) % total), [total]);
@@ -161,7 +203,7 @@ function ExecutiveLuxurySlider() {
     }
   };
 
-  const activeSlide = SLIDES[activeIdx];
+  const activeSlide = slides[activeIdx];
 
   return (
     <div
@@ -180,7 +222,7 @@ function ExecutiveLuxurySlider() {
         style={{ perspective: "1000px", contain: "paint" }}
       >
         <div className="relative w-full h-full flex items-center justify-center">
-          {SLIDES.map((slide, i) => {
+          {slides.map((slide, i) => {
             const { transform, opacity, zIndex, isCenter, visibility } = getSlideProps(i);
 
             return (
@@ -224,14 +266,14 @@ function ExecutiveLuxurySlider() {
         {/* Minimalist Gold Arrow Buttons */}
         <button
           onClick={prev}
-          aria-label="Précédent"
+          aria-label={lang === "fr" ? "Précédent" : "Previous"}
           className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-40 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#131513]/90 border border-[#C5A059]/60 text-[#E9D18F] text-xl hover:bg-[#0F3823] hover:border-[#E9D18F] hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center shadow-lg backdrop-blur-md cursor-pointer"
         >
           ‹
         </button>
         <button
           onClick={next}
-          aria-label="Suivant"
+          aria-label={lang === "fr" ? "Suivant" : "Next"}
           className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-40 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#131513]/90 border border-[#C5A059]/60 text-[#E9D18F] text-xl hover:bg-[#0F3823] hover:border-[#E9D18F] hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center shadow-lg backdrop-blur-md cursor-pointer"
         >
           ›
@@ -253,7 +295,7 @@ function ExecutiveLuxurySlider() {
 
       {/* Luxury Dot Pagination */}
       <div className="flex justify-center gap-2 mt-6 flex-wrap relative z-30">
-        {SLIDES.map((_, i) => (
+        {slides.map((_, i) => (
           <button
             key={i}
             onClick={() => setActiveIdx(i)}
@@ -402,48 +444,66 @@ export default function EntrepreneurPage() {
             {[
               {
                 icon: <ScaleIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
-                title: "Veille Juridique",
-                text: "une veille juridique sur les textes de loi et la jurisprudence\u00A0;",
+                title: lang === "fr" ? "Veille Juridique" : "Legal Monitoring",
+                text: lang === "fr"
+                  ? "une veille juridique sur les textes de loi et la jurisprudence\u00A0;"
+                  : "continuous legal intelligence covering new statutes, regulations, and case law;",
               },
               {
                 icon: <MailIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
-                title: "Domiciliation Temporaire",
-                text: "la domiciliation temporaire de vos courriers en cas d’urgence\u00A0;",
+                title: lang === "fr" ? "Domiciliation Temporaire" : "Temporary Domiciliation",
+                text: lang === "fr"
+                  ? "la domiciliation temporaire de vos courriers en cas d’urgence\u00A0;"
+                  : "temporary legal mail domiciliation in urgent situations;",
               },
               {
                 icon: <ClipboardIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
-                title: "Assistance Formalités",
-                text: "l’assistance à l’occasion de vos formalités à forte implication juridique\u00A0;",
+                title: lang === "fr" ? "Assistance Formalités" : "Formalities Support",
+                text: lang === "fr"
+                  ? "l’assistance à l’occasion de vos formalités à forte implication juridique\u00A0;"
+                  : "procedural guidance and assistance during critical corporate formalities;",
               },
               {
                 icon: <ChatIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
-                title: "Conseils Adaptés",
-                text: "des conseils adaptés à vos besoins si nécessaire en présentiel, et par défaut en visioconférence, audioconférence ou par écrit\u00A0;",
+                title: lang === "fr" ? "Conseils Adaptés" : "Tailored Consultations",
+                text: lang === "fr"
+                  ? "des conseils adaptés à vos besoins si nécessaire en présentiel, et par défaut en visioconférence, audioconférence ou par écrit\u00A0;"
+                  : "tailored counsel delivered in person if needed, or by default via videoconference, phone, or written memoranda;",
               },
               {
                 icon: <GlobeIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
-                title: "Traduction Juridique",
-                text: "la traduction de tous vos documents à valeur juridique en français, anglais (sans frais), chinois et russe (supplément à prévoir)\u00A0;",
+                title: lang === "fr" ? "Traduction Juridique" : "Legal Translation",
+                text: lang === "fr"
+                  ? "la traduction de tous vos documents à valeur juridique en français, anglais (sans frais), chinois et russe (supplément à prévoir)\u00A0;"
+                  : "sworn and professional legal translation in French and English (included), and Chinese or Russian (additional fee);",
               },
               {
                 icon: <DocumentTextIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
-                title: "Rédaction d'Actes",
-                text: "la rédaction de contrats, lettres de recrutement, lettres de licenciement, lettres administratives diverses\u00A0;",
+                title: lang === "fr" ? "Rédaction d'Actes" : "Drafting Legal Documents",
+                text: lang === "fr"
+                  ? "la rédaction de contrats, lettres de recrutement, lettres de licenciement, lettres administratives diverses\u00A0;"
+                  : "drafting commercial contracts, employment offers, termination letters, and administrative correspondence;",
               },
               {
                 icon: <HandshakeIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
-                title: "Négociations Commerciales",
-                text: "l’assistance lors de vos négociations commerciales et professionnelles\u00A0;",
+                title: lang === "fr" ? "Négociations Commerciales" : "Commercial Negotiations",
+                text: lang === "fr"
+                  ? "l’assistance lors de vos négociations commerciales et professionnelles\u00A0;"
+                  : "strategic legal backing and representation during commercial and business negotiations;",
               },
               {
                 icon: <CourtIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
-                title: "Procédures Non Obligatoires",
-                text: "l’assistance dans les procédures sans représentation obligatoire\u00A0;",
+                title: lang === "fr" ? "Procédures Non Obligatoires" : "Direct Court Representation",
+                text: lang === "fr"
+                  ? "l’assistance dans les procédures sans représentation obligatoire\u00A0;"
+                  : "support and preparation for court procedures where legal counsel representation is optional;",
               },
               {
                 icon: <LinkIcon className="w-8 h-8 text-[#C5A059] mb-3" />,
-                title: "Mise en Relation Experts",
-                text: "la mise en relation avec d’autres professionnels du droit, de la finance, de la comptabilité ou de la fiscalité en fonction de vos besoins.",
+                title: lang === "fr" ? "Mise en Relation Experts" : "Expert Network Referral",
+                text: lang === "fr"
+                  ? "la mise en relation avec d’autres professionnels du droit, de la finance, de la comptabilité ou de la fiscalité en fonction de vos besoins."
+                  : "facilitated referrals to vetted professionals in tax law, finance, chartered accountancy, and certified auditing.",
               },
             ].map((item, i) => (
               <div
@@ -540,13 +600,15 @@ export default function EntrepreneurPage() {
         <section className="mb-16">
           <div className="text-center mb-10">
             <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase block mb-2">
-              Clarté & Transparence
+              {lang === "fr" ? "Clarté & Transparence" : "Clarity & Transparency"}
             </span>
             <h2 className="font-cinzel text-3xl sm:text-4xl text-[#E9D18F] font-bold">
-              Nos Formules & Tarifs
+              {lang === "fr" ? "Nos Formules & Tarifs" : "Our Plans & Pricing"}
             </h2>
             <p className="font-cormorant text-lg text-[#cabfa6] mt-2 max-w-xl mx-auto">
-              Retrouvez nos conditions et engagements complets ci-dessous :
+              {lang === "fr"
+                ? "Retrouvez nos conditions et engagements complets ci-dessous :"
+                : "Find our full terms and commitments below:"}
             </p>
           </div>
 
@@ -555,30 +617,38 @@ export default function EntrepreneurPage() {
             <div className="relative p-8 rounded-3xl bg-gradient-to-b from-[#0F3823]/90 via-[#131513] to-[#0F3823]/90 border-2 border-[#C5A059] shadow-[0_0_40px_rgba(197,160,89,0.25)] hover:shadow-[0_0_65px_rgba(197,160,89,0.45)] hover:scale-[1.02] transition-all duration-500 flex flex-col justify-between group">
               <div>
                 <div className="absolute top-0 right-0 px-4 py-1 bg-gradient-to-r from-[#C5A059] to-[#E9D18F] text-black font-cinzel text-[10px] font-bold tracking-widest uppercase rounded-bl-2xl shadow-md">
-                  ✦ RECOMMANDÉ
+                  {lang === "fr" ? "✦ RECOMMANDÉ" : "✦ RECOMMENDED"}
                 </div>
                 <div className="w-12 h-12 rounded-2xl bg-[#C5A059]/20 border border-[#C5A059]/40 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
                   👑
                 </div>
                 <h3 className="font-cinzel text-lg text-[#E9D18F] font-bold uppercase tracking-widest mb-1">
-                  Abonnement Annuel
+                  {lang === "fr" ? "Abonnement Annuel" : "Annual Subscription"}
                 </h3>
                 <p className="font-cinzel text-4xl sm:text-5xl text-white font-extrabold my-3 drop-shadow-md">
-                  10 000 € <span className="text-sm font-normal text-[#C5A059] font-cormorant">/ an</span>
+                  10 000 € <span className="text-sm font-normal text-[#C5A059] font-cormorant">{lang === "fr" ? "/ an" : "/ year"}</span>
                 </p>
                 <div className="h-[1px] w-full bg-[#C5A059]/30 my-4" />
                 <div className="space-y-4 font-cormorant text-lg text-[#EDE4CF]/90 leading-relaxed">
                   <p>
-                    Vous avez la possibilité de souscrire auprès de General Esquire, un abonnement prépayé sur une base forfaitaire de 10.000 € par an, sans restriction de volume de mission.
+                    {lang === "fr"
+                      ? "Vous avez la possibilité de souscrire auprès de General Esquire, un abonnement prépayé sur une base forfaitaire de 10.000 € par an, sans restriction de volume de mission."
+                      : "You have the opportunity to subscribe with General Esquire to a prepaid annual plan on a fixed fee of €10,000 per year, with no volume restriction on matters handled."}
                   </p>
                   <p className="text-base text-[#EDE4CF]/80 border-l-2 border-[#C5A059]/60 pl-3">
-                    Toutefois en cas d’urgence – c’est-à-dire si vous nous sollicitez pour une prestation qui doit être délivrée dans un délai inférieur ou égal à 48 heures – il vous sera facturé un supplément de 1500 € par prestation nécessitant une rédaction.
+                    {lang === "fr"
+                      ? "Toutefois en cas d’urgence – c’est-à-dire si vous nous sollicitez pour une prestation qui doit être délivrée dans un délai inférieur ou égal à 48 heures – il vous sera facturé un supplément de 1500 € par prestation nécessitant une rédaction."
+                      : "However, in case of emergency—meaning if you request an advisory or drafting service to be delivered within 48 hours or less—an urgency surcharge of €1,500 applies per matter requiring drafting."}
                   </p>
                   <p className="text-base text-[#EDE4CF]/80 border-l-2 border-[#C5A059]/60 pl-3">
-                    Les documents traduits en chinois et russe donnent lieu à une facturation séparée qui est 10 € la page pour un document écrit, et de 10 € la minute pour un fichier multimédia, audio et/ou vidéo.
+                    {lang === "fr"
+                      ? "Les documents traduits en chinois et russe donnent lieu à une facturation séparée qui est 10 € la page pour un document écrit, et de 10 € la minute pour un fichier multimédia, audio et/ou vidéo."
+                      : "Documents translated into Chinese and Russian incur separate fees of €10 per written page, and €10 per minute for multimedia, audio, or video files."}
                   </p>
                   <p className="text-base italic text-[#E9D18F]/90 border-l-2 border-[#E9D18F] pl-3">
-                    L’abonnement annuel est renouvelable par tacite reconduction, sauf dénonciation expresse dans un délai de trois mois avant sa date anniversaire par tout écrit ayant date certaine.
+                    {lang === "fr"
+                      ? "L’abonnement annuel est renouvelable par tacite reconduction, sauf dénonciation expresse dans un délai de trois mois avant sa date anniversaire par tout écrit ayant date certaine."
+                      : "The annual subscription renews automatically by tacit agreement, unless formally terminated with 3 months' written notice prior to its anniversary date."}
                   </p>
                 </div>
               </div>
@@ -591,18 +661,22 @@ export default function EntrepreneurPage() {
                   📅
                 </div>
                 <h3 className="font-cinzel text-lg text-[#E9D18F] font-bold uppercase tracking-widest mb-1">
-                  Abonnement Mensuel
+                  {lang === "fr" ? "Abonnement Mensuel" : "Monthly Subscription"}
                 </h3>
                 <p className="font-cinzel text-4xl text-white font-extrabold my-3">
-                  1 000 € <span className="text-sm font-normal text-[#cabfa6] font-cormorant">/ mois</span>
+                  1 000 € <span className="text-sm font-normal text-[#cabfa6] font-cormorant">{lang === "fr" ? "/ mois" : "/ month"}</span>
                 </p>
                 <div className="h-[1px] w-full bg-[#C5A059]/20 my-4" />
                 <div className="space-y-4 font-cormorant text-lg text-[#EDE4CF]/90 leading-relaxed">
                   <p>
-                    Vous avez également la possibilité de souscrire un abonnement mensuel au tarif de 1000 € par mois, donnant droit à l’ensemble de nos prestations dans les termes et conditions susmentionnés.
+                    {lang === "fr"
+                      ? "Vous avez également la possibilité de souscrire un abonnement mensuel au tarif de 1000 € par mois, donnant droit à l’ensemble de nos prestations dans les termes et conditions susmentionnés."
+                      : "You may also choose a monthly subscription at €1,000 per month, granting access to all our legal advisory services under the same terms and conditions."}
                   </p>
                   <p className="text-base text-[#E9D18F]/90 border-l-2 border-[#C5A059] pl-3">
-                    Il est résiliable à tout moment, tout paiement fait à la société General Esquire lui étant acquis.
+                    {lang === "fr"
+                      ? "Il est résiliable à tout moment, tout paiement fait à la société General Esquire lui étant acquis."
+                      : "Cancellable at any time; payments already made to General Esquire are non-refundable."}
                   </p>
                 </div>
               </div>
@@ -611,7 +685,7 @@ export default function EntrepreneurPage() {
               <div className="relative w-full min-h-[260px] sm:min-h-[300px] flex-1 mt-6 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg bg-[#0d0f0d]">
                 <Image
                   src="/images/case1.png"
-                  alt="Abonnement Mensuel — General Esquire"
+                  alt={lang === "fr" ? "Abonnement Mensuel — General Esquire" : "Monthly Subscription — General Esquire"}
                   fill
                   sizes="(max-width: 768px) 100vw, 33vw"
                   className="object-cover object-center filter brightness-95 contrast-105 group-hover:scale-105 transition-transform duration-700"
@@ -627,18 +701,22 @@ export default function EntrepreneurPage() {
                   🤝
                 </div>
                 <h3 className="font-cinzel text-lg text-[#E9D18F] font-bold uppercase tracking-widest mb-1">
-                  Prestation Ponctuelle
+                  {lang === "fr" ? "Prestation Ponctuelle" : "One-Off Service"}
                 </h3>
                 <p className="font-cinzel text-3xl text-white font-bold my-3">
-                  Gré à gré
+                  {lang === "fr" ? "Gré à gré" : "Custom Quote"}
                 </p>
                 <div className="h-[1px] w-full bg-[#C5A059]/20 my-4" />
                 <div className="space-y-4 font-cormorant text-lg text-[#EDE4CF]/90 leading-relaxed">
                   <p>
-                    Il est également possible de solliciter nos services sur une base ponctuelle.
+                    {lang === "fr"
+                      ? "Il est également possible de solliciter nos services sur une base ponctuelle."
+                      : "You may also engage our legal services on an ad-hoc, per-matter basis."}
                   </p>
                   <p className="text-base text-[#EDE4CF]/85 border-l-2 border-[#C5A059]/50 pl-3">
-                    Dans cette hypothèse, la facturation fait l’objet d’une convention de gré à gré, qui prend en considération les données propres à la préoccupation que vous nous soumettez, ainsi que notre disponibilité.
+                    {lang === "fr"
+                      ? "Dans cette hypothèse, la facturation fait l’objet d’une convention de gré à gré, qui prend en considération les données propres à la préoccupation que vous nous soumettez, ainsi que notre disponibilité."
+                      : "In this case, fees are mutually agreed upon in a tailored agreement, reflecting the specific parameters of your situation and our availability."}
                   </p>
                 </div>
               </div>
@@ -647,7 +725,7 @@ export default function EntrepreneurPage() {
               <div className="relative w-full min-h-[260px] sm:min-h-[300px] flex-1 mt-6 rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-lg bg-[#0d0f0d]">
                 <Image
                   src="/images/case2.png"
-                  alt="Prestation Ponctuelle — General Esquire"
+                  alt={lang === "fr" ? "Prestation Ponctuelle — General Esquire" : "One-Off Service — General Esquire"}
                   fill
                   sizes="(max-width: 768px) 100vw, 33vw"
                   className="object-cover object-[center_12%] filter brightness-95 contrast-105 group-hover:scale-105 transition-transform duration-700"

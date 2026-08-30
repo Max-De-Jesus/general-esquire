@@ -13,6 +13,8 @@ export const translations = {
   nav_professionnel: { fr: "Professionnel du Droit", en: "Legal Professionals" },
   nav_repas: { fr: "Repas & Gastronomie", en: "Dining & Gastronomy" },
   nav_services: { fr: "SERVICES", en: "SERVICES" },
+  nav_review: { fr: "Donnez votre avis", en: "Leave a Review" },
+  nav_review_full: { fr: "Merci de bien vouloir donner votre avis", en: "Please kindly leave your review" },
 
   // ─── THEME & LANG ───
   theme_light: { fr: "Clair", en: "Light" },

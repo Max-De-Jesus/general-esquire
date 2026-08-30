@@ -541,7 +541,7 @@ export default function ConseilJuridiquePage() {
               >
                 formulaire
               </button>{" "}
-              ci-après, et nous prendrons rapidement contact avec vous.
+              ci-après  et nous prendrons rapidement contact avec vous.
             </>
           ) : (
             <>
@@ -560,7 +560,7 @@ export default function ConseilJuridiquePage() {
               >
                 form below
               </button>
-              , and we will contact you promptly.
+               and we will contact you promptly.
             </>
           )}
         </p>
