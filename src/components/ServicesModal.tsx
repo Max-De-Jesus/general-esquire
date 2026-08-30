@@ -102,14 +102,14 @@ export default function ServicesModal({ isOpen, onClose }: ServicesModalProps) {
         </button>
 
         {/* Logo Cheval Ailé (menu-panel__logo avec revealUp) */}
-        <div className="menu-panel__logo flex flex-col items-center mb-2 sm:mb-4 relative z-20">
-          <div className="relative w-48 h-48 sm:w-60 sm:h-60 md:w-72 md:h-72 mb-1 sm:mb-2 transition-transform duration-500 hover:scale-105">
+        <div className="menu-panel__logo flex flex-col items-center mb-1 sm:mb-3 relative z-20">
+          <div className="relative w-60 h-60 sm:w-80 sm:h-80 md:w-96 md:h-96 mb-0.5 sm:mb-1 transition-transform duration-500 hover:scale-105">
             <Image
               src="/images/cheval-aile.png"
               alt="Cheval ailé General Esquire"
               fill
               priority
-              className="object-contain filter drop-shadow-[0_10px_30px_rgba(0,0,0,0.85)] drop-shadow-[0_0_25px_rgba(233,209,143,0.35)]"
+              className="object-contain filter drop-shadow-[0_12px_36px_rgba(0,0,0,0.9)] drop-shadow-[0_0_30px_rgba(233,209,143,0.45)]"
             />
           </div>
         </div>
