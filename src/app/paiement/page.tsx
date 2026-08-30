@@ -441,19 +441,19 @@ export default function PaymentPage() {
 
             <div className="bg-black/40 border border-[#C5A059]/30 rounded-2xl p-4 max-w-md mx-auto mb-8 font-cinzel text-xs text-[#cabfa6] tracking-widest uppercase">
               <div className="flex justify-between mb-2">
-                <span>Réf. Transaction :</span>
+                <span>{lang === "fr" ? "Réf. Transaction :" : "Transaction Ref:"}</span>
                 <span className="text-[#E9D18F] font-bold">{transactionRef}</span>
               </div>
               <div className="flex justify-between mb-2">
-                <span>Moyen utilisé :</span>
+                <span>{lang === "fr" ? "Moyen utilisé :" : "Payment Method:"}</span>
                 <span>
                   {paymentMethod === "wero"
-                    ? "Wero (Paiement Instantané)"
-                    : "Virement Bancaire"}
+                    ? (lang === "fr" ? "Wero (Paiement Instantané)" : "Wero (Instant Payment)")
+                    : (lang === "fr" ? "Virement Bancaire" : "Bank Transfer")}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span>Statut :</span>
+                <span>{lang === "fr" ? "Statut :" : "Status:"}</span>
                 <span className={paymentMethod === "virement" ? "text-amber-400" : "text-emerald-400"}>
                   {paymentMethod === "virement"
                     ? (lang === "fr" ? "En attente de réception" : "Pending reception")
@@ -682,7 +682,7 @@ export default function PaymentPage() {
                           <span>🎯</span> {lang === "fr" ? "Plan de Paiement & Jeton Cocooning" : "Cocooning Payment Plan & Token"}
                         </span>
                         <span className="text-[10px] font-mono text-[#E9D18F] bg-[#131513] px-2.5 py-1 rounded-full border border-[#C5A059]/40 font-bold">
-                          Forfait Total : 1 500 €
+                          {lang === "fr" ? "Forfait Total : 1 500 €" : "Total Package: €1,500"}
                         </span>
                       </div>
 
@@ -701,9 +701,11 @@ export default function PaymentPage() {
                                 : "bg-black/30 border-purple-500/20 text-[#cabfa6] hover:text-white"
                             }`}
                           >
-                            <span className="block font-bold text-[#E9D18F]">✈️ Voyage de Janvier</span>
+                            <span className="block font-bold text-[#E9D18F]">
+                              {lang === "fr" ? "✈️ Voyage de Janvier" : "✈️ January Journey"}
+                            </span>
                             <span className="text-[10px] block font-cormorant mt-0.5 opacity-80">
-                              Inscriptions : Février à Septembre
+                              {lang === "fr" ? "Inscriptions : Février à Septembre" : "Registration: February to September"}
                             </span>
                           </button>
                           <button
@@ -715,9 +717,11 @@ export default function PaymentPage() {
                                 : "bg-black/30 border-purple-500/20 text-[#cabfa6] hover:text-white"
                             }`}
                           >
-                            <span className="block font-bold text-[#E9D18F]">✈️ Voyage de Juillet</span>
+                            <span className="block font-bold text-[#E9D18F]">
+                              {lang === "fr" ? "✈️ Voyage de Juillet" : "✈️ July Journey"}
+                            </span>
                             <span className="text-[10px] block font-cormorant mt-0.5 opacity-80">
-                              Inscriptions : Août à Mars
+                              {lang === "fr" ? "Inscriptions : Août à Mars" : "Registration: August to March"}
                             </span>
                           </button>
                         </div>
@@ -738,7 +742,7 @@ export default function PaymentPage() {
                                 : "bg-black/30 border-[#C5A059]/20 text-[#cabfa6]"
                             }`}
                           >
-                            <span>1x 1 500 € (Paiement Unique)</span>
+                            <span>{lang === "fr" ? "1x 1 500 € (Paiement Unique)" : "1x €1,500 (Lump Sum)"}</span>
                           </button>
                           <button
                             type="button"
@@ -749,7 +753,7 @@ export default function PaymentPage() {
                                 : "bg-black/30 border-purple-500/20 text-[#cabfa6]"
                             }`}
                           >
-                            <span>Paiement par Tranches (Jeton)</span>
+                            <span>{lang === "fr" ? "Paiement par Tranches (Jeton)" : "Installment Plan (Token)"}</span>
                           </button>
                         </div>
                       </div>
@@ -762,10 +766,12 @@ export default function PaymentPage() {
                           <div className="p-4 rounded-xl bg-black/50 border border-purple-500/30 space-y-3 animate-fadeIn">
                             <div className="flex items-center justify-between text-xs font-cinzel">
                               <span className="text-purple-300 font-bold">
-                                🎟️ Jeton & Échéancier Activé : {months} Mensualités
+                                {lang === "fr"
+                                  ? `🎟️ Jeton & Échéancier Activé : ${months} Mensualités`
+                                  : `🎟️ Token & Schedule Active: ${months} Installments`}
                               </span>
                               <span className="text-[#E9D18F] font-bold font-mono">
-                                {monthlyPrice} € / mois
+                                {monthlyPrice} € / {lang === "fr" ? "mois" : "mo"}
                               </span>
                             </div>
 
@@ -780,14 +786,18 @@ export default function PaymentPage() {
                                       : "bg-black/40 border-purple-500/20 text-[#cabfa6]"
                                   }`}
                                 >
-                                  <span className="block font-bold">Jeton #{i + 1}</span>
+                                  <span className="block font-bold">{lang === "fr" ? `Jeton #${i + 1}` : `Token #${i + 1}`}</span>
                                   <span className="block font-mono text-[9px]">{monthlyPrice} €</span>
                                 </div>
                               ))}
                             </div>
 
                             <p className="font-cormorant text-xs text-[#EDE4CF]/80 italic">
-                              * Le jeton calculé ci-dessus dépend du nombre de mois restant avant la fin des inscriptions ({cocooningSession === "janvier" ? "Septembre" : "Mars"}). Votre 1ère mensualité due aujourd&apos;hui est de <strong className="text-[#E9D18F]">{monthlyPrice} €</strong>.
+                              {lang === "fr" ? (
+                                <>* Le jeton calculé ci-dessus dépend du nombre de mois restant avant la fin des inscriptions ({cocooningSession === "janvier" ? "Septembre" : "Mars"}). Votre 1ère mensualité due aujourd&apos;hui est de <strong className="text-[#E9D18F]">{monthlyPrice} €</strong>.</>
+                              ) : (
+                                <>* The token calculated above is based on the months remaining until registration ends ({cocooningSession === "janvier" ? "September" : "March"}). Your 1st installment due today is <strong className="text-[#E9D18F]">{monthlyPrice} €</strong>.</>
+                              )}
                             </p>
                           </div>
                         );
@@ -1157,23 +1167,23 @@ export default function PaymentPage() {
                         {/* Coordonnées Wero */}
                         <div className="bg-black/40 border border-[#C5A059]/25 rounded-2xl p-5 space-y-3 font-cinzel text-xs text-[#cabfa6] tracking-wider uppercase">
                           <h4 className="text-[#E9D18F] font-bold border-b border-[#C5A059]/20 pb-2 flex items-center justify-between">
-                            <span>Coordonnées Wero</span>
-                            <span className="text-[10px] text-[#C5A059]">Compte Officiel</span>
+                            <span>{lang === "fr" ? "Coordonnées Wero" : "Wero Details"}</span>
+                            <span className="text-[10px] text-[#C5A059]">{lang === "fr" ? "Compte Officiel" : "Official Account"}</span>
                           </h4>
                           <div className="flex justify-between items-center py-1">
-                            <span>Identifiant Mobile :</span>
+                            <span>{lang === "fr" ? "Identifiant Mobile :" : "Mobile ID:"}</span>
                             <span className="text-white font-bold text-sm text-purple-300">+33 6 12 34 56 78</span>
                           </div>
                           <div className="flex justify-between items-center py-1">
-                            <span>Email Wero :</span>
+                            <span>{lang === "fr" ? "Email Wero :" : "Wero Email:"}</span>
                             <span className="text-white font-bold text-xs text-[#E9D18F]">generalesquire@proton.me</span>
                           </div>
                           <div className="flex justify-between items-center py-1 border-t border-[#C5A059]/15 pt-2">
-                            <span>Bénéficiaire :</span>
+                            <span>{lang === "fr" ? "Bénéficiaire :" : "Beneficiary:"}</span>
                             <span className="text-white font-bold">General Esquire SAS</span>
                           </div>
                           <div className="flex justify-between items-center py-1">
-                            <span>Montant à régler :</span>
+                            <span>{lang === "fr" ? "Montant à régler :" : "Amount to Pay:"}</span>
                             <span className="text-[#E9D18F] font-extrabold text-sm">{calculatedAmount.toLocaleString("fr-FR")} €</span>
                           </div>
                         </div>
@@ -1199,7 +1209,7 @@ export default function PaymentPage() {
                             </svg>
                           </div>
                           <span className="font-cinzel text-[10px] text-purple-300 font-bold uppercase tracking-widest">
-                            Scannez depuis votre App Banque
+                            {lang === "fr" ? "Scannez depuis votre App Banque" : "Scan from your Banking App"}
                           </span>
                         </div>
                       </div>
@@ -1213,7 +1223,7 @@ export default function PaymentPage() {
                           <input
                             type="text"
                             required
-                            placeholder="ex: +33 6 98 76 54 32 ou Réf. Wero"
+                            placeholder={lang === "fr" ? "ex: +33 6 98 76 54 32 ou Réf. Wero" : "e.g. +33 6 98 76 54 32 or Wero Ref"}
                             value={weroRef}
                             onChange={(e) => setWeroRef(e.target.value)}
                             className={inputClass}
@@ -1238,7 +1248,7 @@ export default function PaymentPage() {
                     <div className="space-y-5 animate-fadeIn">
                       <div className="bg-[#131513] border border-[#C5A059]/30 rounded-2xl p-5 md:p-6 space-y-4 shadow-xl">
                         <h4 className="font-cinzel text-xs text-[#E9D18F] font-bold uppercase tracking-widest border-b border-[#C5A059]/20 pb-2 flex items-center justify-between">
-                          <span>Coordonnées Bancaires Officielles</span>
+                          <span>{lang === "fr" ? "Coordonnées Bancaires Officielles" : "Official Banking Details"}</span>
                           <span className="text-[10px] text-[#C5A059] bg-[#C5A059]/10 px-2 py-0.5 rounded-full border border-[#C5A059]/30">RIB / IBAN</span>
                         </h4>
 
@@ -1246,7 +1256,7 @@ export default function PaymentPage() {
                           {/* Titulaire du compte */}
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl bg-black/40 border border-[#C5A059]/15">
                             <div>
-                              <span className="text-[#cabfa6] text-[10px] uppercase block">Titulaire du compte :</span>
+                              <span className="text-[#cabfa6] text-[10px] uppercase block">{lang === "fr" ? "Titulaire du compte :" : "Account Holder:"}</span>
                               <span className="text-white font-bold text-sm">GENERAL ESQUIRE</span>
                             </div>
                             <button
@@ -1254,7 +1264,7 @@ export default function PaymentPage() {
                               onClick={() => handleCopyText("GENERAL ESQUIRE", "titulaire")}
                               className="self-start sm:self-center px-3 py-1.5 rounded-lg bg-[#C5A059]/10 hover:bg-[#C5A059]/20 border border-[#C5A059]/40 text-[#E9D18F] text-[10px] font-bold uppercase transition-all cursor-pointer flex items-center gap-1.5"
                             >
-                              {copiedField === "titulaire" ? "✓ Copié !" : "📋 Copier"}
+                              {copiedField === "titulaire" ? (lang === "fr" ? "✓ Copié !" : "✓ Copied!") : (lang === "fr" ? "📋 Copier" : "📋 Copy")}
                             </button>
                           </div>
 
@@ -1269,7 +1279,7 @@ export default function PaymentPage() {
                               onClick={() => handleCopyText("FR7617418000010001209487411", "iban")}
                               className="self-start sm:self-center px-3 py-1.5 rounded-lg bg-[#C5A059]/10 hover:bg-[#C5A059]/20 border border-[#C5A059]/40 text-[#E9D18F] text-[10px] font-bold uppercase transition-all cursor-pointer flex items-center gap-1.5"
                             >
-                              {copiedField === "iban" ? "✓ Copié !" : "📋 Copier"}
+                              {copiedField === "iban" ? (lang === "fr" ? "✓ Copié !" : "✓ Copied!") : (lang === "fr" ? "📋 Copier" : "📋 Copy")}
                             </button>
                           </div>
 
@@ -1284,25 +1294,25 @@ export default function PaymentPage() {
                               onClick={() => handleCopyText("SHNNFR22XXX", "bic")}
                               className="self-start sm:self-center px-3 py-1.5 rounded-lg bg-[#C5A059]/10 hover:bg-[#C5A059]/20 border border-[#C5A059]/40 text-[#E9D18F] text-[10px] font-bold uppercase transition-all cursor-pointer flex items-center gap-1.5"
                             >
-                              {copiedField === "bic" ? "✓ Copié !" : "📋 Copier"}
+                              {copiedField === "bic" ? (lang === "fr" ? "✓ Copié !" : "✓ Copied!") : (lang === "fr" ? "📋 Copier" : "📋 Copy")}
                             </button>
                           </div>
 
                           {/* Banque Partenaire */}
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl bg-black/40 border border-[#C5A059]/15">
                             <div>
-                              <span className="text-[#cabfa6] text-[10px] uppercase block">Banque Partenaire :</span>
+                              <span className="text-[#cabfa6] text-[10px] uppercase block">{lang === "fr" ? "Banque Partenaire :" : "Partner Bank:"}</span>
                               <span className="text-white font-bold text-sm">SHINE</span>
                             </div>
                             <span className="text-[10px] text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded-full border border-emerald-500/30">
-                              ✓ Compte Professionnel Vérifié
+                              {lang === "fr" ? "✓ Compte Professionnel Vérifié" : "✓ Verified Business Account"}
                             </span>
                           </div>
 
                           {/* Motif / Référence */}
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl bg-black/40 border border-[#C5A059]/15">
                             <div>
-                              <span className="text-[#cabfa6] text-[10px] uppercase block">Motif / Libellé de virement :</span>
+                              <span className="text-[#cabfa6] text-[10px] uppercase block">{lang === "fr" ? "Motif / Libellé de virement :" : "Payment Reference:"}</span>
                               <span className="text-[#E9D18F] font-extrabold text-sm tracking-widest">
                                 CAB-ESQ-{fullName.split(" ")[0]?.toUpperCase() || "JUR"}
                               </span>
@@ -1312,7 +1322,7 @@ export default function PaymentPage() {
                               onClick={() => handleCopyText(`CAB-ESQ-${fullName.split(" ")[0]?.toUpperCase() || "JUR"}`, "ref")}
                               className="self-start sm:self-center px-3 py-1.5 rounded-lg bg-[#C5A059]/10 hover:bg-[#C5A059]/20 border border-[#C5A059]/40 text-[#E9D18F] text-[10px] font-bold uppercase transition-all cursor-pointer flex items-center gap-1.5"
                             >
-                              {copiedField === "ref" ? "✓ Copié !" : "📋 Copier"}
+                              {copiedField === "ref" ? (lang === "fr" ? "✓ Copié !" : "✓ Copied!") : (lang === "fr" ? "📋 Copier" : "📋 Copy")}
                             </button>
                           </div>
                         </div>
@@ -1331,10 +1341,12 @@ export default function PaymentPage() {
                         {/* Virement International Notice */}
                         <div className="bg-black/30 border border-[#C5A059]/20 rounded-xl p-3.5 font-cormorant text-xs text-[#cabfa6] space-y-1">
                           <span className="font-cinzel text-[10px] text-[#C5A059] font-bold uppercase tracking-wider block">
-                            🌐 Virement International (Réseau Swift)
+                            {lang === "fr" ? "🌐 Virement International (Réseau Swift)" : "🌐 International Wire Transfer (Swift Network)"}
                           </span>
                           <p>
-                            Pour recevoir ou effectuer un virement utilisant le réseau Swift, le BIC de notre banque partenaire est <strong className="text-white">SHNNFR22XXX</strong>.
+                            {lang === "fr"
+                              ? <>Pour recevoir ou effectuer un virement utilisant le réseau Swift, le BIC de notre banque partenaire est <strong className="text-white">SHNNFR22XXX</strong>.</>
+                              : <>To send or receive an international wire transfer via the Swift network, our partner bank BIC is <strong className="text-white">SHNNFR22XXX</strong>.</>}
                           </p>
                         </div>
                       </div>
