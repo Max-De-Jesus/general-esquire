@@ -401,4 +401,58 @@ input, textarea, select {
   user-select: text !important;
 }
 
+/* ─── THÈME SUR-MESURE ADYEN DROP-IN (GENERAL ESQUIRE DARK & GOLD) ─── */
+.adyen-checkout__payment-method {
+  background-color: #131513 !important;
+  border: 1px solid rgba(197, 160, 89, 0.3) !important;
+  border-radius: 1rem !important;
+  color: #EDE4CF !important;
+  margin-bottom: 0.75rem !important;
+  transition: all 0.2s ease !important;
+}
+
+.adyen-checkout__payment-method--selected {
+  border-color: #E9D18F !important;
+  box-shadow: 0 0 15px rgba(197, 160, 89, 0.25) !important;
+}
+
+.adyen-checkout__payment-method__header {
+  color: #E9D18F !important;
+  font-family: 'Cinzel', serif !important;
+  font-size: 0.85rem !important;
+  letter-spacing: 0.05em !important;
+}
+
+.adyen-checkout__input {
+  background-color: #1a1c1a !important;
+  border: 1px solid rgba(197, 160, 89, 0.4) !important;
+  color: #ffffff !important;
+  border-radius: 0.75rem !important;
+}
+
+.adyen-checkout__input:focus {
+  border-color: #E9D18F !important;
+  box-shadow: 0 0 10px rgba(233, 209, 143, 0.2) !important;
+}
+
+.adyen-checkout__label__text {
+  color: #C5A059 !important;
+  font-family: 'Cinzel', serif !important;
+  font-size: 0.7rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.1em !important;
+}
+
+.adyen-checkout__button--pay {
+  background: linear-gradient(to right, #C5A059, #E9D18F, #C5A059) !important;
+  color: #000000 !important;
+  font-family: 'Cinzel', serif !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.1em !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 0 20px rgba(197, 160, 89, 0.4) !important;
+  border: none !important;
+}
+
 
