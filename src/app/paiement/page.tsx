@@ -151,22 +151,6 @@ export default function PaymentPage() {
     }
   };
 
-  const isCocooningService = selectedServiceId === "chrys-stay";
-  const isConseilJuridiqueService = selectedServiceId.startsWith("cj-");
-  const isSubscriptionService =
-    !isCocooningService &&
-    !isConseilJuridiqueService &&
-    (selectedServiceId.includes("annual") ||
-      selectedServiceId.includes("monthly") ||
-      selectedServiceId.includes("quarterly"));
-
-  const getSubscriptionFrequency = () => {
-    if (selectedServiceId.includes("monthly")) return lang === "fr" ? "Mensuel (1 mois)" : "Monthly (1 month)";
-    if (selectedServiceId.includes("quarterly")) return lang === "fr" ? "Trimestriel (3 mois)" : "Quarterly (3 months)";
-    if (selectedServiceId.includes("annual")) return lang === "fr" ? "Annuel (12 mois)" : "Annual (12 months)";
-    return lang === "fr" ? "Récurrent" : "Recurring";
-  };
-
   /* ── Auto-fill from auth ── */
   useEffect(() => {
     if (user) {
@@ -248,6 +232,31 @@ export default function PaymentPage() {
       return type;
     }
     return type;
+  };
+
+  const isSubscriptionService =
+    selectedServiceId === "ent-monthly" ||
+    selectedServiceId === "ent-annual" ||
+    selectedServiceId === "pro-quarterly" ||
+    selectedServiceId === "pro-annual" ||
+    selectedServiceId === "cj-monthly" ||
+    (selectedServiceId === "chrys-stay" && cocooningOption === "tranches");
+
+  const getSubscriptionFrequency = () => {
+    if (selectedServiceId === "ent-annual" || selectedServiceId === "pro-annual") {
+      return "Annuel";
+    }
+    if (selectedServiceId === "pro-quarterly") {
+      return "Trimestriel";
+    }
+    return "Mensuel";
+  };
+
+  const getSubscriptionTimes = () => {
+    if (selectedServiceId === "chrys-stay" && cocooningOption === "tranches") {
+      return getCocooningInstallmentMonths();
+    }
+    return undefined;
   };
 
   /* ── Step validation ── */
@@ -1185,6 +1194,7 @@ export default function PaymentPage() {
                       profileType={profileType}
                       isSubscriptionService={isSubscriptionService}
                       frequency={getSubscriptionFrequency()}
+                      times={getSubscriptionTimes()}
                       lang={lang}
                       onPaymentSuccess={handleMollieSuccess}
                       onPaymentError={(err) => setPaymentError(err)}
