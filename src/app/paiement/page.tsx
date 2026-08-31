@@ -8,6 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
 import EmployerPaymentGuide from "@/components/EmployerPaymentGuide";
 import { generateRIB_PDF } from "@/utils/generateFormPDF";
+import MollieCheckoutComponent from "@/components/MollieCheckout";
 
 /* ══════════════════════════════════════════════════════════════════
    SERVICE PRESETS — Tarifs & prestations par profil client
@@ -91,7 +92,7 @@ export default function PaymentPage() {
   const [cocooningSession, setCocooningSession] = useState<"janvier" | "juillet">("janvier");
 
   /* ── Payment UI state ── */
-  const [paymentMethod, setPaymentMethod] = useState<"virement" | "wero">("virement");
+  const [paymentMethod, setPaymentMethod] = useState<"mollie" | "virement" | "wero">("mollie");
   const [weroRef, setWeroRef] = useState("");
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -99,6 +100,47 @@ export default function PaymentPage() {
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [transactionRef, setTransactionRef] = useState("");
   const [calculatedAmount, setCalculatedAmount] = useState(100);
+
+  /* ── Vérification automatique du retour après paiement Mollie ── */
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const mollieId = urlParams.get("mollie_id");
+      const returnStatus = urlParams.get("status");
+
+      if (mollieId && (returnStatus === "return" || returnStatus === "simulated")) {
+        setIsProcessing(true);
+        supabase.functions
+          .invoke("mollie-status", {
+            body: { id: mollieId },
+          })
+          .then(({ data, error }) => {
+            if (!error && (data?.isPaid || data?.status === "paid")) {
+              setTransactionRef(mollieId);
+              setPaymentSuccess(true);
+            } else if (data?.status === "canceled" || data?.status === "expired") {
+              setPaymentError(
+                lang === "fr"
+                  ? "La transaction a été annulée ou a expiré."
+                  : "The transaction was canceled or expired."
+              );
+            } else if (returnStatus === "simulated") {
+              setTransactionRef(mollieId);
+              setPaymentSuccess(true);
+            }
+          })
+          .catch((err) => {
+            console.warn("Mollie return verify notice:", err);
+            if (returnStatus === "simulated") {
+              setTransactionRef(mollieId);
+              setPaymentSuccess(true);
+            }
+          })
+          .finally(() => setIsProcessing(false));
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleCopyText = (text: string, label: string) => {
     try {
@@ -315,6 +357,11 @@ export default function PaymentPage() {
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  /* ── Mollie handler ── */
+  const handleMollieSuccess = async (details: { reference: string; pspReference?: string; method?: string }) => {
+    await submitTransaction(details.method || "Mollie (Carte Bancaire / Apple Pay)", "Payé");
   };
 
   /* ── Virement handler ── */
@@ -1076,32 +1123,63 @@ export default function PaymentPage() {
                     </span>
                   </div>
 
-                  {/* Payment method selector tabs (Virement vs Wero) */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* Tab Virement Bancaire */}
+                  {/* Payment method selector tabs (Mollie vs Virement vs Wero) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {/* Tab Mollie (Carte Bancaire, Apple Pay & Google Pay) */}
                     <button
                       type="button"
-                      onClick={() => setPaymentMethod("virement")}
-                      className={`relative group overflow-hidden rounded-2xl p-5 text-left transition-all duration-300 border-2 cursor-pointer ${
-                        paymentMethod === "virement"
-                          ? "bg-gradient-to-br from-[#1c1914] via-[#131513] to-[#1a1712] border-[#C5A059] shadow-[0_0_30px_rgba(197,160,89,0.3)]"
+                      onClick={() => setPaymentMethod("mollie")}
+                      className={`relative group overflow-hidden rounded-2xl p-4 sm:p-5 text-left transition-all duration-300 border-2 cursor-pointer ${
+                        paymentMethod === "mollie"
+                          ? "bg-gradient-to-br from-[#1b1e1b] via-[#141714] to-[#1a1712] border-[#C5A059] shadow-[0_0_30px_rgba(197,160,89,0.35)]"
                           : "bg-[#131513]/60 border-[#C5A059]/25 hover:border-[#C5A059]/60 hover:bg-[#1a1c1a]"
                       }`}
                     >
-                      <div className="flex items-center gap-3 mb-2">
-                        <span className="text-2xl">🏛️</span>
+                      <div className="flex items-center gap-2.5 mb-2">
+                        <span className="text-2xl">💳</span>
                         <div>
-                          <span className="font-cinzel text-sm font-bold text-[#E9D18F] block uppercase tracking-wider">
-                            {lang === "fr" ? "Virement Bancaire" : "Bank Transfer"}
+                          <span className="font-cinzel text-xs sm:text-sm font-bold text-[#E9D18F] block uppercase tracking-wider">
+                            {lang === "fr" ? "Carte / Mollie" : "Card / Mollie"}
                           </span>
-                          <span className="text-[10px] font-cinzel text-[#C5A059] tracking-widest uppercase">
-                            SEPA & International
+                          <span className="text-[9px] font-cinzel text-emerald-400 tracking-widest uppercase">
+                            CB • Apple Pay • 3DS2
                           </span>
                         </div>
                       </div>
                       <p className="font-cormorant text-xs text-[#cabfa6] leading-relaxed">
                         {lang === "fr"
-                          ? "Téléchargez le RIB officiel et effectuez votre virement depuis votre banque."
+                          ? "Règlement sécurisé immédiat par carte bancaire ou Apple Pay via Mollie."
+                          : "Instant secure card or Apple Pay payment powered by Mollie."}
+                      </p>
+                      {paymentMethod === "mollie" && (
+                        <div className="absolute top-3 right-3 w-2.5 h-2.5 rounded-full bg-[#C5A059] shadow-[0_0_8px_#C5A059]" />
+                      )}
+                    </button>
+
+                    {/* Tab Virement Bancaire */}
+                    <button
+                      type="button"
+                      onClick={() => setPaymentMethod("virement")}
+                      className={`relative group overflow-hidden rounded-2xl p-4 sm:p-5 text-left transition-all duration-300 border-2 cursor-pointer ${
+                        paymentMethod === "virement"
+                          ? "bg-gradient-to-br from-[#1c1914] via-[#131513] to-[#1a1712] border-[#C5A059] shadow-[0_0_30px_rgba(197,160,89,0.3)]"
+                          : "bg-[#131513]/60 border-[#C5A059]/25 hover:border-[#C5A059]/60 hover:bg-[#1a1c1a]"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5 mb-2">
+                        <span className="text-2xl">🏛️</span>
+                        <div>
+                          <span className="font-cinzel text-xs sm:text-sm font-bold text-[#E9D18F] block uppercase tracking-wider">
+                            {lang === "fr" ? "Virement Bancaire" : "Bank Transfer"}
+                          </span>
+                          <span className="text-[9px] font-cinzel text-[#C5A059] tracking-widest uppercase">
+                            SEPA & Swift
+                          </span>
+                        </div>
+                      </div>
+                      <p className="font-cormorant text-xs text-[#cabfa6] leading-relaxed">
+                        {lang === "fr"
+                          ? "Téléchargez le RIB officiel et effectuez votre virement bancaire."
                           : "Download the official bank details and transfer from your bank account."}
                       </p>
                       {paymentMethod === "virement" && (
@@ -1113,26 +1191,26 @@ export default function PaymentPage() {
                     <button
                       type="button"
                       onClick={() => setPaymentMethod("wero")}
-                      className={`relative group overflow-hidden rounded-2xl p-5 text-left transition-all duration-300 border-2 cursor-pointer ${
+                      className={`relative group overflow-hidden rounded-2xl p-4 sm:p-5 text-left transition-all duration-300 border-2 cursor-pointer ${
                         paymentMethod === "wero"
                           ? "bg-gradient-to-br from-[#170e2b] via-[#1f153a] to-[#131513] border-purple-500/80 shadow-[0_0_30px_rgba(168,85,247,0.3)]"
                           : "bg-[#131513]/60 border-purple-500/25 hover:border-purple-500/60 hover:bg-[#1a1c1a]"
                       }`}
                     >
-                      <div className="flex items-center gap-3 mb-2">
+                      <div className="flex items-center gap-2.5 mb-2">
                         <span className="text-2xl">⚡</span>
                         <div>
-                          <span className="font-cinzel text-sm font-bold text-purple-300 block uppercase tracking-wider">
+                          <span className="font-cinzel text-xs sm:text-sm font-bold text-purple-300 block uppercase tracking-wider">
                             Wero
                           </span>
-                          <span className="text-[10px] font-cinzel text-emerald-400 tracking-widest uppercase">
+                          <span className="text-[9px] font-cinzel text-emerald-400 tracking-widest uppercase">
                             Instantané & Sans Frais
                           </span>
                         </div>
                       </div>
                       <p className="font-cormorant text-xs text-[#cabfa6] leading-relaxed">
                         {lang === "fr"
-                          ? "Paiement direct depuis votre application bancaire (BNP, SG, CA, LCL, etc.)."
+                          ? "Paiement direct depuis votre application bancaire (BNP, SG, CA, etc.)."
                           : "Instant payment from your mobile banking app."}
                       </p>
                       {paymentMethod === "wero" && (
@@ -1140,6 +1218,23 @@ export default function PaymentPage() {
                       )}
                     </button>
                   </div>
+
+                  {/* ── Mollie Gateway (Cartes Bancaires, Apple Pay, Google Pay, SEPA) ── */}
+                  {paymentMethod === "mollie" && (
+                    <MollieCheckoutComponent
+                      amount={calculatedAmount}
+                      serviceName={getSelectedServiceText()}
+                      clientName={fullName || "Client General Esquire"}
+                      clientEmail={email}
+                      clientPhone={phone}
+                      profileType={profileType}
+                      isSubscriptionService={isSubscriptionService}
+                      frequency={getSubscriptionFrequency()}
+                      lang={lang}
+                      onPaymentSuccess={handleMollieSuccess}
+                      onPaymentError={(err) => setPaymentError(err)}
+                    />
+                  )}
 
                   {/* ── Wero (Paiement Instantané Européen) ── */}
                   {paymentMethod === "wero" && (

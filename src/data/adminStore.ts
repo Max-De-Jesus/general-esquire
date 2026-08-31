@@ -22,7 +22,7 @@ export interface PaymentItem {
   currency: string;
   date: string;
   status: "Payé" | "En attente" | "Remboursé";
-  paymentMethod: "Carte Bancaire" | "Virement" | "PayPal";
+  paymentMethod: "Carte Bancaire" | "Virement" | "PayPal" | "Mollie" | "Adyen" | "Wero" | string;
 }
 
 export interface ClientItem {

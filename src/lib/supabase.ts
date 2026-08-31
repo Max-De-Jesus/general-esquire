@@ -52,8 +52,8 @@ export interface Paiement {
   service: string;
   amount: number;
   currency: string;
-  status: "Paye" | "En attente" | "Rembourse" | "Annule";
-  payment_method: "Carte Bancaire" | "Virement" | "PayPal" | "Especes" | "Cheque";
+  status: "Paye" | "En attente" | "Rembourse" | "Annule" | "Payé";
+  payment_method: "Carte Bancaire" | "Virement" | "PayPal" | "Mollie" | "Adyen" | "Wero" | "Especes" | "Cheque" | string;
   notes?: string | null;
   paid_at?: string | null;
   created_at: string;
