@@ -12,6 +12,7 @@ interface MollieCheckoutProps {
   profileType?: string;
   isSubscriptionService?: boolean;
   frequency?: string;
+  times?: number;
   lang?: "fr" | "en";
   onPaymentSuccess?: (details: {
     reference: string;
@@ -30,6 +31,7 @@ export default function MollieCheckoutComponent({
   profileType = "Particulier",
   isSubscriptionService = false,
   frequency,
+  times,
   lang = "fr",
   onPaymentSuccess,
   onPaymentError,
@@ -57,12 +59,20 @@ export default function MollieCheckoutComponent({
           profileType,
           isSubscriptionService,
           frequency,
+          times,
           origin,
         },
       });
 
       if (data && data.checkoutUrl && !data.isMock) {
-        window.location.href = data.checkoutUrl;
+        // Ouverture du guichet sécurisé dans un NOUVEL ONGLET
+        const popup = window.open(data.checkoutUrl, "_blank", "noopener,noreferrer");
+        if (!popup || popup.closed || typeof popup.closed === "undefined") {
+          // Fallback si le navigateur bloque l'ouverture automatique
+          window.location.href = data.checkoutUrl;
+        } else {
+          setIsRedirecting(false);
+        }
         return;
       }
 
@@ -86,7 +96,8 @@ export default function MollieCheckoutComponent({
       }
 
       // Redirection fallback
-      window.location.href = data.checkoutUrl;
+      window.open(data.checkoutUrl, "_blank", "noopener,noreferrer");
+      setIsRedirecting(false);
     } catch (err: any) {
       console.error("Mollie payment launch error:", err);
       const msg =
