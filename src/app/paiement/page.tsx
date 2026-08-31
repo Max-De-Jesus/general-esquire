@@ -92,8 +92,7 @@ export default function PaymentPage() {
   const [cocooningSession, setCocooningSession] = useState<"janvier" | "juillet">("janvier");
 
   /* ── Payment UI state ── */
-  const [paymentMethod, setPaymentMethod] = useState<"mollie" | "virement" | "wero">("mollie");
-  const [weroRef, setWeroRef] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<"mollie" | "virement">("mollie");
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
@@ -369,19 +368,6 @@ export default function PaymentPage() {
     await submitTransaction("Virement", "En attente");
   };
 
-  /* ── Wero handler ── */
-  const handleWeroSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!weroRef.trim()) {
-      alert(lang === "fr" ? "Veuillez préciser le numéro de téléphone ou la référence de votre virement Wero." : "Please specify your Wero phone or reference.");
-      return;
-    }
-    setIsProcessing(true);
-    setTimeout(async () => {
-      await submitTransaction(`Wero (Paiement Instantané - Réf: ${weroRef.trim()})`, "Payé");
-    }, 1500);
-  };
-
   /* ══════════════════════════════════════════════════════════════════
      STYLE CONSTANTS
      ══════════════════════════════════════════════════════════════════ */
@@ -494,8 +480,8 @@ export default function PaymentPage() {
               <div className="flex justify-between mb-2">
                 <span>{lang === "fr" ? "Moyen utilisé :" : "Payment Method:"}</span>
                 <span>
-                  {paymentMethod === "wero"
-                    ? (lang === "fr" ? "Wero (Paiement Instantané)" : "Wero (Instant Payment)")
+                  {paymentMethod === "mollie"
+                    ? (lang === "fr" ? "Carte Bancaire / Apple Pay (Mollie)" : "Credit Card / Apple Pay (Mollie)")
                     : (lang === "fr" ? "Virement Bancaire" : "Bank Transfer")}
                 </span>
               </div>
@@ -1123,8 +1109,8 @@ export default function PaymentPage() {
                     </span>
                   </div>
 
-                  {/* Payment method selector tabs (Mollie vs Virement vs Wero) */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  {/* Payment method selector tabs (Mollie vs Virement) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* Tab Mollie (Carte Bancaire, Apple Pay & Google Pay) */}
                     <button
                       type="button"
@@ -1186,37 +1172,6 @@ export default function PaymentPage() {
                         <div className="absolute top-3 right-3 w-2.5 h-2.5 rounded-full bg-[#C5A059] shadow-[0_0_8px_#C5A059]" />
                       )}
                     </button>
-
-                    {/* Tab Wero */}
-                    <button
-                      type="button"
-                      onClick={() => setPaymentMethod("wero")}
-                      className={`relative group overflow-hidden rounded-2xl p-4 sm:p-5 text-left transition-all duration-300 border-2 cursor-pointer ${
-                        paymentMethod === "wero"
-                          ? "bg-gradient-to-br from-[#170e2b] via-[#1f153a] to-[#131513] border-purple-500/80 shadow-[0_0_30px_rgba(168,85,247,0.3)]"
-                          : "bg-[#131513]/60 border-purple-500/25 hover:border-purple-500/60 hover:bg-[#1a1c1a]"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5 mb-2">
-                        <span className="text-2xl">⚡</span>
-                        <div>
-                          <span className="font-cinzel text-xs sm:text-sm font-bold text-purple-300 block uppercase tracking-wider">
-                            Wero
-                          </span>
-                          <span className="text-[9px] font-cinzel text-emerald-400 tracking-widest uppercase">
-                            Instantané & Sans Frais
-                          </span>
-                        </div>
-                      </div>
-                      <p className="font-cormorant text-xs text-[#cabfa6] leading-relaxed">
-                        {lang === "fr"
-                          ? "Paiement direct depuis votre application bancaire (BNP, SG, CA, etc.)."
-                          : "Instant payment from your mobile banking app."}
-                      </p>
-                      {paymentMethod === "wero" && (
-                        <div className="absolute top-3 right-3 w-2.5 h-2.5 rounded-full bg-purple-400 shadow-[0_0_8px_#c084fc]" />
-                      )}
-                    </button>
                   </div>
 
                   {/* ── Mollie Gateway (Cartes Bancaires, Apple Pay, Google Pay, SEPA) ── */}
@@ -1234,108 +1189,6 @@ export default function PaymentPage() {
                       onPaymentSuccess={handleMollieSuccess}
                       onPaymentError={(err) => setPaymentError(err)}
                     />
-                  )}
-
-                  {/* ── Wero (Paiement Instantané Européen) ── */}
-                  {paymentMethod === "wero" && (
-                    <div className="space-y-5 animate-fadeIn">
-                      <div className="bg-gradient-to-r from-[#170e2b] via-[#1f153a] to-[#131513] border border-purple-500/40 rounded-2xl p-5 shadow-lg space-y-3">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <span className="text-xl">⚡</span>
-                            <span className="font-cinzel text-sm font-extrabold text-purple-300 uppercase tracking-widest">
-                              Wero — Paiement Instantané Européen
-                            </span>
-                          </div>
-                          <span className="text-[10px] font-cinzel font-bold text-emerald-400 bg-emerald-950/80 px-2.5 py-1 rounded-full border border-emerald-500/40">
-                            100% Gratuit & Instantané
-                          </span>
-                        </div>
-                        <p className="font-cormorant text-sm text-[#EDE4CF]/90 leading-relaxed">
-                          {lang === "fr"
-                            ? "Wero est le nouveau service européen de paiement mobile instantané (intégré à votre application bancaire : BNP Paribas, Crédit Agricole, Société Générale, LCL, Caisse d'Épargne, Banque Populaire, etc.)."
-                            : "Wero is the new European instant mobile payment service integrated directly into your banking app."}
-                        </p>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {/* Coordonnées Wero */}
-                        <div className="bg-black/40 border border-[#C5A059]/25 rounded-2xl p-5 space-y-3 font-cinzel text-xs text-[#cabfa6] tracking-wider uppercase">
-                          <h4 className="text-[#E9D18F] font-bold border-b border-[#C5A059]/20 pb-2 flex items-center justify-between">
-                            <span>{lang === "fr" ? "Coordonnées Wero" : "Wero Details"}</span>
-                            <span className="text-[10px] text-[#C5A059]">{lang === "fr" ? "Compte Officiel" : "Official Account"}</span>
-                          </h4>
-                          <div className="flex justify-between items-center py-1">
-                            <span>{lang === "fr" ? "Identifiant Mobile :" : "Mobile ID:"}</span>
-                            <span className="text-white font-bold text-sm text-purple-300">+33 6 12 34 56 78</span>
-                          </div>
-                          <div className="flex justify-between items-center py-1">
-                            <span>{lang === "fr" ? "Email Wero :" : "Wero Email:"}</span>
-                            <span className="text-white font-bold text-xs text-[#E9D18F]">generalesquire@proton.me</span>
-                          </div>
-                          <div className="flex justify-between items-center py-1 border-t border-[#C5A059]/15 pt-2">
-                            <span>{lang === "fr" ? "Bénéficiaire :" : "Beneficiary:"}</span>
-                            <span className="text-white font-bold">General Esquire SAS</span>
-                          </div>
-                          <div className="flex justify-between items-center py-1">
-                            <span>{lang === "fr" ? "Montant à régler :" : "Amount to Pay:"}</span>
-                            <span className="text-[#E9D18F] font-extrabold text-sm">{calculatedAmount.toLocaleString("fr-FR")} €</span>
-                          </div>
-                        </div>
-
-                        {/* Scan QR Code Wero */}
-                        <div className="bg-[#181325] border border-purple-500/30 rounded-2xl p-5 flex flex-col items-center justify-center text-center space-y-3">
-                          <div className="w-28 h-28 bg-white p-2 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.3)]">
-                            <svg viewBox="0 0 100 100" className="w-full h-full text-slate-900 fill-current">
-                              <rect x="0" y="0" width="30" height="30" />
-                              <rect x="5" y="5" width="20" height="20" fill="white" />
-                              <rect x="10" y="10" width="10" height="10" />
-                              <rect x="70" y="0" width="30" height="30" />
-                              <rect x="75" y="5" width="20" height="20" fill="white" />
-                              <rect x="80" y="10" width="10" height="10" />
-                              <rect x="0" y="70" width="30" height="30" />
-                              <rect x="5" y="75" width="20" height="20" fill="white" />
-                              <rect x="10" y="80" width="10" height="10" />
-                              <rect x="40" y="10" width="15" height="15" />
-                              <rect x="45" y="45" width="20" height="20" />
-                              <rect x="70" y="70" width="20" height="20" />
-                              <rect x="15" y="45" width="15" height="15" />
-                              <rect x="75" y="40" width="15" height="15" />
-                            </svg>
-                          </div>
-                          <span className="font-cinzel text-[10px] text-purple-300 font-bold uppercase tracking-widest">
-                            {lang === "fr" ? "Scannez depuis votre App Banque" : "Scan from your Banking App"}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Wero Form */}
-                      <form onSubmit={handleWeroSubmit} className="space-y-4 pt-2">
-                        <div>
-                          <label className={labelClass}>
-                            {lang === "fr" ? "Votre Téléphone ou Référence de Virement Wero *" : "Your Wero Phone or Reference *"}
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            placeholder={lang === "fr" ? "ex: +33 6 98 76 54 32 ou Réf. Wero" : "e.g. +33 6 98 76 54 32 or Wero Ref"}
-                            value={weroRef}
-                            onChange={(e) => setWeroRef(e.target.value)}
-                            className={inputClass}
-                          />
-                        </div>
-
-                        <button
-                          type="submit"
-                          disabled={isProcessing}
-                          className="w-full py-4 rounded-xl font-cinzel text-xs font-bold tracking-widest text-white bg-gradient-to-r from-purple-700 via-indigo-600 to-[#C5A059] hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] transition-all cursor-pointer uppercase disabled:opacity-50"
-                        >
-                          {isProcessing
-                            ? (lang === "fr" ? "Validation du paiement Wero..." : "Validating Wero payment...")
-                            : `${lang === "fr" ? "Confirmer le Règlement Wero" : "Confirm Wero Payment"} (${calculatedAmount.toLocaleString("fr-FR")} €)`}
-                        </button>
-                      </form>
-                    </div>
                   )}
 
                   {/* ── Virement Bancaire ── */}
