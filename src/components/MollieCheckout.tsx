@@ -61,26 +61,18 @@ export default function MollieCheckoutComponent({
         },
       });
 
+      if (data && data.checkoutUrl && !data.isMock) {
+        window.location.href = data.checkoutUrl;
+        return;
+      }
+
       if (error || !data || !data.checkoutUrl) {
-        // Fallback simulation immédiat si la fonction est en cours de déploiement
-        const mockId = `tr_mock_${Math.random().toString(36).substring(2, 12)}`;
-        if (onPaymentSuccess) {
-          setTimeout(() => {
-            setIsRedirecting(false);
-            onPaymentSuccess({
-              reference: mockId,
-              pspReference: `MOLLIE-${mockId}`,
-              method: "Mollie (Carte Bancaire / Apple Pay Sandbox)",
-            });
-          }, 1500);
-          return;
-        }
         throw new Error(
           data?.error || error?.message || "Impossible d'initialiser le paiement sécurisé Mollie."
         );
       }
 
-      // Si mode simulation directe
+      // Si mode simulation explicite
       if (data.isMock && onPaymentSuccess) {
         setTimeout(() => {
           setIsRedirecting(false);
@@ -93,7 +85,7 @@ export default function MollieCheckoutComponent({
         return;
       }
 
-      // Redirection vers le guichet sécurisé Mollie
+      // Redirection fallback
       window.location.href = data.checkoutUrl;
     } catch (err: any) {
       console.error("Mollie payment launch error:", err);
