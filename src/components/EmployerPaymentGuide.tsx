@@ -91,8 +91,8 @@ export default function EmployerPaymentGuide({ className = "" }: { className?: s
               </p>
               <p className="font-light text-sm sm:text-base text-[#E9D18F]">
                 {lang === "fr"
-                  ? "La somme à payer s’affichera dans le récapitulatif, et vous pourrez payer par virement bancaire sécurisé (avec RIB officiel à télécharger) ou par Wero."
-                  : "The total amount due is calculated in the summary, payable via secure bank wire transfer (with downloadable official RIB/IBAN) or Wero."}
+                  ? "La somme à payer s’affichera dans le récapitulatif, et vous pourrez payer par carte bancaire sécurisée (CB, Visa, Mastercard, Apple Pay) ou par virement bancaire (avec RIB officiel à télécharger)."
+                  : "The total amount due is calculated in the summary, payable via secure card (CB, Visa, Mastercard, Apple Pay) or bank wire transfer (with downloadable official RIB/IBAN)."}
               </p>
             </div>
 
