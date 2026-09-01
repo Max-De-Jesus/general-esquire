@@ -9,12 +9,12 @@ import TickerBanner from "@/components/TickerBanner";
 const CAR_PRO_SLIDES_FR = [
   {
     src: "/images/car_pro/pro0.png",
-    title: "Expertise Juridique & Rigueur",
+    title: "Rigueur d'Analyses & Expertise Juridique",
     desc: "Rédaction d'actes, requêtes, conclusions et mémoires devant toutes les juridictions.",
   },
   {
     src: "/images/car_pro/pro1.jpg",
-    title: "Rédaction d'Actes & Conclusions",
+    title: "Rédaction d'Actes en Demande & Défense",
     desc: "Une plume exigeante et documentée en soutien de votre activité d'avocat ou de juriste.",
   },
   {
@@ -24,7 +24,7 @@ const CAR_PRO_SLIDES_FR = [
   },
   {
     src: "/images/car_pro/pro3.jpg",
-    title: "Analyse Approfondie & Doctrine",
+    title: "Analyse Approfondie : Jurisprudence & Doctrine",
     desc: "Recherches jurisprudentielles ciblées et dossiers argumentés en fait et en droit.",
   },
   {
@@ -34,7 +34,7 @@ const CAR_PRO_SLIDES_FR = [
   },
   {
     src: "/images/car_pro/pro5.jpg",
-    title: "COMPÉTENCE & FORCE DU DROIT",
+    title: "Compétence Basée sur la Force du Droit",
     desc: "Réactivité, discrétion absolue et respect rigoureux de la déontologie.",
   },
   {
@@ -54,7 +54,7 @@ const CAR_PRO_SLIDES_FR = [
   },
   {
     src: "/images/car_pro/Avocate enceinte image.jpg",
-    title: "Conseil & Soutien Humain",
+    title: "Conseil Bienveillant & Soutien Humain",
     desc: "Un suivi bienveillant et rigoureux, adapté à chaque étape de votre vie professionnelle.",
   },
 ];
@@ -62,12 +62,12 @@ const CAR_PRO_SLIDES_FR = [
 const CAR_PRO_SLIDES_EN = [
   {
     src: "/images/car_pro/pro0.png",
-    title: "Legal Rigor & Drafting Mastery",
+    title: "Rigor of Analysis & Legal Expertise",
     desc: "Pleadings, motions, writs, and appellate briefs drafted for all court jurisdictions.",
   },
   {
     src: "/images/car_pro/pro1.jpg",
-    title: "Pleadings & Procedural Drafting",
+    title: "Drafting of Pleadings in Claim & Defense",
     desc: "High-caliber legal drafting supporting your daily law practice as counsel or attorney.",
   },
   {
@@ -77,7 +77,7 @@ const CAR_PRO_SLIDES_EN = [
   },
   {
     src: "/images/car_pro/pro3.jpg",
-    title: "Deep Legal Research & Precedents",
+    title: "In-Depth Analysis: Case Law & Doctrine",
     desc: "Targeted jurisprudence, doctrine analysis, and rigorous fact-and-law substantiation.",
   },
   {
@@ -87,7 +87,7 @@ const CAR_PRO_SLIDES_EN = [
   },
   {
     src: "/images/car_pro/pro5.jpg",
-    title: "LEGAL EXCELLENCE & DISCRETION",
+    title: "Competence Grounded in the Force of Law",
     desc: "Immediate responsiveness, absolute confidentiality, and strict adherence to ethics.",
   },
   {
@@ -107,7 +107,7 @@ const CAR_PRO_SLIDES_EN = [
   },
   {
     src: "/images/car_pro/Avocate enceinte image.jpg",
-    title: "Human Support for Fellow Lawyers",
+    title: "Compassionate Counsel & Human Support",
     desc: "Compassionate, reliable backup during health leaves, maternity, or heavy caseloads.",
   },
 ];
