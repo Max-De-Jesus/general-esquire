@@ -273,31 +273,33 @@ export default function DetentePage() {
   const { lang } = useLanguage();
 
   return (
-    <>
-      {/* ── 1. BANNER ──────────────────────────────────────────────────────── */}
-      <header className="w-full bg-[#131513] overflow-hidden">
-        <div className="w-full h-[clamp(180px,34vw,480px)] relative overflow-hidden">
-          <Image src="/images/Femmezen.jpg" alt="Bannière Détente & Sérénité — General Esquire" fill priority className="object-cover object-[center_40%] brightness-95 contrast-105 animate-kenburns" />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#131513]/80" />
-        </div>
-      </header>
+    <div className="relative min-h-screen text-[#EDE4CF] pb-12 md:pb-20 overflow-x-hidden">
+      {/* ─── IMAGE EN ARRIÈRE-PLAN VISIBLE ─── */}
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+        <Image
+          src="/images/arriere_plan/arriere-detente.png"
+          alt="Arrière-plan Détente & Bien-être — General Esquire"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center opacity-55 filter brightness-95 contrast-110"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1a1c1a]/75 via-[#1a1c1a]/60 to-[#1a1c1a]/85 backdrop-blur-[0.5px]" />
+      </div>
 
-      {/* ── 2. TICKER ──────────────────────────────────────────────────────── */}
-      <TickerBanner items={["GENERAL ESQUIRE", "SÉRÉNITÉ", "MASSAGES & SOINS", "CHRYSALIDES", "BIENVEILLANCE", "RÉSILIENCE"]} className="mb-10" />
+      <div className="relative z-10">
+        {/* ── 1. BANNER ──────────────────────────────────────────────────────── */}
+        <header className="w-full bg-[#131513] overflow-hidden">
+          <div className="w-full h-[clamp(180px,34vw,480px)] relative overflow-hidden">
+            <Image src="/images/Femmezen.jpg" alt="Bannière Détente & Sérénité — General Esquire" fill priority className="object-cover object-[center_40%] brightness-95 contrast-105 animate-kenburns" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#131513]/80" />
+          </div>
+        </header>
 
-      <div className="w-full px-4 sm:px-8 xl:px-16 py-4 md:py-8 relative">
-        {/* BG Arrière-plan thématique Détente */}
-        <div className="fixed inset-0 -z-20 overflow-hidden pointer-events-none">
-          <Image
-            src="/images/arrierre plan/arriere detente.png"
-            alt="Arrière-plan Détente & Bien-être — General Esquire"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-center opacity-25 filter brightness-90 contrast-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#1a1c1a]/90 via-[#1a1c1a]/75 to-[#1a1c1a]/95 backdrop-blur-[1px]" />
-        </div>
+        {/* ── 2. TICKER ──────────────────────────────────────────────────────── */}
+        <TickerBanner items={["GENERAL ESQUIRE", "SÉRÉNITÉ", "MASSAGES & SOINS", "CHRYSALIDES", "BIENVEILLANCE", "RÉSILIENCE"]} className="mb-10" />
+
+        <div className="w-full px-4 sm:px-8 xl:px-16 py-4 md:py-8 relative">
 
         {/* Breadcrumb */}
         <div className="flex items-center justify-between mb-10">
@@ -495,8 +497,8 @@ export default function DetentePage() {
             ← {lang === "fr" ? "RETOUR AU COCOONING TOURISTIQUE" : "BACK TO TOURIST COCOONING"}
           </Link>
         </div>
+        </div>
       </div>
-
-    </>
+    </div>
   );
 }
