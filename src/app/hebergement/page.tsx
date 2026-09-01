@@ -145,37 +145,38 @@ export default function HebergementPage() {
   const { t, lang } = useLanguage();
 
   return (
-    <div className="min-h-screen bg-[#1a1c1a] text-[#EDE4CF] pb-12 md:pb-20 relative overflow-x-hidden">
-      {/* ─── IMAGE EN ARRIÈRE-PLAN DE LA PAGE HÉBERGEMENT ─────────── */}
-      <div className="fixed inset-0 -z-20 overflow-hidden pointer-events-none">
+    <div className="relative min-h-screen text-[#EDE4CF] pb-12 md:pb-20 overflow-x-hidden">
+      {/* ─── IMAGE EN ARRIÈRE-PLAN VISIBLE ─── */}
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
         <Image
-          src="/images/arrierre plan/arriere hebergement.jpg"
+          src="/images/arriere_plan/arriere-hebergement.jpg"
           alt="Arrière-plan Hébergement Cocooning — General Esquire"
           fill
           priority
           sizes="100vw"
-          className="object-cover object-center opacity-30 filter brightness-85 contrast-105"
+          className="object-cover object-center opacity-55 filter brightness-95 contrast-110"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#1a1c1a]/90 via-[#1a1c1a]/75 to-[#1a1c1a]/95 backdrop-blur-[1px]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1a1c1a]/75 via-[#1a1c1a]/60 to-[#1a1c1a]/85 backdrop-blur-[0.5px]" />
       </div>
 
-      {/* ─── 1. EN-TÊTE : BANNIÈRE SEULE (PLEINE LARGEUR) ──────────────── */}
-      <header className="w-full bg-[#131513] overflow-hidden">
-        <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
-          <Image
-            src="/images/Welcome.jpg"
-            alt="Bannière Hébergement — General Esquire"
-            fill
-            priority
-            className="object-cover object-[center_40%] filter brightness-95 contrast-105 animate-kenburns"
-          />
-        </div>
-      </header>
+      <div className="relative z-10">
+        {/* ─── 1. EN-TÊTE : BANNIÈRE SEULE (PLEINE LARGEUR) ──────────────── */}
+        <header className="w-full bg-[#131513] overflow-hidden">
+          <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
+            <Image
+              src="/images/Welcome.jpg"
+              alt="Bannière Hébergement — General Esquire"
+              fill
+              priority
+              className="object-cover object-[center_40%] filter brightness-95 contrast-105 animate-kenburns"
+            />
+          </div>
+        </header>
 
-      {/* ─── 2. BANDE DÉROULANTE (TICKER ALL-WIDTH SOUS LA BANNIÈRE) ───────────────── */}
-      <TickerBanner className="mb-8" />
+        {/* ─── 2. BANDE DÉROULANTE (TICKER ALL-WIDTH SOUS LA BANNIÈRE) ───────────────── */}
+        <TickerBanner className="mb-8" />
 
-      <div className="max-w-5xl mx-auto px-6">
+        <div className="max-w-5xl mx-auto px-6">
         {/* Breadcrumb */}
         <div className="flex flex-wrap items-center gap-1.5 font-cinzel text-[10px] sm:text-xs text-[#C5A059] mb-6 uppercase tracking-wider">
           <Link href="/" className="hover:text-[#E9D18F] transition-colors">{t("nav_home")}</Link>
@@ -469,5 +470,6 @@ export default function HebergementPage() {
         </div>
       </div>
     </div>
+  </div>
   );
 }

@@ -221,35 +221,36 @@ export default function ProfessionnelPage() {
   const [activeModal, setActiveModal] = useState<"methode" | "tarifs" | null>(null);
 
   return (
-    <div className="min-h-screen bg-[#1A1C1A] text-[#EDE4CF] flex flex-col justify-between overflow-x-hidden relative">
-      {/* ─── IMAGE EN ARRIÈRE-PLAN DE LA PAGE PROFESSIONNEL DU DROIT ─────────── */}
-      <div className="fixed inset-0 -z-20 overflow-hidden pointer-events-none">
+    <div className="relative min-h-screen text-[#EDE4CF] flex flex-col justify-between overflow-x-hidden">
+      {/* ─── IMAGE EN ARRIÈRE-PLAN VISIBLE ─── */}
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
         <Image
-          src="/images/arrierre plan/arriiere professionelle du droit.jpg"
+          src="/images/arriere_plan/arriere-professionnel.jpg"
           alt="Arrière-plan Professionnels du Droit — General Esquire"
           fill
           priority
           sizes="100vw"
-          className="object-cover object-center opacity-30 filter brightness-85 contrast-105"
+          className="object-cover object-center opacity-50 filter brightness-90 contrast-110"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#1a1c1a]/90 via-[#1a1c1a]/75 to-[#1a1c1a]/95 backdrop-blur-[1px]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1a1c1a]/80 via-[#1a1c1a]/65 to-[#1a1c1a]/90 backdrop-blur-[0.5px]" />
       </div>
 
-      {/* ─── 1. BANNIÈRE EN-TÊTE (vs/1 style exact) ────────────────────── */}
-      <header className="w-full bg-[#131513] overflow-hidden">
-        <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
-          <Image
-            src="/images/blanc/bannernew.png"
-            alt="Bannière Professionnels du Droit — General Esquire"
-            fill
-            priority
-            className="object-cover object-[center_32%] filter brightness-95 contrast-105 animate-kenburns"
-          />
-        </div>
-      </header>
+      <div className="relative z-10 flex flex-col justify-between flex-grow">
+        {/* ─── 1. BANNIÈRE EN-TÊTE (vs/1 style exact) ────────────────────── */}
+        <header className="w-full bg-[#131513] overflow-hidden">
+          <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
+            <Image
+              src="/images/blanc/bannernew.png"
+              alt="Bannière Professionnels du Droit — General Esquire"
+              fill
+              priority
+              className="object-cover object-[center_32%] filter brightness-95 contrast-105 animate-kenburns"
+            />
+          </div>
+        </header>
 
-      {/* ─── 2. BANDE DÉROULANTE (TICKER ALL-WIDTH SOUS LA BANNIÈRE) ───────────────── */}
-      <TickerBanner className="mb-8" />
+        {/* ─── 2. BANDE DÉROULANTE (TICKER ALL-WIDTH SOUS LA BANNIÈRE) ───────────────── */}
+        <TickerBanner className="mb-8" />
 
       {/* ─── 3. CONTENU PRINCIPAL PROFESSIONNELS DU DROIT ──────────────── */}
       <main className="max-w-[840px] mx-auto px-4 sm:px-8 py-10 sm:py-16 flex-grow text-left">
@@ -818,7 +819,7 @@ export default function ProfessionnelPage() {
           </Link>
         </div>
       </main>
-
+      </div>
     </div>
   );
 }
