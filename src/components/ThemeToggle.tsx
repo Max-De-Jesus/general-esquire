@@ -63,26 +63,29 @@ export function LanguageToggle() {
 export function FloatingControls() {
   const { lang, setLang } = useLanguage();
   return (
-    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex items-center gap-2">
-      <ReviewButton className="py-2 sm:py-2.5 px-3 sm:px-4 shadow-[0_0_20px_rgba(197,160,89,0.35)]" />
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-center gap-2 sm:gap-2.5 pointer-events-auto">
+      {/* Bouton Langue (Centré au-dessus) */}
       <button
         onClick={() => setLang(lang === "fr" ? "en" : "fr")}
-        aria-label="Changer de langue"
+        aria-label="Changer de langue / Change language"
         title={lang === "fr" ? "Switch to English" : "Passer en Français"}
-        className="flex items-center justify-center gap-1 sm:gap-1.5 px-3 py-2 sm:px-4 sm:py-2.5 rounded-full border-2 border-[#C5A059] bg-[#131513]/90 text-[#E9D18F] shadow-[0_0_20px_rgba(197,160,89,0.4)] hover:scale-105 active:scale-95 transition-all duration-300 backdrop-blur-md cursor-pointer font-cinzel text-[11px] sm:text-xs font-bold"
+        className="flex items-center justify-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full border border-[#C5A059] bg-[#131513]/95 text-[#E9D18F] shadow-[0_0_15px_rgba(197,160,89,0.35)] hover:bg-[#C5A059]/25 hover:border-[#E9D18F] hover:scale-105 active:scale-95 transition-all duration-300 backdrop-blur-md cursor-pointer font-cinzel text-[10px] sm:text-[11px] font-bold"
       >
         {lang === "fr" ? (
           <>
-            <EnglishFlagIcon className="w-4 h-3" />
+            <EnglishFlagIcon className="w-3.5 h-2.5 sm:w-4 sm:h-3" />
             <span>EN</span>
           </>
         ) : (
           <>
-            <FrenchFlagIcon className="w-4 h-3" />
+            <FrenchFlagIcon className="w-3.5 h-2.5 sm:w-4 sm:h-3" />
             <span>FR</span>
           </>
         )}
       </button>
+
+      {/* Bouton Donnez votre avis (En dessous) */}
+      <ReviewButton className="py-2 sm:py-2.5 px-3 sm:px-4 shadow-[0_0_20px_rgba(197,160,89,0.35)]" />
     </div>
   );
 }
