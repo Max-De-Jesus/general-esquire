@@ -38,6 +38,21 @@ const CAR_PRO_SLIDES_FR = [
     desc: "Réactivité, discrétion absolue et respect rigoureux de la déontologie.",
   },
   {
+    src: "/images/car_pro/pro6.png",
+    title: "Confraternité & Entraide Juridique",
+    desc: "Une alliance solide entre confrères pour vous épauler efficacement dans la gestion de vos dossiers.",
+  },
+  {
+    src: "/images/car_pro/pro7.png",
+    title: "Plaidoirie & Défense des Intérêts",
+    desc: "Des argumentaires ciselés et percutants pour porter la voix de vos clients devant les magistrats.",
+  },
+  {
+    src: "/images/car_pro/pro8.png",
+    title: "Rigueur Procédurale & Audiences",
+    desc: "Une parfaite maîtrise des règles de procédure et un respect scrupuleux des délais légaux.",
+  },
+  {
     src: "/images/car_pro/Avocate enceinte image.jpg",
     title: "Conseil & Soutien Humain",
     desc: "Un suivi bienveillant et rigoureux, adapté à chaque étape de votre vie professionnelle.",
@@ -74,6 +89,21 @@ const CAR_PRO_SLIDES_EN = [
     src: "/images/car_pro/pro5.jpg",
     title: "LEGAL EXCELLENCE & DISCRETION",
     desc: "Immediate responsiveness, absolute confidentiality, and strict adherence to ethics.",
+  },
+  {
+    src: "/images/car_pro/pro6.png",
+    title: "Confraternity & Professional Alliance",
+    desc: "A solid fellowship among colleagues to back your practice and handle demanding casework.",
+  },
+  {
+    src: "/images/car_pro/pro7.png",
+    title: "Courtroom Advocacy & Oral Defense",
+    desc: "Compelling, rigorous legal arguments to defend your clients' rights effectively before judges.",
+  },
+  {
+    src: "/images/car_pro/pro8.png",
+    title: "Procedural Mastery & Public Hearings",
+    desc: "Strict compliance with court deadlines and impeccable procedural decorum at hearings.",
   },
   {
     src: "/images/car_pro/Avocate enceinte image.jpg",
