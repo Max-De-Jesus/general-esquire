@@ -128,7 +128,7 @@ export default function EmployerPaymentGuide({ className = "" }: { className?: s
 
             <div className="p-4 rounded-2xl bg-[#0F3823]/60 border border-[#C5A059]/40 text-sm sm:text-base italic">
               <h5 className="font-cinzel not-italic text-xs text-[#E9D18F] font-bold uppercase tracking-wider mb-1">
-                {lang === "fr" ? "Assurance Annulation Inclus" : "Cancellation Insurance Included"}
+                {lang === "fr" ? "Assurance Annulation Incluse" : "Cancellation Insurance Included"}
               </h5>
               <p>
                 {lang === "fr"
