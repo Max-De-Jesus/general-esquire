@@ -191,7 +191,20 @@ export default function ProfessionnelPage() {
   const [activeModal, setActiveModal] = useState<"methode" | "tarifs" | null>(null);
 
   return (
-    <div className="min-h-screen bg-[#1A1C1A] text-[#EDE4CF] flex flex-col justify-between overflow-x-hidden">
+    <div className="min-h-screen bg-[#1A1C1A] text-[#EDE4CF] flex flex-col justify-between overflow-x-hidden relative">
+      {/* ─── IMAGE EN ARRIÈRE-PLAN DE LA PAGE PROFESSIONNEL DU DROIT ─────────── */}
+      <div className="fixed inset-0 -z-20 overflow-hidden pointer-events-none">
+        <Image
+          src="/images/arrierre plan/arriiere professionelle du droit.jpg"
+          alt="Arrière-plan Professionnels du Droit — General Esquire"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center opacity-30 filter brightness-85 contrast-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1a1c1a]/90 via-[#1a1c1a]/75 to-[#1a1c1a]/95 backdrop-blur-[1px]" />
+      </div>
+
       {/* ─── 1. BANNIÈRE EN-TÊTE (vs/1 style exact) ────────────────────── */}
       <header className="w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
