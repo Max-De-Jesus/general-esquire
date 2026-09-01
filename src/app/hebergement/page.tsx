@@ -146,6 +146,19 @@ export default function HebergementPage() {
 
   return (
     <div className="min-h-screen bg-[#1a1c1a] text-[#EDE4CF] pb-12 md:pb-20 relative overflow-x-hidden">
+      {/* ─── IMAGE EN ARRIÈRE-PLAN DE LA PAGE HÉBERGEMENT ─────────── */}
+      <div className="fixed inset-0 -z-20 overflow-hidden pointer-events-none">
+        <Image
+          src="/images/arrierre plan/arriere hebergement.jpg"
+          alt="Arrière-plan Hébergement Cocooning — General Esquire"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center opacity-30 filter brightness-85 contrast-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1a1c1a]/90 via-[#1a1c1a]/75 to-[#1a1c1a]/95 backdrop-blur-[1px]" />
+      </div>
+
       {/* ─── 1. EN-TÊTE : BANNIÈRE SEULE (PLEINE LARGEUR) ──────────────── */}
       <header className="w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">

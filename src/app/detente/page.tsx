@@ -286,9 +286,17 @@ export default function DetentePage() {
       <TickerBanner items={["GENERAL ESQUIRE", "SÉRÉNITÉ", "MASSAGES & SOINS", "CHRYSALIDES", "BIENVEILLANCE", "RÉSILIENCE"]} className="mb-10" />
 
       <div className="w-full px-4 sm:px-8 xl:px-16 py-4 md:py-8 relative">
-        {/* BG filigrane */}
-        <div className="absolute inset-0 -z-10 opacity-[0.06] pointer-events-none">
-          <Image src="/images/background.jpeg" alt="" fill className="object-cover" />
+        {/* BG Arrière-plan thématique Détente */}
+        <div className="fixed inset-0 -z-20 overflow-hidden pointer-events-none">
+          <Image
+            src="/images/arrierre plan/arriere detente.png"
+            alt="Arrière-plan Détente & Bien-être — General Esquire"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center opacity-25 filter brightness-90 contrast-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#1a1c1a]/90 via-[#1a1c1a]/75 to-[#1a1c1a]/95 backdrop-blur-[1px]" />
         </div>
 
         {/* Breadcrumb */}
