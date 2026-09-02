@@ -105,7 +105,7 @@ export default function EmployerPaymentGuide({ className = "" }: { className?: s
                   <>
                     Si c’est le cocooning touristique, la somme forfaitaire à payer est de 1 500 €.<br />
                     Vous pouvez vous acquitter de cette somme en un paiement unique.<br />
-                    Sinon, à compter de votre inscription, un jeton vous indiquera votre plan de paiement.<br />
+                    Sinon, à compter de votre inscription, un échéancier vous indiquera vos échéances de paiement.<br />
                     Celui-ci dépend du nombre de mois qu’il vous reste avant la fin de la période d’inscription.<br />
                     Celle-ci va de février à septembre pour le voyage de janvier ; et d’août à mars pour le voyage de juillet.
                   </>
@@ -113,7 +113,7 @@ export default function EmployerPaymentGuide({ className = "" }: { className?: s
                   <>
                     For touristic cocooning, the fixed retreat package is €1,500.<br />
                     You may settle this fee in a single lump sum payment.<br />
-                    Alternatively, upon registration, a personalized token indicates your installment plan.<br />
+                    Alternatively, upon registration, an installment schedule indicates your payment plan.<br />
                     The schedule depends on the remaining months before registration closes.<br />
                     Registration runs February to September for January departures, and August to March for July departures.
                   </>
