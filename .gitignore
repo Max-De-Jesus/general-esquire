@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# large raw video backups
+*_ORIGINAL_*.mp4
+*_RAW_*.mp4

@@ -9,9 +9,9 @@ export default function TourismVideosSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Chemin vers la vidéo unique
-  const videoSrc = "/images/video tourisme/video_principale.mp4";
-  // Fallback vers l'une des vidéos existantes jusqu'à ce que la nouvelle vidéo soit ajoutée
+  // Chemin vers la vidéo unique Chrysalides
+  const videoSrc = "/images/video tourisme/BENIN NEW CITY FINAL.mp4";
+  // Fallback vers l'une des vidéos existantes
   const fallbackSrc = "/images/video tourisme/WhatsApp Video 2026-08-17 at 17.10.30.mp4";
 
   const handlePlayToggle = () => {
@@ -115,8 +115,8 @@ export default function TourismVideosSection() {
               }}
               className="w-full h-full object-contain"
             >
-              <source src={videoSrc} type="video/mp4" />
-              <source src={fallbackSrc} type="video/mp4" />
+              <source src={encodeURI(videoSrc)} type="video/mp4" />
+              <source src={encodeURI(fallbackSrc)} type="video/mp4" />
               Votre navigateur ne supporte pas la lecture de cette vidéo.
             </video>
 
