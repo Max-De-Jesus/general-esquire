@@ -40,7 +40,7 @@ const CAR_PRO_SLIDES_FR = [
   {
     src: "/images/car_pro/pro6.png",
     title: "Confraternité & Entraide Juridique",
-    desc: "Une alliance solide entre confrères pour vous épauler efficacement dans la gestion de vos dossiers.",
+    desc: "Une alliance solide entre confrères pour vous épauler efficacement .",
   },
   {
     src: "/images/car_pro/pro7.png",

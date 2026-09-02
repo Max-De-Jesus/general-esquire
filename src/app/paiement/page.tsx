@@ -20,42 +20,329 @@ interface ServicePreset {
   price: number;
   isCustom?: boolean;
   type?: "fixed" | "translation";
+  icon?: string;
+  badgeFr?: string;
+  badgeEn?: string;
+  descFr?: string;
+  descEn?: string;
+  periodFr?: string;
+  periodEn?: string;
 }
+
+const PROFILE_CATEGORIES = [
+  { id: "Particulier", labelFr: "Particulier", labelEn: "Individual", icon: "👤" },
+  { id: "Chef d'Entreprise", labelFr: "Chef d'Entreprise", labelEn: "Business Owner", icon: "💼" },
+  { id: "Institution", labelFr: "Institution Publique", labelEn: "Public Institution", icon: "🏛️" },
+  { id: "Professionnel du Droit", labelFr: "Professionnel du Droit", labelEn: "Legal Professional", icon: "⚖️" },
+  { id: "Chrysalides", labelFr: "Séjour Chrysalides / Détente", labelEn: "Chrysalides Stay / Retreat", icon: "🌴" },
+];
 
 const SERVICE_PRESETS: Record<string, ServicePreset[]> = {
   Particulier: [
-    { id: "part-consultation", nameFr: "Consultation Initiale Fixe", nameEn: "Initial Fixed Consultation", price: 100 },
-    { id: "part-translation", nameFr: "Traduction Chinois / Russe (par page)", nameEn: "Chinese / Russian Translation (per page)", price: 10, type: "translation" },
-    { id: "part-custom", nameFr: "Prestation personnalisée (sur devis)", nameEn: "Custom service (based on quote)", price: 0, isCustom: true },
+    {
+      id: "part-consultation",
+      nameFr: "Consultation Initiale Fixe",
+      nameEn: "Initial Fixed Consultation",
+      price: 100,
+      icon: "⚖️",
+      badgeFr: "Forfait Fixe",
+      badgeEn: "Fixed Fee",
+      descFr: "Analyse préalable approfondie de votre situation juridique et orientation stratégique personnalisée.",
+      descEn: "In-depth preliminary analysis of your legal situation and strategic roadmap.",
+      periodFr: "forfait",
+      periodEn: "one-time",
+    },
+    {
+      id: "part-translation",
+      nameFr: "Traduction Chinois / Russe",
+      nameEn: "Chinese / Russian Translation",
+      price: 10,
+      type: "translation",
+      icon: "🌐",
+      badgeFr: "10 € / page ou min",
+      badgeEn: "€10 / page or min",
+      descFr: "Traduction certifiée et technique pour vos documents légaux ou enregistrements audio/vidéo.",
+      descEn: "Certified technical translation for your legal documents or audio/video recordings.",
+      periodFr: "par page / min",
+      periodEn: "per page / min",
+    },
+    {
+      id: "part-custom",
+      nameFr: "Prestation personnalisée",
+      nameEn: "Custom Bespoke Service",
+      price: 0,
+      isCustom: true,
+      icon: "✨",
+      badgeFr: "Sur devis",
+      badgeEn: "Custom quote",
+      descFr: "Accompagnement spécifique ou contentieux selon la convention d'honoraires préalablement convenue.",
+      descEn: "Dedicated representation or litigation based on your agreed engagement letter.",
+      periodFr: "sur devis",
+      periodEn: "custom quote",
+    },
   ],
   "Chef d'Entreprise": [
-    { id: "ent-annual", nameFr: "Abonnement Annuel Illimité", nameEn: "Annual Unlimited Subscription", price: 10000 },
-    { id: "ent-monthly", nameFr: "Abonnement Mensuel", nameEn: "Monthly Subscription", price: 1000 },
-    { id: "ent-urgency", nameFr: "Urgence moins de 48h (supplément rédaction)", nameEn: "Urgency under 48h (drafting surcharge)", price: 1500 },
-    { id: "ent-translation", nameFr: "Traduction Chinois / Russe (par page)", nameEn: "Chinese / Russian Translation (per page)", price: 10, type: "translation" },
-    { id: "ent-custom", nameFr: "Prestation ponctuelle de gré à gré", nameEn: "Custom contract-based service", price: 0, isCustom: true },
+    {
+      id: "ent-annual",
+      nameFr: "Abonnement Annuel Illimité",
+      nameEn: "Annual Unlimited Subscription",
+      price: 10000,
+      icon: "🏛️",
+      badgeFr: "Formule Intégrale",
+      badgeEn: "All-Inclusive",
+      descFr: "Audit, rédactions d'actes illimitées, veille continue et permanence juridique d'entreprise.",
+      descEn: "Comprehensive legal audit, unlimited contract drafting, and priority business counsel.",
+      periodFr: "/ an",
+      periodEn: "/ year",
+    },
+    {
+      id: "ent-monthly",
+      nameFr: "Abonnement Mensuel",
+      nameEn: "Monthly Subscription",
+      price: 1000,
+      icon: "🔄",
+      badgeFr: "Abonnement Mensuel",
+      badgeEn: "Monthly Plan",
+      descFr: "Accompagnement juridique courant d'entreprise avec reconduction mensuelle et flexibilité.",
+      descEn: "Ongoing corporate legal advisory with flexible month-to-month terms.",
+      periodFr: "/ mois",
+      periodEn: "/ month",
+    },
+    {
+      id: "ent-urgency",
+      nameFr: "Urgence moins de 48h (supplément)",
+      nameEn: "Urgency under 48h (surcharge)",
+      price: 1500,
+      icon: "⚡",
+      badgeFr: "Traitement Express",
+      badgeEn: "Express Handling",
+      descFr: "Mobilisation immédiate et délivrance sous 48 heures ouvrées pour dossiers critiques.",
+      descEn: "Priority legal mobilisation and delivery in under 48 business hours.",
+      periodFr: "supplément",
+      periodEn: "surcharge",
+    },
+    {
+      id: "ent-translation",
+      nameFr: "Traduction Chinois / Russe",
+      nameEn: "Chinese / Russian Translation",
+      price: 10,
+      type: "translation",
+      icon: "🌐",
+      badgeFr: "10 € / page",
+      badgeEn: "€10 / page",
+      descFr: "Traduction commerciale, fiscale et contractuelle assermentée pour les affaires.",
+      descEn: "Sworn corporate, financial, and contractual commercial translation.",
+      periodFr: "par page",
+      periodEn: "per page",
+    },
+    {
+      id: "ent-custom",
+      nameFr: "Prestation ponctuelle de gré à gré",
+      nameEn: "Custom contract-based service",
+      price: 0,
+      isCustom: true,
+      icon: "🤝",
+      badgeFr: "Gré à gré",
+      badgeEn: "Custom quote",
+      descFr: "Opération de restructuration, négociation ou dossier d'affaires particulier sur devis.",
+      descEn: "M&A, restructuring, negotiation, or special corporate transactions.",
+      periodFr: "sur devis",
+      periodEn: "custom quote",
+    },
   ],
   Institution: [
-    { id: "inst-fixed", nameFr: "Forfait Rédaction Fixe (max 20 pages)", nameEn: "Fixed Drafting Surcharge (max 20 pages)", price: 3500 },
-    { id: "inst-extra", nameFr: "Pages supplémentaires (par tranche de 10 pages)", nameEn: "Additional pages (per block of 10 pages)", price: 1000 },
-    { id: "inst-talk", nameFr: "Consultation non écrite (1 heure)", nameEn: "Oral Consultation (1 hour)", price: 500 },
-    { id: "inst-custom", nameFr: "Consultation personnalisée (sur devis)", nameEn: "Custom advisory (based on quote)", price: 0, isCustom: true },
+    {
+      id: "inst-fixed",
+      nameFr: "Forfait Rédaction Fixe (max 20p)",
+      nameEn: "Fixed Drafting Surcharge (max 20p)",
+      price: 3500,
+      icon: "📜",
+      badgeFr: "Forfait 20 pages",
+      badgeEn: "Up to 20 pages",
+      descFr: "Rédaction d'actes officiels, mémoires, avis doctrinaux ou projets de textes réglementaires.",
+      descEn: "Drafting of statutory acts, formal briefs, legal opinions, or regulations.",
+      periodFr: "forfait",
+      periodEn: "flat fee",
+    },
+    {
+      id: "inst-extra",
+      nameFr: "Pages supplémentaires (tranche 10p)",
+      nameEn: "Additional pages (per 10 pages)",
+      price: 1000,
+      icon: "📑",
+      badgeFr: "Extension de volume",
+      badgeEn: "Volume extension",
+      descFr: "Volume additionnel au-delà du forfait initial de 20 pages (par tranche de 10 pages).",
+      descEn: "Additional page bundle beyond initial 20-page scope per 10-page block.",
+      periodFr: "/ 10 pages",
+      periodEn: "/ 10 pages",
+    },
+    {
+      id: "inst-talk",
+      nameFr: "Consultation non écrite (1h)",
+      nameEn: "Oral Consultation (1 hour)",
+      price: 500,
+      icon: "🎙️",
+      badgeFr: "Expertise Orale",
+      badgeEn: "Oral Counsel",
+      descFr: "Séance d'éclairage juridique stratégique avec hauts fonctionnaires ou directions institutionnelles.",
+      descEn: "Strategic advisory hearing with executive directors or institutional representatives.",
+      periodFr: "1 heure",
+      periodEn: "1 hour",
+    },
+    {
+      id: "inst-custom",
+      nameFr: "Consultation personnalisée",
+      nameEn: "Custom Advisory",
+      price: 0,
+      isCustom: true,
+      icon: "🏛️",
+      badgeFr: "Convention Cadre",
+      badgeEn: "Framework Agreement",
+      descFr: "Mission d'appui institutionnel ou assistance juridique de longue durée sur devis.",
+      descEn: "Institutional advisory mission or regulatory reform support on custom terms.",
+      periodFr: "sur devis",
+      periodEn: "custom quote",
+    },
   ],
   "Professionnel du Droit": [
-    { id: "pro-annual", nameFr: "Partenariat Annuel (d'avance)", nameEn: "Annual Partnership (upfront)", price: 15000 },
-    { id: "pro-quarterly", nameFr: "Partenariat Trimestriel", nameEn: "Quarterly Partnership", price: 3500 },
-    { id: "pro-drafting", nameFr: "Forfait de Rédaction d'Acte", nameEn: "Drafting Service Fixed Fee", price: 500 },
-    { id: "pro-urgency", nameFr: "Forfait Rédaction Urgente", nameEn: "Urgent Drafting Surcharge", price: 1500 },
-    { id: "pro-custom", nameFr: "Prestation sur devis", nameEn: "Quote-based service", price: 0, isCustom: true },
+    {
+      id: "pro-annual",
+      nameFr: "Partenariat Annuel (d'avance)",
+      nameEn: "Annual Partnership (upfront)",
+      price: 15000,
+      icon: "🏆",
+      badgeFr: "Partenaire Privilégié",
+      badgeEn: "Preferred Partner",
+      descFr: "Synergie continue entre cabinets, sous-traitance et co-rédaction de premier rang.",
+      descEn: "Ongoing law firm synergy, priority co-drafting, and strategic legal collaboration.",
+      periodFr: "/ an",
+      periodEn: "/ year",
+    },
+    {
+      id: "pro-quarterly",
+      nameFr: "Partenariat Trimestriel",
+      nameEn: "Quarterly Partnership",
+      price: 3500,
+      icon: "💼",
+      badgeFr: "Trimestriel",
+      badgeEn: "Quarterly",
+      descFr: "Collaboration trimestrielle flexible pour surcroît d'activité et dossiers d'envergure.",
+      descEn: "Flexible quarterly collaboration for caseload surges and specialized matters.",
+      periodFr: "/ trimestre",
+      periodEn: "/ quarter",
+    },
+    {
+      id: "pro-drafting",
+      nameFr: "Forfait Rédaction d'Acte",
+      nameEn: "Drafting Service Fixed Fee",
+      price: 500,
+      icon: "🖋️",
+      badgeFr: "À l'acte",
+      badgeEn: "Per instrument",
+      descFr: "Élaboration ou relecture minutieuse d'une conclusion, assignation ou contrat complexe.",
+      descEn: "Preparation or rigorous review of pleadings, writs, or transactional documents.",
+      periodFr: "par acte",
+      periodEn: "per document",
+    },
+    {
+      id: "pro-urgency",
+      nameFr: "Forfait Rédaction Urgente",
+      nameEn: "Urgent Drafting Surcharge",
+      price: 1500,
+      icon: "⚡",
+      badgeFr: "Urgence 48h",
+      badgeEn: "48h Urgency",
+      descFr: "Délivrance expresse sous 48 heures pour délais de forclusion ou urgences d'audience.",
+      descEn: "Expedited drafting within 48h for tight limitation periods or urgent hearings.",
+      periodFr: "supplément",
+      periodEn: "surcharge",
+    },
+    {
+      id: "pro-custom",
+      nameFr: "Prestation sur devis",
+      nameEn: "Quote-based service",
+      price: 0,
+      isCustom: true,
+      icon: "🤝",
+      badgeFr: "Confraternel",
+      badgeEn: "Peer to Peer",
+      descFr: "Dossier spécifique ou co-mandat selon modalité convenue entre professionnels.",
+      descEn: "Bespoke legal assistance or co-counseling on tailored commercial terms.",
+      periodFr: "sur devis",
+      periodEn: "custom quote",
+    },
   ],
   Chrysalides: [
-    { id: "chrys-stay", nameFr: "Séjour Cocooning Touristique Bénin (2 semaines)", nameEn: "Bénin Tourist Cocooning Stay (2 weeks)", price: 1500 },
-    { id: "chrys-custom", nameFr: "Forfait de groupe sur devis", nameEn: "Group Package Quote", price: 0, isCustom: true },
+    {
+      id: "chrys-stay",
+      nameFr: "Séjour Cocooning Touristique Bénin (2 semaines)",
+      nameEn: "Bénin Tourist Cocooning Stay (2 weeks)",
+      price: 1500,
+      icon: "🌴",
+      badgeFr: "Séjour Clé en Main",
+      badgeEn: "All-Inclusive Retreat",
+      descFr: "Immersion bien-être 14 jours, hébergement de standing, visites culturelles et conciergerie.",
+      descEn: "14-day luxury cultural retreat, premium accommodation, excursions, and private concierge.",
+      periodFr: "forfait séjour",
+      periodEn: "retreat package",
+    },
+    {
+      id: "chrys-custom",
+      nameFr: "Forfait de groupe sur devis",
+      nameEn: "Group Package Quote",
+      price: 0,
+      isCustom: true,
+      icon: "👥",
+      badgeFr: "Délégations & Groupes",
+      badgeEn: "Groups & Delegations",
+      descFr: "Organisation sur-mesure pour familles, délégations d'affaires ou associations.",
+      descEn: "Tailored luxury travel organization for delegations, groups, or corporate retreats.",
+      periodFr: "sur devis",
+      periodEn: "custom quote",
+    },
   ],
   "Conseil Juridique": [
-    { id: "cj-monthly", nameFr: "Mensualité Conseil Juridique", nameEn: "Legal Advisory Monthly Fee", price: 1000 },
-    { id: "cj-ponctuel", nameFr: "Consultation ponctuelle (forfait)", nameEn: "One-time legal consultation (fixed fee)", price: 300 },
-    { id: "cj-custom", nameFr: "Prestation sur devis", nameEn: "Quote-based service", price: 0, isCustom: true },
+    {
+      id: "cj-monthly",
+      nameFr: "Mensualité Conseil Juridique",
+      nameEn: "Legal Advisory Monthly Fee",
+      price: 1000,
+      icon: "⚖️",
+      badgeFr: "Conseil Permanent",
+      badgeEn: "Retainer",
+      descFr: "Disponibilité continue pour réponses juridiques rapides et sécurisation opérationnelle.",
+      descEn: "Continuous availability for prompt legal opinions and risk management.",
+      periodFr: "/ mois",
+      periodEn: "/ month",
+    },
+    {
+      id: "cj-ponctuel",
+      nameFr: "Consultation ponctuelle (forfait)",
+      nameEn: "One-time legal consultation (fixed fee)",
+      price: 300,
+      icon: "🔍",
+      badgeFr: "Consultation Ciblée",
+      badgeEn: "Focused Consultation",
+      descFr: "Examen d'une problématique juridique circonscrite et délivrance de préconisations.",
+      descEn: "Single-matter consultation with actionable legal recommendations.",
+      periodFr: "forfait",
+      periodEn: "fixed fee",
+    },
+    {
+      id: "cj-custom",
+      nameFr: "Prestation sur devis",
+      nameEn: "Quote-based service",
+      price: 0,
+      isCustom: true,
+      icon: "✨",
+      badgeFr: "Sur-mesure",
+      badgeEn: "Bespoke",
+      descFr: "Mission personnalisée selon périmètre et convention validée.",
+      descEn: "Tailored legal engagement according to agreed terms.",
+      periodFr: "sur devis",
+      periodEn: "custom quote",
+    },
   ],
 };
 
@@ -87,7 +374,7 @@ export default function PaymentPage() {
   const [translationPages, setTranslationPages] = useState<number>(1);
   const [isUrgent, setIsUrgent] = useState(false);
 
-  /* ── Cocooning Touristique Tranches & Jeton State ── */
+  /* ── Cocooning Touristique Tranches & Échéances State ── */
   const [cocooningOption, setCocooningOption] = useState<"unique" | "tranches">("unique");
   const [cocooningSession, setCocooningSession] = useState<"janvier" | "juillet">("janvier");
 
@@ -172,7 +459,7 @@ export default function PaymentPage() {
     }
   }, [profileType]);
 
-  /* ── Helper calcul mensualités jeton Cocooning ── */
+  /* ── Helper calcul mensualités / échéances Cocooning ── */
   const getCocooningInstallmentMonths = () => {
     const currentMonth = new Date().getMonth(); // 0 = Jan, 1 = Feb, ..., 8 = Sept
     if (cocooningSession === "janvier") {
@@ -499,7 +786,7 @@ export default function PaymentPage() {
                 <span className={paymentMethod === "virement" ? "text-amber-400" : "text-emerald-400"}>
                   {paymentMethod === "virement"
                     ? (lang === "fr" ? "En attente de réception" : "Pending reception")
-                    : (lang === "fr" ? "Encaissé & Jeton Enregistré" : "Cleared & Token Saved")}
+                    : (lang === "fr" ? "Encaissé & Échéance Enregistrée" : "Cleared & Installment Recorded")}
                 </span>
               </div>
             </div>
@@ -672,35 +959,30 @@ export default function PaymentPage() {
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    <div>
-                      <label className={labelClass}>{lang === "fr" ? "Votre Profil Client" : "Your Client Profile"}</label>
-                      <select
-                        value={profileType}
-                        onChange={(e) => setProfileType(e.target.value)}
-                        className={inputClass}
-                      >
-                        <option value="Particulier">{lang === "fr" ? "Particulier" : "Individual"}</option>
-                        <option value="Chef d'Entreprise">{lang === "fr" ? "Chef d'Entreprise" : "Business Owner"}</option>
-                        <option value="Institution">{lang === "fr" ? "Institution Publique" : "Public Institution"}</option>
-                        <option value="Professionnel du Droit">{lang === "fr" ? "Professionnel du Droit" : "Legal Professional"}</option>
-                        <option value="Chrysalides">{lang === "fr" ? "Séjour Chrysalides / Détente" : "Chrysalides Stay / Retreat"}</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className={labelClass}>{lang === "fr" ? "Sélectionner le Service" : "Select Service"}</label>
-                      <select
-                        value={selectedServiceId}
-                        onChange={(e) => setSelectedServiceId(e.target.value)}
-                        className={inputClass}
-                      >
-                        {(SERVICE_PRESETS[profileType] || []).map((preset) => (
-                          <option key={preset.id} value={preset.id}>
-                            {lang === "fr" ? preset.nameFr : preset.nameEn}
-                          </option>
-                        ))}
-                      </select>
+                  {/* ── 1. Sélecteur de Catégorie Client ── */}
+                  <div>
+                    <label className={labelClass}>
+                      {lang === "fr" ? "1. Votre Catégorie Client" : "1. Your Client Category"}
+                    </label>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+                      {PROFILE_CATEGORIES.map((cat) => {
+                        const isActive = profileType === cat.id;
+                        return (
+                          <button
+                            key={cat.id}
+                            type="button"
+                            onClick={() => setProfileType(cat.id)}
+                            className={`p-3 rounded-2xl font-cinzel text-xs font-bold tracking-wider transition-all duration-300 flex flex-col items-center justify-center gap-1.5 cursor-pointer text-center border ${
+                              isActive
+                                ? "bg-gradient-to-br from-[#C5A059] to-[#E9D18F] text-black border-[#E9D18F] shadow-[0_0_15px_rgba(197,160,89,0.45)] scale-[1.02]"
+                                : "bg-[#1a1c1a]/90 border-[#C5A059]/25 text-[#cabfa6] hover:text-[#E9D18F] hover:border-[#C5A059]/60 hover:bg-[#202420]"
+                            }`}
+                          >
+                            <span className="text-xl">{cat.icon}</span>
+                            <span className="line-clamp-1">{lang === "fr" ? cat.labelFr : cat.labelEn}</span>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
 
@@ -716,12 +998,118 @@ export default function PaymentPage() {
                     </div>
                   )}
 
-                  {/* Cocooning Touristique — Plan de Paiement par Tranche & Jeton */}
+                  {/* ── 2. Grille de Cartes de Prestations (Cases Carrées Designées) ── */}
+                  <div>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-3">
+                      <label className={labelClass}>
+                        {lang === "fr" ? "2. Choisissez Votre Prestation (Cliquez sur une case)" : "2. Select Your Service (Click on a card)"}
+                      </label>
+                      <span className="font-cormorant text-xs text-[#E9D18F] italic">
+                        {lang === "fr" ? "✦ Tarif et récapitulatif attribués automatiquement au clic" : "✦ Price and summary set automatically on click"}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+                      {(SERVICE_PRESETS[profileType] || []).map((preset) => {
+                        const isSelected = selectedServiceId === preset.id;
+                        return (
+                          <button
+                            key={preset.id}
+                            type="button"
+                            onClick={() => {
+                              setSelectedServiceId(preset.id);
+                              if (preset.isCustom && !customPrice) {
+                                setCustomPrice("");
+                              }
+                            }}
+                            className={`group relative rounded-2xl p-5 text-left transition-all duration-300 border-2 cursor-pointer flex flex-col justify-between min-h-[195px] overflow-hidden ${
+                              isSelected
+                                ? "bg-gradient-to-br from-[#1d201d] via-[#161816] to-[#1c1811] border-[#E9D18F] shadow-[0_0_25px_rgba(197,160,89,0.35)] scale-[1.01]"
+                                : "bg-[#131513]/80 border-[#C5A059]/25 hover:border-[#C5A059]/70 hover:bg-[#1a1c1a] hover:shadow-[0_6px_20px_rgba(0,0,0,0.5)]"
+                            }`}
+                          >
+                            {/* Decorative gold angle accent when active */}
+                            {isSelected && (
+                              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-[#C5A059]/20 to-transparent rounded-bl-full pointer-events-none" />
+                            )}
+
+                            <div>
+                              {/* Top row: Icon, Badge and Radio Check */}
+                              <div className="flex items-start justify-between gap-2 mb-3">
+                                <div className="flex items-center gap-2">
+                                  {preset.icon && <span className="text-xl">{preset.icon}</span>}
+                                  {preset.badgeFr && (
+                                    <span className={`text-[10px] font-cinzel uppercase px-2.5 py-0.5 rounded-full border tracking-wider font-semibold ${
+                                      isSelected
+                                        ? "bg-[#C5A059]/20 border-[#E9D18F] text-[#E9D18F]"
+                                        : "bg-black/40 border-[#C5A059]/20 text-[#cabfa6]"
+                                    }`}>
+                                      {lang === "fr" ? preset.badgeFr : preset.badgeEn || preset.badgeFr}
+                                    </span>
+                                  )}
+                                </div>
+
+                                {/* Selection checkmark circle */}
+                                <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-all ${
+                                  isSelected
+                                    ? "bg-gradient-to-r from-[#C5A059] to-[#E9D18F] text-black shadow-[0_0_10px_rgba(197,160,89,0.6)] font-bold text-xs"
+                                    : "border border-[#C5A059]/30 group-hover:border-[#C5A059] text-transparent"
+                                }`}>
+                                  {isSelected ? "✓" : ""}
+                                </div>
+                              </div>
+
+                              {/* Service Title */}
+                              <h3 className={`font-cinzel text-sm sm:text-base font-bold tracking-wide transition-colors ${
+                                isSelected ? "text-[#E9D18F]" : "text-white group-hover:text-[#E9D18F]"
+                              }`}>
+                                {lang === "fr" ? preset.nameFr : preset.nameEn}
+                              </h3>
+
+                              {/* Description */}
+                              {preset.descFr && (
+                                <p className="font-cormorant text-xs sm:text-sm text-[#cabfa6] mt-2 line-clamp-2 leading-relaxed">
+                                  {lang === "fr" ? preset.descFr : preset.descEn || preset.descFr}
+                                </p>
+                              )}
+                            </div>
+
+                            {/* Price Bottom Footer */}
+                            <div className="mt-4 pt-3 border-t border-[#C5A059]/15 flex items-baseline justify-between">
+                              <span className="font-cinzel text-[10px] text-[#cabfa6]/70 uppercase tracking-widest">
+                                {preset.isCustom
+                                  ? (lang === "fr" ? "Montant libre" : "Custom quote")
+                                  : (lang === "fr" ? "Tarif fixé" : "Preset rate")}
+                              </span>
+                              <div className="text-right">
+                                {preset.isCustom ? (
+                                  <span className="font-cinzel text-base sm:text-lg font-bold text-[#E9D18F]">
+                                    {customPrice ? `${Number(customPrice).toLocaleString("fr-FR")} €` : (lang === "fr" ? "Sur devis" : "Quote")}
+                                  </span>
+                                ) : (
+                                  <span className="font-cinzel text-lg sm:text-xl font-bold text-[#E9D18F]">
+                                    {preset.price.toLocaleString("fr-FR")}&nbsp;€
+                                    {preset.periodFr && (
+                                      <span className="font-cormorant text-xs font-normal text-[#cabfa6] ml-1">
+                                        {lang === "fr" ? preset.periodFr : preset.periodEn}
+                                      </span>
+                                    )}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* ── Cocooning Touristique — Plan de Paiement par Échéances ── */}
                   {selectedServiceId === "chrys-stay" && (
                     <div className="bg-[#170e2b]/80 border-2 border-purple-500/50 rounded-2xl p-5 space-y-4 animate-fadeIn shadow-xl">
                       <div className="flex items-center justify-between border-b border-purple-500/30 pb-3">
                         <span className="font-cinzel text-xs font-bold text-purple-300 uppercase tracking-wider flex items-center gap-2">
-                          <span>🎯</span> {lang === "fr" ? "Plan de Paiement & Jeton Cocooning" : "Cocooning Payment Plan & Token"}
+                          <span>🎯</span> {lang === "fr" ? "Plan de Paiement & Échéancier Cocooning" : "Cocooning Payment Plan & Schedule"}
                         </span>
                         <span className="text-[10px] font-mono text-[#E9D18F] bg-[#131513] px-2.5 py-1 rounded-full border border-[#C5A059]/40 font-bold">
                           {lang === "fr" ? "Forfait Total : 1 500 €" : "Total Package: €1,500"}
@@ -737,7 +1125,7 @@ export default function PaymentPage() {
                           <button
                             type="button"
                             onClick={() => setCocooningSession("janvier")}
-                            className={`p-3 rounded-xl border text-xs font-cinzel font-bold text-left transition-all ${
+                            className={`p-3 rounded-xl border text-xs font-cinzel font-bold text-left transition-all cursor-pointer ${
                               cocooningSession === "janvier"
                                 ? "bg-purple-900/40 border-purple-400 text-purple-200 shadow-md"
                                 : "bg-black/30 border-purple-500/20 text-[#cabfa6] hover:text-white"
@@ -753,7 +1141,7 @@ export default function PaymentPage() {
                           <button
                             type="button"
                             onClick={() => setCocooningSession("juillet")}
-                            className={`p-3 rounded-xl border text-xs font-cinzel font-bold text-left transition-all ${
+                            className={`p-3 rounded-xl border text-xs font-cinzel font-bold text-left transition-all cursor-pointer ${
                               cocooningSession === "juillet"
                                 ? "bg-purple-900/40 border-purple-400 text-purple-200 shadow-md"
                                 : "bg-black/30 border-purple-500/20 text-[#cabfa6] hover:text-white"
@@ -769,7 +1157,7 @@ export default function PaymentPage() {
                         </div>
                       </div>
 
-                      {/* Choix du mode : Unique vs Tranches */}
+                      {/* Choix du mode : Unique vs Échéances */}
                       <div>
                         <label className={labelClass}>
                           {lang === "fr" ? "Modalité de Règlement *" : "Payment Schedule *"}
@@ -778,7 +1166,7 @@ export default function PaymentPage() {
                           <button
                             type="button"
                             onClick={() => setCocooningOption("unique")}
-                            className={`p-3 rounded-xl border text-xs font-cinzel font-bold text-center transition-all ${
+                            className={`p-3 rounded-xl border text-xs font-cinzel font-bold text-center transition-all cursor-pointer ${
                               cocooningOption === "unique"
                                 ? "bg-[#C5A059]/20 border-[#C5A059] text-[#E9D18F]"
                                 : "bg-black/30 border-[#C5A059]/20 text-[#cabfa6]"
@@ -789,18 +1177,18 @@ export default function PaymentPage() {
                           <button
                             type="button"
                             onClick={() => setCocooningOption("tranches")}
-                            className={`p-3 rounded-xl border text-xs font-cinzel font-bold text-center transition-all ${
+                            className={`p-3 rounded-xl border text-xs font-cinzel font-bold text-center transition-all cursor-pointer ${
                               cocooningOption === "tranches"
                                 ? "bg-purple-900/40 border-purple-400 text-purple-200"
                                 : "bg-black/30 border-purple-500/20 text-[#cabfa6]"
                             }`}
                           >
-                            <span>{lang === "fr" ? "Paiement par Tranches (Jeton)" : "Installment Plan (Token)"}</span>
+                            <span>{lang === "fr" ? "Paiement par Échéances" : "Installment Plan"}</span>
                           </button>
                         </div>
                       </div>
 
-                      {/* Affichage visuel du Jeton et de l'échéancier si par tranches */}
+                      {/* Affichage visuel des Échéances et de l'échéancier si par tranches */}
                       {cocooningOption === "tranches" && (() => {
                         const months = getCocooningInstallmentMonths();
                         const monthlyPrice = Math.round(1500 / months);
@@ -809,36 +1197,36 @@ export default function PaymentPage() {
                             <div className="flex items-center justify-between text-xs font-cinzel">
                               <span className="text-purple-300 font-bold">
                                 {lang === "fr"
-                                  ? `🎟️ Jeton & Échéancier Activé : ${months} Mensualités`
-                                  : `🎟️ Token & Schedule Active: ${months} Installments`}
+                                  ? `📅 Échéancier Activé : ${months} Échéances`
+                                  : `📅 Schedule Active: ${months} Installments`}
                               </span>
                               <span className="text-[#E9D18F] font-bold font-mono">
                                 {monthlyPrice} € / {lang === "fr" ? "mois" : "mo"}
                               </span>
                             </div>
 
-                            {/* Badge des jetons mensuels */}
+                            {/* Badge des échéances mensuelles */}
                             <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
                               {Array.from({ length: months }).map((_, i) => (
                                 <div
                                   key={i}
-                                  className={`p-2 rounded-lg border text-center font-cinzel text-[10px] ${
+                                  className={`p-2.5 rounded-xl border text-center font-cinzel text-[10px] transition-all ${
                                     i === 0
-                                      ? "bg-gradient-to-r from-purple-700 to-[#C5A059] border-[#E9D18F] text-white font-bold shadow-md"
+                                      ? "bg-gradient-to-r from-purple-700 to-[#C5A059] border-[#E9D18F] text-white font-bold shadow-md scale-[1.03]"
                                       : "bg-black/40 border-purple-500/20 text-[#cabfa6]"
                                   }`}
                                 >
-                                  <span className="block font-bold">{lang === "fr" ? `Jeton #${i + 1}` : `Token #${i + 1}`}</span>
-                                  <span className="block font-mono text-[9px]">{monthlyPrice} €</span>
+                                  <span className="block font-bold">{lang === "fr" ? `Échéance #${i + 1}` : `Installment #${i + 1}`}</span>
+                                  <span className="block font-mono text-[9px] mt-0.5">{monthlyPrice} €</span>
                                 </div>
                               ))}
                             </div>
 
                             <p className="font-cormorant text-xs text-[#EDE4CF]/80 italic">
                               {lang === "fr" ? (
-                                <>* Le jeton calculé ci-dessus dépend du nombre de mois restant avant la fin des inscriptions ({cocooningSession === "janvier" ? "Septembre" : "Mars"}). Votre 1ère mensualité due aujourd&apos;hui est de <strong className="text-[#E9D18F]">{monthlyPrice} €</strong>.</>
+                                <>* L&apos;échéancier calculé ci-dessus dépend du nombre de mois restant avant la fin des inscriptions ({cocooningSession === "janvier" ? "Septembre" : "Mars"}). Votre 1ère échéance due aujourd&apos;hui est de <strong className="text-[#E9D18F]">{monthlyPrice} €</strong>.</>
                               ) : (
-                                <>* The token calculated above is based on the months remaining until registration ends ({cocooningSession === "janvier" ? "September" : "March"}). Your 1st installment due today is <strong className="text-[#E9D18F]">{monthlyPrice} €</strong>.</>
+                                <>* The schedule calculated above is based on the months remaining until registration ends ({cocooningSession === "janvier" ? "September" : "March"}). Your 1st installment due today is <strong className="text-[#E9D18F]">{monthlyPrice} €</strong>.</>
                               )}
                             </p>
                           </div>
