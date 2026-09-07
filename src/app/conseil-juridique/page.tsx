@@ -463,6 +463,11 @@ export default function ConseilJuridiquePage() {
               : "To make critical decisions, protect our rights and liability, take legal action, or defend against a lawsuit, we often require clear, expert legal counsel."}
           </p>
           <p>
+            {lang === "fr"
+              ? "Il nous sera agréable de vous recevoir à notre siège social à Paris, à nos agences de Creil, Compiègne ou Noyon (l'adresse vous sera indiquée sur demande) ou un tout autre lieu qui aurait votre convenance."
+              : "We would be pleased to welcome you at our headquarters in Paris, at our offices in Creil, Compiègne, or Noyon (the address will be provided upon request), or any other location of your convenience."}
+          </p>
+          <p>
             {lang === "fr" ? (
               <>
                 General Esquire est un cabinet de conseil de premier choix, qui offre en présentiel comme en distanciel, un service d'<span className="whitespace-nowrap font-medium text-[#E9D18F]">accompagnement juridique</span> complet qui varie suivant votre profil et vos besoins :
