@@ -198,6 +198,16 @@ const FAQ_ITEMS: FAQItem[] = [
     answerEn:
       "No extensive arrangements are needed, as all retreats are planned well in advance with total transparency.\n\nGeneral Esquire will guide you through all administrative and health requirements from relevant authorities. You may also bring back authentic handcrafted keepsakes procured in compliance with regulations.\n\nMinors are welcome when accompanied by a parent, as are travelers with disabilities upon medical clearance.",
   },
+  {
+    id: "mediateur-tourisme-voyage",
+    category: "sejour",
+    questionFr: "Que faire en cas de réclamation ou de litige lié à un séjour ?",
+    questionEn: "What should I do in the event of a complaint or dispute regarding a stay?",
+    answerFr:
+      "Après avoir saisi le service (après-vente, après voyage…) et à défaut de réponse satisfaisante ou en l’absence de réponse dans un délai de 60 jours, le client peut saisir le médiateur du Tourisme et du Voyage, dont les coordonnées et modalités de saisine sont disponibles sur son site : www.mtv.travel",
+    answerEn:
+      "After contacting customer service (after-sales, post-travel, etc.) and in the absence of a satisfactory response or failure to respond within 60 days, the customer may refer the matter to the Tourism and Travel Ombudsman (Médiateur du Tourisme et du Voyage), whose contact details and submission procedures are available on their website: www.mtv.travel",
+  },
 ];
 
 export default function FAQSection() {
@@ -235,8 +245,8 @@ export default function FAQSection() {
     },
     {
       id: "sejour",
-      labelFr: "Notre bonus",
-      labelEn: "Our Bonus",
+      labelFr: "Séjour & Détente",
+      labelEn: "Stay & Relaxation",
       count: FAQ_ITEMS.filter((i) => i.category === "sejour").length,
     },
   ];
