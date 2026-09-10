@@ -164,7 +164,7 @@ export default function HebergementPage() {
         <header className="w-full bg-[#131513] overflow-hidden">
           <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
             <Image
-              src="/images/Welcome.jpg"
+              src="/images/bienvenue.jpeg"
               alt="Bannière Hébergement — General Esquire"
               fill
               priority

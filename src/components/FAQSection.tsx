@@ -86,7 +86,7 @@ const FAQ_ITEMS: FAQItem[] = [
   },
   {
     id: "ce-que-je-gagne",
-    category: "pourquoi",
+    category: "tarifs",
     questionFr: "Qu’est-ce que je gagne avec General Esquire ?",
     questionEn: "What do I gain with General Esquire?",
     answerFr:
@@ -239,7 +239,7 @@ export default function FAQSection() {
     },
     {
       id: "tarifs",
-      labelFr: "Tarifs & Paiements",
+      labelFr: "Tarifications & Paiements",
       labelEn: "Pricing & Payments",
       count: FAQ_ITEMS.filter((i) => i.category === "tarifs").length,
     },

@@ -7,6 +7,7 @@ import { NewsItem } from "@/data/adminStore";
 import TickerBanner from "@/components/TickerBanner";
 import { getCloudNews } from "@/lib/cloudNewsStore";
 import TourismVideosSection from "@/components/TourismVideosSection";
+import CustomsAnnouncementCard from "@/components/CustomsAnnouncementCard";
 import FAQSection from "@/components/FAQSection";
 
 export default function PublicActualitesPage() {
@@ -110,6 +111,22 @@ export default function PublicActualitesPage() {
             <div className="h-[1px] w-20 bg-gradient-to-r from-transparent to-[#C5A059]" />
             <span className="text-[#C5A059]">◆</span>
             <div className="h-[1px] w-20 bg-gradient-to-l from-transparent to-[#C5A059]" />
+          </div>
+
+          {/* Raccourci vers le communiqué officiel des douanes */}
+          <div className="mt-6 flex justify-center">
+            <a
+              href="#formalites-douanieres-benin"
+              className="inline-flex items-center gap-2 font-cinzel text-xs text-[#E9D18F] bg-[#131513]/90 border border-[#C5A059]/40 hover:border-[#E9D18F] px-5 py-2 rounded-full transition-all duration-300 shadow-md hover:scale-105 group"
+            >
+              <span>🇧🇯</span>
+              <span className="group-hover:text-white transition-colors">
+                {lang === "fr"
+                  ? "Avis Officiel Douanes Béninoises : Formalités Voyageurs"
+                  : "Official Customs Notice: Guidelines for Travelers"}
+              </span>
+              <span className="text-[#C5A059] group-hover:translate-y-0.5 transition-transform">↓</span>
+            </a>
           </div>
         </div>
 
@@ -222,6 +239,9 @@ export default function PublicActualitesPage() {
             </p>
           </div>
         )}
+
+        {/* ─── Cadre Officiel : Formalités Douanières Bénin ─── */}
+        <CustomsAnnouncementCard />
 
         {/* Section Tourisme Vidéos — Découvrez le Bénin */}
         <TourismVideosSection />

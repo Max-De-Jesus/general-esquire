@@ -918,7 +918,7 @@ export default function ConseilJuridiquePage() {
                         className="accent-[#C5A059]"
                       />
                       <span className="text-[#FF6B35] font-semibold">
-                        {lang === "fr" ? "Oui (Sous 48h)" : "Yes (Within 48h)"}
+                        {lang === "fr" ? "Oui (sous 48h)" : "Yes (Within 48h)"}
                       </span>
                     </label>
 
