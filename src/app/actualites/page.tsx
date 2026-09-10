@@ -113,22 +113,22 @@ export default function PublicActualitesPage() {
             <div className="h-[1px] w-20 bg-gradient-to-l from-transparent to-[#C5A059]" />
           </div>
 
-          {/* Raccourci vers le communiqué officiel des douanes */}
-          <div className="mt-6 flex justify-center">
-            <a
-              href="#formalites-douanieres-benin"
-              className="inline-flex items-center gap-2 font-cinzel text-xs text-[#E9D18F] bg-[#131513]/90 border border-[#C5A059]/40 hover:border-[#E9D18F] px-5 py-2 rounded-full transition-all duration-300 shadow-md hover:scale-105 group"
-            >
-              <span>🇧🇯</span>
-              <span className="group-hover:text-white transition-colors">
-                {lang === "fr"
-                  ? "Avis Officiel Douanes Béninoises : Formalités Voyageurs"
-                  : "Official Customs Notice: Guidelines for Travelers"}
-              </span>
-              <span className="text-[#C5A059] group-hover:translate-y-0.5 transition-transform">↓</span>
-            </a>
-          </div>
         </div>
+
+        {/* ─── 1. CADRE OFFICIEL EN VEDETTE : FORMALITÉS DOUANIÈRES BÉNIN 🇧🇯 ─── */}
+        <CustomsAnnouncementCard />
+
+        {/* ─── 2. SECTION ACTUALITÉS & ARTICLES DU CABINET ─── */}
+        <div className="mt-16 pt-12 border-t border-[#C5A059]/30">
+          <div className="text-center mb-8">
+            <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.25em] uppercase border border-[#C5A059]/30 px-3.5 py-1 rounded-full bg-[#131513]/70 backdrop-blur-md inline-block mb-3">
+              {lang === "fr" ? "Communiqués & Événements" : "Press & Events"}
+            </span>
+            <h2 className="font-cinzel text-2xl sm:text-3xl font-bold text-[#E9D18F] uppercase tracking-wider mb-2">
+              {lang === "fr" ? "Toutes les Actualités du Cabinet" : "All Firm News & Updates"}
+            </h2>
+            <div className="h-[1px] w-16 bg-[#C5A059] mx-auto opacity-70"></div>
+          </div>
 
         {/* Filtres de catégories */}
         <div className="flex flex-wrap justify-center gap-3 mb-12">
@@ -239,9 +239,7 @@ export default function PublicActualitesPage() {
             </p>
           </div>
         )}
-
-        {/* ─── Cadre Officiel : Formalités Douanières Bénin ─── */}
-        <CustomsAnnouncementCard />
+        </div>
 
         {/* Section Tourisme Vidéos — Découvrez le Bénin */}
         <TourismVideosSection />

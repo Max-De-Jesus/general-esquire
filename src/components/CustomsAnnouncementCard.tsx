@@ -9,7 +9,7 @@ export default function CustomsAnnouncementCard() {
   return (
     <section
       id="formalites-douanieres-benin"
-      className="mt-16 sm:mt-24 pt-12 relative scroll-mt-24"
+      className="mt-4 mb-8 relative scroll-mt-24"
       aria-label="Communiqué officiel douanes béninoises"
     >
       {/* Halo d'ambiance dorée et verte discrète (rappel Bénin & prestige) */}
