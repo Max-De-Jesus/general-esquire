@@ -199,6 +199,48 @@ const FAQ_ITEMS: FAQItem[] = [
       "No extensive arrangements are needed, as all retreats are planned well in advance with total transparency.\n\nGeneral Esquire will guide you through all administrative and health requirements from relevant authorities. You may also bring back authentic handcrafted keepsakes procured in compliance with regulations.\n\nMinors are welcome when accompanied by a parent, as are travelers with disabilities upon medical clearance.",
   },
   {
+    id: "recommandations-entrer-benin",
+    category: "sejour",
+    questionFr: "Quelles sont à ce jour les recommandations pour entrer au Bénin ?",
+    questionEn: "What are the current recommendations for entering Benin?",
+    answerFr:
+      "Pour voyager l’esprit tranquille, la Direction Générale des Douanes Béninoises a publié la mise à jour des règles officielles applicables à l’entrée et à la sortie du territoire national. Voici les points essentiels à retenir pour réussir votre passage en douane :",
+    answerEn:
+      "To travel with complete peace of mind, the Benin Customs Directorate has issued updated official regulations for entry into and departure from the national territory. Here are the essential requirements for seamless customs clearance:",
+    bulletsFr: [
+      {
+        label: "1. Tolérances et franchises sur vos bagages",
+        text: "• Effets personnels en cours d'usage (ordinateur, téléphone, appareil photo, vêtements) : admis en franchise totale de droits et taxes sans formalité écrite.\n• Franchise de valeur à l'aéroport : jusqu'à 300 000 FCFA d'achats par adulte et 200 000 FCFA par mineur.\n• Compatriotes de la diaspora : possibilité d'apporter des cadeaux familiaux sans caractère commercial jusqu'à 300 000 FCFA (adulte) et 200 000 FCFA (mineur).\n• Tabacs et alcools (18 ans et plus uniquement) : 2 cartouches de cigarettes (< 20 paquets), 2 bouteilles de Champagne (< 1,5 L), ou 3 bouteilles de spiritueux.",
+      },
+      {
+        label: "2. Contrôle des devises et moyens de paiement",
+        text: "Pensez à déclarer par écrit vos liquidités à l'entrée comme à la sortie hors zone UMOA dès que vous atteignez les seuils suivants :\n• Billets de banque zone Franc CFA : déclaration obligatoire à partir de 10 000 000 FCFA.\n• Devises étrangères (EUR, USD, etc.) : déclaration obligatoire dès la contre-valeur de 5 000 000 FCFA.",
+      },
+      {
+        label: "3. Marchandises réglementées ou interdites",
+        text: "• Interdictions strictes : stupéfiants, substances illicites, publications ou supports à caractère obscène ou subversif.\n• Autorisations préalables requises : armes et munitions (Ministère de l'Intérieur), médicaments hors usage personnel avec ordonnance (Ministère de la Santé), denrées animales (Ministère de l'Agriculture et de l'Élevage).",
+      },
+    ],
+    bulletsEn: [
+      {
+        label: "1. Baggage allowances & duty-free entitlements",
+        text: "• Used personal effects (laptop, phone, camera, clothes): admitted fully duty and tax-free without written formalities.\n• Airport value allowance: up to 300,000 FCFA of purchases per adult and 200,000 FCFA per minor.\n• Diaspora travelers: allowance for non-commercial family gifts up to 300,000 FCFA (adult) and 200,000 FCFA (minor).\n• Tobacco and alcohol (18+ only): 2 cartons of cigarettes (< 20 packs), 2 bottles of Champagne (< 1.5 L), or 3 bottles of spirits.",
+      },
+      {
+        label: "2. Currency and payment controls",
+        text: "Declare your cash funds in writing upon entry or departure outside the WAEMU (UMOA) zone above the following thresholds:\n• CFA Franc banknotes: mandatory declaration from 10,000,000 FCFA.\n• Foreign currencies (EUR, USD, etc.): mandatory declaration from the equivalent of 5,000,000 FCFA.",
+      },
+      {
+        label: "3. Regulated and prohibited goods",
+        text: "• Strict prohibitions: narcotics, illicit substances, obscene or subversive publications.\n• Prior authorizations required: weapons and ammunition (Ministry of Interior), medicines outside personal prescribed use (Ministry of Health), animal products (Ministry of Agriculture & Livestock).",
+      },
+    ],
+    conclusionFr:
+      "Document d'information officielle émis en conformité avec la réglementation de la Direction Générale des Douanes Béninoises (DGD) et mis à disposition des voyageurs par General Esquire — Chrysalides pour un séjour sécurisé et serein.",
+    conclusionEn:
+      "Official customs advisory issued in accordance with Benin Customs Directorate (DGD) regulations and provided by General Esquire — Chrysalides for a safe, serene retreat.",
+  },
+  {
     id: "mediateur-tourisme-voyage",
     category: "sejour",
     questionFr: "Que faire en cas de réclamation ou de litige lié à un séjour ?",

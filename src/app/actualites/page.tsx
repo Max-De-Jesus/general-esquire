@@ -7,7 +7,6 @@ import { NewsItem } from "@/data/adminStore";
 import TickerBanner from "@/components/TickerBanner";
 import { getCloudNews } from "@/lib/cloudNewsStore";
 import TourismVideosSection from "@/components/TourismVideosSection";
-import CustomsAnnouncementCard from "@/components/CustomsAnnouncementCard";
 import FAQSection from "@/components/FAQSection";
 
 export default function PublicActualitesPage() {
@@ -115,11 +114,8 @@ export default function PublicActualitesPage() {
 
         </div>
 
-        {/* ─── 1. CADRE OFFICIEL EN VEDETTE : FORMALITÉS DOUANIÈRES BÉNIN 🇧🇯 ─── */}
-        <CustomsAnnouncementCard />
-
-        {/* ─── 2. SECTION ACTUALITÉS & ARTICLES DU CABINET ─── */}
-        <div className="mt-16 pt-12 border-t border-[#C5A059]/30">
+        {/* ─── SECTION ACTUALITÉS & ARTICLES DU CABINET ─── */}
+        <div className="mt-8 pt-6">
           <div className="text-center mb-8">
             <span className="font-cinzel text-xs text-[#C5A059] tracking-[0.25em] uppercase border border-[#C5A059]/30 px-3.5 py-1 rounded-full bg-[#131513]/70 backdrop-blur-md inline-block mb-3">
               {lang === "fr" ? "Communiqués & Événements" : "Press & Events"}
