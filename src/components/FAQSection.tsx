@@ -181,12 +181,12 @@ const FAQ_ITEMS: FAQItem[] = [
   {
     id: "annulation-remboursement",
     category: "tarifs",
-    questionFr: "Puis-je obtenir l’annulation et le remboursement d’un paiement ?",
-    questionEn: "Can I cancel and receive a refund?",
+    questionFr: "Puis-je obtenir l’annulation, le remboursement d’un paiement ou que faire en cas de litige ?",
+    questionEn: "Can I cancel, receive a refund, or what should I do in the event of a dispute?",
     answerFr:
-      "Bien évidemment, toute commande est annulable et remboursable à condition que cette demande ait été sollicitée suffisamment tôt, c’est-à-dire que General Esquire ou ses partenaires, par exemple un auxiliaire de justice engagé par nos soins ou l’agence de voyage ou tout autre prestataire dans le cadre du séjour, n’aient pas déjà engagé des dépenses dont ils ne peuvent obtenir compensation.",
+      "Bien évidemment, toute commande est annulable et remboursable à condition que cette demande ait été sollicitée suffisamment tôt, c’est-à-dire que General Esquire ou ses partenaires, par exemple un auxiliaire de justice engagé par nos soins ou l’agence de voyage ou tout autre prestataire dans le cadre du séjour, n’aient pas déjà engagé des dépenses dont ils ne peuvent obtenir compensation.\n\nEn cas de réclamation ou de litige, après avoir préalablement saisi notre service (après-vente, après voyage…) et à défaut de réponse satisfaisante ou en l’absence de réponse dans un délai de 60 jours, le client peut saisir le médiateur du Tourisme et du Voyage pour les prestations liées au séjour, dont les coordonnées et modalités de saisine sont disponibles sur son site : www.mtv.travel",
     answerEn:
-      "Yes, orders and bookings are cancellable and refundable provided the request is submitted before General Esquire or its partners (legal bailiffs, airlines, luxury travel providers) have incurred non-recoverable commitments and expenses.",
+      "Yes, orders and bookings are cancellable and refundable provided the request is submitted early enough—specifically, that General Esquire or its partners (such as a judicial officer instructed by us, the travel agency, or any retreat service provider) have not already incurred non-recoverable expenses.\n\nIn the event of a complaint or dispute, after contacting our customer service (after-sales, post-travel, etc.) and in the absence of a satisfactory response or failure to respond within 60 days, the customer may refer the matter to the Tourism and Travel Ombudsman for stay-related services, whose contact details and submission procedures are available on their website: www.mtv.travel",
   },
   {
     id: "dispositions-voyage",
@@ -228,7 +228,7 @@ const FAQ_ITEMS: FAQItem[] = [
       },
       {
         label: "2. Currency and payment controls",
-        text: "Declare your cash funds in writing upon entry or departure outside the WAEMU (UMOA) zone above the following thresholds:\n• CFA Franc banknotes: mandatory declaration from 10,000,000 FCFA.\n• Foreign currencies (EUR, USD, etc.): mandatory declaration from the equivalent of 5,000,000 FCFA.",
+        text: "Declare your cash funds in writing upon entry or departure outside the WAEMU (UMOA) zone above the following thresholds:\n• CFA Franc banknotes: mandatory declaration from 10,000,000 FCFA.\n• Foreign currencies (EUR, USD, etc.) : mandatory declaration from the equivalent of 5,000,000 FCFA.",
       },
       {
         label: "3. Regulated and prohibited goods",
@@ -239,16 +239,6 @@ const FAQ_ITEMS: FAQItem[] = [
       "Document d'information officielle émis en conformité avec la réglementation de la Direction Générale des Douanes Béninoises (DGD) et mis à disposition des voyageurs par General Esquire — Chrysalides pour un séjour sécurisé et serein.",
     conclusionEn:
       "Official customs advisory issued in accordance with Benin Customs Directorate (DGD) regulations and provided by General Esquire — Chrysalides for a safe, serene retreat.",
-  },
-  {
-    id: "mediateur-tourisme-voyage",
-    category: "sejour",
-    questionFr: "Que faire en cas de réclamation ou de litige lié à un séjour ?",
-    questionEn: "What should I do in the event of a complaint or dispute regarding a stay?",
-    answerFr:
-      "Après avoir saisi le service (après-vente, après voyage…) et à défaut de réponse satisfaisante ou en l’absence de réponse dans un délai de 60 jours, le client peut saisir le médiateur du Tourisme et du Voyage, dont les coordonnées et modalités de saisine sont disponibles sur son site : www.mtv.travel",
-    answerEn:
-      "After contacting customer service (after-sales, post-travel, etc.) and in the absence of a satisfactory response or failure to respond within 60 days, the customer may refer the matter to the Tourism and Travel Ombudsman (Médiateur du Tourisme et du Voyage), whose contact details and submission procedures are available on their website: www.mtv.travel",
   },
 ];
 
