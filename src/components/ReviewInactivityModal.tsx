@@ -17,114 +17,35 @@ export function openReviewModal() {
   }
 }
 
-// Durée d'inactivité avant affichage (5 minutes = 300 000 ms)
-const INACTIVITY_TIMEOUT_MS = 5 * 60 * 1000;
-
 export default function ReviewInactivityModal() {
   const { lang } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Déclencher l'ouverture de la modale
-  const triggerModal = useCallback((force = false) => {
+  // Déclencher l'ouverture uniquement lors d'un clic volontaire sur le bouton d'avis
+  const triggerModal = useCallback(() => {
     if (typeof window === "undefined") return;
-
-    if (!force) {
-      const dismissedAt = sessionStorage.getItem("esquire_review_modal_dismissed");
-      if (dismissedAt) {
-        const timeSinceDismissed = Date.now() - parseInt(dismissedAt, 10);
-        // Attendre au moins 5 minutes après fermeture pour un réaffichage automatique par timer
-        if (timeSinceDismissed < INACTIVITY_TIMEOUT_MS) {
-          return;
-        }
-      }
-    }
-
     setIsOpen(true);
     setIsClosing(false);
   }, []);
 
-  // Réinitialiser le timer d'inactivité (5 minutes sans interaction)
-  const resetInactivityTimer = useCallback(() => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    timeoutRef.current = setTimeout(() => {
-      triggerModal(false);
-    }, INACTIVITY_TIMEOUT_MS);
-  }, [triggerModal]);
-
   useEffect(() => {
-    // Écouter l'événement explicite d'ouverture (ex: clic sur le bouton "Donnez votre avis")
+    // Écouter exclusivement l'événement explicite d'ouverture (ex: clic sur le bouton "Donnez votre avis")
     const handleExplicitOpen = () => {
-      triggerModal(true);
+      triggerModal();
     };
     window.addEventListener(ESQUIRE_REVIEW_MODAL_EVENT, handleExplicitOpen);
 
-    // 1. Détection d'inactivité (5 minutes)
-    const activityEvents = [
-      "mousemove",
-      "mousedown",
-      "keydown",
-      "scroll",
-      "touchstart",
-      "pointermove",
-    ];
-
-    const handleUserActivity = () => {
-      resetInactivityTimer();
-    };
-
-    activityEvents.forEach((evt) => {
-      window.addEventListener(evt, handleUserActivity, { passive: true });
-    });
-
-    // Lancer le timer initial
-    resetInactivityTimer();
-
-    // 2. Détection ciblée quand le curseur monte vers la croix de fermeture de l'onglet (Zone haut du navigateur)
-    const handleTopTabIntent = (e: MouseEvent) => {
-      if (e.clientY <= 5 || (!e.relatedTarget && e.clientY <= 15)) {
-        triggerModal(true);
-      }
-    };
-
-    // 3. Détection de fermeture d'onglet du navigateur
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      triggerModal(true);
-      e.preventDefault();
-      e.returnValue = "";
-      return "";
-    };
-
-    document.documentElement.addEventListener("mouseleave", handleTopTabIntent);
-    window.addEventListener("mouseout", handleTopTabIntent);
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
     return () => {
       window.removeEventListener(ESQUIRE_REVIEW_MODAL_EVENT, handleExplicitOpen);
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      activityEvents.forEach((evt) => {
-        window.removeEventListener(evt, handleUserActivity);
-      });
-      document.documentElement.removeEventListener("mouseleave", handleTopTabIntent);
-      window.removeEventListener("mouseout", handleTopTabIntent);
-      window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [resetInactivityTimer, triggerModal]);
+  }, [triggerModal]);
 
   const handleClose = () => {
     setIsClosing(true);
-    if (typeof window !== "undefined") {
-      sessionStorage.setItem("esquire_review_modal_dismissed", Date.now().toString());
-    }
     setTimeout(() => {
       setIsOpen(false);
       setIsClosing(false);
-      resetInactivityTimer();
     }, 400);
   };
 
