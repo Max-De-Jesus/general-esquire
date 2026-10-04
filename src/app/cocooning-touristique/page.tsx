@@ -6,8 +6,8 @@ import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 import TickerBanner from "@/components/TickerBanner";
 import { supabase } from "@/lib/supabase";
-import { generateFormPDF, getFormPDFBase64 } from "@/utils/generateFormPDF";
-import { sendEmailNotification } from "@/lib/emailNotifier";
+import { generateFormPDF, generateAndDownloadFormPDF } from "@/utils/generateFormPDF";
+import { sendEmailNotification, ADMIN_NOTIFY_EMAIL } from "@/lib/emailNotifier";
 
 export default function CocooningTouristiquePage() {
   const { lang } = useLanguage();
@@ -94,12 +94,7 @@ export default function CocooningTouristiquePage() {
       registered_at: new Date().toISOString(),
     };
 
-    try {
-      await supabase.from("demandes_clients").insert([newDemande]);
-    } catch (err) {
-      console.warn("Supabase insert fallback:", err);
-    }
-
+    // 1. Sauvegarde locale (LocalStorage)
     try {
       const stored = JSON.parse(localStorage.getItem("ge_demandes_clients") || "[]");
       stored.unshift(newDemande);
@@ -108,13 +103,31 @@ export default function CocooningTouristiquePage() {
       console.error(err);
     }
 
-    // 3. Envoi direct automatique à generalesquire@proton.me
+    // 2. Sauvegarde Supabase (si accessible)
     try {
-      const pdfBase64Str = await getFormPDFBase64(pdfData);
-      await sendEmailNotification("generalesquire@proton.me", {
-        _subject: `Inscription Cocooning Touristique — ${fullName}`,
+      Promise.resolve(supabase.from("demandes_clients").insert([newDemande])).catch(() => {});
+    } catch (err) {
+      console.warn("Supabase insert fallback:", err);
+    }
+
+    // 3. Téléchargement immédiat du PDF sur la machine du client et récupération Base64
+    let pdfBase64Str = "";
+    let pdfFilename = `Inscription_Cocooning_${ref}.pdf`;
+    try {
+      const pdfRes = await generateAndDownloadFormPDF(pdfData);
+      pdfBase64Str = pdfRes.base64;
+      pdfFilename = pdfRes.filename;
+    } catch (pdfErr) {
+      console.warn("Erreur génération PDF:", pdfErr);
+    }
+
+    // 4. Envoi multi-canal officiel à contact@generalesquire.com avec PDF joint
+    try {
+      await sendEmailNotification(ADMIN_NOTIFY_EMAIL, {
+        _subject: `Inscription Cocooning Touristique - ${fullName}`,
         _replyto: formData.courriel,
         _attachment: pdfBase64Str,
+        _attachmentFilename: pdfFilename,
         "Nom complet": fullName,
         "Email": formData.courriel,
         "Téléphone": phone,
@@ -128,28 +141,8 @@ export default function CocooningTouristiquePage() {
       console.warn("Direct email dispatch warning:", mailErr);
     }
 
-    // 4. Secours mailto
-    const mailSubject = encodeURIComponent(`Inscription Cocooning Touristique — ${fullName}`);
-    const mailBody = encodeURIComponent(
-      `Bonjour General Esquire,\n\nUne nouvelle inscription pour le programme Cocooning Touristique a été transmise :\n\n` +
-      `Nom complet : ${fullName}\n` +
-      `Email : ${formData.courriel}\n` +
-      `Téléphone : ${phone}\n` +
-      `Profession : ${formData.profession}\n` +
-      `Nationalité : ${formData.nationalite}\n` +
-      `Adresse : ${formData.adresse}\n\n` +
-      `Présentation libre :\n${formData.presentationLibre}\n\n` +
-      `Date : ${new Date().toLocaleString("fr-FR")}`
-    );
-
-    // 5. Génération automatique du formulaire en version PDF pour le client et téléchargement
-    try {
-      await generateFormPDF(pdfData);
-    } catch (pdfErr) {
-      console.warn("Erreur génération PDF:", pdfErr);
-    }
-
     setFormSubmitted(true);
+
   };
 
   const handleDietToggle = (item: string) => {
