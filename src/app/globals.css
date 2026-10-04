@@ -162,7 +162,7 @@ input[type="date"]::-webkit-clear-button {
 
 /* ─── CHORÉGRAPHIE ET RESPONSIVE DE PANNEAU DE MENU (DESKTOP ET MOBILE) ─── */
 :root {
-  --duree-panneau: 12s;
+  --duree-panneau: 5s;
   --emeraude-premium: #0F4C2E;
   --emeraude-vif: #166534;
   --vert-neon: #2ECC71;
@@ -226,31 +226,31 @@ input[type="date"]::-webkit-clear-button {
 }
 
 .menu-panel-vs1.is-open::before {
-  animation: shimmerVert 2.4s ease-out forwards calc(var(--duree-panneau) * .92);
+  animation: shimmerVert 1.6s ease-out forwards calc(var(--duree-panneau) * .90);
 }
 
 .menu-panel-vs1.is-open .menu-panel__logo {
-  animation: revealUp .8s ease both calc(var(--duree-panneau) * .62);
+  animation: revealUp .5s ease both calc(var(--duree-panneau) * .55);
 }
 
 .menu-panel-vs1.is-open .menu-panel__titre {
-  animation: revealUp .7s ease both calc(var(--duree-panneau) * .70);
+  animation: revealUp .45s ease both calc(var(--duree-panneau) * .65);
 }
 
 .menu-panel-vs1.is-open .menu-liste li:nth-child(1) {
-  animation: revealUp .7s ease both calc(var(--duree-panneau) * .78);
+  animation: revealUp .45s ease both calc(var(--duree-panneau) * .74);
 }
 
 .menu-panel-vs1.is-open .menu-liste li:nth-child(2) {
-  animation: revealUp .7s ease both calc(var(--duree-panneau) * .84);
+  animation: revealUp .45s ease both calc(var(--duree-panneau) * .80);
 }
 
 .menu-panel-vs1.is-open .menu-liste li:nth-child(3) {
-  animation: revealUp .7s ease both calc(var(--duree-panneau) * .90);
+  animation: revealUp .45s ease both calc(var(--duree-panneau) * .86);
 }
 
 .menu-panel-vs1.is-open .menu-liste li:nth-child(4) {
-  animation: revealUp .7s ease both calc(var(--duree-panneau) * .96);
+  animation: revealUp .45s ease both calc(var(--duree-panneau) * .92);
 }
 
 /* ---- ADAPTATION LARGEUR ET BORDURE DESKTOP / LAPTOP (≥ 768px) ---- */
