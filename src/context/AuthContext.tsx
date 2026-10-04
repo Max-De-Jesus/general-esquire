@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase, Client } from "@/lib/supabase";
-import { sendEmailNotification } from "@/lib/emailNotifier";
+import { sendEmailNotification, ADMIN_NOTIFY_EMAIL } from "@/lib/emailNotifier";
 
 interface LocalAdminSession {
   email: string;
@@ -161,7 +161,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
             // Notification d'alerte à generalesquire@proton.me
             try {
-              await sendEmailNotification("generalesquire@proton.me", {
+              await sendEmailNotification(ADMIN_NOTIFY_EMAIL, {
                 _subject: `NOUVELLE INSCRIPTION CLIENT — ${fullName || email}`,
                 _replyto: email,
                 "Nom complet": fullName || email.split("@")[0],
@@ -224,7 +224,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         // Envoi automatique de la notification mail d'alerte admin à generalesquire@proton.me
         try {
-          await sendEmailNotification("generalesquire@proton.me", {
+          await sendEmailNotification(ADMIN_NOTIFY_EMAIL, {
             _subject: `NOUVELLE INSCRIPTION CLIENT — ${fullName}`,
             _replyto: email,
             "Nom complet": fullName,

@@ -6,8 +6,8 @@ import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 import TickerBanner from "@/components/TickerBanner";
 import { supabase } from "@/lib/supabase";
-import { generateFormPDF, getFormPDFBase64 } from "@/utils/generateFormPDF";
-import { sendEmailNotification } from "@/lib/emailNotifier";
+import { generateFormPDF, generateAndDownloadFormPDF } from "@/utils/generateFormPDF";
+import { sendEmailNotification, ADMIN_NOTIFY_EMAIL } from "@/lib/emailNotifier";
 
 export default function ConseilJuridiquePage() {
   const { lang } = useLanguage();
@@ -315,14 +315,7 @@ export default function ConseilJuridiquePage() {
       registered_at: new Date().toISOString(),
     };
 
-    // 1. Sauvegarde Supabase
-    try {
-      await supabase.from("demandes_clients").insert([newDemande]);
-    } catch (err) {
-      console.warn("Supabase insert fallback:", err);
-    }
-
-    // 2. Sauvegarde LocalStorage (garantie zéro perte)
+    // 1. Sauvegarde LocalStorage
     try {
       const stored = JSON.parse(localStorage.getItem("ge_demandes_clients") || "[]");
       stored.unshift(newDemande);
@@ -331,13 +324,31 @@ export default function ConseilJuridiquePage() {
       console.error(err);
     }
 
-    // 3. Envoi direct automatique à generalesquire@proton.me
+    // 2. Sauvegarde Supabase
     try {
-      const pdfBase64Str = await getFormPDFBase64(pdfData);
-      await sendEmailNotification("generalesquire@proton.me", {
-        _subject: `Nouvelle demande Conseil Juridique — ${fullName}`,
+      Promise.resolve(supabase.from("demandes_clients").insert([newDemande])).catch(() => {});
+    } catch (err) {
+      console.warn("Supabase insert fallback:", err);
+    }
+
+    // 3. Téléchargement immédiat du PDF sur la machine du client et récupération Base64
+    let pdfBase64Str = "";
+    let pdfFilename = `Demande_Conseil_Juridique_${ref}.pdf`;
+    try {
+      const pdfRes = await generateAndDownloadFormPDF(pdfData);
+      pdfBase64Str = pdfRes.base64;
+      pdfFilename = pdfRes.filename;
+    } catch (pdfErr) {
+      console.warn("Erreur génération PDF:", pdfErr);
+    }
+
+    // 4. Envoi multi-canal officiel à contact@generalesquire.com avec PDF joint
+    try {
+      await sendEmailNotification(ADMIN_NOTIFY_EMAIL, {
+        _subject: `Nouvelle demande Conseil Juridique - ${fullName}`,
         _replyto: formData.courriel,
         _attachment: pdfBase64Str,
+        _attachmentFilename: pdfFilename,
         "Nom complet": fullName,
         "Email": formData.courriel,
         "Téléphone": phone,
@@ -352,29 +363,8 @@ export default function ConseilJuridiquePage() {
       console.warn("Direct email dispatch warning:", mailErr);
     }
 
-    // 4. Secours mailto
-    const mailSubject = encodeURIComponent(`Nouvelle demande de contact — ${fullName}`);
-    const mailBody = encodeURIComponent(
-      `Bonjour General Esquire,\n\nUne nouvelle demande de contact / consultation a été soumise sur le site :\n\n` +
-      `Nom complet : ${fullName}\n` +
-      `Email : ${formData.courriel}\n` +
-      `Téléphone : ${phone}\n` +
-      `Structure / Organisation : ${formData.structure || 'Non spécifié'}\n` +
-      `Pays : ${formData.pays}\n` +
-      `Ville / Code Postal : ${formData.ville} (${formData.codePostal})\n` +
-      `Caractère urgent : ${formData.urgent === 'oui' ? 'OUI' : 'NON'}\n\n` +
-      `Description du besoin :\n${formData.probleme}\n\n` +
-      `Date : ${new Date().toLocaleString("fr-FR")}`
-    );
-
-    // 5. Génération automatique du formulaire en version PDF pour le client et l'administrateur
-    try {
-      await generateFormPDF(pdfData);
-    } catch (pdfErr) {
-      console.warn("Erreur génération PDF:", pdfErr);
-    }
-
     setFormSubmitted(true);
+
   };
 
   return (
