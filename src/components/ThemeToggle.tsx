@@ -2,7 +2,9 @@
 
 import React from "react";
 import { FrenchFlagIcon, EnglishFlagIcon } from "./Icons";
+import { usePathname } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
+import { isStandalonePage } from "@/lib/standalonePages";
 import { openReviewModal } from "./ReviewInactivityModal";
 
 export function ReviewButton({
@@ -12,7 +14,7 @@ export function ReviewButton({
   className?: string;
   showFullText?: boolean;
 }) {
-  const { lang, t } = useLanguage();
+  const { t } = useLanguage();
 
   return (
     <button
@@ -62,6 +64,10 @@ export function LanguageToggle() {
 
 export function FloatingControls() {
   const { lang, setLang } = useLanguage();
+  const pathname = usePathname();
+
+  // Pages présentées sous leur propre marque : pas de boutons General Esquire.
+  if (isStandalonePage(pathname)) return null;
   return (
     <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-center gap-2 sm:gap-2.5 pointer-events-auto">
       {/* Bouton Langue (Centré au-dessus) */}

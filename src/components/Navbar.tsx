@@ -8,6 +8,7 @@ import ServicesModal from "./ServicesModal";
 import { LanguageToggle } from "./ThemeToggle";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
+import { isStandalonePage } from "@/lib/standalonePages";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -24,8 +25,8 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Hide Navbar completely on the Home Page
-  if (pathname === "/") {
+  // Hide Navbar completely on the Home Page and on standalone-branded pages
+  if (pathname === "/" || isStandalonePage(pathname)) {
     return null;
   }
 

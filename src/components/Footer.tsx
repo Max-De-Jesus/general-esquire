@@ -2,10 +2,16 @@
 
 import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
+import { isStandalonePage } from "@/lib/standalonePages";
 
 export default function Footer() {
   const { lang } = useLanguage();
+  const pathname = usePathname();
+
+  // Pages présentées sous leur propre marque : pas d'habillage General Esquire.
+  if (isStandalonePage(pathname)) return null;
 
   return (
     <footer className="w-full bg-[#131513] border-t border-[#C5A059]/30 relative z-20 text-[#EDE4CF]">
