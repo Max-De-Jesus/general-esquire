@@ -154,8 +154,11 @@ $attachmentFilename = (string)($data['attachmentFilename'] ?? 'Formulaire_Genera
 // Nettoyage de la base64
 $pdfBinary = null;
 if (!empty($attachmentBase64) && is_string($attachmentBase64)) {
-    $cleanB64 = preg_replace('#^data:application/pdf;base64,#i', '', $attachmentBase64);
-    $cleanB64 = preg_replace('#^data:image/[a-z]+;base64,#i', '', $cleanB64);
+    // jsPDF produit « data:application/pdf;filename=generated.pdf;base64,… » :
+    // on retire tout préfixe data-URI, quels que soient ses paramètres.
+    // (L'ancien motif « data:application/pdf;base64, » ne le retirait pas :
+    // le décodage échouait et le PDF n'était jamais joint.)
+    $cleanB64 = preg_replace('#^data:[^,]*;base64,#i', '', $attachmentBase64);
     $cleanB64 = str_replace(' ', '+', trim($cleanB64));
     $pdfBinary = base64_decode($cleanB64, true);
     // On n'accepte qu'un vrai PDF, de taille raisonnable.
@@ -301,6 +304,8 @@ if (!empty($replyTo) && filter_var($replyTo, FILTER_VALIDATE_EMAIL) && $replyTo 
 
 echo json_encode([
     'success' => $mailSent,
-    'message' => $mailSent ? 'Notification transmise avec succès avec pièce jointe PDF.' : 'Traitement effectué.',
+    'message' => $mailSent
+        ? ('Notification transmise avec succès' . (!empty($pdfBinary) ? ' avec pièce jointe PDF.' : ' (sans pièce jointe).'))
+        : "Échec de l'envoi par le serveur de messagerie.",
     'hasAttachment' => !empty($pdfBinary)
 ]);

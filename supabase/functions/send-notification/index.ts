@@ -78,8 +78,8 @@ Deno.serve(async (req) => {
         let resendAttachments: Array<{ filename: string; content: string }> | undefined;
         if (typeof payload._attachment === "string") {
           const rawBase64 = (payload._attachment as string)
-            .replace(/^data:application\/pdf;base64,/, "")
-            .replace(/^data:image\/[a-z]+;base64,/, "")
+            // jsPDF : « data:application/pdf;filename=generated.pdf;base64,… »
+            .replace(/^data:[^,]*;base64,/i, "")
             .trim();
           if (rawBase64) {
             resendAttachments = [{ filename: "Formulaire_General_Esquire.pdf", content: rawBase64 }];
