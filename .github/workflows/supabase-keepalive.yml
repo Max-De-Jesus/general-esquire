@@ -1,0 +1,73 @@
+name: Maintien en activité de Supabase
+
+# Le plan gratuit de Supabase met le projet en pause après 7 jours sans
+# activité : actualités, formulaires et paiements tombent alors en panne.
+# Ce workflow interroge la base deux fois par semaine (écart maximal : 4 jours).
+#
+# Il ÉCHOUE si la base ne répond pas correctement : GitHub envoie alors un
+# email d'échec au propriétaire du dépôt. Un échec signifie « projet en pause
+# ou en panne » : le restaurer sur supabase.com.
+#
+# GitHub désactive les workflows planifiés d'un dépôt public après 60 jours
+# sans activité sur le dépôt. L'étape finale réactive ce workflow à chaque
+# exécution pour remettre ce compteur à zéro.
+#
+# Ce workflow ne déploie rien et ne touche pas au site.
+
+on:
+  schedule:
+    - cron: "17 6 * * 1,4" # lundi et jeudi, 06:17 UTC
+  workflow_dispatch: {} # lancement manuel : onglet Actions > Run workflow
+
+permissions:
+  contents: read
+  actions: write # uniquement pour la réactivation du workflow (voir plus haut)
+
+concurrency:
+  group: supabase-keepalive
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Interroger la base Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${SUPABASE_URL:-}" ] || [ -z "${SUPABASE_ANON_KEY:-}" ]; then
+            echo "::error::Secrets NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY absents."
+            exit 1
+          fi
+          # Vraie requête SQL (lecture d'une actualité publiée, autorisée par la RLS
+          # au rôle public) : c'est l'activité de la base qui empêche la pause.
+          status=""
+          for tentative in 1 2 3; do
+            status=$(curl -sS -m 30 -o reponse.json -w "%{http_code}" \
+              "${SUPABASE_URL%/}/rest/v1/actualites?select=id&limit=1" \
+              -H "apikey: ${SUPABASE_ANON_KEY}" \
+              -H "Authorization: Bearer ${SUPABASE_ANON_KEY}") || status="000"
+            [ "$status" = "200" ] && break
+            echo "Tentative $tentative : HTTP $status — nouvel essai dans 20 s"
+            sleep 20
+          done
+          if [ "$status" != "200" ]; then
+            echo "::error::Supabase ne répond pas (HTTP $status) : projet probablement en pause. Le restaurer sur https://supabase.com/dashboard"
+            exit 1
+          fi
+          lignes=$(python3 -c 'import json; print(len(json.load(open("reponse.json"))))')
+          if [ "$lignes" -lt 1 ]; then
+            echo "::error::La base répond mais aucune actualité publiée n'est lisible : requête sans effet probable, à vérifier."
+            exit 1
+          fi
+          echo "Supabase actif : HTTP 200, $lignes ligne lue."
+
+      - name: Garder ce workflow actif (limite GitHub des 60 jours)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api -X PUT "repos/${{ github.repository }}/actions/workflows/supabase-keepalive.yml/enable"
+          echo "Workflow réactivé."

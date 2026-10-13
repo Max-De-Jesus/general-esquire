@@ -66,7 +66,12 @@ nouvelle, enregistrée uniquement via `supabase secrets set`.
 4. `../migration_fedapay.sql` — colonnes FedaPay sur `paiements`.
 
 Toutes sont idempotentes. Les migrations 3 et 4 ont été vérifiées sur un
-PostgreSQL de test (26 contrôles d'accès, voir ADR 0002).
+PostgreSQL de test (26 contrôles d'accès, voir ADR 0002). Elles ont été
+**appliquées en production le 2026-10-13**, avec
+`supabase db query --linked -f <fichier>` depuis la racine du dépôt.
+
+La mise en pause automatique du projet est empêchée par
+`.github/workflows/supabase-keepalive.yml` (ADR 0003).
 
 ## Déploiement
 

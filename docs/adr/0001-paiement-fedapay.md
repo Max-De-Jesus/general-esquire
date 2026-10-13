@@ -58,7 +58,7 @@ Le projet touristique se déroule au Bénin. FedaPay est un agrégateur béninoi
 
 ## Mise en service (non faite à la date de l'ADR)
 
-1. Exécuter `supabase/migration_securite_rls.sql`, puis `supabase/migration_fedapay.sql`.
+1. ~~Exécuter `supabase/migration_securite_rls.sql`, puis `supabase/migration_fedapay.sql`.~~ **Fait le 2026-10-13.**
 2. `supabase secrets set FEDAPAY_SECRET_KEY=sk_sandbox_… FEDAPAY_ENV=sandbox FEDAPAY_WEBHOOK_SECRET=wh_… SITE_URL=https://generalesquire.com`
 3. `supabase functions deploy fedapay-checkout fedapay-status fedapay-webhook`
 4. Dans le tableau de bord FedaPay, déclarer le webhook `https://szyirafviiswvaooubzs.supabase.co/functions/v1/fedapay-webhook` et en recopier la clé de signature dans `FEDAPAY_WEBHOOK_SECRET`.
@@ -73,4 +73,4 @@ Le projet touristique se déroule au Bénin. FedaPay est un agrégateur béninoi
   - suppression de la garde de concurrence ;
   - suppression du contrôle de montant.
 - `node scripts/verifier-tarifs.mjs` : 22 prestations identiques. Un catalogue saboté est bien détecté.
-- **Non prouvé** : un paiement réel ou sandbox de bout en bout. Le projet Supabase était en pause (INACTIVE) et aucune clé FedaPay n'était disponible.
+- **Non prouvé** : un paiement réel ou sandbox de bout en bout. Aucune clé FedaPay n'est disponible et les fonctions FedaPay ne sont pas encore déployées.

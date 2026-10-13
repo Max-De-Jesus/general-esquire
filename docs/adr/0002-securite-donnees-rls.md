@@ -1,6 +1,6 @@
 # ADR 0002 — Modèle de sécurité des données et des notifications
 
-- **Statut** : accepté — demandé par le responsable du projet le 2026-10-13 (« règle tout et sécurise ») ; **migration SQL non encore appliquée** en production, car le projet Supabase est en pause.
+- **Statut** : accepté et **appliqué en production le 2026-10-13** (demandé par le responsable du projet : « règle tout et sécurise »).
 - **Date** : 2026-10-13
 
 ## Contexte : failles constatées et prouvées
@@ -9,7 +9,7 @@
 |---|---|---|
 | 1 | Clé Resend réelle encodée en base64 dans `src/lib/emailNotifier.ts`, donc livrée dans le JavaScript public | Clé présente dans le build de référence ; deux clés distinctes dans l'historique Git d'un dépôt **public** |
 | 2 | `clients` lisible et modifiable par tous (policies `USING (true)`) | Reproduit sur un PostgreSQL de test : le rôle `anon` lit toutes les fiches |
-| 3 | Mots de passe des clients stockés **en clair** (`clients.password_plain`), donc lisibles via la faille 2 | Reproduit : `anon` lit 2 mots de passe sur 2 |
+| 3 | Le code écrivait les mots de passe des clients **en clair** (`clients.password_plain`) | Reproduit sur la base de test. **En production, la colonne n'a jamais existé** : l'écriture échouait, aucun mot de passe n'y a été stocké (constat du 2026-10-13) |
 | 4 | `demandes_clients` et `activity_logs` sans RLS activée | Reproduit : `anon` lit les demandes |
 | 5 | Contournement de connexion : si la connexion Supabase échouait mais que l'email contenait « admin », une « session admin locale » était ouverte **sans vérifier le mot de passe** (`AuthContext.signIn`) | Lecture du code |
 | 6 | `public/api/send-mail.php` était un relais ouvert : destinataire libre, CORS `*`, injection d'en-têtes via `Reply-To` | Reproduit en local : l'ancien script accepte d'envoyer à une adresse externe depuis une origine étrangère |
@@ -37,12 +37,36 @@
    - `send-mail.php` : liste blanche de destinataires (boîtes du cabinet), contrôle d'origine, suppression des CR/LF dans les en-têtes, tailles bornées, limite de 8 envois par 10 minutes et par IP, champ piège.
    - `send-notification` : destinataire hors cabinet seulement avec un JWT administrateur, et HTML échappé.
 
+## État réel de la production au 2026-10-13 (avant migration)
+
+L'inspection de la base réelle, limitée aux métadonnées et aux comptages, a
+montré des policies **absentes de `schema.sql`** :
+
+- `Public Full Access Clients` et `Public Full Access Activity Logs` :
+  `FOR ALL USING (true)` pour le public. N'importe qui pouvait **lire,
+  modifier et supprimer** les fiches clients et le journal ;
+- `demandes_clients_admin_all` : `USING (true)` pour le public, malgré son nom.
+
+Avec la seule clé publique du site, on pouvait lire 11 fiches clients
+(nom, email, téléphone…), 14 demandes clients et 12 entrées du journal.
+La première version de la migration ne supprimait que des noms connus et
+aurait laissé ces policies en place. Un contrôle négatif sur une réplique de
+la production l'a prouvé (5 contrôles sur 26 en échec). La migration
+supprime désormais **toutes** les policies des tables applicatives avant de
+recréer l'ensemble.
+
+Après application, le public voit 0 client, 0 demande, 0 entrée de journal et
+0 paiement, mais toujours les 5 actualités publiées. Les données sont
+intactes (11 / 14 / 12 / 4 / 5). L'état des policies d'avant est sauvegardé
+hors dépôt dans `supabase/.temp/policies_avant_2026-10-13.csv`, au cas où
+un retour arrière serait nécessaire.
+
 ## Conséquences
 
 - L'espace admin du site (`/espace-securise-esquire`) exige un compte Supabase Auth réel, avec un email de la liste. L'ancien accès « local » ne fonctionne plus.
 - Le portail local `apps/admin`, qui n'est pas déployé, lit et écrit avec la clé anon. Il a besoin d'une session administrateur pour lire les données.
 - Les emails envoyés par l'admin aux clients (décisions de compte) passent uniquement par `send-notification`, avec le JWT admin. Le script PHP les refuse désormais.
-- Les mots de passe déjà stockés en clair ont pu être lus par n'importe qui. **Les comptes concernés doivent être considérés comme exposés** : il faut prévenir les clients ou leur demander de réinitialiser leur mot de passe. C'est une décision du cabinet.
+- Aucun mot de passe n'a été stocké en clair en production. En revanche, les **coordonnées** de 11 clients et le contenu de 14 demandes ont été lisibles publiquement, pendant une durée inconnue. Faut-il en informer les personnes concernées (RGPD, art. 33-34) ? C'est une décision du cabinet.
 
 ## Preuves au 2026-10-13
 
@@ -52,4 +76,4 @@
   - la faille a été reproduite **avant** migration.
 - Contrôle négatif : une policy sabotée (`USING (true)`) fait tomber exactement les 2 contrôles visés (24/26).
 - `send-mail.php` : 5 attaques refusées (origine étrangère, absence d'origine, destinataire externe, CR/LF, GET) et limite de débit active. Contrôle négatif sur l'ancienne version : elle acceptait le destinataire externe.
-- **Non prouvé** : l'état réel des policies sur la base de production, illisible tant que le projet Supabase est en pause.
+- Production, vérifiée par l'API publique après migration : 0 ligne lisible sur clients, demandes, journal et paiements, 18 policies attendues en place, triggers et colonnes FedaPay présents.

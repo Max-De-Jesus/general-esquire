@@ -28,10 +28,9 @@
 --
 -- Exécution : Supabase Dashboard > SQL Editor > coller > Run.
 -- Idempotente (rejouable). À exécuter APRÈS schema.sql.
--- ⚠️ La suppression de password_plain est définitive : c'est voulu, ces
---    mots de passe n'auraient jamais dû être stockés. Les clients concernés
---    doivent être considérés comme exposés (voir docs/adr/
---    0002-securite-donnees-rls.md).
+-- password_plain : supprimée si présente. En production, la colonne n'a
+-- jamais existé (constat du 2026-10-13) : instruction sans effet là-bas.
+-- Appliquée en production le 2026-10-13 (docs/adr/0002-securite-donnees-rls.md).
 -- ============================================================
 
 BEGIN;
@@ -76,30 +75,33 @@ ALTER TABLE public.temoignages      ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.demandes_clients ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.activity_logs    ENABLE ROW LEVEL SECURITY;
 
--- ─── 4. Suppression des policies permissives ───────────────
-DROP POLICY IF EXISTS "clients_public_insert"          ON public.clients;
-DROP POLICY IF EXISTS "clients_public_update"          ON public.clients;
-DROP POLICY IF EXISTS "clients_public_select"          ON public.clients;
-DROP POLICY IF EXISTS "demandes_clients_public_insert" ON public.demandes_clients;
-DROP POLICY IF EXISTS "demandes_clients_public_select" ON public.demandes_clients;
-DROP POLICY IF EXISTS "activity_logs_public_insert"    ON public.activity_logs;
-DROP POLICY IF EXISTS "activity_logs_public_select"    ON public.activity_logs;
+-- ─── 4. Suppression de TOUTES les policies existantes ───────
+-- La base de production contenait des policies absentes de schema.sql
+-- (constat du 2026-10-13 : « Public Full Access Clients » et
+-- « Public Full Access Activity Logs » en FOR ALL USING (true), et
+-- « demandes_clients_admin_all » en USING (true) pour public).
+-- Supprimer une liste de noms connus ne suffit donc pas : on supprime tout
+-- sur les tables applicatives, puis on recrée l'ensemble complet ci-dessous.
+DO $$
+DECLARE
+  pol RECORD;
+BEGIN
+  FOR pol IN
+    SELECT schemaname, tablename, policyname
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename IN ('actualites', 'clients', 'paiements', 'reservations', 'contacts',
+                        'rendez_vous', 'temoignages', 'demandes_clients', 'activity_logs')
+  LOOP
+    EXECUTE format('DROP POLICY %I ON %I.%I', pol.policyname, pol.schemaname, pol.tablename);
+  END LOOP;
+END $$;
 
--- (re)création idempotente des policies de ce fichier
-DROP POLICY IF EXISTS "actualites_admin_all"        ON public.actualites;
-DROP POLICY IF EXISTS "clients_admin_all"           ON public.clients;
-DROP POLICY IF EXISTS "clients_self_select"         ON public.clients;
-DROP POLICY IF EXISTS "clients_self_insert"         ON public.clients;
-DROP POLICY IF EXISTS "clients_self_update"         ON public.clients;
-DROP POLICY IF EXISTS "paiements_admin_all"         ON public.paiements;
-DROP POLICY IF EXISTS "paiements_self_select"       ON public.paiements;
-DROP POLICY IF EXISTS "reservations_admin_all"      ON public.reservations;
-DROP POLICY IF EXISTS "contacts_admin_all"          ON public.contacts;
-DROP POLICY IF EXISTS "rendez_vous_admin_all"       ON public.rendez_vous;
-DROP POLICY IF EXISTS "temoignages_admin_all"       ON public.temoignages;
-DROP POLICY IF EXISTS "demandes_clients_form_insert" ON public.demandes_clients;
-DROP POLICY IF EXISTS "demandes_clients_admin_all"  ON public.demandes_clients;
-DROP POLICY IF EXISTS "activity_logs_admin_all"     ON public.activity_logs;
+-- Policies publiques légitimes (identiques à schema.sql et à la production).
+CREATE POLICY "actualites_public_read"     ON public.actualites   FOR SELECT USING (is_published = true);
+CREATE POLICY "temoignages_public_read"    ON public.temoignages  FOR SELECT USING (is_approved = true);
+CREATE POLICY "contacts_public_insert"     ON public.contacts     FOR INSERT WITH CHECK (true);
+CREATE POLICY "reservations_public_insert" ON public.reservations FOR INSERT WITH CHECK (true);
 
 -- ─── 5. Policies ────────────────────────────────────────────
 -- Administrateurs : accès complet (lecture, écriture, suppression).
@@ -131,8 +133,6 @@ CREATE POLICY "paiements_self_select" ON public.paiements FOR SELECT TO authenti
 CREATE POLICY "demandes_clients_form_insert" ON public.demandes_clients FOR INSERT TO anon, authenticated
   WITH CHECK (true);
 
--- Policies conservées de schema.sql : actualites_public_read,
--- contacts_public_insert, reservations_public_insert, temoignages_public_read.
 
 -- ─── 6. Un client ne peut pas changer son statut ni son email ─
 CREATE OR REPLACE FUNCTION public.protect_client_fields()
