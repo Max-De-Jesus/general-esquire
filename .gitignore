@@ -46,3 +46,10 @@ next-env.d.ts
 
 # Formulaires PDF générés par les visiteurs : données personnelles, jamais dans le dépôt ni sur le site
 formulaire_*.pdf
+
+# Supabase CLI : fichiers locaux (projet lié, cache)
+supabase/.temp/
+supabase/.branches/
+
+# Lockfile généré par deno test/check en local (Edge Functions déployées sans lock)
+deno.lock

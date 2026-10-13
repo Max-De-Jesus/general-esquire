@@ -13,7 +13,7 @@ import { dirname, resolve } from "node:path";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const pagePath = resolve(here, "../src/app/paiement/page.tsx");
-const cataloguePath = resolve(process.argv[2] ?? resolve(here, "../../../supabase/functions/_shared/catalogue.ts"));
+const cataloguePath = resolve(process.argv[2] ?? resolve(here, "../supabase/functions/_shared/catalogue.ts"));
 
 if (!existsSync(cataloguePath)) {
   console.error(`ÉCHEC : catalogue serveur introuvable (${cataloguePath}).`);
