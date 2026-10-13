@@ -2,21 +2,16 @@
  * Module de notification e-mail transactionnelle multi-canal de General Esquire.
  * Canaux intégrés :
  * 1. Endpoint PHP natif LWS (/api/send-mail.php) pour distribution directe à contact@generalesquire.com (avec pièce jointe PDF)
- * 2. API directe Resend vers generalesquire@proton.me (avec pièce jointe PDF)
- * 3. Edge Function Supabase send-notification (si en ligne)
- * 4. Secours FormSubmit navigateur
+ * 2. Edge Function Supabase send-notification (Resend côté serveur, copie vers generalesquire@proton.me)
+ * 3. Secours FormSubmit navigateur
+ *
+ * Aucune clé d'API ne doit vivre ici : ce fichier est livré au navigateur.
+ * La clé Resend est un secret de l'Edge Function (`supabase secrets set RESEND_API_KEY=...`).
  */
 import { supabase } from "@/lib/supabase";
 
 export const ADMIN_NOTIFY_EMAIL = "contact@generalesquire.com";
 export const ADMIN_BACKUP_EMAIL = "generalesquire@proton.me";
-
-// Clé Resend sécurisée
-const DEFAULT_RESEND_KEY = typeof window !== "undefined"
-  ? atob("CLE_RESEND_REVOQUEE")
-  : Buffer.from("CLE_RESEND_REVOQUEE", "base64").toString("utf-8");
-
-const RESEND_API_KEY = process.env.NEXT_PUBLIC_RESEND_API_KEY || DEFAULT_RESEND_KEY;
 
 export interface EmailNotificationResult {
   success: boolean;
@@ -87,100 +82,7 @@ async function sendViaPhpMailer(
 }
 
 /**
- * Canal 2 : Envoi direct via API Resend vers le compte administrateur Proton
- * Inclut la pièce jointe PDF
- */
-async function sendViaResend(
-  payload: Record<string, unknown>
-): Promise<{ success: boolean; detail?: string }> {
-  try {
-    const subject = (payload._subject as string) || (payload.subject as string) || `[General Esquire] Notification - ${new Date().toLocaleDateString("fr-FR")}`;
-    const replyTo = (payload._replyto as string) || (payload.replyTo as string) || (payload["Email"] as string) || "contact@generalesquire.com";
-    const attachmentBase64 = (payload._attachment as string) || (payload.attachmentBase64 as string) || undefined;
-
-    const fieldsRows = Object.entries(payload)
-      .filter(([k]) => !k.startsWith("_") && !["subject", "replyTo", "attachmentBase64", "attachmentFilename"].includes(k))
-      .map(
-        ([k, v]) =>
-          `<tr><td style="padding:10px 14px;border-bottom:1px solid #eee;font-weight:bold;color:#131513;background:#faf8f5;width:35%;">${k}</td><td style="padding:10px 14px;border-bottom:1px solid #eee;color:#333;">${
-            typeof v === "object" ? JSON.stringify(v) : String(v)
-          }</td></tr>`
-      )
-      .join("");
-
-    const htmlContent = `
-      <div style="font-family:Arial,sans-serif;max-width:620px;margin:0 auto;border:1px solid #C5A059;border-radius:10px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.1);">
-        <div style="background-color:#131513;padding:22px;text-align:center;border-bottom:2px solid #C5A059;">
-          <h1 style="color:#E9D18F;margin:0;font-size:22px;letter-spacing:3px;">GENERAL ESQUIRE</h1>
-          <p style="color:#C5A059;margin:6px 0 0 0;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Cabinet de Conseil Juridique &amp; Chrysalides</p>
-        </div>
-        <div style="padding:26px;background-color:#ffffff;">
-          <h2 style="color:#131513;font-size:16px;margin-top:0;padding-bottom:12px;border-bottom:1px solid #eee;">${subject}</h2>
-          <table style="width:100%;border-collapse:collapse;margin-top:15px;font-size:14px;">
-            ${fieldsRows}
-          </table>
-        </div>
-        <div style="background-color:#f8f9fa;padding:14px;text-align:center;font-size:11px;color:#777;border-top:1px solid #eee;">
-          © ${new Date().getFullYear()} Cabinet General Esquire - Notification Transactionnelle Sécurisée
-        </div>
-      </div>
-    `;
-
-    const requestBody: Record<string, unknown> = {
-      from: "onboarding@resend.dev",
-      to: [ADMIN_BACKUP_EMAIL], // Compte de réception direct Proton
-      reply_to: replyTo,
-      subject: `[Notification General Esquire] ${subject.replace(/^\[General Esquire\]\s*/, "")}`,
-      html: htmlContent,
-    };
-
-    if (attachmentBase64) {
-      const cleanB64 = attachmentBase64
-        .replace(/^data:application\/pdf;base64,/, "")
-        .replace(/^data:image\/[a-z]+;base64,/, "")
-        .replace(/\s+/g, "");
-
-      if (cleanB64) {
-        requestBody.attachments = [
-          {
-            filename: (payload.attachmentFilename as string) || "Formulaire_General_Esquire.pdf",
-            content: cleanB64,
-          },
-        ];
-      }
-    }
-
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 7000);
-
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${RESEND_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestBody),
-      signal: controller.signal,
-    });
-
-    clearTimeout(timeoutId);
-
-    const resJson = await res.json().catch(() => ({}));
-    if (res.ok && resJson?.id) {
-      return { success: true, detail: `Délivré via Resend (ID: ${resJson.id})` };
-    }
-
-    return {
-      success: false,
-      detail: resJson?.message || `Statut ${res.status}`,
-    };
-  } catch (err) {
-    return { success: false, detail: String(err) };
-  }
-}
-
-/**
- * Canal 3 : Edge Function Supabase avec timeout strict
+ * Canal 2 : Edge Function Supabase avec timeout strict
  */
 async function sendViaSupabase(
   targetEmail: string,
@@ -206,7 +108,7 @@ async function sendViaSupabase(
 }
 
 /**
- * Canal 4 : Secours FormSubmit direct navigateur
+ * Canal 3 : Secours FormSubmit direct navigateur
  */
 async function directBrowserFallback(
   targetEmail: string,
@@ -272,9 +174,9 @@ export async function sendEmailNotification(
     sent = true;
   }
 
-  // Canal 2 : API directe Resend (vers Proton avec PDF - garantit la double réception)
-  const resendRes = await sendViaResend(payload);
-  if (resendRes.success) {
+  // Canal 2 : Edge Function Supabase (Resend côté serveur, copie Proton)
+  const supaRes = await sendViaSupabase(cleanEmail, payload);
+  if (supaRes.success) {
     sent = true;
   }
 
@@ -282,13 +184,7 @@ export async function sendEmailNotification(
     return true;
   }
 
-  // Canal 3 : Supabase Edge Function si disponible
-  const supaRes = await sendViaSupabase(cleanEmail, payload);
-  if (supaRes.success) {
-    return true;
-  }
-
-  // Canal 4 : Secours FormSubmit
+  // Canal 3 : Secours FormSubmit
   const fallback = await directBrowserFallback(cleanEmail, payload);
   return fallback.success;
 }
@@ -315,13 +211,9 @@ export async function testEmailNotification(
   const phpRes = await sendViaPhpMailer(cleanEmail, testPayload);
   channels.push({ channel: "PHP Mailer LWS (contact@generalesquire.com)", success: phpRes.success, detail: phpRes.detail });
 
-  // Test Canal 2 (Resend Direct)
-  const resendRes = await sendViaResend(testPayload);
-  channels.push({ channel: "Resend Direct API (generalesquire@proton.me)", success: resendRes.success, detail: resendRes.detail });
-
-  // Test Canal 3 (Supabase)
+  // Test Canal 2 (Supabase)
   const supaRes = await sendViaSupabase(cleanEmail, testPayload);
-  channels.push({ channel: "Supabase Edge Function", success: supaRes.success, detail: supaRes.detail });
+  channels.push({ channel: "Supabase Edge Function (Resend serveur)", success: supaRes.success, detail: supaRes.detail });
 
   const hasSuccess = channels.some((c) => c.success);
 

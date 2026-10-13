@@ -7,8 +7,10 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
 import EmployerPaymentGuide from "@/components/EmployerPaymentGuide";
-import { generateRIB_PDF } from "@/utils/generateFormPDF";
-import MollieCheckoutComponent from "@/components/MollieCheckout";
+// Moyens de paiement désactivés — paiements uniquement via FedaPay (docs/adr/0001-paiement-fedapay.md) :
+// import { generateRIB_PDF } from "@/utils/generateFormPDF";
+// import MollieCheckoutComponent from "@/components/MollieCheckout";
+import FedaPayCheckout from "@/components/FedaPayCheckout";
 
 /* ══════════════════════════════════════════════════════════════════
    SERVICE PRESETS — Tarifs & prestations par profil client
@@ -379,64 +381,110 @@ export default function PaymentPage() {
   const [cocooningSession, setCocooningSession] = useState<"janvier" | "juillet">("janvier");
 
   /* ── Payment UI state ── */
-  const [paymentMethod, setPaymentMethod] = useState<"mollie" | "virement">("mollie");
-  const [copiedField, setCopiedField] = useState<string | null>(null);
+  // Désactivé (Mollie / virement) — FedaPay est le seul moyen de paiement :
+  // const [paymentMethod, setPaymentMethod] = useState<"mollie" | "virement">("mollie");
+  // const [copiedField, setCopiedField] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [paymentPending, setPaymentPending] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [transactionRef, setTransactionRef] = useState("");
+  const [confirmedPayment, setConfirmedPayment] = useState<{
+    service: string;
+    amountEur: number;
+    amountXof: number;
+  } | null>(null);
   const [calculatedAmount, setCalculatedAmount] = useState(100);
 
-  /* ── Vérification automatique du retour après paiement Mollie ── */
+  /* ── Retour depuis FedaPay : /paiement/?fedapay_ref=<id paiement> ──
+     Le statut est relu côté serveur (fedapay-status), jamais déduit de l'URL. */
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const urlParams = new URLSearchParams(window.location.search);
-      const mollieId = urlParams.get("mollie_id");
-      const returnStatus = urlParams.get("status");
+    if (typeof window === "undefined") return;
+    const ref = new URLSearchParams(window.location.search).get("fedapay_ref");
+    if (!ref) return;
 
-      if (mollieId && (returnStatus === "return" || returnStatus === "simulated")) {
-        setIsProcessing(true);
-        supabase.functions
-          .invoke("mollie-status", {
-            body: { id: mollieId },
-          })
-          .then(({ data, error }) => {
-            if (!error && (data?.isPaid || data?.status === "paid")) {
-              setTransactionRef(mollieId);
-              setPaymentSuccess(true);
-            } else if (data?.status === "canceled" || data?.status === "expired") {
-              setPaymentError(
-                lang === "fr"
-                  ? "La transaction a été annulée ou a expiré."
-                  : "The transaction was canceled or expired."
-              );
-            } else if (returnStatus === "simulated") {
-              setTransactionRef(mollieId);
-              setPaymentSuccess(true);
-            }
-          })
-          .catch((err) => {
-            console.warn("Mollie return verify notice:", err);
-            if (returnStatus === "simulated") {
-              setTransactionRef(mollieId);
-              setPaymentSuccess(true);
-            }
-          })
-          .finally(() => setIsProcessing(false));
-      }
-    }
+    setIsProcessing(true);
+    supabase.functions
+      .invoke("fedapay-status", { body: { paiementId: ref } })
+      .then(({ data, error }) => {
+        if (error || !data?.status) {
+          setPaymentError(
+            lang === "fr"
+              ? "Impossible de vérifier votre paiement pour le moment. S'il a été débité, il sera confirmé automatiquement ; contactez-nous au besoin."
+              : "We could not verify your payment right now. If you were charged, it will be confirmed automatically; contact us if needed."
+          );
+          return;
+        }
+        setTransactionRef(data.reference || ref);
+        setConfirmedPayment({ service: data.service, amountEur: data.amountEur, amountXof: data.amountXof });
+        if (data.status === "Payé") {
+          setPaymentSuccess(true);
+        } else if (data.status === "En attente") {
+          setPaymentPending(true);
+        } else {
+          setPaymentError(
+            lang === "fr"
+              ? "Le paiement a été annulé ou refusé. Aucun montant n'a été encaissé."
+              : "The payment was canceled or declined. No amount was collected."
+          );
+        }
+      })
+      .finally(() => setIsProcessing(false));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleCopyText = (text: string, label: string) => {
-    try {
-      navigator.clipboard.writeText(text);
-      setCopiedField(label);
-      setTimeout(() => setCopiedField(null), 2000);
-    } catch {
-      // Fallback if clipboard API is unavailable
-    }
-  };
+  // ── Retour Mollie — désactivé (paiements uniquement via FedaPay (docs/adr/0001-paiement-fedapay.md)) ──
+//   /* ── Vérification automatique du retour après paiement Mollie ── */
+//   useEffect(() => {
+//     if (typeof window !== "undefined") {
+//       const urlParams = new URLSearchParams(window.location.search);
+//       const mollieId = urlParams.get("mollie_id");
+//       const returnStatus = urlParams.get("status");
+//
+//       if (mollieId && (returnStatus === "return" || returnStatus === "simulated")) {
+//         setIsProcessing(true);
+//         supabase.functions
+//           .invoke("mollie-status", {
+//             body: { id: mollieId },
+//           })
+//           .then(({ data, error }) => {
+//             if (!error && (data?.isPaid || data?.status === "paid")) {
+//               setTransactionRef(mollieId);
+//               setPaymentSuccess(true);
+//             } else if (data?.status === "canceled" || data?.status === "expired") {
+//               setPaymentError(
+//                 lang === "fr"
+//                   ? "La transaction a été annulée ou a expiré."
+//                   : "The transaction was canceled or expired."
+//               );
+//             } else if (returnStatus === "simulated") {
+//               setTransactionRef(mollieId);
+//               setPaymentSuccess(true);
+//             }
+//           })
+//           .catch((err) => {
+//             console.warn("Mollie return verify notice:", err);
+//             if (returnStatus === "simulated") {
+//               setTransactionRef(mollieId);
+//               setPaymentSuccess(true);
+//             }
+//           })
+//           .finally(() => setIsProcessing(false));
+//       }
+//     }
+//   // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, []);
+//
+//   // Copie des coordonnées bancaires — désactivé avec le virement :
+//   const handleCopyText = (text: string, label: string) => {
+// //     try {
+// //       navigator.clipboard.writeText(text);
+// //       setCopiedField(label);
+// //       setTimeout(() => setCopiedField(null), 2000);
+// //     } catch {
+// //       // Fallback if clipboard API is unavailable
+// //     }
+// //   };
 
   /* ── Auto-fill from auth ── */
   useEffect(() => {
@@ -539,12 +587,13 @@ export default function PaymentPage() {
     return "Mensuel";
   };
 
-  const getSubscriptionTimes = () => {
-    if (selectedServiceId === "chrys-stay" && cocooningOption === "tranches") {
-      return getCocooningInstallmentMonths();
-    }
-    return undefined;
-  };
+  // Nombre d'échéances transmis à Mollie (prop `times`) — désactivé avec Mollie :
+  // const getSubscriptionTimes = () => {
+  //   if (selectedServiceId === "chrys-stay" && cocooningOption === "tranches") {
+  //     return getCocooningInstallmentMonths();
+  //   }
+  //   return undefined;
+  // };
 
   /* ── Step validation ── */
   const canGoToStep2 = fullName.trim() !== "" && email.trim() !== "";
@@ -565,104 +614,107 @@ export default function PaymentPage() {
     if (currentStep > 1) setCurrentStep((s) => s - 1);
   };
 
-  /* ══════════════════════════════════════════════════════════════════
-     SUPABASE TRANSACTION HANDLER
-     ══════════════════════════════════════════════════════════════════ */
-  const submitTransaction = async (method: string, extraStatus = "Payé") => {
-    setIsProcessing(true);
-    setPaymentError(null);
-
-    try {
-      // 1. Call secure Supabase Edge Function to register client & payment, bypass RLS safely, and notify firm email
-      const { data, error } = await supabase.functions.invoke("register-payment", {
-        body: {
-          fullName,
-          email,
-          phone,
-          profileType,
-          serviceName: getSelectedServiceText(),
-          amount: calculatedAmount,
-          extraStatus,
-          method,
-          isSubscriptionService,
-          frequency: getSubscriptionFrequency(),
-          country,
-          address,
-        },
-      });
-
-      if (!error && data && data.transactionRef) {
-        setTransactionRef(data.transactionRef);
-        setPaymentSuccess(true);
-        return;
-      }
-
-      // 2. Client-side fallback if API response is unusual
-      const fallbackRef = "PAY-" + Math.floor(100000 + Math.random() * 900000);
-      try {
-        let clientUuid = null;
-        const { data: existingClients } = await supabase
-          .from("clients")
-          .select("id")
-          .eq("email", email)
-          .limit(1);
-
-        if (existingClients && existingClients.length > 0) {
-          clientUuid = existingClients[0].id;
-        } else {
-          const { data: newClient } = await supabase
-            .from("clients")
-            .insert({
-              full_name: fullName,
-              email: email,
-              phone: phone || null,
-              profile_type: profileType,
-              requested_service: getSelectedServiceText() || "Prestation de service",
-              status: "Nouveau",
-            })
-            .select()
-            .single();
-
-          if (newClient) clientUuid = newClient.id;
-        }
-
-        await supabase.from("paiements").insert({
-          client_id: clientUuid,
-          client_name: fullName,
-          client_email: email,
-          service: getSelectedServiceText() + (isSubscriptionService ? ` [Abonnement Récurrent ${getSubscriptionFrequency()}]` : ""),
-          amount: calculatedAmount,
-          currency: "EUR",
-          status: extraStatus,
-          payment_method: method,
-          paid_at: extraStatus === "Payé" ? new Date().toISOString() : null,
-          notes: `Paiement en ligne via interface client. Réf: ${fallbackRef}`,
-        });
-      } catch (clientDbErr) {
-        console.warn("Notice: Client-side Supabase RLS fallback active (bypassed smoothly):", clientDbErr);
-      }
-
-      setTransactionRef(fallbackRef);
-      setPaymentSuccess(true);
-    } catch (err: unknown) {
-      console.warn("Graceful payment registration fallback activated:", err);
-      const fallbackRef = "PAY-" + Math.floor(100000 + Math.random() * 900000);
-      setTransactionRef(fallbackRef);
-      setPaymentSuccess(true);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  /* ── Mollie handler ── */
-  const handleMollieSuccess = async (details: { reference: string; pspReference?: string; method?: string }) => {
-    await submitTransaction(details.method || "Mollie (Carte Bancaire / Apple Pay)", "Payé");
-  };
-
-  /* ── Virement handler ── */
-  const handleVirementConfirm = async () => {
-    await submitTransaction("Virement", "En attente");
-  };
+  // Enregistrement Mollie / virement — désactivé (paiements uniquement via FedaPay (docs/adr/0001-paiement-fedapay.md)).
+  // Ce code affichait « paiement réussi » même en cas d'échec (repli silencieux) ;
+  // ne pas le réactiver tel quel.
+//   /* ══════════════════════════════════════════════════════════════════
+//      SUPABASE TRANSACTION HANDLER
+//      ══════════════════════════════════════════════════════════════════ */
+//   const submitTransaction = async (method: string, extraStatus = "Payé") => {
+//     setIsProcessing(true);
+//     setPaymentError(null);
+//
+//     try {
+//       // 1. Call secure Supabase Edge Function to register client & payment, bypass RLS safely, and notify firm email
+//       const { data, error } = await supabase.functions.invoke("register-payment", {
+//         body: {
+//           fullName,
+//           email,
+//           phone,
+//           profileType,
+//           serviceName: getSelectedServiceText(),
+//           amount: calculatedAmount,
+//           extraStatus,
+//           method,
+//           isSubscriptionService,
+//           frequency: getSubscriptionFrequency(),
+//           country,
+//           address,
+//         },
+//       });
+//
+//       if (!error && data && data.transactionRef) {
+//         setTransactionRef(data.transactionRef);
+//         setPaymentSuccess(true);
+//         return;
+//       }
+//
+//       // 2. Client-side fallback if API response is unusual
+//       const fallbackRef = "PAY-" + Math.floor(100000 + Math.random() * 900000);
+//       try {
+//         let clientUuid = null;
+//         const { data: existingClients } = await supabase
+//           .from("clients")
+//           .select("id")
+//           .eq("email", email)
+//           .limit(1);
+//
+//         if (existingClients && existingClients.length > 0) {
+//           clientUuid = existingClients[0].id;
+//         } else {
+//           const { data: newClient } = await supabase
+//             .from("clients")
+//             .insert({
+//               full_name: fullName,
+//               email: email,
+//               phone: phone || null,
+//               profile_type: profileType,
+//               requested_service: getSelectedServiceText() || "Prestation de service",
+//               status: "Nouveau",
+//             })
+//             .select()
+//             .single();
+//
+//           if (newClient) clientUuid = newClient.id;
+//         }
+//
+//         await supabase.from("paiements").insert({
+//           client_id: clientUuid,
+//           client_name: fullName,
+//           client_email: email,
+//           service: getSelectedServiceText() + (isSubscriptionService ? ` [Abonnement Récurrent ${getSubscriptionFrequency()}]` : ""),
+//           amount: calculatedAmount,
+//           currency: "EUR",
+//           status: extraStatus,
+//           payment_method: method,
+//           paid_at: extraStatus === "Payé" ? new Date().toISOString() : null,
+//           notes: `Paiement en ligne via interface client. Réf: ${fallbackRef}`,
+//         });
+//       } catch (clientDbErr) {
+//         console.warn("Notice: Client-side Supabase RLS fallback active (bypassed smoothly):", clientDbErr);
+//       }
+//
+//       setTransactionRef(fallbackRef);
+//       setPaymentSuccess(true);
+//     } catch (err: unknown) {
+//       console.warn("Graceful payment registration fallback activated:", err);
+//       const fallbackRef = "PAY-" + Math.floor(100000 + Math.random() * 900000);
+//       setTransactionRef(fallbackRef);
+//       setPaymentSuccess(true);
+//     } finally {
+//       setIsProcessing(false);
+//     }
+//   };
+//
+//   /* ── Mollie handler ── */
+//   const handleMollieSuccess = async (details: { reference: string; pspReference?: string; method?: string }) => {
+//     await submitTransaction(details.method || "Mollie (Carte Bancaire / Apple Pay)", "Payé");
+//   };
+//
+//   /* ── Virement handler ── */
+//   const handleVirementConfirm = async () => {
+//     await submitTransaction("Virement", "En attente");
+//   };
 
   /* ══════════════════════════════════════════════════════════════════
      STYLE CONSTANTS
@@ -755,15 +807,17 @@ export default function PaymentPage() {
             <p className="font-cormorant text-lg text-[#EDE4CF]/90 mb-6 leading-relaxed">
               {lang === "fr" ? (
                 <>
-                  Merci, <strong>{fullName}</strong>. Votre transaction de{" "}
-                  <strong className="text-[#E9D18F]">{calculatedAmount.toLocaleString()} €</strong> a été traitée
-                  avec succès. Un email de confirmation a été transmis à l&apos;adresse <strong>{email}</strong>.
+                  Merci. Votre règlement de{" "}
+                  <strong className="text-[#E9D18F]">{(confirmedPayment?.amountEur ?? calculatedAmount).toLocaleString("fr-FR")} €</strong>
+                  {confirmedPayment && <> ({confirmedPayment.amountXof.toLocaleString("fr-FR")} FCFA)</>} a été confirmé par FedaPay.
+                  {confirmedPayment?.service && <> Prestation : <strong>{confirmedPayment.service}</strong>.</>}
                 </>
               ) : (
                 <>
-                  Thank you, <strong>{fullName}</strong>. Your transaction of{" "}
-                  <strong className="text-[#E9D18F]">{calculatedAmount.toLocaleString()} €</strong> has been processed
-                  successfully. A confirmation email has been sent to <strong>{email}</strong>.
+                  Thank you. Your payment of{" "}
+                  <strong className="text-[#E9D18F]">{(confirmedPayment?.amountEur ?? calculatedAmount).toLocaleString("en-GB")} €</strong>
+                  {confirmedPayment && <> ({confirmedPayment.amountXof.toLocaleString("en-GB")} FCFA)</>} has been confirmed by FedaPay.
+                  {confirmedPayment?.service && <> Service: <strong>{confirmedPayment.service}</strong>.</>}
                 </>
               )}
             </p>
@@ -775,18 +829,12 @@ export default function PaymentPage() {
               </div>
               <div className="flex justify-between mb-2">
                 <span>{lang === "fr" ? "Moyen utilisé :" : "Payment Method:"}</span>
-                <span>
-                  {paymentMethod === "mollie"
-                    ? (lang === "fr" ? "Carte Bancaire / Apple Pay (Mollie)" : "Credit Card / Apple Pay (Mollie)")
-                    : (lang === "fr" ? "Virement Bancaire" : "Bank Transfer")}
-                </span>
+                <span>FedaPay (Mobile Money / {lang === "fr" ? "Carte" : "Card"})</span>
               </div>
               <div className="flex justify-between">
                 <span>{lang === "fr" ? "Statut :" : "Status:"}</span>
-                <span className={paymentMethod === "virement" ? "text-amber-400" : "text-emerald-400"}>
-                  {paymentMethod === "virement"
-                    ? (lang === "fr" ? "En attente de réception" : "Pending reception")
-                    : (lang === "fr" ? "Encaissé & Échéance Enregistrée" : "Cleared & Installment Recorded")}
+                <span className="text-emerald-400">
+                  {lang === "fr" ? "Encaissé" : "Cleared"}
                 </span>
               </div>
             </div>
@@ -798,8 +846,36 @@ export default function PaymentPage() {
               {lang === "fr" ? "Retour à l'accueil" : "Back to Home"}
             </Link>
           </div>
+        ) : isProcessing || paymentPending ? (
+          /* ═══ VÉRIFICATION / PAIEMENT EN COURS DE CONFIRMATION ═══ */
+          <div className="bg-[#131513] border border-[#C5A059]/60 rounded-3xl p-8 md:p-12 text-center max-w-2xl mx-auto shadow-2xl">
+            <h2 className="font-cinzel text-xl md:text-2xl font-bold text-[#E9D18F] mb-4 tracking-wider uppercase">
+              {isProcessing
+                ? (lang === "fr" ? "Vérification du paiement…" : "Verifying payment…")
+                : (lang === "fr" ? "Paiement en cours de confirmation" : "Payment being confirmed")}
+            </h2>
+            {paymentPending && (
+              <p className="font-cormorant text-lg text-[#EDE4CF]/90 mb-6 leading-relaxed">
+                {lang === "fr"
+                  ? "FedaPay n'a pas encore confirmé votre règlement (cas fréquent avec Mobile Money). Il sera enregistré automatiquement dès confirmation ; vous pouvez actualiser cette page dans quelques minutes."
+                  : "FedaPay has not confirmed your payment yet (common with Mobile Money). It will be recorded automatically once confirmed; you can refresh this page in a few minutes."}
+              </p>
+            )}
+            {paymentPending && (
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
+                className="inline-block px-8 py-3 rounded-full font-cinzel text-xs font-bold tracking-widest text-black bg-gradient-to-r from-[#C5A059] to-[#E9D18F] transition-all uppercase cursor-pointer"
+              >
+                {lang === "fr" ? "Actualiser" : "Refresh"}
+              </button>
+            )}
+          </div>
         ) : (
           <>
+            {paymentError && currentStep === 1 && (
+              <p role="alert" className="text-red-400 font-cormorant text-base text-center mb-6">{paymentError}</p>
+            )}
             {/* Guide officiel des consignes de paiement */}
             <EmployerPaymentGuide className="mb-8" />
 
@@ -1418,7 +1494,9 @@ export default function PaymentPage() {
                     </div>
                   </div>
 
-                  {/* Bouton de Téléchargement du RIB officiel pour virement compte à compte */}
+                  {/* ═══ DÉSACTIVÉ — téléchargement du RIB / virement — paiements uniquement via FedaPay (docs/adr/0001-paiement-fedapay.md)
+                     (code conservé en commentaire ; les « * / » internes remplacent des fins de commentaire)
+                  {/* Bouton de Téléchargement du RIB officiel pour virement compte à compte * /}
                   <div className="p-4 rounded-2xl bg-black/40 border border-[#C5A059]/30 flex flex-col sm:flex-row items-center justify-between gap-3">
                     <div>
                       <span className="font-cinzel text-xs text-[#E9D18F] font-bold block uppercase tracking-wider">
@@ -1437,6 +1515,7 @@ export default function PaymentPage() {
                       <span>{lang === "fr" ? "Télécharger notre RIB (PDF)" : "Download Bank RIB (PDF)"}</span>
                     </button>
                   </div>
+                  ═══ FIN DU BLOC DÉSACTIVÉ ═══ */}
 
                   {/* Total */}
                   <div className="bg-gradient-to-r from-[#C5A059]/[0.06] to-transparent border border-[#C5A059]/25 rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
@@ -1506,9 +1585,30 @@ export default function PaymentPage() {
                     </span>
                   </div>
 
-                  {/* Payment method selector tabs (Mollie vs Virement) */}
+                  {/* ── FedaPay : seul moyen de paiement en ligne ── */}
+                  <FedaPayCheckout
+                    choix={{
+                      serviceId: selectedServiceId,
+                      customPrice,
+                      translationPages,
+                      isUrgent,
+                      cocooningOption,
+                      cocooningSession,
+                    }}
+                    estimatedAmountEur={calculatedAmount}
+                    fullName={fullName}
+                    phone={phone}
+                    country={country}
+                    address={address}
+                    isSubscriptionService={isSubscriptionService}
+                    lang={lang}
+                  />
+
+                  {/* ═══ DÉSACTIVÉ — Mollie (carte / Apple Pay) et virement bancaire — paiements uniquement via FedaPay (docs/adr/0001-paiement-fedapay.md)
+                     (code conservé en commentaire ; les « * / » internes remplacent des fins de commentaire)
+                  {/* Payment method selector tabs (Mollie vs Virement) * /}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* Tab Mollie (Carte Bancaire, Apple Pay & Google Pay) */}
+                    {/* Tab Mollie (Carte Bancaire, Apple Pay & Google Pay) * /}
                     <button
                       type="button"
                       onClick={() => setPaymentMethod("mollie")}
@@ -1539,7 +1639,7 @@ export default function PaymentPage() {
                       )}
                     </button>
 
-                    {/* Tab Virement Bancaire */}
+                    {/* Tab Virement Bancaire * /}
                     <button
                       type="button"
                       onClick={() => setPaymentMethod("virement")}
@@ -1571,7 +1671,7 @@ export default function PaymentPage() {
                     </button>
                   </div>
 
-                  {/* ── Mollie Gateway (Cartes Bancaires, Apple Pay, Google Pay, SEPA) ── */}
+                  {/* ── Mollie Gateway (Cartes Bancaires, Apple Pay, Google Pay, SEPA) ── * /}
                   {paymentMethod === "mollie" && (
                     <MollieCheckoutComponent
                       amount={calculatedAmount}
@@ -1589,7 +1689,7 @@ export default function PaymentPage() {
                     />
                   )}
 
-                  {/* ── Virement Bancaire ── */}
+                  {/* ── Virement Bancaire ── * /}
                   {paymentMethod === "virement" && (
                     <div className="space-y-5 animate-fadeIn">
                       <div className="bg-[#131513] border border-[#C5A059]/30 rounded-2xl p-5 md:p-6 space-y-4 shadow-xl">
@@ -1599,7 +1699,7 @@ export default function PaymentPage() {
                         </h4>
 
                         <div className="space-y-3 font-cinzel text-xs tracking-wider">
-                          {/* Titulaire du compte */}
+                          {/* Titulaire du compte * /}
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl bg-black/40 border border-[#C5A059]/15">
                             <div>
                               <span className="text-[#cabfa6] text-[10px] uppercase block">{lang === "fr" ? "Titulaire du compte :" : "Account Holder:"}</span>
@@ -1614,7 +1714,7 @@ export default function PaymentPage() {
                             </button>
                           </div>
 
-                          {/* IBAN */}
+                          {/* IBAN * /}
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl bg-black/40 border border-[#C5A059]/15">
                             <div>
                               <span className="text-[#cabfa6] text-[10px] uppercase block">IBAN :</span>
@@ -1629,7 +1729,7 @@ export default function PaymentPage() {
                             </button>
                           </div>
 
-                          {/* BIC */}
+                          {/* BIC * /}
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl bg-black/40 border border-[#C5A059]/15">
                             <div>
                               <span className="text-[#cabfa6] text-[10px] uppercase block">BIC / SWIFT :</span>
@@ -1644,7 +1744,7 @@ export default function PaymentPage() {
                             </button>
                           </div>
 
-                          {/* Banque Partenaire */}
+                          {/* Banque Partenaire * /}
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl bg-black/40 border border-[#C5A059]/15">
                             <div>
                               <span className="text-[#cabfa6] text-[10px] uppercase block">{lang === "fr" ? "Banque Partenaire :" : "Partner Bank:"}</span>
@@ -1655,7 +1755,7 @@ export default function PaymentPage() {
                             </span>
                           </div>
 
-                          {/* Motif / Référence */}
+                          {/* Motif / Référence * /}
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl bg-black/40 border border-[#C5A059]/15">
                             <div>
                               <span className="text-[#cabfa6] text-[10px] uppercase block">{lang === "fr" ? "Motif / Libellé de virement :" : "Payment Reference:"}</span>
@@ -1673,7 +1773,7 @@ export default function PaymentPage() {
                           </div>
                         </div>
 
-                        {/* Download RIB Button */}
+                        {/* Download RIB Button * /}
                         <div className="pt-2">
                           <button
                             type="button"
@@ -1684,7 +1784,7 @@ export default function PaymentPage() {
                           </button>
                         </div>
 
-                        {/* Virement International Notice */}
+                        {/* Virement International Notice * /}
                         <div className="bg-black/30 border border-[#C5A059]/20 rounded-xl p-3.5 font-cormorant text-xs text-[#cabfa6] space-y-1">
                           <span className="font-cinzel text-[10px] text-[#C5A059] font-bold uppercase tracking-wider block">
                             {lang === "fr" ? "🌐 Virement International (Réseau Swift)" : "🌐 International Wire Transfer (Swift Network)"}
@@ -1709,6 +1809,7 @@ export default function PaymentPage() {
                       </button>
                     </div>
                   )}
+                  ═══ FIN DU BLOC DÉSACTIVÉ ═══ */}
 
                   {paymentError && (
                     <p className="text-red-400 font-cormorant text-sm text-center">{paymentError}</p>

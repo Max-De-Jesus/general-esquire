@@ -80,19 +80,25 @@ export default function EmployerPaymentGuide({ className = "" }: { className?: s
                 {lang === "fr" ? (
                   <>
                     Si c’est le conseil juridique, vous devrez entrer vos informations personnelles, et sélectionner votre catégorie : professionnel du droit, institution publique, chef d’entreprise ou simple particulier.<br />
-                    En fonction de votre sélection, vous pourrez souscrire un abonnement annuel ou mensuel, ou faire un paiement ponctuel. Vous pouvez aussi télécharger notre RIB pour nous faire un virement de compte à compte (recommandé pour la facturation de gré à gré).
+                    En fonction de votre sélection, vous pourrez régler une échéance d’abonnement (annuel, trimestriel ou mensuel) ou faire un paiement ponctuel.
+                    {/* Ancien texte (virement désactivé, voir docs/adr/0001-paiement-fedapay.md) :
+                        « Vous pouvez aussi télécharger notre RIB pour nous faire un virement de compte à compte (recommandé pour la facturation de gré à gré). » */}
                   </>
                 ) : (
                   <>
                     For legal advisory, enter your details and select your client category: legal professional, public institution, business executive, or private individual.<br />
-                    Based on your profile, you can set up an annual or monthly subscription, or make an ad-hoc per-matter payment. You can also download our official banking details (RIB/IBAN) for direct wire transfers.
+                    Based on your profile, you can pay a subscription installment (annual, quarterly or monthly) or make an ad-hoc per-matter payment.
+                    {/* Old text (wire transfer disabled):
+                        « You can also download our official banking details (RIB/IBAN) for direct wire transfers. » */}
                   </>
                 )}
               </p>
               <p className="font-light text-sm sm:text-base text-[#E9D18F]">
+                {/* Ancien texte (carte via Mollie et virement désactivés) :
+                    "La somme à payer s’affichera dans le récapitulatif, et vous pourrez payer par carte bancaire sécurisée (CB, Visa, Mastercard, Apple Pay) ou par virement bancaire (avec RIB officiel à télécharger)." */}
                 {lang === "fr"
-                  ? "La somme à payer s’affichera dans le récapitulatif, et vous pourrez payer par carte bancaire sécurisée (CB, Visa, Mastercard, Apple Pay) ou par virement bancaire (avec RIB officiel à télécharger)."
-                  : "The total amount due is calculated in the summary, payable via secure card (CB, Visa, Mastercard, Apple Pay) or bank wire transfer (with downloadable official RIB/IBAN)."}
+                  ? "La somme à payer s’affichera dans le récapitulatif, et vous pourrez payer en ligne via FedaPay : Mobile Money (MTN, Moov) ou carte bancaire, en francs CFA au taux fixe de 1 € = 655,957 FCFA."
+                  : "The total amount due is shown in the summary, payable online via FedaPay: Mobile Money (MTN, Moov) or bank card, in CFA francs at the fixed rate of €1 = 655.957 FCFA."}
               </p>
             </div>
 

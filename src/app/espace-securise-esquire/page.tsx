@@ -102,7 +102,6 @@ export default function EspaceSecurisePage() {
   const [refusalReasonInput, setRefusalReasonInput] = useState("");
 
   // Password Visibility Toggle State
-  const [visiblePasswordIds, setVisiblePasswordIds] = useState<Set<string>>(new Set());
 
   // Delete Client Modal State
   const [deleteClientModal, setDeleteClientModal] = useState<Client | null>(null);
@@ -402,19 +401,6 @@ export default function EspaceSecurisePage() {
     } catch (err: any) {
       showToast(`Erreur lors de la mise à jour du statut : ${err.message || "Erreur inconnue"}`, "error");
     }
-  };
-
-  // Toggle password visibility for a client
-  const togglePasswordVisibility = (clientId: string) => {
-    setVisiblePasswordIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(clientId)) {
-        next.delete(clientId);
-      } else {
-        next.add(clientId);
-      }
-      return next;
-    });
   };
 
   // Delete Client Account Handler
@@ -1175,26 +1161,6 @@ export default function EspaceSecurisePage() {
                             <span>📅 <strong>Inscription :</strong> {c.registered_at ? new Date(c.registered_at).toLocaleString("fr-FR") : "Date inconnue"}</span>
                           </div>
 
-                          {/* Password Display Row */}
-                          <div className="flex items-center gap-3 mt-2 text-xs font-cormorant">
-                            <span className="text-[#C5A059] font-bold">🔑 Mot de passe :</span>
-                            {c.password_plain ? (
-                              <>
-                                <span className="font-mono text-[#EDE4CF] bg-[#131513] px-3 py-1 rounded-lg border border-[#C5A059]/30">
-                                  {visiblePasswordIds.has(c.id || c.email) ? c.password_plain : "••••••••••••"}
-                                </span>
-                                <button
-                                  type="button"
-                                  onClick={() => togglePasswordVisibility(c.id || c.email)}
-                                  className="text-[#C5A059] hover:text-[#E9D18F] font-cinzel font-bold text-[10px] cursor-pointer transition-colors"
-                                >
-                                  {visiblePasswordIds.has(c.id || c.email) ? "🙈 Masquer" : "👁️ Afficher"}
-                                </button>
-                              </>
-                            ) : (
-                              <span className="text-[#cabfa6] italic">Non enregistré (inscription antérieure)</span>
-                            )}
-                          </div>
                         </div>
 
                         <div className="flex items-center gap-2 flex-wrap w-full lg:w-auto justify-end">
@@ -1964,25 +1930,6 @@ export default function EspaceSecurisePage() {
                 <span className="font-bold text-amber-400">{selectedClientModal.status || "En attente de validation"}</span>
               </div>
               <div><strong className="text-[#C5A059]">Date d&apos;inscription :</strong> {selectedClientModal.registered_at ? new Date(selectedClientModal.registered_at).toLocaleString("fr-FR") : "Date inconnue"}</div>
-              <div className="flex items-center gap-3">
-                <strong className="text-[#C5A059]">🔑 Mot de passe :</strong>
-                {selectedClientModal.password_plain ? (
-                  <>
-                    <span className="font-mono text-[#EDE4CF] bg-[#131513] px-3 py-1 rounded-lg border border-[#C5A059]/30">
-                      {visiblePasswordIds.has(selectedClientModal.id || selectedClientModal.email) ? selectedClientModal.password_plain : "••••••••••••"}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => togglePasswordVisibility(selectedClientModal.id || selectedClientModal.email)}
-                      className="text-[#C5A059] hover:text-[#E9D18F] font-cinzel font-bold text-[10px] cursor-pointer transition-colors"
-                    >
-                      {visiblePasswordIds.has(selectedClientModal.id || selectedClientModal.email) ? "🙈 Masquer" : "👁️ Afficher"}
-                    </button>
-                  </>
-                ) : (
-                  <span className="text-[#cabfa6] italic">Non enregistré</span>
-                )}
-              </div>
             </div>
 
             <div className="pt-4 flex justify-end gap-3 border-t border-[#C5A059]/30">

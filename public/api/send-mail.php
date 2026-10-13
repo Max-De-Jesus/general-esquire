@@ -5,41 +5,143 @@
  * Exécuté nativement sous Apache/PHP pour une délivrabilité optimale vers contact@generalesquire.com.
  */
 
-// Headers CORS complets
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, Accept, X-Requested-With');
+// ─── Sécurité ─────────────────────────────────────────────────────────────
+// Ce script était un relais ouvert : n'importe quel site pouvait lui faire
+// envoyer un email (avec pièce jointe) à n'importe quelle adresse, et
+// l'en-tête Reply-To acceptait des retours à la ligne (injection d'en-têtes).
+// Règles appliquées désormais :
+//   1. destinataires limités aux boîtes du cabinet (liste blanche) ;
+//   2. requêtes acceptées seulement depuis le site (Origin/Referer) ;
+//   3. aucun CR/LF dans les valeurs placées en en-tête ;
+//   4. taille du corps et de la pièce jointe bornées ;
+//   5. limite de débit par IP (fichier dans le répertoire temporaire) ;
+//   6. champ piège « website » : rempli = robot, réponse muette.
+const GE_ALLOWED_RECIPIENTS = ['contact@generalesquire.com', 'generalesquire@proton.me'];
+const GE_ALLOWED_ORIGINS = ['https://generalesquire.com', 'https://www.generalesquire.com'];
+const GE_MAX_BODY_BYTES = 6 * 1024 * 1024;   // 6 Mo de JSON (PDF base64 inclus)
+const GE_MAX_PDF_BYTES = 4 * 1024 * 1024;    // 4 Mo de PDF décodé
+const GE_RATE_LIMIT = 8;                      // requêtes...
+const GE_RATE_WINDOW = 600;                   // ...par fenêtre de 10 minutes et par IP
+
+function ge_respond(int $status, array $payload): void {
+    http_response_code($status);
+    echo json_encode($payload);
+    exit;
+}
+
+function ge_header_safe(string $value): string {
+    return trim(str_replace(["\r", "\n", "\0"], '', $value));
+}
+
+function ge_request_origin(): string {
+    if (!empty($_SERVER['HTTP_ORIGIN'])) {
+        return rtrim((string)$_SERVER['HTTP_ORIGIN'], '/');
+    }
+    if (!empty($_SERVER['HTTP_REFERER'])) {
+        $parts = parse_url((string)$_SERVER['HTTP_REFERER']);
+        if (!empty($parts['scheme']) && !empty($parts['host'])) {
+            return $parts['scheme'] . '://' . $parts['host'];
+        }
+    }
+    return '';
+}
+
+function ge_rate_limited(string $ip): bool {
+    $file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'ge_mail_rl_' . hash('sha256', $ip);
+    $now = time();
+    $hits = [];
+    $fh = @fopen($file, 'c+');
+    if ($fh === false) {
+        return false; // pas de stockage disponible : on ne bloque pas le formulaire
+    }
+    flock($fh, LOCK_EX);
+    $raw = stream_get_contents($fh);
+    if ($raw) {
+        $decoded = json_decode($raw, true);
+        if (is_array($decoded)) {
+            $hits = array_values(array_filter($decoded, fn($t) => is_int($t) && $t > $now - GE_RATE_WINDOW));
+        }
+    }
+    $limited = count($hits) >= GE_RATE_LIMIT;
+    if (!$limited) {
+        $hits[] = $now;
+    }
+    ftruncate($fh, 0);
+    rewind($fh);
+    fwrite($fh, json_encode($hits));
+    flock($fh, LOCK_UN);
+    fclose($fh);
+    return $limited;
+}
+
+$origin = ge_request_origin();
+$originAllowed = in_array($origin, GE_ALLOWED_ORIGINS, true);
+
 header('Content-Type: application/json; charset=UTF-8');
+header('X-Content-Type-Options: nosniff');
+if ($originAllowed) {
+    header('Access-Control-Allow-Origin: ' . $origin);
+    header('Vary: Origin');
+    header('Access-Control-Allow-Methods: POST, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type, Accept');
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit;
+    ge_respond($originAllowed ? 204 : 403, []);
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Méthode non autorisée. Utilisez POST.']);
-    exit;
+    ge_respond(405, ['success' => false, 'message' => 'Méthode non autorisée. Utilisez POST.']);
+}
+
+if (!$originAllowed) {
+    ge_respond(403, ['success' => false, 'message' => 'Origine non autorisée.']);
+}
+
+$contentLength = (int)($_SERVER['CONTENT_LENGTH'] ?? 0);
+if ($contentLength > GE_MAX_BODY_BYTES) {
+    ge_respond(413, ['success' => false, 'message' => 'Requête trop volumineuse.']);
+}
+
+if (ge_rate_limited((string)($_SERVER['REMOTE_ADDR'] ?? 'unknown'))) {
+    ge_respond(429, ['success' => false, 'message' => 'Trop de demandes, réessayez dans quelques minutes.']);
 }
 
 // Récupération des données brutes JSON
-$rawInput = file_get_contents('php://input');
-$data = json_decode($rawInput, true);
+$rawInput = file_get_contents('php://input', false, null, 0, GE_MAX_BODY_BYTES + 1);
+if ($rawInput !== false && strlen($rawInput) > GE_MAX_BODY_BYTES) {
+    ge_respond(413, ['success' => false, 'message' => 'Requête trop volumineuse.']);
+}
+$data = json_decode((string)$rawInput, true);
 
 if (!$data || !is_array($data)) {
     $data = $_POST;
 }
 
-// Extraction des paramètres clés
-$targetEmail = !empty($data['targetEmail']) ? trim($data['targetEmail']) : 'contact@generalesquire.com';
-$subjectRaw  = !empty($data['subject']) ? trim($data['subject']) : (!empty($data['_subject']) ? trim($data['_subject']) : '[General Esquire] Notification de Formulaire');
-$replyTo     = !empty($data['replyTo']) ? trim($data['replyTo']) : (!empty($data['_replyto']) ? trim($data['_replyto']) : (!empty($data['Email']) ? trim($data['Email']) : 'contact@generalesquire.com'));
+// Champ piège : invisible pour un humain, rempli par les robots.
+if (!empty($data['website'])) {
+    ge_respond(200, ['success' => true, 'message' => 'Notification transmise.']);
+}
+
+// Destinataire : liste blanche stricte, sinon refus (pas de repli silencieux).
+$requestedTarget = !empty($data['targetEmail']) ? strtolower(ge_header_safe((string)$data['targetEmail'])) : 'contact@generalesquire.com';
+if (!in_array($requestedTarget, GE_ALLOWED_RECIPIENTS, true)) {
+    ge_respond(403, ['success' => false, 'message' => 'Destinataire non autorisé.']);
+}
+$targetEmail = $requestedTarget;
+
+$subjectRaw  = !empty($data['subject']) ? ge_header_safe((string)$data['subject']) : (!empty($data['_subject']) ? ge_header_safe((string)$data['_subject']) : '[General Esquire] Notification de Formulaire');
+$subjectRaw  = mb_substr($subjectRaw, 0, 200);
+$replyToRaw  = !empty($data['replyTo']) ? $data['replyTo'] : (!empty($data['_replyto']) ? $data['_replyto'] : (!empty($data['Email']) ? $data['Email'] : ''));
+$replyToRaw  = ge_header_safe((string)$replyToRaw);
+// Reply-To n'est retenu que s'il s'agit d'une adresse valide (sinon : adresse du cabinet).
+$replyTo     = filter_var($replyToRaw, FILTER_VALIDATE_EMAIL) ? $replyToRaw : 'contact@generalesquire.com';
 $fields      = !empty($data['fields']) && is_array($data['fields']) ? $data['fields'] : [];
 
 // Si les champs sont au premier niveau du JSON (format clé/valeur direct)
 if (empty($fields)) {
     foreach ($data as $k => $v) {
-        if (!in_array($k, ['targetEmail', 'subject', 'replyTo', 'attachmentBase64', 'attachmentFilename', '_attachment', '_subject', '_replyto'])) {
+        if (!in_array($k, ['targetEmail', 'subject', 'replyTo', 'attachmentBase64', 'attachmentFilename', '_attachment', '_subject', '_replyto', 'website'])) {
             $fields[$k] = is_array($v) ? implode(', ', $v) : (string)$v;
         }
     }
@@ -47,7 +149,7 @@ if (empty($fields)) {
 
 // Pièce jointe PDF
 $attachmentBase64 = $data['attachmentBase64'] ?? $data['_attachment'] ?? null;
-$attachmentFilename = $data['attachmentFilename'] ?? 'Formulaire_General_Esquire.pdf';
+$attachmentFilename = (string)($data['attachmentFilename'] ?? 'Formulaire_General_Esquire.pdf');
 
 // Nettoyage de la base64
 $pdfBinary = null;
@@ -56,6 +158,10 @@ if (!empty($attachmentBase64) && is_string($attachmentBase64)) {
     $cleanB64 = preg_replace('#^data:image/[a-z]+;base64,#i', '', $cleanB64);
     $cleanB64 = str_replace(' ', '+', trim($cleanB64));
     $pdfBinary = base64_decode($cleanB64, true);
+    // On n'accepte qu'un vrai PDF, de taille raisonnable.
+    if ($pdfBinary === false || strlen($pdfBinary) > GE_MAX_PDF_BYTES || strncmp($pdfBinary, '%PDF', 4) !== 0) {
+        $pdfBinary = null;
+    }
 }
 
 // Construction du tableau HTML des informations
@@ -122,10 +228,9 @@ $boundary = 'GE_MIXED_' . md5(uniqid((string)mt_rand(), true));
 $subjectEncoded = '=?UTF-8?B?' . base64_encode($subjectRaw) . '?=';
 
 $headers  = "From: General Esquire <formulaire@generalesquire.com>\r\n";
-$headers .= "Reply-To: " . (!empty($replyTo) ? $replyTo : 'contact@generalesquire.com') . "\r\n";
+$headers .= "Reply-To: " . $replyTo . "\r\n";
 $headers .= "Cc: generalesquire@proton.me\r\n";
 $headers .= "MIME-Version: 1.0\r\n";
-$headers .= "X-Mailer: GeneralEsquire-PHP/" . phpversion() . "\r\n";
 
 if (!empty($pdfBinary)) {
     $headers .= "Content-Type: multipart/mixed; boundary=\"" . $boundary . "\"\r\n";
@@ -197,6 +302,5 @@ if (!empty($replyTo) && filter_var($replyTo, FILTER_VALIDATE_EMAIL) && $replyTo 
 echo json_encode([
     'success' => $mailSent,
     'message' => $mailSent ? 'Notification transmise avec succès avec pièce jointe PDF.' : 'Traitement effectué.',
-    'target' => $targetEmail,
     'hasAttachment' => !empty($pdfBinary)
 ]);

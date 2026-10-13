@@ -5,10 +5,14 @@ import { User, Session } from "@supabase/supabase-js";
 import { supabase, Client } from "@/lib/supabase";
 import { sendEmailNotification, ADMIN_NOTIFY_EMAIL } from "@/lib/emailNotifier";
 
-interface LocalAdminSession {
-  email: string;
-  fullName: string;
-}
+// Comptes administrateurs : même liste que supabase/functions/_shared/admin.ts
+// et que la fonction SQL public.is_admin(). Ce contrôle ne sert qu'à l'affichage :
+// la protection réelle des données est assurée par les policies RLS.
+const ADMIN_EMAILS = [
+  "admin@generalesquire.com",
+  "generalesquire@proton.me",
+  "contact@generalesquire.com",
+];
 
 interface AuthContextType {
   user: User | null;
@@ -30,18 +34,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [clientProfile, setClientProfile] = useState<Client | null>(null);
-  const [localAdminSession, setLocalAdminSession] = useState<LocalAdminSession | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Check if user has admin privileges
+  // Admin = utilisateur réellement authentifié par Supabase dont l'email figure
+  // dans la liste. user_metadata est modifiable par l'utilisateur lui-même : il
+  // ne doit jamais accorder de droits.
   const isAdmin = Boolean(
-    localAdminSession ||
-    user?.app_metadata?.role === "admin" ||
-    user?.user_metadata?.role === "admin" ||
-    user?.email?.toLowerCase().includes("admin@generalesquire.com") ||
-    user?.email?.toLowerCase() === "admin@generalesquire.com" ||
-    user?.email?.toLowerCase() === "generalesquire@proton.me" ||
-    user?.email?.toLowerCase() === "contact@generalesquire.com"
+    user?.email && ADMIN_EMAILS.includes(user.email.trim().toLowerCase())
   );
 
   // Check if client account is approved (approved by default for seamless client flow unless explicitly refused)
@@ -67,13 +66,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    // Check local admin session
+    // Purge de l'ancienne « session admin locale » (contournement supprimé).
     try {
       if (typeof window !== "undefined") {
-        const storedAdminSession = localStorage.getItem("ge_admin_session");
-        if (storedAdminSession) {
-          setLocalAdminSession(JSON.parse(storedAdminSession));
-        }
+        localStorage.removeItem("ge_admin_session");
       }
     } catch {
       // Ignore
@@ -136,7 +132,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               profile_type: (profileType || signInData.user.user_metadata?.profile_type || "Particulier") as any,
               requested_service: "Inscription Compte Client",
               status: "Accepté" as const,
-              password_plain: password,
               registered_at: new Date().toISOString(),
               updated_at: new Date().toISOString(),
             };
@@ -189,7 +184,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           profile_type: profileType as any,
           requested_service: "Inscription Compte Client",
           status: "Accepté" as const,
-          password_plain: password,
           registered_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         };
@@ -254,60 +248,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signIn = async (email: string, password: string) => {
     const normEmail = email.trim().toLowerCase();
 
-    // 1. Check if email corresponds to updated admin profile or admin pattern
-    let isCustomAdmin = false;
-    let adminFullName = "Administrateur General Esquire";
-    try {
-      if (typeof window !== "undefined") {
-        const storedProfile = localStorage.getItem("ge_admin_profile");
-        if (storedProfile) {
-          const parsed = JSON.parse(storedProfile);
-          if (parsed.email && parsed.email.toLowerCase() === normEmail) {
-            isCustomAdmin = true;
-            if (parsed.fullName) adminFullName = parsed.fullName;
-          }
-        }
-      }
-    } catch {}
-
-    const isAdminPattern =
-      isCustomAdmin ||
-      normEmail.includes("admin@generalesquire.com") ||
-      normEmail === "generalesquire@proton.me" ||
-      normEmail === "contact@generalesquire.com" ||
-      normEmail.includes("admin");
-
-    // 2. Try Supabase Auth
+    // Seule l'authentification Supabase fait foi. L'ancien repli qui ouvrait une
+    // « session admin locale » sans vérifier le mot de passe (pour tout email
+    // contenant « admin ») a été supprimé : c'était un contournement complet.
     try {
       const { error } = await supabase.auth.signInWithPassword({
         email: normEmail,
         password,
       });
-
-      if (!error) {
-        return { error: null };
-      }
-
-      // If Supabase Auth fails but credentials match admin pattern
-      if (isAdminPattern) {
-        const adminSessionObj = { email: normEmail, fullName: adminFullName };
-        if (typeof window !== "undefined") {
-          localStorage.setItem("ge_admin_session", JSON.stringify(adminSessionObj));
-        }
-        setLocalAdminSession(adminSessionObj);
-        return { error: null };
-      }
-
-      return { error };
+      return { error: error ?? null };
     } catch (err: any) {
-      if (isAdminPattern) {
-        const adminSessionObj = { email: normEmail, fullName: adminFullName };
-        if (typeof window !== "undefined") {
-          localStorage.setItem("ge_admin_session", JSON.stringify(adminSessionObj));
-        }
-        setLocalAdminSession(adminSessionObj);
-        return { error: null };
-      }
       return { error: err };
     }
   };
@@ -345,7 +295,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (typeof window !== "undefined") {
         localStorage.removeItem("ge_admin_session");
       }
-      setLocalAdminSession(null);
 
       const { error } = await supabase.auth.signOut();
       setUser(null);
