@@ -7,7 +7,7 @@ import { serviceRoleClient } from "../_shared/admin.ts";
 // « En attente », quel que soit le statut envoyé par le navigateur.
 // Auparavant elle acceptait `extraStatus: "Payé"` → n'importe qui pouvait
 // créer un faux paiement encaissé. Les paiements en ligne passent par
-// fedapay-checkout / fedapay-webhook (statut relu chez FedaPay).
+// stripe-checkout / stripe-webhook (statut relu chez Stripe).
 const FORCED_STATUS = "En attente";
 
 const esc = (v: unknown) =>

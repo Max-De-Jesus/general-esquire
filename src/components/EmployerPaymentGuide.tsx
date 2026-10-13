@@ -96,9 +96,11 @@ export default function EmployerPaymentGuide({ className = "" }: { className?: s
               <p className="font-light text-sm sm:text-base text-[#E9D18F]">
                 {/* Ancien texte (carte via Mollie et virement désactivés) :
                     "La somme à payer s’affichera dans le récapitulatif, et vous pourrez payer par carte bancaire sécurisée (CB, Visa, Mastercard, Apple Pay) ou par virement bancaire (avec RIB officiel à télécharger)." */}
+                {/* Texte FedaPay (désactivé le 2026-10-13, docs/adr/0004-paiement-stripe.md) :
+                    "… vous pourrez payer en ligne via FedaPay : Mobile Money (MTN, Moov) ou carte bancaire, en francs CFA au taux fixe de 1 € = 655,957 FCFA." */}
                 {lang === "fr"
-                  ? "La somme à payer s’affichera dans le récapitulatif, et vous pourrez payer en ligne via FedaPay : Mobile Money (MTN, Moov) ou carte bancaire, en francs CFA au taux fixe de 1 € = 655,957 FCFA."
-                  : "The total amount due is shown in the summary, payable online via FedaPay: Mobile Money (MTN, Moov) or bank card, in CFA francs at the fixed rate of €1 = 655.957 FCFA."}
+                  ? "La somme à payer s’affichera dans le récapitulatif, et vous pourrez payer en ligne par carte bancaire, Apple Pay ou Google Pay via la page de paiement sécurisée Stripe."
+                  : "The total amount due is shown in the summary, payable online by bank card, Apple Pay or Google Pay through Stripe's secure payment page."}
               </p>
             </div>
 

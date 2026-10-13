@@ -10,7 +10,7 @@ activité. Le 2026-10-13, il était en pause (`INACTIVE`). Tant qu'il l'est :
 
 - les actualités ne se chargent plus ;
 - les demandes clients ne sont plus enregistrées en base ;
-- les paiements FedaPay sont impossibles (Edge Functions) ;
+- les paiements en ligne (Stripe, via les Edge Functions) sont impossibles ;
 - l'espace admin est hors service.
 
 ## Décision

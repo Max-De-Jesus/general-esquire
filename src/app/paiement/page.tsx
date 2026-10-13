@@ -7,10 +7,12 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
 import EmployerPaymentGuide from "@/components/EmployerPaymentGuide";
-// Moyens de paiement désactivés — paiements uniquement via FedaPay (docs/adr/0001-paiement-fedapay.md) :
+// Moyens de paiement désactivés — paiements uniquement via Stripe (docs/adr/0004-paiement-stripe.md) :
 // import { generateRIB_PDF } from "@/utils/generateFormPDF";
 // import MollieCheckoutComponent from "@/components/MollieCheckout";
-import FedaPayCheckout from "@/components/FedaPayCheckout";
+// FedaPay — désactivé le 2026-10-13 au profit de Stripe (docs/adr/0004-paiement-stripe.md) :
+// import FedaPayCheckout from "@/components/FedaPayCheckout";
+import StripeCheckout from "@/components/StripeCheckout";
 
 /* ══════════════════════════════════════════════════════════════════
    SERVICE PRESETS — Tarifs & prestations par profil client
@@ -381,7 +383,7 @@ export default function PaymentPage() {
   const [cocooningSession, setCocooningSession] = useState<"janvier" | "juillet">("janvier");
 
   /* ── Payment UI state ── */
-  // Désactivé (Mollie / virement) — FedaPay est le seul moyen de paiement :
+  // Désactivé (Mollie / virement) — Stripe est le seul moyen de paiement :
   // const [paymentMethod, setPaymentMethod] = useState<"mollie" | "virement">("mollie");
   // const [copiedField, setCopiedField] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -392,20 +394,22 @@ export default function PaymentPage() {
   const [confirmedPayment, setConfirmedPayment] = useState<{
     service: string;
     amountEur: number;
-    amountXof: number;
+    amountXof?: number; // FedaPay (désactivé) uniquement
   } | null>(null);
   const [calculatedAmount, setCalculatedAmount] = useState(100);
 
-  /* ── Retour depuis FedaPay : /paiement/?fedapay_ref=<id paiement> ──
-     Le statut est relu côté serveur (fedapay-status), jamais déduit de l'URL. */
+  /* ── Retour depuis Stripe : /paiement/?stripe_ref=<id paiement>[&annule=1] ──
+     Le statut est relu côté serveur (stripe-status), jamais déduit de l'URL. */
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const ref = new URLSearchParams(window.location.search).get("fedapay_ref");
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get("stripe_ref");
     if (!ref) return;
+    const cancelled = params.get("annule") === "1";
 
     setIsProcessing(true);
     supabase.functions
-      .invoke("fedapay-status", { body: { paiementId: ref } })
+      .invoke("stripe-status", { body: { paiementId: ref } })
       .then(({ data, error }) => {
         if (error || !data?.status) {
           setPaymentError(
@@ -416,10 +420,10 @@ export default function PaymentPage() {
           return;
         }
         setTransactionRef(data.reference || ref);
-        setConfirmedPayment({ service: data.service, amountEur: data.amountEur, amountXof: data.amountXof });
+        setConfirmedPayment({ service: data.service, amountEur: data.amountEur });
         if (data.status === "Payé") {
           setPaymentSuccess(true);
-        } else if (data.status === "En attente") {
+        } else if (data.status === "En attente" && !cancelled) {
           setPaymentPending(true);
         } else {
           setPaymentError(
@@ -433,7 +437,45 @@ export default function PaymentPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ── Retour Mollie — désactivé (paiements uniquement via FedaPay (docs/adr/0001-paiement-fedapay.md)) ──
+  // ── Retour FedaPay — désactivé le 2026-10-13 (docs/adr/0004-paiement-stripe.md) ──
+//   /* ── Retour depuis FedaPay : /paiement/?fedapay_ref=<id paiement> ──
+//      Le statut est relu côté serveur (fedapay-status), jamais déduit de l'URL. */
+//   useEffect(() => {
+//     if (typeof window === "undefined") return;
+//     const ref = new URLSearchParams(window.location.search).get("fedapay_ref");
+//     if (!ref) return;
+//
+//     setIsProcessing(true);
+//     supabase.functions
+//       .invoke("fedapay-status", { body: { paiementId: ref } })
+//       .then(({ data, error }) => {
+//         if (error || !data?.status) {
+//           setPaymentError(
+//             lang === "fr"
+//               ? "Impossible de vérifier votre paiement pour le moment. S'il a été débité, il sera confirmé automatiquement ; contactez-nous au besoin."
+//               : "We could not verify your payment right now. If you were charged, it will be confirmed automatically; contact us if needed."
+//           );
+//           return;
+//         }
+//         setTransactionRef(data.reference || ref);
+//         setConfirmedPayment({ service: data.service, amountEur: data.amountEur, amountXof: data.amountXof });
+//         if (data.status === "Payé") {
+//           setPaymentSuccess(true);
+//         } else if (data.status === "En attente") {
+//           setPaymentPending(true);
+//         } else {
+//           setPaymentError(
+//             lang === "fr"
+//               ? "Le paiement a été annulé ou refusé. Aucun montant n'a été encaissé."
+//               : "The payment was canceled or declined. No amount was collected."
+//           );
+//         }
+//       })
+//       .finally(() => setIsProcessing(false));
+//   // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, []);
+
+  // ── Retour Mollie — désactivé (paiements uniquement via Stripe (docs/adr/0004-paiement-stripe.md)) ──
 //   /* ── Vérification automatique du retour après paiement Mollie ── */
 //   useEffect(() => {
 //     if (typeof window !== "undefined") {
@@ -614,7 +656,7 @@ export default function PaymentPage() {
     if (currentStep > 1) setCurrentStep((s) => s - 1);
   };
 
-  // Enregistrement Mollie / virement — désactivé (paiements uniquement via FedaPay (docs/adr/0001-paiement-fedapay.md)).
+  // Enregistrement Mollie / virement — désactivé (paiements uniquement via Stripe (docs/adr/0004-paiement-stripe.md)).
   // Ce code affichait « paiement réussi » même en cas d'échec (repli silencieux) ;
   // ne pas le réactiver tel quel.
 //   /* ══════════════════════════════════════════════════════════════════
@@ -809,14 +851,14 @@ export default function PaymentPage() {
                 <>
                   Merci. Votre règlement de{" "}
                   <strong className="text-[#E9D18F]">{(confirmedPayment?.amountEur ?? calculatedAmount).toLocaleString("fr-FR")} €</strong>
-                  {confirmedPayment && <> ({confirmedPayment.amountXof.toLocaleString("fr-FR")} FCFA)</>} a été confirmé par FedaPay.
+                  {" "}a été confirmé par Stripe.
                   {confirmedPayment?.service && <> Prestation : <strong>{confirmedPayment.service}</strong>.</>}
                 </>
               ) : (
                 <>
                   Thank you. Your payment of{" "}
                   <strong className="text-[#E9D18F]">{(confirmedPayment?.amountEur ?? calculatedAmount).toLocaleString("en-GB")} €</strong>
-                  {confirmedPayment && <> ({confirmedPayment.amountXof.toLocaleString("en-GB")} FCFA)</>} has been confirmed by FedaPay.
+                  {" "}has been confirmed by Stripe.
                   {confirmedPayment?.service && <> Service: <strong>{confirmedPayment.service}</strong>.</>}
                 </>
               )}
@@ -829,7 +871,7 @@ export default function PaymentPage() {
               </div>
               <div className="flex justify-between mb-2">
                 <span>{lang === "fr" ? "Moyen utilisé :" : "Payment Method:"}</span>
-                <span>FedaPay (Mobile Money / {lang === "fr" ? "Carte" : "Card"})</span>
+                <span>Stripe ({lang === "fr" ? "Carte bancaire" : "Bank card"})</span>
               </div>
               <div className="flex justify-between">
                 <span>{lang === "fr" ? "Statut :" : "Status:"}</span>
@@ -857,8 +899,8 @@ export default function PaymentPage() {
             {paymentPending && (
               <p className="font-cormorant text-lg text-[#EDE4CF]/90 mb-6 leading-relaxed">
                 {lang === "fr"
-                  ? "FedaPay n'a pas encore confirmé votre règlement (cas fréquent avec Mobile Money). Il sera enregistré automatiquement dès confirmation ; vous pouvez actualiser cette page dans quelques minutes."
-                  : "FedaPay has not confirmed your payment yet (common with Mobile Money). It will be recorded automatically once confirmed; you can refresh this page in a few minutes."}
+                  ? "Stripe n'a pas encore confirmé votre règlement (cas des moyens de paiement différés). Il sera enregistré automatiquement dès confirmation ; vous pouvez actualiser cette page dans quelques minutes."
+                  : "Stripe has not confirmed your payment yet (delayed payment methods). It will be recorded automatically once confirmed; you can refresh this page in a few minutes."}
               </p>
             )}
             {paymentPending && (
@@ -1494,7 +1536,7 @@ export default function PaymentPage() {
                     </div>
                   </div>
 
-                  {/* ═══ DÉSACTIVÉ — téléchargement du RIB / virement — paiements uniquement via FedaPay (docs/adr/0001-paiement-fedapay.md)
+                  {/* ═══ DÉSACTIVÉ — téléchargement du RIB / virement — paiements uniquement via Stripe (docs/adr/0004-paiement-stripe.md)
                      (code conservé en commentaire ; les « * / » internes remplacent des fins de commentaire)
                   {/* Bouton de Téléchargement du RIB officiel pour virement compte à compte * /}
                   <div className="p-4 rounded-2xl bg-black/40 border border-[#C5A059]/30 flex flex-col sm:flex-row items-center justify-between gap-3">
@@ -1585,8 +1627,8 @@ export default function PaymentPage() {
                     </span>
                   </div>
 
-                  {/* ── FedaPay : seul moyen de paiement en ligne ── */}
-                  <FedaPayCheckout
+                  {/* ── Stripe : seul moyen de paiement en ligne ── */}
+                  <StripeCheckout
                     choix={{
                       serviceId: selectedServiceId,
                       customPrice,
@@ -1604,7 +1646,29 @@ export default function PaymentPage() {
                     lang={lang}
                   />
 
-                  {/* ═══ DÉSACTIVÉ — Mollie (carte / Apple Pay) et virement bancaire — paiements uniquement via FedaPay (docs/adr/0001-paiement-fedapay.md)
+                  {/* ═══ DÉSACTIVÉ — FedaPay (Mobile Money / carte) — remplacé par Stripe le 2026-10-13 (docs/adr/0004-paiement-stripe.md)
+                     (code conservé en commentaire ; les « * / » internes remplacent des fins de commentaire)
+                  {/* ── FedaPay : seul moyen de paiement en ligne ── * /}
+                  <FedaPayCheckout
+                    choix={{
+                      serviceId: selectedServiceId,
+                      customPrice,
+                      translationPages,
+                      isUrgent,
+                      cocooningOption,
+                      cocooningSession,
+                    }}
+                    estimatedAmountEur={calculatedAmount}
+                    fullName={fullName}
+                    phone={phone}
+                    country={country}
+                    address={address}
+                    isSubscriptionService={isSubscriptionService}
+                    lang={lang}
+                  />
+                  ═══ FIN DU BLOC DÉSACTIVÉ ═══ */}
+
+                  {/* ═══ DÉSACTIVÉ — Mollie (carte / Apple Pay) et virement bancaire — paiements uniquement via Stripe (docs/adr/0004-paiement-stripe.md)
                      (code conservé en commentaire ; les « * / » internes remplacent des fins de commentaire)
                   {/* Payment method selector tabs (Mollie vs Virement) * /}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

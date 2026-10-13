@@ -11,8 +11,11 @@ donc ici, dans des Edge Functions Supabase exécutées à la demande :
 
 Décisions de référence :
 
-- `docs/adr/0001-paiement-fedapay.md` — paiement en ligne **exclusivement
-  via FedaPay**. Mollie, virement et RIB sont mis en commentaire dans la page.
+- `docs/adr/0004-paiement-stripe.md` — paiement en ligne **exclusivement
+  via Stripe Checkout**. FedaPay, Mollie, virement et RIB sont mis en
+  commentaire dans la page.
+- `docs/adr/0001-paiement-fedapay.md` — FedaPay, **remplacé** par Stripe le
+  2026-10-13 sans avoir été mis en production.
 - `docs/adr/0002-securite-donnees-rls.md` — modèle de sécurité (RLS, comptes
   admin, notifications).
 
@@ -20,13 +23,14 @@ Décisions de référence :
 
 | Fonction | JWT | Rôle | Appelée par |
 |---|---|---|---|
-| `fedapay-checkout` | client connecté | Calcule le montant côté serveur (`_shared/catalogue.ts`), crée le paiement « En attente » et la transaction FedaPay, renvoie l'URL de paiement | `components/FedaPayCheckout.tsx` |
-| `fedapay-status` | client connecté | Relit la transaction chez FedaPay au retour du client et met le paiement à jour | `paiement/page.tsx` (`?fedapay_ref=`) |
-| `fedapay-webhook` | non (signature HMAC) | Reçoit `transaction.*`, vérifie la signature, relit la transaction chez FedaPay, met à jour le paiement et notifie le cabinet | FedaPay |
+| `stripe-checkout` | client connecté | Calcule le montant côté serveur (`_shared/catalogue.ts`), crée le paiement « En attente » et la session Stripe Checkout, renvoie l'URL de paiement | `components/StripeCheckout.tsx` |
+| `stripe-status` | client connecté | Relit la session chez Stripe au retour du client et met le paiement à jour | `paiement/page.tsx` (`?stripe_ref=`) |
+| `stripe-webhook` | non (signature `Stripe-Signature`) | Reçoit `checkout.session.*`, vérifie la signature, relit la session chez Stripe, met à jour le paiement et notifie le cabinet | Stripe |
 | `send-notification` | facultatif | Envoi d'email (Resend → FormSubmit → Web3Forms). Destinataire hors cabinet seulement avec un JWT **admin** | `lib/emailNotifier.ts` |
 | `manage-news` | admin | CRUD sur `actualites` | `lib/newsAdmin.ts`, `/espace-securise-esquire` |
 | `register-payment` | non | N'enregistre qu'une **intention** de règlement (statut forcé à « En attente »). N'est plus appelée par le site | — |
-| `mollie-checkout` / `mollie-status` / `mollie-webhook` | — | **Inutilisées** depuis le passage à FedaPay. À supprimer si elles sont déployées (`supabase functions delete …`) | — |
+| `fedapay-checkout` / `fedapay-status` / `fedapay-webhook` | — | **Désactivées** (FedaPay remplacé par Stripe, ADR 0004). Conservées et testées, **ne pas déployer** | — |
+| `mollie-checkout` / `mollie-status` / `mollie-webhook` | — | **Inutilisées**. À supprimer si elles sont déployées (`supabase functions delete …`) | — |
 
 Le frontend lit directement les actualités publiées (`is_published = true`)
 via `lib/cloudNewsStore.ts`. La policy RLS `actualites_public_read` suffit.
@@ -38,17 +42,16 @@ injectés automatiquement par la plateforme. Il faut en revanche configurer :
 
 ```bash
 supabase secrets set RESEND_API_KEY=<nouvelle clé Resend>
-supabase secrets set FEDAPAY_SECRET_KEY=<sk_sandbox_… puis sk_live_…>
-supabase secrets set FEDAPAY_ENV=sandbox          # "live" en production
-supabase secrets set FEDAPAY_WEBHOOK_SECRET=<clé de signature du webhook FedaPay>
+supabase secrets set STRIPE_SECRET_KEY=<sk_test_… puis sk_live_…>
+supabase secrets set STRIPE_WEBHOOK_SECRET=<whsec_… du point de terminaison webhook>
 supabase secrets set SITE_URL=https://generalesquire.com
 # Optionnels
 supabase secrets set RESEND_FROM_EMAIL=<expéditeur vérifié chez Resend>
 supabase secrets set WEB3FORMS_ACCESS_KEY=<clé Web3Forms>
 ```
 
-`FEDAPAY_API_BASE` sert **uniquement** aux tests (serveur simulé) : ne jamais
-la définir en production.
+`STRIPE_API_BASE` et `FEDAPAY_API_BASE` servent **uniquement** aux tests
+(serveurs simulés) : ne jamais les définir en production.
 
 ⚠️ Jusqu'au 2026-10-13, une clé Resend était codée en base64 (ce qui n'est
 pas du chiffrement) dans `src/lib/emailNotifier.ts`, donc
@@ -63,7 +66,8 @@ nouvelle, enregistrée uniquement via `supabase secrets set`.
 2. `../migration_actualites_images.sql` — galerie d'images des actualités.
 3. `../migration_securite_rls.sql` — RLS, suppression des mots de passe en
    clair, trigger de création de la fiche client.
-4. `../migration_fedapay.sql` — colonnes FedaPay sur `paiements`.
+4. `../migration_fedapay.sql` — colonnes de prestataire de paiement sur `paiements`
+   (`provider`, `provider_transaction_id`…), utilisées par Stripe.
 
 Toutes sont idempotentes. Les migrations 3 et 4 ont été vérifiées sur un
 PostgreSQL de test (26 contrôles d'accès, voir ADR 0002). Elles ont été
@@ -79,15 +83,18 @@ La mise en pause automatique du projet est empêchée par
 npm install -g supabase
 supabase login
 supabase link --project-ref szyirafviiswvaooubzs
-supabase functions deploy fedapay-checkout fedapay-status fedapay-webhook
+supabase functions deploy stripe-checkout stripe-status stripe-webhook
 supabase functions deploy send-notification register-payment manage-news
 ```
 
 Ce déploiement est manuel. Il n'est pas branché sur le workflow GitHub, qui
 ne fait que construire et pousser le frontend statique par FTP.
 
-Dans le tableau de bord FedaPay, déclarez le webhook
-`https://szyirafviiswvaooubzs.supabase.co/functions/v1/fedapay-webhook`.
+Dans le tableau de bord Stripe (Développeurs > Webhooks), déclarez le point
+de terminaison `https://szyirafviiswvaooubzs.supabase.co/functions/v1/stripe-webhook`
+avec les événements `checkout.session.completed`,
+`checkout.session.async_payment_succeeded`,
+`checkout.session.async_payment_failed` et `checkout.session.expired`.
 
 ## Tests
 
@@ -96,7 +103,7 @@ cd supabase/functions
 deno test --allow-env --allow-net=127.0.0.1,esm.sh,jsr.io tests/
 ```
 
-Résultat attendu : 18 tests réussis, 0 échec. Une suite à 0 test est un
+Résultat attendu : 37 tests réussis (19 Stripe, 18 FedaPay), 0 échec. Une suite à 0 test est un
 échec.
 
 La cohérence des tarifs entre la page et le serveur se vérifie avec

@@ -1,8 +1,11 @@
 "use client";
 
 /**
+ * ⚠️ DÉSACTIVÉ le 2026-10-13 — remplacé par StripeCheckout (docs/adr/0004-paiement-stripe.md).
+ * Composant conservé pour mémoire ; il n'est plus importé par aucune page.
+ *
  * Paiement en ligne via FedaPay (Mobile Money MTN / Moov, carte bancaire).
- * Décision : docs/adr/0001-paiement-fedapay.md
+ * Décision d'origine : docs/adr/0001-paiement-fedapay.md
  *
  * Le navigateur n'envoie que les CHOIX du client ; le montant est recalculé
  * par l'Edge Function fedapay-checkout, qui renvoie l'URL de la page de

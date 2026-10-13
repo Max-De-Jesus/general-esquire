@@ -1,6 +1,8 @@
 # ADR 0001 — Paiement en ligne exclusivement via FedaPay
 
-- **Statut** : accepté — demandé par le responsable du projet le 2026-10-13 ; **mise en production en attente** (secrets FedaPay, migration SQL et déploiement des Edge Functions, voir « Mise en service »).
+> **REMPLACÉ le 2026-10-13 par [ADR 0004 — Stripe](0004-paiement-stripe.md)**, sur décision du responsable du projet. FedaPay n'a jamais été mis en production : ses fonctions n'ont pas été déployées et aucun paiement n'a eu lieu. Le texte ci-dessous est conservé pour l'historique. Son code (composant, Edge Functions `fedapay-*`, tests) reste dans le dépôt mais est désactivé et ne doit pas être déployé. Les colonnes ajoutées par `migration_fedapay.sql` sont génériques et servent à Stripe.
+
+- **Statut** : **remplacé** par l'ADR 0004 le 2026-10-13. Il avait d'abord été accepté le même jour, sans jamais être mis en production.
 - **Date** : 2026-10-13
 - **Remplace** : la décision « paiements exclusivement via PayPal » écrite dans `supabase/functions/README.md`, déjà fausse à cette date (le code utilisait Mollie et le virement ; PayPal n'était plus branché nulle part).
 

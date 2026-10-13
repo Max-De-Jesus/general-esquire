@@ -9,7 +9,7 @@ verify_jwt = false
 [functions.manage-news]
 verify_jwt = false
 
-# Paiements FedaPay (docs/adr/0001-paiement-fedapay.md)
+# Paiements FedaPay — DÉSACTIVÉS le 2026-10-13 (docs/adr/0004-paiement-stripe.md), ne pas déployer.
 # checkout / status : JWT Supabase du client exigé.
 [functions.fedapay-checkout]
 verify_jwt = true
@@ -20,4 +20,16 @@ verify_jwt = true
 # Le webhook est appelé par FedaPay (pas de JWT Supabase) : authentifié par
 # la signature HMAC X-FEDAPAY-SIGNATURE (FEDAPAY_WEBHOOK_SECRET).
 [functions.fedapay-webhook]
+verify_jwt = false
+
+# Paiements Stripe (docs/adr/0004-paiement-stripe.md)
+[functions.stripe-checkout]
+verify_jwt = true
+
+[functions.stripe-status]
+verify_jwt = true
+
+# Appelé par Stripe (pas de JWT Supabase) : authentifié par la signature
+# Stripe-Signature (STRIPE_WEBHOOK_SECRET).
+[functions.stripe-webhook]
 verify_jwt = false
