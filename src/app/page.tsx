@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import ServicesModal from "@/components/ServicesModal";
 import TickerBanner from "@/components/TickerBanner";
 import { useLanguage } from "@/context/LanguageContext";
@@ -69,16 +68,29 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#1A1C1A] text-[#EDE4CF] flex flex-col justify-between overflow-x-hidden">
-      {/* ─── 1. EN-TÊTE : BANNIÈRE SEULE (WITH KEN BURNS ANIMATION) ───────── */}
+      {/* ─── 1. EN-TÊTE : VIDÉO PUBLICITAIRE PANORAMIQUE ───────────────────
+          Format natif des vidéos (2560×1096, ~21:9) conservé par aspect-ratio : aucune
+          image rognée. Sources : video-pub/ (BRIEF-EXECUTION.md, assemble.mjs).
+          HD (1920×822, 5,7 Mo) sur grand écran, version légère (1280×548, 2,9 Mo) ailleurs.
+          Mouvement réduit demandé : la vidéo est masquée, l'affiche (poster) reste visible. */}
       <header className="w-full bg-[#131513] overflow-hidden relative z-10">
-        <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
-          <Image
-            src="/images/Embrassades001.png"
-            alt="Trois femmes s'embrassant chaleureusement lors d'une rencontre"
-            fill
-            priority
-            className="object-cover object-[center_32%] filter brightness-95 contrast-105 animate-kenburns"
-          />
+        <div
+          className="w-full aspect-[2560/1096] relative overflow-hidden bg-cover bg-center"
+          style={{ backgroundImage: "url('/videos/poster.jpg')" }}
+        >
+          <video
+            className="absolute inset-0 w-full h-full object-cover motion-reduce:hidden"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            poster="/videos/poster.jpg"
+            aria-label="General Esquire : conseil juridique et accompagnement touristique au Bénin — vous êtes entre de bonnes mains"
+          >
+            <source src="/videos/general-esquire-hd.mp4" type="video/mp4" media="(min-width: 1280px)" />
+            <source src="/videos/general-esquire-web.mp4" type="video/mp4" />
+          </video>
         </div>
       </header>
 
