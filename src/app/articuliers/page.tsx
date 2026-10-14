@@ -121,11 +121,11 @@ export default function ParticuliersPage() {
       <header className="relative z-10 w-full bg-[#131513] overflow-hidden">
         <div className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden">
           <Image
-            src="/images/blanc/banpart.png"
-            alt="Bannière Particuliers — General Esquire"
+            src="/images/Embrassades001.png"
+            alt="Trois femmes s'embrassant chaleureusement lors d'une rencontre"
             fill
             priority
-            className="object-cover object-[center_40%] filter brightness-95 contrast-105 animate-kenburns"
+            className="object-cover object-[center_32%] filter brightness-95 contrast-105 animate-kenburns"
           />
         </div>
       </header>
