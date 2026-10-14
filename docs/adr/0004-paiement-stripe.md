@@ -46,7 +46,7 @@
 ## Mise en service (non faite à la date de l'ADR)
 
 1. `supabase secrets set STRIPE_SECRET_KEY=sk_test_… STRIPE_WEBHOOK_SECRET=whsec_… SITE_URL=https://generalesquire.com`
-2. `supabase functions deploy stripe-checkout stripe-status stripe-webhook`
+2. ~~`supabase functions deploy stripe-checkout stripe-status stripe-webhook`~~ **Fait le 2026-10-14** (`--use-api`) ; `send-notification`, `register-payment` et `manage-news` ont été redéployées dans leur version corrigée le même jour, et les fonctions `mollie-*` supprimées.
 3. Dans le tableau de bord Stripe > Développeurs > Webhooks, ajouter le point de terminaison `https://szyirafviiswvaooubzs.supabase.co/functions/v1/stripe-webhook` avec les 4 événements `checkout.session.*`, puis recopier son secret `whsec_…`.
 4. Faire un paiement complet en **mode test** (carte 4242 4242 4242 4242), puis passer aux clés `sk_live_…` et créer un webhook live.
 

@@ -30,7 +30,7 @@ Décisions de référence :
 | `manage-news` | admin | CRUD sur `actualites` | `lib/newsAdmin.ts`, `/espace-securise-esquire` |
 | `register-payment` | non | N'enregistre qu'une **intention** de règlement (statut forcé à « En attente »). N'est plus appelée par le site | — |
 | `fedapay-checkout` / `fedapay-status` / `fedapay-webhook` | — | **Désactivées** (FedaPay remplacé par Stripe, ADR 0004). Conservées et testées, **ne pas déployer** | — |
-| `mollie-checkout` / `mollie-status` / `mollie-webhook` | — | **Inutilisées**. À supprimer si elles sont déployées (`supabase functions delete …`) | — |
+| `mollie-checkout` / `mollie-status` / `mollie-webhook` | — | **Supprimées de la production le 2026-10-14** (la version déployée contenait une clé Mollie live en dur). Code conservé, sans clé, pour mémoire : ne pas redéployer | — |
 
 Le frontend lit directement les actualités publiées (`is_published = true`)
 via `lib/cloudNewsStore.ts`. La policy RLS `actualites_public_read` suffit.
