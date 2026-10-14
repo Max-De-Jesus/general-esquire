@@ -72,6 +72,14 @@ async function request(method: "GET" | "POST", path: string, params?: Record<str
   return json;
 }
 
+/**
+ * Moyens de paiement imposés à Stripe Checkout : carte uniquement.
+ * Apple Pay et Google Pay restent proposés (portefeuilles de carte) ;
+ * Link et tout autre moyen activé dans le tableau de bord sont exclus.
+ * Décision du responsable le 2026-10-14 (« enlever l'option Link ») — ADR 0004.
+ */
+export const CHECKOUT_PAYMENT_METHOD_TYPES = ["card"] as const;
+
 export interface CheckoutSession {
   id: string;
   url: string | null;

@@ -5,6 +5,7 @@
 
 import { assert, assertEquals, assertRejects } from "jsr:@std/assert@1";
 import {
+  CHECKOUT_PAYMENT_METHOD_TYPES,
   eurToCents,
   mapSessionStatus,
   StripeError,
@@ -73,6 +74,13 @@ Deno.test("toForm : encodage imbriqué au format Stripe", () => {
     `${encodeURIComponent("line_items[0][price_data][unit_amount]")}=15000`,
     `${encodeURIComponent("line_items[0][price_data][product_data][name]")}=${encodeURIComponent("Séjour & co")}`,
     `${encodeURIComponent("metadata[paiement_id]")}=abc`,
+  ]);
+});
+
+Deno.test("checkout : carte uniquement, Link exclu (ADR 0004)", () => {
+  assertEquals([...CHECKOUT_PAYMENT_METHOD_TYPES], ["card"]);
+  assertEquals(toForm({ payment_method_types: [...CHECKOUT_PAYMENT_METHOD_TYPES] }), [
+    `${encodeURIComponent("payment_method_types[0]")}=card`,
   ]);
 });
 

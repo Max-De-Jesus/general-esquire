@@ -7,7 +7,8 @@
 
 ## Décision
 
-1. **Stripe Checkout est le seul moyen de paiement en ligne.** Le client est redirigé vers la page de paiement hébergée par Stripe (`checkout.stripe.com`), qui propose la carte bancaire, Apple Pay, Google Pay et les autres moyens activés dans le tableau de bord Stripe. Les données bancaires ne passent jamais par le site.
+1. **Stripe Checkout est le seul moyen de paiement en ligne.** Le client est redirigé vers la page de paiement hébergée par Stripe (`checkout.stripe.com`), qui propose **la carte bancaire uniquement**, avec Apple Pay et Google Pay (portefeuilles de carte). Les données bancaires ne passent jamais par le site.
+   - *Amendement du 2026-10-14* : à l'origine, Checkout proposait aussi « les autres moyens activés dans le tableau de bord Stripe », dont **Link**. Le responsable a demandé de retirer Link et a choisi de l'imposer par le code plutôt que par le tableau de bord. `stripe-checkout` envoie donc `payment_method_types = ["card"]` (`CHECKOUT_PAYMENT_METHOD_TYPES` dans `_shared/stripe.ts`, test « carte uniquement, Link exclu »). Conséquence : activer un moyen de paiement dans le tableau de bord Stripe (SEPA, Bancontact…) **n'a plus d'effet** sur le site tant que cette liste n'est pas modifiée.
 2. **FedaPay est mis en commentaire, comme Mollie, le virement et le RIB** (demande du responsable : « commenter » les autres moyens) :
    - dans `src/app/paiement/page.tsx`, l'import, l'effet de retour et le bloc d'étape 4 sont commentés ;
    - le composant `components/FedaPayCheckout.tsx` reste dans le dépôt mais n'est plus importé ;

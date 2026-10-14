@@ -1,5 +1,6 @@
 // Crée un paiement Stripe Checkout pour le client connecté et renvoie l'URL
-// de la page de paiement hébergée par Stripe (carte, Apple Pay, Google Pay…).
+// de la page de paiement hébergée par Stripe (carte, Apple Pay, Google Pay ;
+// Link exclu, voir CHECKOUT_PAYMENT_METHOD_TYPES).
 // Décision : docs/adr/0004-paiement-stripe.md
 //
 // Sécurité :
@@ -13,7 +14,13 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { corsHeaders, jsonHeaders } from "../_shared/cors.ts";
 import { serviceRoleClient } from "../_shared/admin.ts";
 import { calculerMontant, ChoixInvalide } from "../_shared/catalogue.ts";
-import { createCheckoutSession, eurToCents, siteUrl, StripeError } from "../_shared/stripe.ts";
+import {
+  CHECKOUT_PAYMENT_METHOD_TYPES,
+  createCheckoutSession,
+  eurToCents,
+  siteUrl,
+  StripeError,
+} from "../_shared/stripe.ts";
 
 const json = (status: number, body: unknown) => new Response(JSON.stringify(body), { status, headers: jsonHeaders });
 
@@ -118,6 +125,7 @@ Deno.serve(async (req) => {
     const session = await createCheckoutSession(
       {
         mode: "payment",
+        payment_method_types: [...CHECKOUT_PAYMENT_METHOD_TYPES],
         line_items: [
           {
             quantity: 1,
