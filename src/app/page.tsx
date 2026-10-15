@@ -150,20 +150,36 @@ export default function Home() {
             </p>
           </div>
 
-          {/* ─── 4. BLASON LOGO ZONE (SEUL BOUTON DE MENU) ───────────── */}
-          <div className="mt-12 sm:mt-16 flex flex-col items-center justify-center">
+          {/* ─── 4. BLASON LOGO ZONE (SEUL BOUTON DE MENU AVEC ZOOM IN/OUT & HALO LUMINEUX) ───────────── */}
+          <div className="mt-12 sm:mt-16 mb-8 flex flex-col items-center justify-center">
             <button
               onClick={() => setModalOpen(true)}
-              className="group flex flex-col items-center cursor-pointer focus:outline-none"
+              className="group relative flex flex-col items-center cursor-pointer focus:outline-none select-none transition-transform active:scale-95"
               aria-label="Ouvrir le menu des services"
             >
-              <div className="relative p-3 transition-transform duration-500 group-hover:scale-110">
+              {/* HALO LUMINEUX DORÉ D'ARRIÈRE-PLAN (EFFET LUMINEUX PULSANT) */}
+              <div
+                className="absolute inset-0 m-auto w-52 h-52 sm:w-72 sm:h-72 rounded-full pointer-events-none animate-halo-backlight -z-10"
+                style={{
+                  background:
+                    "radial-gradient(circle, rgba(233, 209, 143, 0.7) 0%, rgba(197, 160, 89, 0.42) 40%, rgba(197, 160, 89, 0.15) 60%, transparent 75%)",
+                  filter: "blur(26px)",
+                }}
+              />
+
+              {/* ONDES LUMINEUSES DORÉES CONCENTRIQUES EN BOUCLE */}
+              <div className="absolute inset-0 m-auto w-44 h-44 sm:w-60 sm:h-60 rounded-full border border-[#E9D18F]/50 pointer-events-none animate-radar-wave-1 -z-10" />
+              <div className="absolute inset-0 m-auto w-44 h-44 sm:w-60 sm:h-60 rounded-full border border-[#C5A059]/40 pointer-events-none animate-radar-wave-2 -z-10" />
+
+              {/* CONTENEUR DU BLASON AVEC EFFET ZOOM IN / ZOOM OUT AUTOMATIQUE EN BOUCLE */}
+              <div className="relative p-3 animate-logo-zoom transition-transform duration-300 group-hover:scale-125">
                 <Image
                   src="/images/logo.png"
                   alt="Blason General Esquire — Chrysalides"
-                  width={240}
-                  height={240}
-                  className="w-44 h-44 sm:w-60 sm:h-60 object-contain animate-pulse-glow"
+                  width={260}
+                  height={260}
+                  className="w-48 h-48 sm:w-64 sm:h-64 object-contain"
+                  priority
                 />
               </div>
             </button>

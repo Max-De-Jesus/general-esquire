@@ -94,17 +94,75 @@ input[type="date"]::-webkit-clear-button {
 
 @keyframes pulseGlow {
   0%, 100% {
-    transform: scale(1);
-    filter: drop-shadow(0 0 12px rgba(197, 160, 89, 0.5));
+    transform: scale(0.96);
+    filter: drop-shadow(0 0 16px rgba(197, 160, 89, 0.45)) drop-shadow(0 0 30px rgba(197, 160, 89, 0.2));
   }
   50% {
-    transform: scale(1.05);
-    filter: drop-shadow(0 0 28px rgba(233, 209, 143, 0.95));
+    transform: scale(1.16);
+    filter: drop-shadow(0 0 35px rgba(233, 209, 143, 0.95)) drop-shadow(0 0 65px rgba(197, 160, 89, 0.8)) drop-shadow(0 0 95px rgba(233, 209, 143, 0.5));
   }
 }
 
 .animate-pulse-glow {
-  animation: pulseGlow 2.5s ease-in-out infinite;
+  animation: pulseGlow 2.4s ease-in-out infinite;
+}
+
+/* ─── ANIMATION ZOOM IN / ZOOM OUT & HALO LUMINEUX DU BLASON D'ACCUEIL ─── */
+@keyframes logoZoomInOut {
+  0%, 100% {
+    transform: scale(0.96);
+    filter: drop-shadow(0 0 16px rgba(197, 160, 89, 0.45)) drop-shadow(0 0 30px rgba(197, 160, 89, 0.2));
+  }
+  50% {
+    transform: scale(1.16);
+    filter: drop-shadow(0 0 38px rgba(233, 209, 143, 1)) drop-shadow(0 0 70px rgba(197, 160, 89, 0.85)) drop-shadow(0 0 100px rgba(233, 209, 143, 0.55));
+  }
+}
+
+@keyframes haloBacklightPulse {
+  0%, 100% {
+    transform: scale(0.88);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 0.95;
+  }
+}
+
+@keyframes radarWavePulse {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 0.35;
+  }
+  100% {
+    transform: scale(1.65);
+    opacity: 0;
+  }
+}
+
+.animate-logo-zoom {
+  animation: logoZoomInOut 2.4s ease-in-out infinite;
+  will-change: transform, filter;
+}
+
+.animate-halo-backlight {
+  animation: haloBacklightPulse 2.4s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.animate-radar-wave-1 {
+  animation: radarWavePulse 2.4s cubic-bezier(0.2, 0.6, 0.35, 1) infinite;
+  will-change: transform, opacity;
+}
+
+.animate-radar-wave-2 {
+  animation: radarWavePulse 2.4s cubic-bezier(0.2, 0.6, 0.35, 1) infinite;
+  animation-delay: 1.2s;
+  will-change: transform, opacity;
 }
 
 /* ─── ANIMATION CLIGNOTANTE & DYNAMIQUE POUR "PAS DE PANIQUE : GENERAL ESQUIRE EST LÀ." ─── */
