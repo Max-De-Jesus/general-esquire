@@ -70,15 +70,16 @@ export default function Home() {
     <div className="min-h-screen bg-[#1A1C1A] text-[#EDE4CF] flex flex-col justify-between overflow-x-hidden">
       {/* ─── 1. EN-TÊTE : VIDÉO PUBLICITAIRE PANORAMIQUE ───────────────────
           Même hauteur que l'ancienne bannière image (clamp 180–460 px). La vidéo (~21:9) est
-          donc recadrée en object-cover, cadrage à 20 % pour garder les têtes ; le logo du
-          dernier plan est placé dans la vidéo pour rester visible dans ce recadrage jusqu'à
-          1920 px de large (contrainte documentée dans video-pub/assemble.mjs, fonction signature).
+          donc recadrée en object-cover, cadrage à 20 % pour garder les têtes ; logos et textes
+          sont placés dans la vidéo pour rester visibles dans ce recadrage jusqu'à 1920 px de
+          large (bande 9 %–65 % de la hauteur, contrainte documentée dans video-pub/assemble-v2.mjs).
+          V2 (~90 s, 2026-10-15), fichiers suffixés -v2 pour ne pas servir l'ancienne version en cache.
           HD (1920×822) sur grand écran, version légère (1280×548) ailleurs.
           Mouvement réduit demandé : la vidéo est masquée, l'affiche (poster) reste visible. */}
       <header className="w-full bg-[#131513] overflow-hidden relative z-10">
         <div
           className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden bg-cover bg-[center_20%]"
-          style={{ backgroundImage: "url('/videos/poster.jpg')" }}
+          style={{ backgroundImage: "url('/videos/poster-v2.jpg')" }}
         >
           <video
             className="absolute inset-0 w-full h-full object-cover object-[center_20%] motion-reduce:hidden"
@@ -87,11 +88,11 @@ export default function Home() {
             loop
             playsInline
             preload="metadata"
-            poster="/videos/poster.jpg"
+            poster="/videos/poster-v2.jpg"
             aria-label="General Esquire : conseil juridique et accompagnement touristique au Bénin — vous êtes entre de bonnes mains"
           >
-            <source src="/videos/general-esquire-hd.mp4" type="video/mp4" media="(min-width: 1280px)" />
-            <source src="/videos/general-esquire-web.mp4" type="video/mp4" />
+            <source src="/videos/general-esquire-v2-hd.mp4" type="video/mp4" media="(min-width: 1280px)" />
+            <source src="/videos/general-esquire-v2-web.mp4" type="video/mp4" />
           </video>
         </div>
       </header>
