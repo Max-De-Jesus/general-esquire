@@ -39,6 +39,8 @@ export default function Home() {
         : "We are delighted to welcome you to our website, and it is no exaggeration to say:",
     signature_hands:
       lang === "fr" ? "« Vous êtes entre de bonnes mains »." : "“You are in good hands.”",
+    click_here:
+      lang === "fr" ? "Cliquer ici" : "Click here",
     click_blason:
       lang === "fr"
         ? "Cliquez sur le blason pour découvrir les rubriques →"
@@ -183,6 +185,12 @@ export default function Home() {
                   priority
                 />
               </div>
+
+              {/* PHRASE SOUS LE BLASON : CLIQUER ICI */}
+              <span className="mt-3 inline-flex items-center gap-2 px-5 py-2 rounded-full font-cinzel text-xs sm:text-sm font-bold tracking-[0.2em] uppercase text-[#E9D18F] bg-[#131513]/85 border border-[#C5A059]/70 shadow-[0_0_18px_rgba(197,160,89,0.35)] backdrop-blur-sm group-hover:bg-gradient-to-r group-hover:from-[#C5A059] group-hover:to-[#E9D18F] group-hover:text-black group-hover:border-[#E9D18F] group-hover:shadow-[0_0_28px_rgba(233,209,143,0.7)] group-hover:scale-105 transition-all duration-300">
+                <span>{tx.click_here}</span>
+                <span className="text-[#C5A059] group-hover:text-black transition-colors">✦</span>
+              </span>
             </button>
           </div>
         </div>
