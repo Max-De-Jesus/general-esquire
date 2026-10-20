@@ -10,44 +10,46 @@ export default function Home() {
   const { lang } = useLanguage();
   const [modalOpen, setModalOpen] = useState(false);
 
-  // Gestion du fichier audio lié à la bannière d'accueil
+  // Gestion du fichier audio lié à la bannière d'accueil (lecture automatique sans bouton)
   const bannerRef = useRef<HTMLElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const isBannerVisibleRef = useRef<boolean>(true);
-  const userMutedRef = useRef<boolean>(false);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
   useEffect(() => {
     const audio = audioRef.current;
     const banner = bannerRef.current;
     if (!audio) return;
 
-    // Tentative de lecture audio
+    // Tentative de lecture audio automatique
     const attemptPlay = () => {
-      if (!isBannerVisibleRef.current || userMutedRef.current) return;
-      audio.play().then(() => {
-        setIsPlaying(true);
-      }).catch(() => {
-        // Politique autoplay du navigateur : sera débloqué dès la 1ère interaction
+      if (!isBannerVisibleRef.current) return;
+      audio.play().catch(() => {
+        // Politique autoplay du navigateur (ex: iOS Safari / Chrome mobile)
       });
     };
 
     // 1. Démarrage automatique dès l'arrivée du visiteur
     attemptPlay();
 
-    // 2. Déblocage immédiat au premier geste utilisateur si autoplay strict
-    const onUserGesture = () => {
+    // 2. Déblocage garanti sur mobile au tout premier toucher / défilement
+    const onUserInteraction = () => {
       attemptPlay();
-      window.removeEventListener("pointerdown", onUserGesture);
-      window.removeEventListener("touchstart", onUserGesture);
-      window.removeEventListener("scroll", onUserGesture);
-      window.removeEventListener("keydown", onUserGesture);
+      window.removeEventListener("pointerdown", onUserInteraction);
+      window.removeEventListener("touchstart", onUserInteraction);
+      window.removeEventListener("touchend", onUserInteraction);
+      window.removeEventListener("touchmove", onUserInteraction);
+      window.removeEventListener("scroll", onUserInteraction);
+      window.removeEventListener("click", onUserInteraction);
+      window.removeEventListener("keydown", onUserInteraction);
     };
 
-    window.addEventListener("pointerdown", onUserGesture, { passive: true });
-    window.addEventListener("touchstart", onUserGesture, { passive: true });
-    window.addEventListener("scroll", onUserGesture, { passive: true });
-    window.addEventListener("keydown", onUserGesture, { passive: true });
+    window.addEventListener("pointerdown", onUserInteraction, { passive: true });
+    window.addEventListener("touchstart", onUserInteraction, { passive: true });
+    window.addEventListener("touchend", onUserInteraction, { passive: true });
+    window.addEventListener("touchmove", onUserInteraction, { passive: true });
+    window.addEventListener("scroll", onUserInteraction, { passive: true });
+    window.addEventListener("click", onUserInteraction, { passive: true });
+    window.addEventListener("keydown", onUserInteraction, { passive: true });
 
     // 3. Détection de la disparition totale de la bannière vers le haut (IntersectionObserver)
     let observer: IntersectionObserver | null = null;
@@ -60,12 +62,9 @@ export default function Home() {
             if (!isVisible) {
               // La bannière a disparu totalement de l'écran : couper le son
               audio.pause();
-              setIsPlaying(false);
-            } else if (!userMutedRef.current) {
+            } else {
               // La bannière redevient visible : relancer le son
-              audio.play().then(() => {
-                setIsPlaying(true);
-              }).catch(() => {});
+              audio.play().catch(() => {});
             }
           });
         },
@@ -81,18 +80,20 @@ export default function Home() {
     const onVisibilityChange = () => {
       if (document.hidden) {
         audio.pause();
-        setIsPlaying(false);
-      } else if (isBannerVisibleRef.current && !userMutedRef.current) {
-        audio.play().then(() => setIsPlaying(true)).catch(() => {});
+      } else if (isBannerVisibleRef.current) {
+        audio.play().catch(() => {});
       }
     };
     document.addEventListener("visibilitychange", onVisibilityChange);
 
     return () => {
-      window.removeEventListener("pointerdown", onUserGesture);
-      window.removeEventListener("touchstart", onUserGesture);
-      window.removeEventListener("scroll", onUserGesture);
-      window.removeEventListener("keydown", onUserGesture);
+      window.removeEventListener("pointerdown", onUserInteraction);
+      window.removeEventListener("touchstart", onUserInteraction);
+      window.removeEventListener("touchend", onUserInteraction);
+      window.removeEventListener("touchmove", onUserInteraction);
+      window.removeEventListener("scroll", onUserInteraction);
+      window.removeEventListener("click", onUserInteraction);
+      window.removeEventListener("keydown", onUserInteraction);
       document.removeEventListener("visibilitychange", onVisibilityChange);
       if (observer && banner) {
         observer.unobserve(banner);
@@ -100,19 +101,6 @@ export default function Home() {
       audio.pause();
     };
   }, []);
-
-  const toggleAudio = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (isPlaying) {
-      audio.pause();
-      setIsPlaying(false);
-      userMutedRef.current = true;
-    } else {
-      userMutedRef.current = false;
-      audio.play().then(() => setIsPlaying(true)).catch(() => {});
-    }
-  };
 
   const tx = {
     welcome_title:
@@ -201,31 +189,15 @@ export default function Home() {
             <source src="/videos/general-esquire-v2-web.mp4" type="video/mp4" />
           </video>
 
-          {/* Fichier audio associé à la bannière d'accueil */}
+          {/* Fichier audio associé à la bannière d'accueil (lecture 100% automatique sans bouton) */}
           <audio
             ref={audioRef}
             src="/audio/banner-audio.mp3"
             preload="auto"
+            autoPlay
             loop
             playsInline
           />
-
-          {/* Bouton de contrôle audio discret sur la bannière */}
-          <button
-            type="button"
-            onClick={toggleAudio}
-            className="absolute bottom-3 right-3 sm:bottom-4 sm:right-6 z-20 flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-[#131513]/85 border border-[#C5A059]/60 text-[#E9D18F] text-xs font-cinzel hover:bg-gradient-to-r hover:from-[#C5A059] hover:to-[#E9D18F] hover:text-black hover:border-[#E9D18F] backdrop-blur-md transition-all duration-300 shadow-[0_4px_16px_rgba(0,0,0,0.8)] cursor-pointer select-none group"
-            aria-label={isPlaying ? "Couper le son de la bannière" : "Activer le son de la bannière"}
-          >
-            <span className="text-sm transition-transform group-hover:scale-110">
-              {isPlaying ? "🔊" : "🔇"}
-            </span>
-            <span className="text-[10px] sm:text-xs font-bold tracking-wider uppercase">
-              {isPlaying
-                ? (lang === "fr" ? "Son actif" : "Sound on")
-                : (lang === "fr" ? "Activer le son" : "Unmute")}
-            </span>
-          </button>
         </div>
       </header>
 
