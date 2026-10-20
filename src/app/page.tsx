@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import ServicesModal from "@/components/ServicesModal";
 import TickerBanner from "@/components/TickerBanner";
@@ -9,6 +9,110 @@ import { useLanguage } from "@/context/LanguageContext";
 export default function Home() {
   const { lang } = useLanguage();
   const [modalOpen, setModalOpen] = useState(false);
+
+  // Gestion du fichier audio lié à la bannière d'accueil
+  const bannerRef = useRef<HTMLElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const isBannerVisibleRef = useRef<boolean>(true);
+  const userMutedRef = useRef<boolean>(false);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    const banner = bannerRef.current;
+    if (!audio) return;
+
+    // Tentative de lecture audio
+    const attemptPlay = () => {
+      if (!isBannerVisibleRef.current || userMutedRef.current) return;
+      audio.play().then(() => {
+        setIsPlaying(true);
+      }).catch(() => {
+        // Politique autoplay du navigateur : sera débloqué dès la 1ère interaction
+      });
+    };
+
+    // 1. Démarrage automatique dès l'arrivée du visiteur
+    attemptPlay();
+
+    // 2. Déblocage immédiat au premier geste utilisateur si autoplay strict
+    const onUserGesture = () => {
+      attemptPlay();
+      window.removeEventListener("pointerdown", onUserGesture);
+      window.removeEventListener("touchstart", onUserGesture);
+      window.removeEventListener("scroll", onUserGesture);
+      window.removeEventListener("keydown", onUserGesture);
+    };
+
+    window.addEventListener("pointerdown", onUserGesture, { passive: true });
+    window.addEventListener("touchstart", onUserGesture, { passive: true });
+    window.addEventListener("scroll", onUserGesture, { passive: true });
+    window.addEventListener("keydown", onUserGesture, { passive: true });
+
+    // 3. Détection de la disparition totale de la bannière vers le haut (IntersectionObserver)
+    let observer: IntersectionObserver | null = null;
+    if (banner && typeof IntersectionObserver !== "undefined") {
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const isVisible = entry.isIntersecting;
+            isBannerVisibleRef.current = isVisible;
+            if (!isVisible) {
+              // La bannière a disparu totalement de l'écran : couper le son
+              audio.pause();
+              setIsPlaying(false);
+            } else if (!userMutedRef.current) {
+              // La bannière redevient visible : relancer le son
+              audio.play().then(() => {
+                setIsPlaying(true);
+              }).catch(() => {});
+            }
+          });
+        },
+        {
+          root: null,
+          threshold: 0, // 0 = déclenchement dès que la bannière quitte complètement l'écran
+        }
+      );
+      observer.observe(banner);
+    }
+
+    // 4. Couper le son si l'utilisateur change d'onglet
+    const onVisibilityChange = () => {
+      if (document.hidden) {
+        audio.pause();
+        setIsPlaying(false);
+      } else if (isBannerVisibleRef.current && !userMutedRef.current) {
+        audio.play().then(() => setIsPlaying(true)).catch(() => {});
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
+    return () => {
+      window.removeEventListener("pointerdown", onUserGesture);
+      window.removeEventListener("touchstart", onUserGesture);
+      window.removeEventListener("scroll", onUserGesture);
+      window.removeEventListener("keydown", onUserGesture);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      if (observer && banner) {
+        observer.unobserve(banner);
+      }
+      audio.pause();
+    };
+  }, []);
+
+  const toggleAudio = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (isPlaying) {
+      audio.pause();
+      setIsPlaying(false);
+      userMutedRef.current = true;
+    } else {
+      userMutedRef.current = false;
+      audio.play().then(() => setIsPlaying(true)).catch(() => {});
+    }
+  };
 
   const tx = {
     welcome_title:
@@ -78,7 +182,7 @@ export default function Home() {
           V2 (~90 s, 2026-10-15), fichiers suffixés -v2 pour ne pas servir l'ancienne version en cache.
           HD (1920×822) sur grand écran, version légère (1280×548) ailleurs.
           Mouvement réduit demandé : la vidéo est masquée, l'affiche (poster) reste visible. */}
-      <header className="w-full bg-[#131513] overflow-hidden relative z-10">
+      <header ref={bannerRef} className="w-full bg-[#131513] overflow-hidden relative z-10">
         <div
           className="w-full h-[clamp(180px,34vw,460px)] relative overflow-hidden bg-cover bg-[center_20%]"
           style={{ backgroundImage: "url('/videos/poster-v2.jpg')" }}
@@ -96,6 +200,32 @@ export default function Home() {
             <source src="/videos/general-esquire-v2-hd.mp4" type="video/mp4" media="(min-width: 1280px)" />
             <source src="/videos/general-esquire-v2-web.mp4" type="video/mp4" />
           </video>
+
+          {/* Fichier audio associé à la bannière d'accueil */}
+          <audio
+            ref={audioRef}
+            src="/audio/banner-audio.mp3"
+            preload="auto"
+            loop
+            playsInline
+          />
+
+          {/* Bouton de contrôle audio discret sur la bannière */}
+          <button
+            type="button"
+            onClick={toggleAudio}
+            className="absolute bottom-3 right-3 sm:bottom-4 sm:right-6 z-20 flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-[#131513]/85 border border-[#C5A059]/60 text-[#E9D18F] text-xs font-cinzel hover:bg-gradient-to-r hover:from-[#C5A059] hover:to-[#E9D18F] hover:text-black hover:border-[#E9D18F] backdrop-blur-md transition-all duration-300 shadow-[0_4px_16px_rgba(0,0,0,0.8)] cursor-pointer select-none group"
+            aria-label={isPlaying ? "Couper le son de la bannière" : "Activer le son de la bannière"}
+          >
+            <span className="text-sm transition-transform group-hover:scale-110">
+              {isPlaying ? "🔊" : "🔇"}
+            </span>
+            <span className="text-[10px] sm:text-xs font-bold tracking-wider uppercase">
+              {isPlaying
+                ? (lang === "fr" ? "Son actif" : "Sound on")
+                : (lang === "fr" ? "Activer le son" : "Unmute")}
+            </span>
+          </button>
         </div>
       </header>
 
@@ -174,8 +304,8 @@ export default function Home() {
               <div className="absolute inset-0 m-auto w-44 h-44 sm:w-60 sm:h-60 rounded-full border border-[#E9D18F]/50 pointer-events-none animate-radar-wave-1 -z-10" />
               <div className="absolute inset-0 m-auto w-44 h-44 sm:w-60 sm:h-60 rounded-full border border-[#C5A059]/40 pointer-events-none animate-radar-wave-2 -z-10" />
 
-              {/* CONTENEUR DU BLASON AVEC EFFET ZOOM IN / ZOOM OUT AUTOMATIQUE EN BOUCLE */}
-              <div className="relative p-3 animate-logo-zoom transition-transform duration-300 group-hover:scale-125">
+              {/* CONTENEUR DU BLASON ET DE L'ÉCRIT AVEC EFFET ZOOM IN / ZOOM OUT SYNCHRONISÉ EN BOUCLE */}
+              <div className="relative p-3 flex flex-col items-center animate-logo-zoom transition-transform duration-300 group-hover:scale-125">
                 <Image
                   src="/images/logo.png"
                   alt="Blason General Esquire — Chrysalides"
@@ -184,13 +314,13 @@ export default function Home() {
                   className="w-48 h-48 sm:w-64 sm:h-64 object-contain"
                   priority
                 />
-              </div>
 
-              {/* PHRASE SOUS LE BLASON : CLIQUER ICI */}
-              <span className="mt-3 inline-flex items-center gap-2 px-5 py-2 rounded-full font-cinzel text-xs sm:text-sm font-bold tracking-[0.2em] uppercase text-[#E9D18F] bg-[#131513]/85 border border-[#C5A059]/70 shadow-[0_0_18px_rgba(197,160,89,0.35)] backdrop-blur-sm group-hover:bg-gradient-to-r group-hover:from-[#C5A059] group-hover:to-[#E9D18F] group-hover:text-black group-hover:border-[#E9D18F] group-hover:shadow-[0_0_28px_rgba(233,209,143,0.7)] group-hover:scale-105 transition-all duration-300">
-                <span>{tx.click_here}</span>
-                <span className="text-[#C5A059] group-hover:text-black transition-colors">✦</span>
-              </span>
+                {/* PHRASE SOUS LE BLASON : CLIQUER ICI (ANIME DANS LE MÊME ÉLAN DORÉ ET ZOOM) */}
+                <span className="mt-3 inline-flex items-center gap-2 px-5 py-2 rounded-full font-cinzel text-xs sm:text-sm font-bold tracking-[0.2em] uppercase text-[#E9D18F] bg-[#131513]/90 border border-[#C5A059]/80 shadow-[0_0_18px_rgba(197,160,89,0.4)] backdrop-blur-sm group-hover:bg-gradient-to-r group-hover:from-[#C5A059] group-hover:to-[#E9D18F] group-hover:text-black group-hover:border-[#E9D18F] group-hover:shadow-[0_0_30px_rgba(233,209,143,0.8)] transition-all duration-300">
+                  <span>{tx.click_here}</span>
+                  <span className="text-[#C5A059] group-hover:text-black transition-colors">✦</span>
+                </span>
+              </div>
             </button>
           </div>
         </div>
