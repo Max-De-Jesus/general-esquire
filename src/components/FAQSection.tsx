@@ -24,9 +24,9 @@ const FAQ_ITEMS: FAQItem[] = [
     questionFr: "Qui est concrètement General Esquire ?",
     questionEn: "Who is General Esquire in practice?",
     answerFr:
-      "General Esquire est une société par actions simplifiées de droit français, qui a pour objet de donner des conseils juridiques à toute personne qui en a besoin, qu’elle soit morale ou physique ; et d’aider à la résilience d’autrui par un séjour touristique de deux semaines tout-inclus, billet d’avion et pension complète.",
+      "General Esquire est une société par actions simplifiées de droit français, qui a pour objet de donner des conseils juridiques à toute personne qui en a besoin, qu’elle soit morale ou physique ; et d’aider à la résilience d’autrui par un séjour touristique de deux semaines (hors billet d'avion, à 700 € pour la prise en charge complète au Bénin : pension complète, excursions et bien-être).",
     answerEn:
-      "General Esquire is a French simplified joint-stock company (SAS) whose mission is to provide legal advisory services to any individual or corporate entity in need; and to foster personal resilience through a two-week all-inclusive tourist stay, including round-trip flights and full board.",
+      "General Esquire is a French simplified joint-stock company (SAS) whose mission is to provide legal advisory services to any individual or corporate entity in need; and to foster personal resilience through a two-week tourist stay in Benin (€700 excluding flights, covering full board, excursions, and dedicated care).",
   },
   {
     id: "philosophie",
@@ -174,9 +174,9 @@ const FAQ_ITEMS: FAQItem[] = [
     questionFr: "Quelles sont les conditions du séjour ?",
     questionEn: "What are the terms and conditions of the stay?",
     answerFr:
-      "Elles sont minutieusement élaborées en fonction du profil individuel de chaque pensionnaire : type d’alimentation, âge, sexe, préférences diverses.\n\nNous avons fourni des précisions sur notre site ; mais vous aurez toujours auprès de General Esquire, un interlocuteur fiable pour vous renseigner et au besoin, prendre en considération vos préoccupations.\n\nNous rappelons qu’il y a deux voyages par année, en début et en milieu d’année, et que pour des raisons de logistique, le convoi idéal est de dix personnes.",
+      "Elles sont minutieusement élaborées en fonction du profil individuel de chaque pensionnaire : type d’alimentation, âge, sexe, préférences diverses.\n\nLe tarif forfaitaire est désormais fixé à 700 € (hors billet d'avion, à la charge de chaque voyageur). Il comprend l'hébergement, la pension complète (3 repas par jour), les excursions et toutes les activités de détente.\n\nLe jour officiel de démarrage et d'arrivée au Bénin pour la prise en charge complète par notre agence de tourisme est annoncé sur le site dans la catégorie « Annonces », et vous est également notifié directement par e-mail dès la clôture des inscriptions.\n\nNous rappelons qu’il y a deux voyages par année, en début et en milieu d’année, et que pour des raisons de logistique, le convoi idéal est de dix personnes.",
     answerEn:
-      "Stays are meticulously tailored to each guest's individual profile: dietary preferences, age, comfort requirements, and personal interests.\n\nWe organize two curated group trips per year (early and mid-year), with each cohort strictly limited to ten guests to ensure exceptional hospitality, privacy, and dedicated care.",
+      "Stays are meticulously tailored to each guest's individual profile: dietary preferences, age, comfort requirements, and personal interests.\n\nThe retreat fee is now €700 (excluding airfare, which is arranged independently). It covers accommodation, full board (3 meals a day), guided excursions, and dedicated wellness care.\n\nThe official start and arrival date in Benin for full group pickup by our tourism agency will be announced on this website under 'Announcements' and sent directly to you via email upon registration close.\n\nWe organize two curated group trips per year, with each cohort strictly limited to ten guests to ensure exceptional hospitality.",
   },
   {
     id: "annulation-remboursement",

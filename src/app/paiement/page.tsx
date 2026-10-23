@@ -282,12 +282,12 @@ const SERVICE_PRESETS: Record<string, ServicePreset[]> = {
       id: "chrys-stay",
       nameFr: "Séjour Cocooning Touristique Bénin (2 semaines)",
       nameEn: "Bénin Tourist Cocooning Stay (2 weeks)",
-      price: 1500,
+      price: 700,
       icon: "🌴",
-      badgeFr: "Séjour Clé en Main",
-      badgeEn: "All-Inclusive Retreat",
-      descFr: "Immersion bien-être 14 jours, hébergement de standing, visites culturelles et conciergerie.",
-      descEn: "14-day luxury cultural retreat, premium accommodation, excursions, and private concierge.",
+      badgeFr: "Séjour Clé en Main (Sans Vol)",
+      badgeEn: "On-Site Retreat (Excl. Flights)",
+      descFr: "Immersion bien-être 14 jours (700 €, sans billet d'avion). Hébergement de standing, pension complète, excursions et conciergerie.",
+      descEn: "14-day luxury cultural retreat (€700, excluding airfare). Premium accommodation, full board, excursions, and private concierge.",
       periodFr: "forfait séjour",
       periodEn: "retreat package",
     },
@@ -575,7 +575,7 @@ export default function PaymentPage() {
     let basePrice = service.price;
     if (selectedServiceId === "chrys-stay" && cocooningOption === "tranches") {
       const months = getCocooningInstallmentMonths();
-      basePrice = Math.round(1500 / months);
+      basePrice = Math.round(700 / months);
     } else if (service.isCustom) {
       basePrice = parseFloat(customPrice) || 0;
     } else if (service.type === "translation") {
@@ -1230,7 +1230,7 @@ export default function PaymentPage() {
                           <span>🎯</span> {lang === "fr" ? "Plan de Paiement & Échéancier Cocooning" : "Cocooning Payment Plan & Schedule"}
                         </span>
                         <span className="text-[10px] font-mono text-[#E9D18F] bg-[#131513] px-2.5 py-1 rounded-full border border-[#C5A059]/40 font-bold">
-                          {lang === "fr" ? "Forfait Total : 1 500 €" : "Total Package: €1,500"}
+                          {lang === "fr" ? "Forfait : 700 € (Sans Billet d’Avion)" : "Package: €700 (Excl. Airfare)"}
                         </span>
                       </div>
 
@@ -1250,7 +1250,7 @@ export default function PaymentPage() {
                             }`}
                           >
                             <span className="block font-bold text-[#E9D18F]">
-                              {lang === "fr" ? "✈️ Voyage de Janvier" : "✈️ January Journey"}
+                              {lang === "fr" ? "🌴 Voyage de Janvier" : "🌴 January Journey"}
                             </span>
                             <span className="text-[10px] block font-cormorant mt-0.5 opacity-80">
                               {lang === "fr" ? "Inscriptions : Février à Septembre" : "Registration: February to September"}
@@ -1266,7 +1266,7 @@ export default function PaymentPage() {
                             }`}
                           >
                             <span className="block font-bold text-[#E9D18F]">
-                              {lang === "fr" ? "✈️ Voyage de Juillet" : "✈️ July Journey"}
+                              {lang === "fr" ? "🌴 Voyage de Juillet" : "🌴 July Journey"}
                             </span>
                             <span className="text-[10px] block font-cormorant mt-0.5 opacity-80">
                               {lang === "fr" ? "Inscriptions : Août à Mars" : "Registration: August to March"}
@@ -1290,7 +1290,7 @@ export default function PaymentPage() {
                                 : "bg-black/30 border-[#C5A059]/20 text-[#cabfa6]"
                             }`}
                           >
-                            <span>{lang === "fr" ? "1x 1 500 € (Paiement Unique)" : "1x €1,500 (Lump Sum)"}</span>
+                            <span>{lang === "fr" ? "1x 700 € (Paiement Unique)" : "1x €700 (Lump Sum)"}</span>
                           </button>
                           <button
                             type="button"
@@ -1309,7 +1309,7 @@ export default function PaymentPage() {
                       {/* Affichage visuel des Échéances et de l'échéancier si par tranches */}
                       {cocooningOption === "tranches" && (() => {
                         const months = getCocooningInstallmentMonths();
-                        const monthlyPrice = Math.round(1500 / months);
+                        const monthlyPrice = Math.round(700 / months);
                         return (
                           <div className="p-4 rounded-xl bg-black/50 border border-purple-500/30 space-y-3 animate-fadeIn">
                             <div className="flex items-center justify-between text-xs font-cinzel">
@@ -1342,14 +1342,27 @@ export default function PaymentPage() {
 
                             <p className="font-cormorant text-xs text-[#EDE4CF]/80 italic">
                               {lang === "fr" ? (
-                                <>* L&apos;échéancier calculé ci-dessus dépend du nombre de mois restant avant la fin des inscriptions ({cocooningSession === "janvier" ? "Septembre" : "Mars"}). Votre 1ère échéance due aujourd&apos;hui est de <strong className="text-[#E9D18F]">{monthlyPrice} €</strong>.</>
+                                <>* L&apos;échéancier calculé ci-dessus répartit le forfait de 700 € selon le nombre de mois restant avant la fin des inscriptions ({cocooningSession === "janvier" ? "Septembre" : "Mars"}). Votre 1ère échéance due aujourd&apos;hui est de <strong className="text-[#E9D18F]">{monthlyPrice} €</strong>.</>
                               ) : (
-                                <>* The schedule calculated above is based on the months remaining until registration ends ({cocooningSession === "janvier" ? "September" : "March"}). Your 1st installment due today is <strong className="text-[#E9D18F]">{monthlyPrice} €</strong>.</>
+                                <>* The schedule calculated above spreads the €700 package across the months remaining until registration ends ({cocooningSession === "janvier" ? "September" : "March"}). Your 1st installment due today is <strong className="text-[#E9D18F]">{monthlyPrice} €</strong>.</>
                               )}
                             </p>
                           </div>
                         );
                       })()}
+
+                      {/* Note d'information sur les billets d'avion et la date d'arrivée */}
+                      <div className="p-3.5 rounded-xl bg-purple-950/40 border border-purple-400/30 text-xs font-cormorant text-[#EDE4CF] space-y-1">
+                        <div className="flex items-center gap-1.5 text-[#E9D18F] font-cinzel font-bold text-[10px] uppercase tracking-wider">
+                          <span>📢</span>
+                          <span>{lang === "fr" ? "Précisions Importantes : Billets d'Avion & Jour d'Arrivée" : "Important: Flights & Arrival Schedule"}</span>
+                        </div>
+                        <p className="leading-relaxed">
+                          {lang === "fr"
+                            ? "Le forfait de 700 € couvre l'intégralité du séjour au Bénin (hébergement, pension complète, excursions et bien-être). Les billets d'avion sont à la charge de chaque pensionnaire. Le jour exact de démarrage et d'arrivée au Bénin pour la prise en charge par notre agence sera annoncé sur le site dans la catégorie « Annonces », et vous sera également communiqué directement par e-mail dès la clôture des inscriptions."
+                            : "The €700 package covers all local on-site services in Benin (lodging, full board, tours, wellness). Airfare is arranged separately by each guest. The official start and arrival date in Benin for full pickup by our tourism agency will be announced on this website under 'Announcements' and sent directly to you via email upon registration close."}
+                        </p>
+                      </div>
                     </div>
                   )}
 

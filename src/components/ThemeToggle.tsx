@@ -69,7 +69,7 @@ export function FloatingControls() {
   // Pages présentées sous leur propre marque : pas de boutons General Esquire.
   if (isStandalonePage(pathname)) return null;
   return (
-    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-center gap-2 sm:gap-2.5 pointer-events-auto">
+    <div className="fixed bottom-24 right-4 sm:bottom-28 sm:right-6 z-50 flex flex-col items-center gap-2 sm:gap-2.5 pointer-events-auto">
       {/* Bouton Langue (Centré au-dessus) */}
       <button
         onClick={() => setLang(lang === "fr" ? "en" : "fr")}

@@ -8,6 +8,7 @@ import SecurityProtection from "@/components/SecurityProtection";
 import SupabaseHashRedirect from "@/components/SupabaseHashRedirect";
 import Footer from "@/components/Footer";
 import ReviewInactivityModal from "@/components/ReviewInactivityModal";
+import FloatingWhatsAppButton from "@/components/FloatingWhatsAppButton";
 
 export const metadata: Metadata = {
   title: "General Esquire — Chrysalides | Conseil Juridique & Cocooning Touristique",
@@ -63,6 +64,7 @@ export default function RootLayout({
             <Footer />
 
             <ReviewInactivityModal />
+            <FloatingWhatsAppButton />
             <FloatingThemeToggle />
           </LanguageProvider>
         </AuthProvider>

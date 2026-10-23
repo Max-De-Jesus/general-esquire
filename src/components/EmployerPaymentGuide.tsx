@@ -111,19 +111,21 @@ export default function EmployerPaymentGuide({ className = "" }: { className?: s
               <p className="font-light text-sm sm:text-base">
                 {lang === "fr" ? (
                   <>
-                    Si c’est le cocooning touristique, la somme forfaitaire à payer est de 1 500 €.<br />
+                    Si c’est le cocooning touristique, la somme forfaitaire à payer est désormais de 700 € (sans billet d’avion, les billets d’avion restant à la charge du voyageur).<br />
                     Vous pouvez vous acquitter de cette somme en un paiement unique.<br />
                     Sinon, à compter de votre inscription, un échéancier vous indiquera vos échéances de paiement.<br />
                     Celui-ci dépend du nombre de mois qu’il vous reste avant la fin de la période d’inscription.<br />
-                    Celle-ci va de février à septembre pour le voyage de janvier ; et d’août à mars pour le voyage de juillet.
+                    Celle-ci va de février à septembre pour le voyage de janvier ; et d’août à mars pour le voyage de juillet.<br />
+                    <span className="text-[#E9D18F] font-semibold">Le jour officiel de démarrage et d'arrivée au Bénin pour la prise en charge intégrale par notre agence touristique sera annoncé sur le site dans la catégorie « Annonces », et vous sera également communiqué directement par e-mail.</span>
                   </>
                 ) : (
                   <>
-                    For touristic cocooning, the fixed retreat package is €1,500.<br />
+                    For touristic cocooning, the retreat package fee is now €700 (excluding airfare, flights being arranged independently by each traveler).<br />
                     You may settle this fee in a single lump sum payment.<br />
                     Alternatively, upon registration, an installment schedule indicates your payment plan.<br />
                     The schedule depends on the remaining months before registration closes.<br />
-                    Registration runs February to September for January departures, and August to March for July departures.
+                    Registration runs February to September for January departures, and August to March for July departures.<br />
+                    <span className="text-[#E9D18F] font-semibold">The official start and arrival date in Benin for full pickup by our tourism agency will be announced on the website under the 'Announcements' section, and confirmed directly to you by email.</span>
                   </>
                 )}
               </p>
@@ -140,8 +142,8 @@ export default function EmployerPaymentGuide({ className = "" }: { className?: s
               </h5>
               <p>
                 {lang === "fr"
-                  ? "Une assurance annulation est souscrite pour votre compte par General Esquire. Celle-ci garantit votre remboursement intégral en cas d’annulation, dans les trois mois précédant la date de départ qui vous aura été communiquée dès votre inscription, et qui se situe, soit en janvier, soit en juillet. Au-delà, une retenue de 15% vous sera appliquée, indépendamment de celles éventuellement encourues auprès de notre compagnie aérienne, si celle-ci a déjà émis votre billet d’avion."
-                  : "Cancellation insurance is covered by General Esquire on your behalf, guaranteeing a full refund up to 3 months prior to your scheduled departure (January or July). After this period, a 15% retention applies, plus any non-refundable airline fees if your flight ticket has already been issued."}
+                  ? "Une assurance annulation est souscrite pour votre compte par General Esquire pour les prestations terrestres. Celle-ci garantit votre remboursement intégral en cas d’annulation, dans les trois mois précédant la date de départ qui vous aura été communiquée dès votre inscription, et qui se situe, soit en janvier, soit en juillet. Au-delà, une retenue de 15% vous sera appliquée."
+                  : "Cancellation insurance is covered by General Esquire on your behalf for on-site services, guaranteeing a full refund up to 3 months prior to your scheduled departure (January or July). After this period, a 15% retention applies."}
               </p>
             </div>
           </div>

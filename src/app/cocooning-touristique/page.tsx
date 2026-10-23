@@ -463,19 +463,19 @@ export default function CocooningTouristiquePage() {
           {/* Header Prix & Titre */}
           <div className="text-center mb-10 relative z-10">
             <span className="inline-block font-cinzel text-xs text-[#C5A059] tracking-[0.3em] uppercase mb-3 border border-[#C5A059]/40 px-5 py-1.5 rounded-full bg-[#131513]/80 backdrop-blur-md shadow-md animate-pulse">
-              ✦ {lang === "fr" ? "Formule Complète 2 Semaines" : "Full 2-Week Package"}
+              ✦ {lang === "fr" ? "Formule 2 Semaines — Nouveau Tarif" : "2-Week Package — New Rate"}
             </span>
             
             <div className="my-4">
               <h2 className="font-cinzel text-4xl sm:text-6xl text-white font-extrabold tracking-tight drop-shadow-[0_0_25px_rgba(197,160,89,0.5)]">
-                1 500 € <span className="text-base sm:text-xl font-normal text-[#E9D18F] font-cormorant">{lang === "fr" ? "/ pensionnaire" : "/ guest"}</span>
+                700 € <span className="text-base sm:text-xl font-normal text-[#E9D18F] font-cormorant">{lang === "fr" ? "/ pensionnaire (sans billet d’avion)" : "/ guest (excluding airfare)"}</span>
               </h2>
             </div>
 
             <p className="font-cormorant text-lg sm:text-xl text-[#EDE4CF]/90 max-w-2xl mx-auto leading-relaxed">
               {lang === "fr"
-                ? "Outre le billet d’avion Paris-Cotonou-Paris, le coût global indicatif comprend l'ensemble des 4 prestations exclusives :"
-                : "In addition to your Paris-Cotonou round-trip airfare, the package includes all 4 exclusive services:"}
+                ? "Le coût global indicatif est désormais de 700 € sans billet d’avion (les billets d'avion sont à la charge du voyageur). Il comprend l'intégralité de la prise en charge sur place et l'ensemble des 4 prestations exclusives :"
+                : "The package fee is now €700 excluding airfare (flight tickets are arranged separately by each traveler). It includes full on-site care and all 4 exclusive services:"}
             </p>
           </div>
 
@@ -590,13 +590,23 @@ export default function CocooningTouristiquePage() {
             </Link>
           </div>
 
-          {/* Encadré d'information logistique avec effet verre dépoli */}
-          <div className="p-6 sm:p-8 rounded-2xl bg-[#131513]/90 border border-[#C5A059]/30 font-cormorant text-lg text-[#EDE4CF] text-center max-w-3xl mx-auto shadow-2xl relative z-10 backdrop-blur-md">
+          {/* Encadré d'information logistique & Modalités d'arrivée */}
+          <div className="p-6 sm:p-8 rounded-2xl bg-[#131513]/90 border border-[#C5A059]/40 font-cormorant text-lg text-[#EDE4CF] text-center max-w-3xl mx-auto shadow-2xl relative z-10 backdrop-blur-md space-y-4">
             <p className="leading-relaxed">
               {lang === "fr"
                 ? "Pour des raisons de logistique, nous organisons une fois par an, au cours des deux premières semaines de janvier, un séjour groupé pour au moins 10 pensionnaires. Inscriptions ouvertes de février à fin septembre."
                 : "For logistics reasons, we organize once a year, during the first two weeks of January, a group stay for at least 10 guests. Registrations open from February to end of September."}
             </p>
+            <div className="pt-3 border-t border-[#C5A059]/30 text-left sm:text-center">
+              <span className="inline-block text-[#E9D18F] font-cinzel font-bold text-xs uppercase tracking-wider mb-1.5">
+                📢 {lang === "fr" ? "Annonce Officielle du Jour de Démarrage & d'Arrivée" : "Official Announcement of Start & Arrival Date"}
+              </span>
+              <p className="text-base sm:text-lg text-[#EDE4CF]/90 leading-relaxed">
+                {lang === "fr"
+                  ? "Le jour officiel de démarrage et d'arrivée où tous les pensionnaires doivent être au Bénin pour la prise en charge complète par notre agence de tourisme sera annoncé sur le site dans la catégorie « Annonces », et communiqué directement par e-mail à chaque participant dès la clôture des inscriptions."
+                  : "The official start and arrival date when all guests must arrive in Benin for full pickup and care by our tourism agency will be announced on this website under the 'Announcements' category, and confirmed directly via email to each participant."}
+              </p>
+            </div>
           </div>
         </section>
 
